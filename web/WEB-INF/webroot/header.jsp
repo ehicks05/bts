@@ -10,18 +10,27 @@
 
 <table style="margin: 0 auto; width: 100%;" class="list">
     <tr>
-        <td style="width: 100%;">
+        <td>
             <h1 style="margin: 0;padding: 0;">BTS</h1>
         </td>
 
         <c:if test="${!empty sessionScope.userSession}">
+            <td>
+                <button class="btn btn-primary" onclick="doSearch($('#searchTerm').val());">
+                    Create Issue
+                    <%--<span style="font-size: 1.7em;vertical-align: middle;" class="material-icons">add</span>--%>
+                </button>
+            </td>
+
+            <td style="width: 100%"></td>
+
             <td style="text-align: right;white-space: nowrap">
                 <form method="post" action="${pageContext.request.contextPath}/view?tab1=home&action=search">
                     <input type="text" size="12" maxlength="255" id="searchTerm" name="searchTerm" value="${issuesForm.title}"/>
                     <input type="hidden" id="header_title" name="title"/>
                     <input type="hidden" id="header_description" name="description"/>
                     <%--<input type="submit" value="Search" class="btn btn-primary btn-xs" onclick="doSearch($('#searchTerm').val());"/>--%>
-                    <button class="btn btn-primary" style="padding:3px 2px 1px 4px;" onclick="doSearch($('#searchTerm').val());">
+                    <button class="btn btn-primary" style="padding:5px 2px 3px 4px;" onclick="doSearch($('#searchTerm').val());">
                         <span style="font-size: 1.7em;vertical-align: middle;" class="material-icons">search</span>
                     </button>
                 </form>

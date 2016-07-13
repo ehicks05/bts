@@ -46,6 +46,13 @@ public class Issue implements Serializable
     @Temporal(TemporalType.DATE)
     private Date createdOn;
 
+    @Column(name = "last_updated_by_user_id")
+    private Long lastUpdatedByUserId;
+
+    @Column(name = "last_updated_on")
+    @Temporal(TemporalType.DATE)
+    private Date lastUpdatedOn;
+
     @Override
     public boolean equals(Object obj)
     {
@@ -177,5 +184,25 @@ public class Issue implements Serializable
     public void setCreatedOn(Date createdOn)
     {
         this.createdOn = createdOn;
+    }
+
+    public Long getLastUpdatedByUserId()
+    {
+        return lastUpdatedByUserId;
+    }
+
+    public void setLastUpdatedByUserId(Long lastUpdatedByUserId)
+    {
+        this.lastUpdatedByUserId = lastUpdatedByUserId;
+    }
+
+    public Date getLastUpdatedOn()
+    {
+        return lastUpdatedOn;
+    }
+
+    public void setLastUpdatedOn(Date lastUpdatedOn)
+    {
+        this.lastUpdatedOn = lastUpdatedOn;
     }
 }

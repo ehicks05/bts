@@ -1,5 +1,6 @@
 package com.hicks;
 
+import com.hicks.beans.Issue;
 import com.hicks.beans.User;
 import net.ehicks.eoi.DBMap;
 import net.ehicks.eoi.EOI;
@@ -16,6 +17,9 @@ import java.lang.management.ManagementFactory;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @WebServlet(value = "/view", loadOnStartup = 1)
 public class Controller extends HttpServlet
@@ -57,6 +61,23 @@ public class Controller extends HttpServlet
 //        role.setLogonId("eric");
 //        role.setRoleName("admin");
 //        EOI.insert(role);
+
+        List result = EOI.executeQueryOneResult("select count(*) from issues", new ArrayList<>());
+        long rows = (Long) result.get(0);
+        if (rows == 0)
+        {
+            Issue issue = new Issue();
+            issue.setTitle("Thing is Broken");
+            issue.setDescription("Please fix thing.");
+            issue.setCreatedOn(new Date());
+            EOI.insert(issue);
+
+            issue = new Issue();
+            issue.setTitle("We Would Like This New Thing");
+            issue.setDescription("Can you add it?");
+            issue.setCreatedOn(new Date());
+            EOI.insert(issue);
+        }
 
         if (DEBUG)
             for (String argument : ManagementFactory.getRuntimeMXBean().getInputArguments())
