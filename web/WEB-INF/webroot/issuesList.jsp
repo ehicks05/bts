@@ -102,7 +102,7 @@
         <td></td>
         <ct:sortableCell code="id" label="ID" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
         <ct:sortableCell code="title" label="Title" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
-        <ct:sortableCell code="description" label="Description" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
+        <%--<ct:sortableCell code="description" label="Description" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>--%>
         <ct:sortableCell code="createdOn" label="Created" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
         <ct:sortableCell code="lastUpdatedOn" label="Updated" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
     </tr>
@@ -117,12 +117,16 @@
         <tr class="${rowStyle}">
             <td class="alignright"><fmt:formatNumber value="${count}" pattern="#,###"/></td>
             <td>
-                ${issue.id}
+                <a href="${pageContext.request.contextPath}/view?tab1=modify&action=form&issueId=${issue.id}">
+                    ${issue.id}
+                </a>
             </td>
             <td>
-                ${issue.title}
+                <a href="${pageContext.request.contextPath}/view?tab1=modify&action=form&issueId=${issue.id}">
+                    ${issue.title}
+                </a>
             </td>
-            <td class="alignright">${issue.description}</td>
+            <%--<td class="alignright">${fn:substring(issue.description, 0, 160)}</td>--%>
             <td class="alignright"><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yyyy" /></td>
             <td class="alignright"><fmt:formatDate value="${issue.lastUpdatedOn}" pattern="dd/MMM/yyyy" /></td>
         </tr>

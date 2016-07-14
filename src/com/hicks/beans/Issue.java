@@ -33,6 +33,8 @@ public class Issue implements Serializable
     private Long zoneId;
     @Column(name = "issue_type_id")
     private Long issueTypeId;
+    @Column(name = "project_id")
+    private Long projectId;
 
     @Column(name = "severity")
     private String severity;
@@ -79,9 +81,14 @@ public class Issue implements Serializable
         return EOI.executeQuery("select * from films");
     }
 
-    public static Issue getById(String imdbId)
+    public static Issue getById(Long id)
     {
-        return EOI.executeQueryOneResult("select * from films where imdb_id=?", Arrays.asList(imdbId));
+        return EOI.executeQueryOneResult("select * from issues where id=?", Arrays.asList(id));
+    }
+
+    public Project getProject()
+    {
+        return Project.getById(projectId);
     }
 
     // -------- Getters / Setters ----------
@@ -144,6 +151,16 @@ public class Issue implements Serializable
     public void setIssueTypeId(Long issueTypeId)
     {
         this.issueTypeId = issueTypeId;
+    }
+
+    public Long getProjectId()
+    {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId)
+    {
+        this.projectId = projectId;
     }
 
     public String getSeverity()

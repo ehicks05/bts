@@ -39,6 +39,16 @@ public class IssuesHandler
         return "/WEB-INF/webroot/issuesList.jsp";
     }
 
+    public static String showModifyIssue(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        Long issueId = Common.stringToLong(request.getParameter("issueId"));
+        Issue issue = Issue.getById(issueId);
+
+        request.setAttribute("issue", issue);
+
+        return "/WEB-INF/webroot/issueForm.jsp";
+    }
+
     public static void search(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         String id           = Common.getSafeString(request.getParameter("id"));

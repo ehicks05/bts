@@ -16,9 +16,15 @@
 
         <c:if test="${!empty sessionScope.userSession}">
             <td>
-                <button class="btn btn-primary" onclick="doSearch($('#searchTerm').val());">
+                <button class="btn btn-primary" onclick="create();">
                     Create Issue
                     <%--<span style="font-size: 1.7em;vertical-align: middle;" class="material-icons">add</span>--%>
+                </button>
+            </td>
+            <td>
+                <button class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/view?tab1=home&action=form'">
+                    Dashboard
+                        <%--<span style="font-size: 1.7em;vertical-align: middle;" class="material-icons">add</span>--%>
                 </button>
             </td>
 
