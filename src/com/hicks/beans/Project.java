@@ -44,7 +44,7 @@ public class Project implements Serializable
 
     public String toString()
     {
-        return name;
+        return this.getClass().getSimpleName() + ":" + id.toString();
     }
 
     public static List<Project> getAll()

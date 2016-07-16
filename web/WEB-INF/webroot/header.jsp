@@ -17,7 +17,7 @@
         <c:if test="${!empty sessionScope.userSession}">
             <td>
                 <button class="btn btn-primary" onclick="showCreateDialog();">
-                    Create Issue
+                    Create
                     <%--<span style="font-size: 1.7em;vertical-align: middle;" class="material-icons">add</span>--%>
                 </button>
             </td>

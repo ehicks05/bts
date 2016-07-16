@@ -44,7 +44,7 @@ public class ZoneMap implements Serializable
 
     public String toString()
     {
-        return id.toString();
+        return this.getClass().getSimpleName() + ":" + id.toString();
     }
 
     public static List<ZoneMap> getAll()

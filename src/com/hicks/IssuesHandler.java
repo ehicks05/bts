@@ -1,5 +1,6 @@
 package com.hicks;
 
+import com.hicks.beans.Comment;
 import com.hicks.beans.Issue;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
@@ -40,6 +41,8 @@ public class IssuesHandler
         Issue issue = Issue.getById(issueId);
 
         request.setAttribute("issue", issue);
+        List<Comment> comments = Comment.getByIssueId(issueId);
+        request.setAttribute("comments", comments);
 
         return "/WEB-INF/webroot/issueForm.jsp";
     }

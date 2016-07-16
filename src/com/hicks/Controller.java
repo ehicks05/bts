@@ -65,6 +65,11 @@ public class Controller extends HttpServlet
             user.setLogonId("eric");
             user.setPassword("eric");
             EOI.insert(user);
+
+            user = new User();
+            user.setLogonId("val");
+            user.setPassword("val");
+            EOI.insert(user);
         }
 
         result = EOI.executeQueryOneResult("select count(*) from bts_roles", new ArrayList<>());
@@ -135,12 +140,20 @@ public class Controller extends HttpServlet
         List<ZoneMap> zoneMaps = ZoneMap.getAll();
         if (zoneMaps.size() == 0)
         {
-            User eric = User.getByLogonId("eric");
+            User user = User.getByLogonId("eric");
             zones = Zone.getAll();
             for (Zone zone : zones)
             {
                 ZoneMap zoneMap = new ZoneMap();
-                zoneMap.setUserId(eric.getId());
+                zoneMap.setUserId(user.getId());
+                zoneMap.setZoneId(zone.getId());
+                EOI.insert(zoneMap);
+            }
+            user = User.getByLogonId("val");
+            for (Zone zone : zones)
+            {
+                ZoneMap zoneMap = new ZoneMap();
+                zoneMap.setUserId(user.getId());
                 zoneMap.setZoneId(zone.getId());
                 EOI.insert(zoneMap);
             }
@@ -156,6 +169,26 @@ public class Controller extends HttpServlet
             EOI.insert(issueType);
             issueType.setName("Question");
             EOI.insert(issueType);
+        }
+
+        List<Comment> comments = Comment.getAll();
+        if (comments.size() == 0)
+        {
+            Comment comment = new Comment();
+            comment.setIssueId(2L);
+            comment.setZoneId(2L);
+            comment.setCreatedByUserId(1L);
+            comment.setCreatedOn(new Date());
+            comment.setContent("I think we can do that.");
+            EOI.insert(comment);
+
+            comment = new Comment();
+            comment.setIssueId(2L);
+            comment.setZoneId(2L);
+            comment.setCreatedByUserId(2L);
+            comment.setCreatedOn(new Date());
+            comment.setContent("OK AWESOME TO HEAR SO.");
+            EOI.insert(comment);
         }
     }
 

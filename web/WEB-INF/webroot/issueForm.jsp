@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <jsp:useBean id="issue" type="com.hicks.beans.Issue" scope="request"/>
+<jsp:useBean id="comments" type="java.util.List<com.hicks.beans.Comment>" scope="request"/>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
@@ -65,6 +66,18 @@
         </tr>
     </table>
 </form>
+
+<table class="list">
+    <c:forEach var="comment" items="${comments}">
+        <tr>
+            <td>${comment.createdBy}</td>
+            <td><fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy hh:mm a"/></td>
+        </tr>
+        <tr>
+            <td colspan="2">${comment.content}</td>
+        </tr>
+    </c:forEach>
+</table>
 
 <jsp:include page="footer.jsp"/>
 </body>

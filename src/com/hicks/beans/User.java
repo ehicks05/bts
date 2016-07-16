@@ -70,6 +70,11 @@ public class User implements Serializable
     {
         return EOI.executeQueryOneResult("select * from bts_users where logon_id=?;", new ArrayList<>(Arrays.asList(logonid)));
     }
+
+    public static User getByUserId(Long userId)
+    {
+        return EOI.executeQueryOneResult("select * from bts_users where id=?;", new ArrayList<>(Arrays.asList(userId)));
+    }
     // -------- Getters / Setters ----------
 
     public Long getVersion()

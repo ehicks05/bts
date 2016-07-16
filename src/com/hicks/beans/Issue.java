@@ -5,7 +5,6 @@ import net.ehicks.eoi.EOI;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +19,7 @@ public class Issue implements Serializable
 
     @Id
     @Column(name = "id", updatable = false, nullable = false, columnDefinition = "bigint not null auto_increment primary key")
-    private String id = "";
+    private Long id;
 
     @Column(name = "title", length = 2000)
     private String title = "";
@@ -66,12 +65,12 @@ public class Issue implements Serializable
     @Override
     public int hashCode()
     {
-        return 17 * 37 * Integer.valueOf(id);
+        return 17 * 37 * id.intValue();
     }
 
     public String toString()
     {
-        return "Issue " + id;
+        return this.getClass().getSimpleName() + ":" + id.toString();
     }
 
     // --------
@@ -98,12 +97,13 @@ public class Issue implements Serializable
 
     // -------- Getters / Setters ----------
 
-    public String getId()
+
+    public Long getId()
     {
         return id;
     }
 
-    public void setId(String id)
+    public void setId(Long id)
     {
         this.id = id;
     }
