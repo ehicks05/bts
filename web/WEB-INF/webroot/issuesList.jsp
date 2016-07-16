@@ -64,7 +64,7 @@
 <jsp:include page="header.jsp"/>
 <br>
 
-<form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=home&action=search">
+<form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&action=search">
     <input type="hidden" id="fldRating" name="fldRating">
     <input type="hidden" name="sortColumn" id="sortColumn" value="${searchResult.sortColumn}"/>
     <input type="hidden" name="sortDirection" id="sortDirection" value="${searchResult.sortDirection}"/>
@@ -117,12 +117,12 @@
         <tr class="${rowStyle}">
             <td class="alignright"><fmt:formatNumber value="${count}" pattern="#,###"/></td>
             <td>
-                <a href="${pageContext.request.contextPath}/view?tab1=modify&action=form&issueId=${issue.id}">
+                <a href="${pageContext.request.contextPath}/view?tab2=issue&action=form&issueId=${issue.id}">
                     ${issue.id}
                 </a>
             </td>
             <td>
-                <a href="${pageContext.request.contextPath}/view?tab1=modify&action=form&issueId=${issue.id}">
+                <a href="${pageContext.request.contextPath}/view?tab2=issue&action=form&issueId=${issue.id}">
                     ${issue.title}
                 </a>
             </td>
@@ -143,5 +143,7 @@
     </c:if>
     <jsp:include page="inc_paginate.jsp"/>
 </table>
+
+<jsp:include page="footer.jsp"/>
 </body>
 </html>

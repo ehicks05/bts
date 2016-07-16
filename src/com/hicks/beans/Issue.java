@@ -91,6 +91,11 @@ public class Issue implements Serializable
         return Project.getById(projectId);
     }
 
+    public Zone getZone()
+    {
+        return Zone.getById(zoneId);
+    }
+
     // -------- Getters / Setters ----------
 
     public String getId()

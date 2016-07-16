@@ -18,7 +18,7 @@
     <div style="padding:10px; max-width: 400px; background-color: white;">
         Sorry, login failed!
         <br><br>
-        <input type="button" class="btn btn-primary" value="Retry" onclick="location.href='${pageContext.request.contextPath}/view?tab1=home&action=form';">
+        <input type="button" class="btn btn-primary" value="Retry" onclick="location.href='${pageContext.request.contextPath}/view?tab1=main&action=form';">
     </div>
 </div>
 </body>

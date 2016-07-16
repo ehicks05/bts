@@ -3,14 +3,15 @@ body {
     background-color: #2f6080;
     margin: 0;
     animation-name: example;
-    animation-duration: 8s;
+    animation-duration: 20s;
     animation-iteration-count: infinite;
     animation-timing-function: ease-in-out;
 }
 
 @keyframes example {
     0%   {background-color: #2f6080;}
-    50% {background-color: #2f7f5d;}
+    33% {background-color: #2f7f5d;}
+    67% {background-color: #69517f;}
     100% {background-color: #2f6080;}
 }
 

@@ -1,9 +1,6 @@
 package com.hicks;
 
-import com.hicks.beans.Issue;
-import com.hicks.beans.Project;
-import com.hicks.beans.Role;
-import com.hicks.beans.User;
+import com.hicks.beans.*;
 import net.ehicks.eoi.DBMap;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.SQLGenerator;
@@ -40,7 +37,7 @@ public class Controller extends HttpServlet
         SystemInfo.setServletContext(getServletContext());
 
         long subTaskStart = System.currentTimeMillis();
-        DBMap.loadDbMaps(getServletContext().getRealPath("/WEB-INF/classes/com/hicks/beans"));
+        DBMap.loadDbMaps(getServletContext().getRealPath("/WEB-INF/classes/com/hicks/beans"), "com.hicks.beans");
         System.out.println("Loaded DBMAPS in " + (System.currentTimeMillis() - subTaskStart) + "ms");
 
         if (DROP_TABLES)
@@ -49,6 +46,17 @@ public class Controller extends HttpServlet
         if (CREATE_TABLES)
             createTables();
 
+        createDemoData();
+
+        if (DEBUG)
+            for (String argument : ManagementFactory.getRuntimeMXBean().getInputArguments())
+                System.out.println(argument);
+
+        System.out.println("Controller.init finished in " + (System.currentTimeMillis() - controllerStart) + " ms");
+    }
+
+    private void createDemoData()
+    {
         List result = EOI.executeQueryOneResult("select count(*) from bts_users", new ArrayList<>());
         long rows = (Long) result.get(0);
         if (rows == 0)
@@ -112,11 +120,43 @@ public class Controller extends HttpServlet
             EOI.insert(issue);
         }
 
-        if (DEBUG)
-            for (String argument : ManagementFactory.getRuntimeMXBean().getInputArguments())
-                System.out.println(argument);
+        List<Zone> zones = Zone.getAll();
+        if (zones.size() == 0)
+        {
+            Zone zone = new Zone();
+            zone.setName("Readington");
+            EOI.insert(zone);
 
-        System.out.println("Controller.init finished in " + (System.currentTimeMillis() - controllerStart) + " ms");
+            zone = new Zone();
+            zone.setName("Bridgewater");
+            EOI.insert(zone);
+        }
+
+        List<ZoneMap> zoneMaps = ZoneMap.getAll();
+        if (zoneMaps.size() == 0)
+        {
+            User eric = User.getByLogonId("eric");
+            zones = Zone.getAll();
+            for (Zone zone : zones)
+            {
+                ZoneMap zoneMap = new ZoneMap();
+                zoneMap.setUserId(eric.getId());
+                zoneMap.setZoneId(zone.getId());
+                EOI.insert(zoneMap);
+            }
+        }
+
+        List<IssueType> issueTypes = IssueType.getAll();
+        if (issueTypes.size() == 0)
+        {
+            IssueType issueType = new IssueType();
+            issueType.setName("Bug");
+            EOI.insert(issueType);
+            issueType.setName("New Feature");
+            EOI.insert(issueType);
+            issueType.setName("Question");
+            EOI.insert(issueType);
+        }
     }
 
     private void createTables()
@@ -165,37 +205,42 @@ public class Controller extends HttpServlet
 
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         if (userSession == null)
-        {
-            Principal principal = request.getUserPrincipal();
-            User user = User.getByLogonId(principal.getName());
-            userSession = new UserSession();
-            userSession.setLogonId(user.getLogonId());
-            request.getSession().setAttribute("userSession", userSession);
-        }
+            userSession = createSession(request);
 
+        request.setAttribute("zones", Zone.getAllForUser(userSession));
+        request.setAttribute("projects", Project.getAll());
+        request.setAttribute("issueTypes", IssueType.getAll());
 
-        String tab1   = request.getParameter("tab1") == null ? "home" : request.getParameter("tab1");
+        String tab1   = request.getParameter("tab1") == null ? "main" : request.getParameter("tab1");
+        String tab2   = request.getParameter("tab2") == null ? "dash" : request.getParameter("tab2");
         String action = request.getParameter("action") == null ? "form" : request.getParameter("action");
 
         String viewJsp = "";
         try
         {
-            if (action.equals("form"))
-                viewJsp = IssuesHandler.showIssues(request, response);
-            if (tab1.equals("modify") && action.equals("form"))
-                viewJsp = IssuesHandler.showModifyIssue(request, response);
-            if (action.equals("search"))
-                IssuesHandler.search(request, response);
-            if (action.equals("ajaxGetNewPage"))
+            if (tab1.equals("main"))
             {
-                long ajaxStart = System.currentTimeMillis();
-                IssuesHandler.ajaxGetNewPage(request, response);
-                System.out.println((System.currentTimeMillis() - ajaxStart) + " ms for ajaxGetNewPage()");
+                if (tab2.equals("dash"))
+                    if (action.equals("form"))
+                        viewJsp = IssuesHandler.showIssues(request, response);
+
+                if (tab2.equals("issue"))
+                {
+                    if (action.equals("form"))
+                        viewJsp = IssuesHandler.showModifyIssue(request, response);
+                    if (action.equals("create"))
+                        IssuesHandler.createIssue(request, response);
+                }
+
+                if (action.equals("search"))
+                    IssuesHandler.search(request, response);
+
+                if (action.equals("debug"))
+                    DebugHandler.getDebugInfo(request, response);
+                if (action.equals("logout"))
+                    logout(request, response);
             }
-            if (action.equals("debug"))
-                DebugHandler.getDebugInfo(request, response);
-            if (action.equals("logout"))
-                logout(request, response);
+
         }
         catch (ParseException e)
         {
@@ -209,6 +254,19 @@ public class Controller extends HttpServlet
         }
 
         System.out.println((System.currentTimeMillis() - start) + " ms for last request " + request.getQueryString());
+    }
+
+    private UserSession createSession(HttpServletRequest request)
+    {
+        Principal principal = request.getUserPrincipal();
+        User user = User.getByLogonId(principal.getName());
+
+        UserSession userSession = new UserSession();
+        userSession.setUserId(user.getId());
+        userSession.setLogonId(user.getLogonId());
+        request.getSession().setAttribute("userSession", userSession);
+
+        return userSession;
     }
 
     private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException

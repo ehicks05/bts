@@ -5,12 +5,7 @@ import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.PSIngredients;
 import net.ehicks.eoi.SQLGenerator;
-import org.apache.commons.lang3.StringEscapeUtils;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -49,6 +44,23 @@ public class IssuesHandler
         return "/WEB-INF/webroot/issueForm.jsp";
     }
 
+    public static void createIssue(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    {
+        Long projectId      = Common.stringToLong(request.getParameter("fldProject"));
+        Long zoneId         = Common.stringToLong(request.getParameter("fldZone"));
+        Long issueTypeId    = Common.stringToLong(request.getParameter("fldIssueType"));
+        String title        = Common.getSafeString(request.getParameter("fldTitle"));
+
+        Issue issue = new Issue();
+        issue.setProjectId(projectId);
+        issue.setZoneId(zoneId);
+        issue.setIssueTypeId(issueTypeId);
+        issue.setTitle(title);
+        Long newKey = EOI.insert(issue);
+
+        response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + newKey);
+    }
+
     public static void search(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         String id           = Common.getSafeString(request.getParameter("id"));
@@ -68,49 +80,6 @@ public class IssuesHandler
         request.getSession().setAttribute("searchResult", searchResult);
 
         response.sendRedirect("view?action=form");
-    }
-
-    public static void ajaxGetNewPage(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
-    {
-        String newPage = request.getParameter("page");
-        String newSortColumn = request.getParameter("sortColumn");
-        String newSortDirection = request.getParameter("sortDirection");
-
-        IssuesForm issuesForm = (IssuesForm) request.getSession().getAttribute("issuesForm");
-        if (newSortColumn != null) issuesForm.setSortColumn(newSortColumn);
-        if (newSortDirection != null) issuesForm.setSortDirection(newSortDirection);
-        if (newPage != null) issuesForm.setPage(newPage);
-        request.getSession().setAttribute("issuesForm", issuesForm);
-
-        SearchResult searchResult = performSearch(request, issuesForm);
-
-        request.getSession().setAttribute("searchResult", searchResult);
-
-        JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
-
-        for (Issue issue : searchResult.getPageOfResults())
-        {
-            String title = issue.getTitle();
-            if (title.length() > 50)
-                title = title.substring(0, 50);
-
-            JsonObject jsonObject = Json.createObjectBuilder()
-                    .add("id", issue.getId())
-                    .add("title", escapeHtml(title))
-                    .add("description", escapeHtml(issue.getDescription()))
-                    .add("severity", escapeHtml(issue.getSeverity()))
-                    .add("status", escapeHtml(issue.getStatus()))
-                    .build();
-            jsonArrayBuilder.add(jsonObject);
-        }
-
-        JsonArray jsonArray = jsonArrayBuilder.build();
-        response.getOutputStream().print(jsonArray.toString());
-    }
-
-    private static String escapeHtml(String input)
-    {
-        return StringEscapeUtils.escapeHtml4((input));
     }
 
     private static SearchResult performSearch(HttpServletRequest request, IssuesForm issuesForm) throws ParseException, IOException

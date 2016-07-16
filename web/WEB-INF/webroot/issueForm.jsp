@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <jsp:useBean id="issue" type="com.hicks.beans.Issue" scope="request"/>
-<jsp:useBean id="searchResult" type="com.hicks.SearchResult" scope="session"/>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
@@ -30,6 +29,7 @@
             <td colspan="4">
                 <h2 style="margin: 0;">${issue.title}</h2>
                 <h5 style="margin: 0;">${issue.project.prefix}-${issue.id}</h5>
+                <h5 style="margin: 0;">${issue.zone.name}</h5>
                 <br>
                 <br>
             </td>
@@ -39,23 +39,23 @@
             <td colspan="4">Details:</td>
         </tr>
         <tr>
-            <td>Type:</td>
-            <td>${issue.issueTypeId}</td>
-            <td>Status:</td>
-            <td>${issue.status}</td>
+            <td style="padding: 0 20px;">Type:</td>
+            <td style="padding: 0 20px;">${issue.issueTypeId}</td>
+            <td style="padding: 0 20px;">Status:</td>
+            <td style="padding: 0 20px;">${issue.status}</td>
         </tr>
         <tr>
-            <td>Created On:</td>
-            <td>${issue.createdOn}</td>
-            <td>Last Updated:</td>
-            <td>${issue.lastUpdatedOn}</td>
+            <td style="padding: 0 20px;">Created On:</td>
+            <td style="padding: 0 20px;"><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yy hh:mm a"/></td>
+            <td style="padding: 0 20px;">Last Updated:</td>
+            <td style="padding: 0 20px;">${issue.lastUpdatedOn}</td>
         </tr>
 
         <tr>
             <td colspan="4"><br>Description:</td>
         </tr>
         <tr>
-            <td colspan="3">${issue.description}</td>
+            <td colspan="4" style="padding: 0 20px;">${issue.description}</td>
         </tr>
 
         <tr>
@@ -65,5 +65,7 @@
         </tr>
     </table>
 </form>
+
+<jsp:include page="footer.jsp"/>
 </body>
 </html>

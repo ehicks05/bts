@@ -8,14 +8,13 @@ import java.util.Arrays;
 import java.util.List;
 
 @Entity
-@Table(name = "projects")
-public class Project implements Serializable
+@Table(name = "issue_types")
+public class IssueType implements Serializable
 {
 //    @Version
 //    @Column(name = "version")
 //    private Long version;
 
-    // create sequence eric.role_seq start with 1 increment by 1;
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ROLE_SEQ")
     @SequenceGenerator(name="ROLE_SEQ", sequenceName="ROLE_SEQ", allocationSize=1)
@@ -25,14 +24,11 @@ public class Project implements Serializable
     @Column(name = "name", nullable = false, unique = true)
     private String name = "";
 
-    @Column(name = "prefix", nullable = false, unique = true)
-    private String prefix = "";
-
     @Override
     public boolean equals(Object obj)
     {
-        if (!(obj instanceof Project)) return false;
-        Project that = (Project) obj;
+        if (!(obj instanceof IssueType)) return false;
+        IssueType that = (IssueType) obj;
         return this.id.equals(that.getId());
     }
 
@@ -47,18 +43,17 @@ public class Project implements Serializable
         return name;
     }
 
-    public static List<Project> getAll()
+    public static List<IssueType> getAll()
     {
-        return EOI.executeQuery("select * from projects");
+        return EOI.executeQuery("select * from issue_types");
     }
 
-    public static Project getById(Long id)
+    public static Zone getById(Long id)
     {
-        return EOI.executeQueryOneResult("select * from projects where id=?", Arrays.asList(id));
+        return EOI.executeQueryOneResult("select * from issue_types where id=?", Arrays.asList(id));
     }
 
     // -------- Getters / Setters ----------
-
 
     public Long getId()
     {
@@ -78,15 +73,5 @@ public class Project implements Serializable
     public void setName(String name)
     {
         this.name = name;
-    }
-
-    public String getPrefix()
-    {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix)
-    {
-        this.prefix = prefix;
     }
 }
