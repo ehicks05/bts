@@ -71,6 +71,11 @@ public class Controller extends HttpServlet
             user.setLogonId("val");
             user.setPassword("val");
             EOI.insert(user);
+
+            user = new User();
+            user.setLogonId("valeric");
+            user.setPassword("valeric");
+            EOI.insert(user);
         }
 
         result = EOI.executeQueryOneResult("select count(*) from bts_roles", new ArrayList<>());
@@ -103,6 +108,16 @@ public class Controller extends HttpServlet
             EOI.insert(project);
         }
 
+        List<Severity> severities = Severity.getAll();
+        if (severities.size() == 0)
+        {
+            Severity severity = new Severity();
+            severity.setName("High");
+            EOI.insert(severity);
+            severity.setName("Low");
+            EOI.insert(severity);
+        }
+
         result = EOI.executeQueryOneResult("select count(*) from issues", new ArrayList<>());
         rows = (Long) result.get(0);
         if (rows == 0)
@@ -115,8 +130,12 @@ public class Controller extends HttpServlet
             issue.setProjectId(1L);
             issue.setZoneId(1L);
             issue.setAssigneeUserId(2L);
+            issue.setReporterUserId(1L);
             issue.setIssueTypeId(1L);
+            issue.setSeverityId(1L);
+            issue.setStatus("OPEN");
             issue.setCreatedOn(new Date());
+            issue.setLastUpdatedOn(new Date());
             EOI.insert(issue);
 
             issue = new Issue();
@@ -125,8 +144,12 @@ public class Controller extends HttpServlet
             issue.setProjectId(2L);
             issue.setZoneId(2L);
             issue.setAssigneeUserId(1L);
+            issue.setReporterUserId(2L);
             issue.setIssueTypeId(2L);
+            issue.setSeverityId(2L);
+            issue.setStatus("OPEN");
             issue.setCreatedOn(new Date());
+            issue.setLastUpdatedOn(new Date());
             EOI.insert(issue);
         }
 
@@ -201,6 +224,11 @@ public class Controller extends HttpServlet
         {
             WatcherMap watcherMap = new WatcherMap();
             watcherMap.setUserId(2L);
+            watcherMap.setIssueId(2L);
+            EOI.insert(watcherMap);
+
+            watcherMap = new WatcherMap();
+            watcherMap.setUserId(3L);
             watcherMap.setIssueId(2L);
             EOI.insert(watcherMap);
         }

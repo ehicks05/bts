@@ -38,9 +38,9 @@ public class Issue implements Serializable
     private Long assigneeUserId;
     @Column(name = "reporter_user_id")
     private Long reporterUserId;
+    @Column(name = "severity_id")
+    private Long severityId;
 
-    @Column(name = "severity")
-    private String severity;
     @Column(name = "status")
     private String status;
 
@@ -102,6 +102,11 @@ public class Issue implements Serializable
     public IssueType getIssueType()
     {
         return IssueType.getById(issueTypeId);
+    }
+
+    public Severity getSeverity()
+    {
+        return Severity.getById(severityId);
     }
 
     public User getAssignee()
@@ -207,14 +212,14 @@ public class Issue implements Serializable
         this.reporterUserId = reporterUserId;
     }
 
-    public String getSeverity()
+    public Long getSeverityId()
     {
-        return severity;
+        return severityId;
     }
 
-    public void setSeverity(String severity)
+    public void setSeverityId(Long severityId)
     {
-        this.severity = severity;
+        this.severityId = severityId;
     }
 
     public String getStatus()

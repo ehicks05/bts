@@ -51,37 +51,30 @@
                         <td style="padding: 0 20px;">Created On:</td>
                         <td style="padding: 0 20px;"><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yy hh:mm a"/></td>
                         <td style="padding: 0 20px;">Last Updated:</td>
-                        <td style="padding: 0 20px;">${issue.lastUpdatedOn}</td>
+                        <td style="padding: 0 20px;"><fmt:formatDate value="${issue.lastUpdatedOn}" pattern="dd/MMM/yy hh:mm a"/></td>
                     </tr>
                     <tr>
                         <td style="padding: 0 20px;">Severity:</td>
-                        <td style="padding: 0 20px;">${issue.severity}</td>
-                        <td style="padding: 0 20px;">Last Updated:</td>
-                        <td style="padding: 0 20px;">${issue.lastUpdatedOn}</td>
+                        <td style="padding: 0 20px;">${issue.severity.name}</td>
+                        <td style="padding: 0 20px;"></td>
+                        <td style="padding: 0 20px;"></td>
                     </tr>
                 </table>
 
                 <h5>Description</h5>
-                <table>
-                    <tr>
-                        <td colspan="4" style="padding: 0 20px;">${issue.description}</td>
-                    </tr>
-                </table>
+                <div style="padding: 0 20px;">${issue.description}</div>
             </form>
 
             <br>
             <h5>Activity</h5>
-            <table class="list">
-                <c:forEach var="comment" items="${comments}">
-                    <tr>
-                        <td>${comment.createdBy}</td>
-                        <td><fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy hh:mm a"/></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">${comment.content}</td>
-                    </tr>
-                </c:forEach>
-            </table>
+            <c:forEach var="comment" items="${comments}">
+                <div style="padding: 0 20px;">
+                    ${comment.createdBy} commented on <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy hh:mm a"/>
+                    <br>
+                    ${comment.content}
+                </div>
+                <hr>
+            </c:forEach>
             <br>
             <input type="button" value="Comment" class="btn btn-primary" onclick="showAddComment();"/>
         </td>
@@ -103,10 +96,6 @@
                             ${watcher.logonId}<br>
                         </c:forEach>
                     </td>
-                </tr>
-                <tr>
-                    <td style="padding: 0 20px;">Last Updated:</td>
-                    <td style="padding: 0 20px;">${issue.lastUpdatedOn}</td>
                 </tr>
             </table>
         </td>
