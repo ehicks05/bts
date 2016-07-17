@@ -76,7 +76,7 @@
                 <hr>
             </c:forEach>
             <br>
-            <input type="button" value="Comment" class="btn btn-primary" onclick="showAddComment();"/>
+            <input type="button" value="Comment" class="btn btn-default" onclick="showAddComment();"/>
         </td>
         <td style="width: 33%;vertical-align: top">
             <h5>People</h5>

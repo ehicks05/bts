@@ -132,17 +132,18 @@ public class IssuesHandler
             if (page == null) page = "1";
         }
 
-        PSIngredients filmQuery = buildFilmSQLQuery(issuesForm, sortColumn, sortDirection, page);
+        long resultsPerPage = 10;
+        PSIngredients filmQuery = buildFilmSQLQuery(issuesForm, sortColumn, sortDirection, page, resultsPerPage);
         String countVersionOfQuery = SQLGenerator.getCountVersionOfQuery(filmQuery.query);
 
         List result = EOI.executeQueryOneResult(countVersionOfQuery, filmQuery.args);
         long resultSize = (Long) result.get(0);
         List<Issue> filteredIssues = EOI.executeQuery(filmQuery.query, filmQuery.args);
 
-        return new SearchResult(page, filteredIssues, sortColumn, sortDirection, resultSize);
+        return new SearchResult(page, filteredIssues, sortColumn, sortDirection, resultSize, resultsPerPage);
     }
 
-    private static PSIngredients buildFilmSQLQuery(IssuesForm issuesForm, String sortColumn, String sortDirection, String page)
+    private static PSIngredients buildFilmSQLQuery(IssuesForm issuesForm, String sortColumn, String sortDirection, String page, long resultsPerPage)
     {
         List<Object> args = new ArrayList<>();
         String selectClause = "select * from issues where ";
@@ -177,8 +178,8 @@ public class IssuesHandler
             orderByClause += " order by " + sortColumn + " " + sortDirection + ", id nulls last " ;
         }
 
-        String limit = "100";
-        String offset = String.valueOf((Integer.valueOf(page) - 1) * 100);
+        long limit = resultsPerPage;
+        String offset = String.valueOf((Integer.valueOf(page) - 1) * limit);
         String paginationClause = " limit " + limit + " offset " + offset;
 
         String completeQuery = selectClause + whereClause + orderByClause + paginationClause;

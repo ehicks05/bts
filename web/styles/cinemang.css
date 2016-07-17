@@ -20,6 +20,8 @@ body {
 .aligncenter {text-align: center}
 .alignright {text-align: right}
 
+.table {border-collapse: collapse; background-color: #ffffff}
+.table td {padding: 2px 6px}
 .list {border-collapse: collapse; border: 1px solid lightgray; background-color: #ffffff}
 .list td {border: 1px solid #e5e5e5; padding: 2px 6px}
 .listheading {background-color: lightgray; font-weight: bold}
@@ -36,6 +38,11 @@ div.ui-datepicker{
 }
 
 .ui-dialog {font-size: 11pt;}
+/* JQuery */
+
+/* Material Icons */
+.material-icons {color: #777;}
+/* Material Icons */
 
 .sortableHeader {cursor: pointer; color: navy}
 .sortableHeaderSelected {cursor: pointer; color: white;}
@@ -84,6 +91,17 @@ div.ui-datepicker{
     color: #fff;
     background-color: #286090;
     border-color: #204d74;
+}
+
+.btn-default {
+    color: #000;
+    background-color: #fff;
+    border-color: #aaa;
+}
+.btn-default:hover {
+    color: #000;
+    background-color: #ddd;
+    border-color: #999;
 }
 
 .btn-xs {

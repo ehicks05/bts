@@ -71,7 +71,7 @@
     <input type="hidden" name="page" id="page" value="${searchResult.page}"/>
     <input type="hidden" name="resetPage" id="resetPage"/>
 
-    <table style="margin: 0 auto" class="list">
+    <table style="margin: 0 auto" class="table">
         <tr>
             <td colspan="4">
                 <h2 style="text-align: center;margin: 0;">Search for Issues</h2>
@@ -91,7 +91,7 @@
         </tr>
 
         <tr><td colspan="4" style="text-align: center"><input type="submit" value="Search" class="btn btn-primary" onclick="resetPagination();"/></td></tr>
-        <tr><td colspan="4" style="text-align: center"><span>${searchResult.searchResultsSize} Results</span></td></tr>
+        <tr><td colspan="4" style="text-align: center"><span>${searchResult.size} Results</span></td></tr>
     </table>
 </form>
 <br>
@@ -112,7 +112,7 @@
     <c:set var="count" value="${1 + ((searchResult.page - 1) * 100)}"/>
     <c:set var="rowStyle" value="listrowodd"/>
     <c:set var="rowToggle" value="${true}"/>
-    <c:forEach var="issue" items="${searchResult.pageOfResults}">
+    <c:forEach var="issue" items="${searchResult.searchResults}">
 
         <tr class="${rowStyle}">
             <td class="alignright"><fmt:formatNumber value="${count}" pattern="#,###"/></td>

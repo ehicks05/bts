@@ -3,14 +3,22 @@
 <jsp:useBean id="searchResult" type="com.hicks.SearchResult" scope="session"/>
 <tr>
     <td colspan="100" style="text-align: center;">
-        <input class="firstButton" type="button" value="First" onclick="goToPage('first')" <c:if test="${!searchResult.hasPrevious}">disabled</c:if> />
-        <input class="previousButton" type="button" value="Previous" onclick="goToPage('previous')" <c:if test="${!searchResult.hasPrevious}">disabled</c:if> />
+        <button class="firstButton" value="First" onclick="goToPage('first')" <c:if test="${!searchResult.hasPrevious}">disabled</c:if>>
+            <span style="font-size: 1.7em;vertical-align: middle;" class="material-icons">first_page</span>
+        </button>
+        <button class="previousButton" value="Previous" onclick="goToPage('previous')" <c:if test="${!searchResult.hasPrevious}">disabled</c:if>>
+            <span style="font-size: 1.7em;vertical-align: middle;" class="material-icons">chevron_left</span>
+        </button>
 
         <fmt:formatNumber value="${searchResult.page}" var="formattedPage" pattern="#,###"/>
         <fmt:formatNumber value="${searchResult.pages}" var="formattedPages" pattern="#,###"/>
-        <span class="currentPageSpan">${formattedPage}</span> of ${formattedPages}
+        <span class="currentPageSpan" style="vertical-align: middle;">${formattedPage} of ${formattedPages}</span>
 
-        <input class="nextButton" type="button" value="Next" onclick="goToPage('next')" <c:if test="${!searchResult.hasNext}">disabled</c:if> />
-        <input class="lastButton" type="button" value="Last" onclick="goToPage('last')" <c:if test="${!searchResult.hasNext}">disabled</c:if> />
+        <button class="nextButton" value="Next" onclick="goToPage('next')" <c:if test="${!searchResult.hasNext}">disabled</c:if>>
+            <span style="font-size: 1.7em;vertical-align: middle;" class="material-icons">chevron_right</span>
+        </button>
+        <button class="lastButton" value="Last" onclick="goToPage('last')" <c:if test="${!searchResult.hasNext}">disabled</c:if>>
+            <span style="font-size: 1.7em;vertical-align: middle;" class="material-icons">last_page</span>
+        </button>
     </td>
 </tr>

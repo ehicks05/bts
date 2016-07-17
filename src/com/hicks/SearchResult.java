@@ -2,50 +2,31 @@ package com.hicks;
 
 import com.hicks.beans.Issue;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class SearchResult
 {
     private List<Issue> searchResults;
     private long size;
+    private long resultsPerPage;
     private String page;
     private String sortColumn;
     private String sortDirection;
 
-    public SearchResult(String pageParam, List<Issue> searchResults, String sortColumn, String sortDirection)
-    {
-        this(pageParam, searchResults, sortColumn, sortDirection, 0);
-    }
-
-    public SearchResult(String pageParam, List<Issue> searchResults, String sortColumn, String sortDirection, long size)
+    public SearchResult(String pageParam, List<Issue> searchResults, String sortColumn, String sortDirection, long size, long resultsPerPage)
     {
         this.page = pageParam;
         this.searchResults = searchResults;
         this.sortColumn = sortColumn;
         this.sortDirection = sortDirection;
         this.size = size;
+        this.resultsPerPage = resultsPerPage;
     }
 
     // Derived values
-    public List<Issue> getPageOfResults()
-    {
-        return searchResults;
-    }
-
-    public long getSearchResultsSize()
-    {
-        return size;
-    }
-
-    public String getPrettySearchResultsSize()
-    {
-        return new DecimalFormat("#,###").format(size);
-    }
-
     public long getPages()
     {
-        return 1 + ((getSearchResultsSize() - 1) / 100);
+        return 1 + ((size - 1) / resultsPerPage);
     }
 
     public boolean isHasNext()
@@ -58,7 +39,8 @@ public class SearchResult
         return Integer.valueOf(page) > 1;
     }
 
-    // Getter / Setter
+
+    // -------- Getter / Setter --------
     public List<Issue> getSearchResults()
     {
         return searchResults;
@@ -77,6 +59,16 @@ public class SearchResult
     public void setSize(long size)
     {
         this.size = size;
+    }
+
+    public long getResultsPerPage()
+    {
+        return resultsPerPage;
+    }
+
+    public void setResultsPerPage(long resultsPerPage)
+    {
+        this.resultsPerPage = resultsPerPage;
     }
 
     public String getPage()

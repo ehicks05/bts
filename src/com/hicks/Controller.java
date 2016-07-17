@@ -137,6 +137,11 @@ public class Controller extends HttpServlet
             issue.setCreatedOn(new Date());
             issue.setLastUpdatedOn(new Date());
             EOI.insert(issue);
+            EOI.insert(issue);
+            EOI.insert(issue);
+            EOI.insert(issue);
+            EOI.insert(issue);
+            EOI.insert(issue);
 
             issue = new Issue();
             issue.setTitle("We Would Like This New Thing");
@@ -150,6 +155,11 @@ public class Controller extends HttpServlet
             issue.setStatus("OPEN");
             issue.setCreatedOn(new Date());
             issue.setLastUpdatedOn(new Date());
+            EOI.insert(issue);
+            EOI.insert(issue);
+            EOI.insert(issue);
+            EOI.insert(issue);
+            EOI.insert(issue);
             EOI.insert(issue);
         }
 
