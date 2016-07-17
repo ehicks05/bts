@@ -2,6 +2,8 @@ package com.hicks;
 
 import com.hicks.beans.Comment;
 import com.hicks.beans.Issue;
+import com.hicks.beans.User;
+import com.hicks.beans.WatcherMap;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.PSIngredients;
@@ -43,11 +45,30 @@ public class IssuesHandler
         request.setAttribute("issue", issue);
         List<Comment> comments = Comment.getByIssueId(issueId);
         request.setAttribute("comments", comments);
+        List<User> watchers = WatcherMap.getWatchersForIssue(issueId);
+        request.setAttribute("watchers", watchers);
 
         return "/WEB-INF/webroot/issueForm.jsp";
     }
 
     public static void createIssue(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    {
+        Long projectId      = Common.stringToLong(request.getParameter("fldProject"));
+        Long zoneId         = Common.stringToLong(request.getParameter("fldZone"));
+        Long issueTypeId    = Common.stringToLong(request.getParameter("fldIssueType"));
+        String title        = Common.getSafeString(request.getParameter("fldTitle"));
+
+        Issue issue = new Issue();
+        issue.setProjectId(projectId);
+        issue.setZoneId(zoneId);
+        issue.setIssueTypeId(issueTypeId);
+        issue.setTitle(title);
+        Long newKey = EOI.insert(issue);
+
+        response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + newKey);
+    }
+
+    public static void updateIssue(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         Long projectId      = Common.stringToLong(request.getParameter("fldProject"));
         Long zoneId         = Common.stringToLong(request.getParameter("fldZone"));

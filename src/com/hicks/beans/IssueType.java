@@ -48,7 +48,7 @@ public class IssueType implements Serializable
         return EOI.executeQuery("select * from issue_types");
     }
 
-    public static Zone getById(Long id)
+    public static IssueType getById(Long id)
     {
         return EOI.executeQueryOneResult("select * from issue_types where id=?", Arrays.asList(id));
     }

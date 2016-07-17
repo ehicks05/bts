@@ -34,6 +34,10 @@ public class Issue implements Serializable
     private Long issueTypeId;
     @Column(name = "project_id")
     private Long projectId;
+    @Column(name = "assignee_user_id")
+    private Long assigneeUserId;
+    @Column(name = "reporter_user_id")
+    private Long reporterUserId;
 
     @Column(name = "severity")
     private String severity;
@@ -93,6 +97,21 @@ public class Issue implements Serializable
     public Zone getZone()
     {
         return Zone.getById(zoneId);
+    }
+
+    public IssueType getIssueType()
+    {
+        return IssueType.getById(issueTypeId);
+    }
+
+    public User getAssignee()
+    {
+        return User.getByUserId(assigneeUserId);
+    }
+
+    public User getReporter()
+    {
+        return User.getByUserId(reporterUserId);
     }
 
     // -------- Getters / Setters ----------
@@ -166,6 +185,26 @@ public class Issue implements Serializable
     public void setProjectId(Long projectId)
     {
         this.projectId = projectId;
+    }
+
+    public Long getAssigneeUserId()
+    {
+        return assigneeUserId;
+    }
+
+    public void setAssigneeUserId(Long assigneeUserId)
+    {
+        this.assigneeUserId = assigneeUserId;
+    }
+
+    public Long getReporterUserId()
+    {
+        return reporterUserId;
+    }
+
+    public void setReporterUserId(Long reporterUserId)
+    {
+        this.reporterUserId = reporterUserId;
     }
 
     public String getSeverity()

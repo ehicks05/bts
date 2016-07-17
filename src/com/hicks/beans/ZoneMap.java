@@ -1,6 +1,5 @@
 package com.hicks.beans;
 
-import com.hicks.UserSession;
 import net.ehicks.eoi.EOI;
 
 import javax.persistence.*;

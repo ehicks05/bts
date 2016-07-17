@@ -23,7 +23,7 @@ import java.util.List;
 @WebServlet(value = "/view", loadOnStartup = 1)
 public class Controller extends HttpServlet
 {
-    private static final boolean DEBUG = false;
+    private static final int DEBUG_LEVEL = 1;
     private static final boolean DROP_TABLES = true;
     private static final boolean CREATE_TABLES = true;
 
@@ -35,6 +35,7 @@ public class Controller extends HttpServlet
 
         EOI.init("jdbc:h2:~/bts;TRACE_LEVEL_FILE=1;CACHE_SIZE=131072;");
         SystemInfo.setServletContext(getServletContext());
+        SystemInfo.setDebugLevel(DEBUG_LEVEL);
 
         long subTaskStart = System.currentTimeMillis();
         DBMap.loadDbMaps(getServletContext().getRealPath("/WEB-INF/classes/com/hicks/beans"), "com.hicks.beans");
@@ -48,7 +49,7 @@ public class Controller extends HttpServlet
 
         createDemoData();
 
-        if (DEBUG)
+        if (DEBUG_LEVEL > 1)
             for (String argument : ManagementFactory.getRuntimeMXBean().getInputArguments())
                 System.out.println(argument);
 
@@ -112,16 +113,20 @@ public class Controller extends HttpServlet
                     "<br><br>" +
                     "Suspendisse consectetur augue dolor, et dignissim libero dapibus non. Nulla accumsan sollicitudin hendrerit. Aliquam ex eros, volutpat ac lobortis id, aliquet quis odio. Curabitur vel suscipit lorem. Sed a felis justo. Phasellus lacinia lorem eget sem venenatis dapibus. Nulla facilisi. Donec finibus urna sit amet dui porttitor, non laoreet enim luctus. Mauris luctus, tellus vitae tincidunt congue, purus dui faucibus eros, sit amet venenatis lectus orci eget felis. Maecenas tempus, urna nec varius bibendum, ligula libero egestas sapien, et varius eros odio ut libero. Nullam scelerisque consectetur purus, a auctor dui pharetra ac. Sed congue vel risus non bibendum.");
             issue.setProjectId(1L);
+            issue.setZoneId(1L);
+            issue.setAssigneeUserId(2L);
+            issue.setIssueTypeId(1L);
             issue.setCreatedOn(new Date());
-            EOI.insert(issue);
             EOI.insert(issue);
 
             issue = new Issue();
             issue.setTitle("We Would Like This New Thing");
             issue.setDescription("Aliquam nec rhoncus lorem. Curabitur maximus ligula lectus, id fermentum mauris tempus nec. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed vel neque accumsan, sodales velit sed, gravida ipsum. Aliquam erat volutpat. Fusce et nulla dui. Nulla congue dolor vitae nulla imperdiet scelerisque. In iaculis dapibus dolor, id tempus erat sagittis a. Vivamus sed facilisis leo, vel consectetur libero. Pellentesque quis faucibus nisl, in lobortis justo. Donec id quam consectetur, euismod ex nec, porttitor mauris. Quisque sollicitudin arcu nec ex vehicula, quis tempus nibh imperdiet. Vestibulum cursus dui ut diam interdum, eu cursus justo hendrerit. Aliquam molestie dui ex, eu eleifend ipsum pulvinar ut. Mauris mollis, justo at finibus porttitor, tortor diam porttitor lectus, eget varius augue ex at arcu. Maecenas sit amet tellus accumsan, feugiat ligula in, egestas nisl.");
             issue.setProjectId(2L);
+            issue.setZoneId(2L);
+            issue.setAssigneeUserId(1L);
+            issue.setIssueTypeId(2L);
             issue.setCreatedOn(new Date());
-            EOI.insert(issue);
             EOI.insert(issue);
         }
 
@@ -189,6 +194,15 @@ public class Controller extends HttpServlet
             comment.setCreatedOn(new Date());
             comment.setContent("OK AWESOME TO HEAR SO.");
             EOI.insert(comment);
+        }
+
+        List<WatcherMap> watcherMaps = WatcherMap.getAll();
+        if (watcherMaps.size() == 0)
+        {
+            WatcherMap watcherMap = new WatcherMap();
+            watcherMap.setUserId(2L);
+            watcherMap.setIssueId(2L);
+            EOI.insert(watcherMap);
         }
     }
 
@@ -286,7 +300,8 @@ public class Controller extends HttpServlet
             dispatcher.forward(request, response);
         }
 
-        System.out.println((System.currentTimeMillis() - start) + " ms for last request " + request.getQueryString());
+        if (DEBUG_LEVEL > 1)
+            System.out.println((System.currentTimeMillis() - start) + " ms for last request " + request.getQueryString());
     }
 
     private UserSession createSession(HttpServletRequest request)
