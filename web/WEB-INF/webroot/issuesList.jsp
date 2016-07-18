@@ -62,87 +62,96 @@
 <body onload="initHeader();">
 
 <jsp:include page="header.jsp"/>
-<br>
 
-<form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&action=search">
-    <input type="hidden" id="fldRating" name="fldRating">
-    <input type="hidden" name="sortColumn" id="sortColumn" value="${searchResult.sortColumn}"/>
-    <input type="hidden" name="sortDirection" id="sortDirection" value="${searchResult.sortDirection}"/>
-    <input type="hidden" name="page" id="page" value="${searchResult.page}"/>
-    <input type="hidden" name="resetPage" id="resetPage"/>
+<div class="mdl-grid">
+    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-shadow--2dp">
+        <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&action=search">
+            <input type="hidden" id="fldRating" name="fldRating">
+            <input type="hidden" name="sortColumn" id="sortColumn" value="${searchResult.sortColumn}"/>
+            <input type="hidden" name="sortDirection" id="sortDirection" value="${searchResult.sortDirection}"/>
+            <input type="hidden" name="page" id="page" value="${searchResult.page}"/>
+            <input type="hidden" name="resetPage" id="resetPage"/>
 
-    <table style="margin: 0 auto" class="table">
-        <tr>
-            <td colspan="4">
-                <h2 style="text-align: center;margin: 0;">Search for Issues</h2>
-            </td>
-        </tr>
-        <tr>
-            <td class="alignright"><label for="id">ID:</label></td>
-            <td colspan="3"><input id="id" name="id" type="text" size="20" maxlength="32" value="${issuesForm.id}"></td>
-        </tr>
-        <tr>
-            <td class="alignright"><label for="title">Title:</label></td>
-            <td colspan="3"><input id="title" name="title" type="text" size="20" maxlength="32" value="${issuesForm.title}"></td>
-        </tr>
-        <tr>
-            <td class="alignright"><label for="description">Description:</label></td>
-            <td colspan="3"><input id="description" name="description" type="text" size="20" maxlength="32" value="${issuesForm.description}"></td>
-        </tr>
+            <div class="mdl-card__title"><h5>Search for Issues</h5></div>
 
-        <tr><td colspan="4" style="text-align: center"><input type="submit" value="Search" class="btn btn-primary" onclick="resetPagination();"/></td></tr>
-        <tr><td colspan="4" style="text-align: center"><span>${searchResult.size} Results</span></td></tr>
-    </table>
-</form>
-<br>
-<table id="filmTable" style="margin: 0 auto" class="list">
-    <thead>
-    <jsp:include page="inc_paginate.jsp"/>
-    <tr class="listheading">
-        <td></td>
-        <ct:sortableCell code="id" label="ID" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
-        <ct:sortableCell code="title" label="Title" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
-        <%--<ct:sortableCell code="description" label="Description" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>--%>
-        <ct:sortableCell code="createdOn" label="Created" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
-        <ct:sortableCell code="lastUpdatedOn" label="Updated" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
-    </tr>
-    </thead>
+            <div class="mdl-card__supporting-text">
 
-    <tbody id="myTBody">
-    <c:set var="count" value="${1 + ((searchResult.page - 1) * 100)}"/>
-    <c:set var="rowStyle" value="listrowodd"/>
-    <c:set var="rowToggle" value="${true}"/>
-    <c:forEach var="issue" items="${searchResult.searchResults}">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="id" name="id" value="${issuesForm.id}">
+                    <label class="mdl-textfield__label" for="id">ID</label>
+                </div>
 
-        <tr class="${rowStyle}">
-            <td class="alignright"><fmt:formatNumber value="${count}" pattern="#,###"/></td>
-            <td>
-                <a href="${pageContext.request.contextPath}/view?tab2=issue&action=form&issueId=${issue.id}">
-                    ${issue.id}
-                </a>
-            </td>
-            <td>
-                <a href="${pageContext.request.contextPath}/view?tab2=issue&action=form&issueId=${issue.id}">
-                    ${issue.title}
-                </a>
-            </td>
-            <%--<td class="alignright">${fn:substring(issue.description, 0, 160)}</td>--%>
-            <td class="alignright"><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yyyy" /></td>
-            <td class="alignright"><fmt:formatDate value="${issue.lastUpdatedOn}" pattern="dd/MMM/yyyy" /></td>
-        </tr>
+                <br>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="title" name="title" value="${issuesForm.title}">
+                    <label class="mdl-textfield__label" for="title">Title</label>
+                </div>
 
-        <c:if test="${rowToggle}"><c:set var="rowStyle" value="listroweven"/></c:if>
-        <c:if test="${!rowToggle}"><c:set var="rowStyle" value="listrowodd"/></c:if>
-        <c:set var="rowToggle" value="${!rowToggle}"/>
-        <c:set var="count" value="${count + 1}"/>
-    </c:forEach>
-    </tbody>
+                <br>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="description" name="description" value="${issuesForm.description}">
+                    <label class="mdl-textfield__label" for="description">Description</label>
+                </div>
+            </div>
+            <div class="mdl-card__actions">
+                <input type="submit" value="Search" class="mdl-button mdl-js-button mdl-button--raised" onclick="resetPagination();" />
+            </div>
+        </form>
+    </div>
 
-    <c:if test="${empty searchResult.searchResults}">
-        <tr><td colspan="100">-</td></tr>
-    </c:if>
-    <jsp:include page="inc_paginate.jsp"/>
-</table>
+    <br>
+    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-shadow--2dp">
+        <div class="mdl-card__title"><h5>Found ${searchResult.size} Issues</h5></div>
+
+        <table id="filmTable" style="width:100%;margin: 0 auto" class="list">
+            <thead>
+            <tr class="listheading">
+                <%--<td></td>--%>
+                <ct:sortableCell code="id" label="ID" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
+                <ct:sortableCell code="title" label="Title" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
+                <ct:sortableCell code="createdOn" label="Created" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
+                <ct:sortableCell code="lastUpdatedOn" label="Updated" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
+            </tr>
+            </thead>
+
+            <tbody id="myTBody">
+            <c:set var="count" value="${1 + ((searchResult.page - 1) * 100)}"/>
+            <c:set var="rowStyle" value="listrowodd"/>
+            <c:set var="rowToggle" value="${true}"/>
+            <c:forEach var="issue" items="${searchResult.searchResults}">
+
+                <tr class="${rowStyle}">
+                    <%--<td class="alignright"><fmt:formatNumber value="${count}" pattern="#,###"/></td>--%>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/view?tab2=issue&action=form&issueId=${issue.id}">
+                                ${issue.id}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/view?tab2=issue&action=form&issueId=${issue.id}">
+                                ${issue.title}
+                        </a>
+                    </td>
+                        <%--<td class="alignright">${fn:substring(issue.description, 0, 160)}</td>--%>
+                    <td class="alignright"><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yy" /></td>
+                    <td class="alignright"><fmt:formatDate value="${issue.lastUpdatedOn}" pattern="dd/MMM/yy" /></td>
+                </tr>
+
+                <c:if test="${rowToggle}"><c:set var="rowStyle" value="listroweven"/></c:if>
+                <c:if test="${!rowToggle}"><c:set var="rowStyle" value="listrowodd"/></c:if>
+                <c:set var="rowToggle" value="${!rowToggle}"/>
+                <c:set var="count" value="${count + 1}"/>
+            </c:forEach>
+            </tbody>
+
+            <c:if test="${empty searchResult.searchResults}">
+                <tr><td colspan="100">-</td></tr>
+            </c:if>
+            <jsp:include page="inc_paginate.jsp"/>
+        </table>
+    </div>
+</div>
+
 
 <jsp:include page="footer.jsp"/>
 </body>

@@ -16,39 +16,34 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IssuesHandler
+public class UsersHandler
 {
-    public static String showIssues(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    public static String showUsers(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
-        SearchResult searchResult = (SearchResult) request.getSession().getAttribute("searchResult");
-        if (searchResult == null)
-        {
-            // set some defaults
-            IssuesForm issuesForm = new IssuesForm("", "", "", "", "", 0L, 0L);
-            request.getSession().setAttribute("issuesForm", issuesForm);
+//        SearchResult searchResult = (SearchResult) request.getSession().getAttribute("searchResult");
+//        if (searchResult == null)
+//        {
+//            // set some defaults
+//            IssuesForm issuesForm = new IssuesForm("", "", "", "", "", 0L, 0L);
+//            request.getSession().setAttribute("issuesForm", issuesForm);
+//
+//            searchResult = performSearch(request, issuesForm);
+//            request.getSession().setAttribute("searchResult", searchResult);
+//        }
 
-            searchResult = performSearch(request, issuesForm);
-            request.getSession().setAttribute("searchResult", searchResult);
-        }
+        request.setAttribute("users", User.getAllUsers());
 
-        request.setAttribute("uniqueLanguages", null);
-        request.setAttribute("uniqueGenres", null);
-
-        return "/WEB-INF/webroot/issuesList.jsp";
+        return "/WEB-INF/webroot/usersList.jsp";
     }
 
-    public static String showModifyIssue(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    public static String showModifyUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
-        Long issueId = Common.stringToLong(request.getParameter("issueId"));
-        Issue issue = Issue.getById(issueId);
+        Long userId = Common.stringToLong(request.getParameter("userId"));
+        User user = User.getByUserId(userId);
 
-        request.setAttribute("issue", issue);
-        List<Comment> comments = Comment.getByIssueId(issueId);
-        request.setAttribute("comments", comments);
-        List<User> watchers = WatcherMap.getWatchersForIssue(issueId);
-        request.setAttribute("watchers", watchers);
+        request.setAttribute("user", user);
 
-        return "/WEB-INF/webroot/issueForm.jsp";
+        return "/WEB-INF/webroot/userForm.jsp";
     }
 
     public static void createIssue(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
@@ -70,34 +65,19 @@ public class IssuesHandler
 
     public static void updateIssue(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
-        Long issueId        = Common.stringToLong(request.getParameter("issueId"));
-        String fieldName    = Common.getSafeString(request.getParameter("fldFieldName"));
-        String fieldValue   = Common.getSafeString(request.getParameter("fldFieldValue"));
+        Long projectId      = Common.stringToLong(request.getParameter("fldProject"));
+        Long zoneId         = Common.stringToLong(request.getParameter("fldZone"));
+        Long issueTypeId    = Common.stringToLong(request.getParameter("fldIssueType"));
+        String title        = Common.getSafeString(request.getParameter("fldTitle"));
 
-        Long projectId      = !fieldName.equals("fldProject") ? 0 : Common.stringToLong(fieldValue);
-        Long issueTypeId    = !fieldName.equals("fldIssueType") ? 0 : Common.stringToLong(fieldValue);
-        String status       = !fieldName.equals("fldStatus") ? "" : Common.getSafeString(fieldValue);
-        Long severityId     = !fieldName.equals("fldSeverity") ? 0 : Common.stringToLong(fieldValue);
-        Long zoneId         = !fieldName.equals("fldZone") ? 0 : Common.stringToLong(fieldValue);
-        String title        = !fieldName.equals("fldTitle") ? "" : Common.getSafeString(fieldValue);
-        String description  = !fieldName.equals("fldDescription") ? "" : Common.getSafeString(fieldValue);
-        Long assigneeId     = !fieldName.equals("fldAssigneeId") ? 0 : Common.stringToLong(fieldValue);
-        Long reporterId     = !fieldName.equals("fldReporterId") ? 0 : Common.stringToLong(fieldValue);
+        Issue issue = new Issue();
+        issue.setProjectId(projectId);
+        issue.setZoneId(zoneId);
+        issue.setIssueTypeId(issueTypeId);
+        issue.setTitle(title);
+        Long newKey = EOI.insert(issue);
 
-        Issue issue = Issue.getById(issueId);
-        if (projectId != 0) issue.setProjectId(projectId);
-        if (issueTypeId != 0) issue.setIssueTypeId(issueTypeId);
-        if (status.length() != 0) issue.setStatus(status);
-        if (severityId != 0) issue.setSeverityId(severityId);
-        if (zoneId != 0) issue.setZoneId(zoneId);
-        if (title.length() != 0) issue.setTitle(title);
-        if (description.length() != 0) issue.setDescription(description);
-        if (assigneeId != 0) issue.setAssigneeUserId(assigneeId);
-        if (reporterId != 0) issue.setReporterUserId(reporterId);
-
-        EOI.update(issue);
-
-        response.getWriter().println("Updated " + issue);
+        response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + newKey);
     }
 
     public static void search(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException

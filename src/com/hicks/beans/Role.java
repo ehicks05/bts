@@ -1,7 +1,11 @@
 package com.hicks.beans;
 
+import net.ehicks.eoi.EOI;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Table(name = "bts_roles")
@@ -17,6 +21,9 @@ public class Role implements Serializable
     @SequenceGenerator(name="ROLE_SEQ", sequenceName="ROLE_SEQ", allocationSize=1)
     @Column(name = "id", updatable = false, nullable = false, columnDefinition = "bigint not null auto_increment primary key")
     private Long id;
+
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(name = "logon_id", nullable = false)
     private String logonId = "";
@@ -43,6 +50,22 @@ public class Role implements Serializable
         return roleName;
     }
 
+    // -------- Magic ----------
+    public static List<Role> getAll()
+    {
+        return EOI.executeQuery("select * from bts_roles");
+    }
+
+    public static Role getById(Long id)
+    {
+        return EOI.executeQueryOneResult("select * from bts_roles where id=?", Arrays.asList(id));
+    }
+
+    public static List<Role> getByUserId(Long userId)
+    {
+        return EOI.executeQuery("select * from bts_roles where user_id=?", Arrays.asList(userId));
+    }
+
     // -------- Getters / Setters ----------
 
     public Long getVersion()
@@ -63,6 +86,16 @@ public class Role implements Serializable
     public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public Long getUserId()
+    {
+        return userId;
+    }
+
+    public void setUserId(Long userId)
+    {
+        this.userId = userId;
     }
 
     public String getLogonId()

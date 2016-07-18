@@ -73,6 +73,16 @@ public class Comment implements Serializable
         return EOI.executeQueryOneResult("select * from comments where id=?", Arrays.asList(id));
     }
 
+    public static List<Comment> getByCreatedByUserId(Long createdByUserId)
+    {
+        return EOI.executeQuery("select * from comments where created_by_user_id=?", Arrays.asList(createdByUserId));
+    }
+
+    public Issue getIssue()
+    {
+        return Issue.getById(issueId);
+    }
+
     public User getCreatedBy ()
     {
         return User.getByUserId(createdByUserId);

@@ -6,20 +6,25 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Title</title>
+    <title>BTS</title>
     <jsp:include page="inc_header.jsp"/>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<br>
-<div align="center">
-    <div style="padding:10px; max-width: 400px; background-color: white;">
-        Sorry, login failed!
-        <br><br>
-        <input type="button" class="btn btn-primary" value="Retry" onclick="location.href='${pageContext.request.contextPath}/view?tab1=main&action=form';">
+
+<div class="mdl-grid">
+    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-shadow--2dp">
+
+        <div class="mdl-card__title"><h5>Sorry, login failed!</h5></div>
+
+        <div class="mdl-card__actions">
+            <input type="submit" value="Back" class="mdl-button mdl-js-button mdl-button--raised" onclick="location.href='${pageContext.request.contextPath}/view?tab1=main&action=form';"/>
+        </div>
     </div>
 </div>
+
 </body>
 </html>

@@ -15,7 +15,7 @@
         $("#createIssueDialog").dialog("open");
     }
 </script>
-
+</div> <!-- Close the div we left open in the header -->
 <div style="display: none;">
     <div id="createIssueDialog" title="Create Issue">
         <form id="frmCreate" name="frmCreate" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=create">
@@ -53,7 +53,7 @@
                 <tr>
                     <td>Title:</td>
                     <td>
-                        <input type="text" name="fldTitle" size="20" maxlength="256" value=""/>
+                        <input type="text" name="fldTitle" size="20" maxlength="256" value="" required/>
                     </td>
                 </tr>
             </table>

@@ -29,9 +29,6 @@ public class User implements Serializable
     @Column(name = "password", nullable = false)
     private String password = "";
 
-    @Column(name = "role", nullable = false)
-    private String role = "";
-
     @Column(name = "created_on")
     @Temporal(TemporalType.DATE)
     private Date createdOn;
@@ -75,6 +72,16 @@ public class User implements Serializable
     {
         return EOI.executeQueryOneResult("select * from bts_users where id=?;", new ArrayList<>(Arrays.asList(userId)));
     }
+
+    public List<Comment> getAllComments()
+    {
+        return Comment.getByCreatedByUserId(id);
+    }
+
+    public List<Role> getAllRoles()
+    {
+        return Role.getByUserId(id);
+    }
     // -------- Getters / Setters ----------
 
     public Long getVersion()
@@ -115,16 +122,6 @@ public class User implements Serializable
     public void setPassword(String password)
     {
         this.password = password;
-    }
-
-    public String getRole()
-    {
-        return role;
-    }
-
-    public void setRole(String role)
-    {
-        this.role = role;
     }
 
     public Date getCreatedOn()

@@ -40,9 +40,13 @@ div.ui-datepicker{
 .ui-dialog {font-size: 11pt;}
 /* JQuery */
 
-/* Material Icons */
-.material-icons {color: #777;}
-/* Material Icons */
+/* Material */
+.mdl-grid {padding: 0;}
+.mdl-layout__drawer .mdl-navigation {padding-top: 8px;}
+.mdl-card__title {padding: 8px;}
+.mdl-card__supporting-text {padding: 8px;}
+/* Material */
+h1,h2,h3,h4,h5,h6 {margin: 12px 0 8px;}
 
 .sortableHeader {cursor: pointer; color: navy}
 .sortableHeaderSelected {cursor: pointer; color: white;}
