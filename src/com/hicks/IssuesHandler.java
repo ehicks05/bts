@@ -97,7 +97,7 @@ public class IssuesHandler
 
         EOI.update(issue);
 
-        response.getWriter().println("Updated " + issue);
+        response.getWriter().println("Updated " + fieldName);
     }
 
     public static void search(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException

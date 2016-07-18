@@ -31,7 +31,8 @@
                 {
                     notification.MaterialSnackbar.showSnackbar(
                             {
-                                message: 'Success: ' + data
+                                message: 'Success: ' + data,
+                                timeout: 3000
                             }
                     );
                 }
@@ -39,7 +40,8 @@
                 {
                     notification.MaterialSnackbar.showSnackbar(
                             {
-                                message: 'Failed: ' + data
+                                message: 'Failed: ' + data,
+                                timeout: 3000
                             }
                     );
                 }
