@@ -1,0 +1,24 @@
+group 'net.ehicks'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'war'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile files('C:/javalib/hicks-common.jar')
+    compile files('C:/javalib/hicks-eoi.jar')
+
+    compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.0-api', version: '1.0.1.Final'
+    compile 'javax.servlet:jstl:1.2'
+
+    providedRuntime group: 'com.h2database', name: 'h2', version: '1.4.192'
+
+    providedCompile group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.3.1'
+    providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
