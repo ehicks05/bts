@@ -120,7 +120,7 @@
                     ${comment.createdBy}
                 </a>
                 commented on
-                <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy hh:mm a"/>
+                <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy h:mm a"/>
                 <br>
                 <div class="mdl-card__supporting-text" contenteditable="true">${comment.content}</div>
             </div>

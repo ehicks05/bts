@@ -31,9 +31,6 @@ public class IssuesHandler
             request.getSession().setAttribute("searchResult", searchResult);
         }
 
-        request.setAttribute("uniqueLanguages", null);
-        request.setAttribute("uniqueGenres", null);
-
         return "/WEB-INF/webroot/issuesList.jsp";
     }
 
