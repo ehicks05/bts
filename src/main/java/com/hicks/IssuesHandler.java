@@ -1,9 +1,6 @@
 package com.hicks;
 
-import com.hicks.beans.Comment;
-import com.hicks.beans.Issue;
-import com.hicks.beans.User;
-import com.hicks.beans.WatcherMap;
+import com.hicks.beans.*;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.PSIngredients;
@@ -81,20 +78,59 @@ public class IssuesHandler
         Long assigneeId     = !fieldName.equals("fldAssigneeId") ? 0 : Common.stringToLong(fieldValue);
         Long reporterId     = !fieldName.equals("fldReporterId") ? 0 : Common.stringToLong(fieldValue);
 
+        String updateLog = "";
         Issue issue = Issue.getById(issueId);
-        if (projectId != 0) issue.setProjectId(projectId);
-        if (issueTypeId != 0) issue.setIssueTypeId(issueTypeId);
-        if (status.length() != 0) issue.setStatus(status);
-        if (severityId != 0) issue.setSeverityId(severityId);
-        if (zoneId != 0) issue.setZoneId(zoneId);
-        if (title.length() != 0) issue.setTitle(title);
-        if (description.length() != 0) issue.setDescription(description);
-        if (assigneeId != 0) issue.setAssigneeUserId(assigneeId);
-        if (reporterId != 0) issue.setReporterUserId(reporterId);
+        if (projectId != 0)
+        {
+            issue.setProjectId(projectId);
+            updateLog += "ID to " + projectId;
+        }
+        if (issueTypeId != 0)
+        {
+            issue.setIssueTypeId(issueTypeId);
+            updateLog += "Type to " + IssueType.getById(issueTypeId).getName();
+        }
+        if (status.length() != 0)
+        {
+            issue.setStatus(status);
+            updateLog += "Status to " + status;
+
+        }
+        if (severityId != 0)
+        {
+            issue.setSeverityId(severityId);
+            updateLog += "Severity to " + Severity.getById(severityId).getName();
+        }
+        if (zoneId != 0)
+        {
+            issue.setZoneId(zoneId);
+            updateLog += "Zone to " + Zone.getById(zoneId).getName();
+        }
+        if (title.length() != 0)
+        {
+            issue.setTitle(title);
+            updateLog += "Title to " + Common.limit(title, 64);
+        }
+        if (description.length() != 0)
+        {
+            issue.setDescription(description);
+            updateLog += "Description to " + Common.limit(description, 64);
+        }
+        if (assigneeId != 0)
+        {
+            issue.setAssigneeUserId(assigneeId);
+            updateLog += "Assignee to " + IssueType.getById(assigneeId).getName();
+        }
+        if (reporterId != 0)
+        {
+            issue.setReporterUserId(reporterId);
+            updateLog += "Reporter to " + IssueType.getById(reporterId).getName();
+        }
 
         EOI.update(issue);
 
-        response.getWriter().println("Updated " + fieldName);
+        String toastMessage = "Updated " + updateLog;
+        response.getWriter().println(toastMessage);
     }
 
     public static void search(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException

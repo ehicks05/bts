@@ -1,5 +1,6 @@
 package com.hicks.beans;
 
+import com.hicks.ISelectTagSupport;
 import com.hicks.UserSession;
 import net.ehicks.eoi.EOI;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "zones")
-public class Zone implements Serializable
+public class Zone implements Serializable, ISelectTagSupport
 {
 //    @Version
 //    @Column(name = "version")
@@ -43,6 +44,18 @@ public class Zone implements Serializable
     public String toString()
     {
         return this.getClass().getSimpleName() + ":" + id.toString();
+    }
+
+    @Override
+    public String getValue()
+    {
+        return id.toString();
+    }
+
+    @Override
+    public String getText()
+    {
+        return name;
     }
 
     public static List<Zone> getAll()

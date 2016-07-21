@@ -32,7 +32,7 @@
                     notification.MaterialSnackbar.showSnackbar(
                             {
                                 message: 'Success: ' + data,
-                                timeout: 3000
+                                timeout: 2500
                             }
                     );
                 }
@@ -41,22 +41,21 @@
                     notification.MaterialSnackbar.showSnackbar(
                             {
                                 message: 'Failed: ' + data,
-                                timeout: 3000
+                                timeout: 2500
                             }
                     );
                 }
             });
         }
 
-        function enableEditMode(element)
-        {
-            $(document).on('click', '#saveButton', function(){updateIssue(element.id, element.innerHTML)});
-            $(document).on('click', '#cancelButton', function(){disableEditMode(element)});
-        }
-        function disableEditMode(element)
-        {
-
-        }
+//        function enableEditMode(element)
+//        {
+//            $(document).on('click', '#' + element.id + 'SaveButton', function(){updateIssue(element.id, element.innerHTML)});
+//        }
+//        function disableEditMode(element)
+//        {
+//
+//        }
     </script>
 
 </head>
@@ -94,7 +93,9 @@
                         <td style="padding: 0 8px;">Severity:</td>
                         <td style="padding: 0 8px;">${issue.severity.name}</td>
                         <td style="padding: 0 8px;">Zone:</td>
-                        <td style="padding: 0 8px;">${issue.zone.name}</td>
+                        <td style="padding: 0 8px;">
+                            <ct:textToSelect id="fldZone" value="${issue.zone.id}" text="${issue.zone.name}" items="${zones}"/>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -104,14 +105,16 @@
     <div class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>Description</h5></div>
 
-        <div class="mdl-card__supporting-text" contenteditable="true" id="fldDescription" onfocus="enableEditMode(this)" onblur="disableEditMode(this)">
-            ${issue.description}
-        </div>
+        <%--<div class="mdl-card__supporting-text" contenteditable="true" id="fldDescription" onfocus="enableEditMode(this)" onblur="disableEditMode(this)">--%>
+            <%--${issue.description}--%>
+        <%--</div>--%>
 
-        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="fldDescription">
-            <li class="mdl-menu__item" id="saveButton"><i class="material-icons" style="vertical-align:middle;color: green;">add</i>Save</li>
-            <li class="mdl-menu__item" id="cancelButton"><i class="material-icons" style="vertical-align:middle;color: red;">clear</i>Dismiss</li>
-        </ul>
+        <%--<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" id="fldDescriptionMenu" for="fldDescription">--%>
+            <%--<li class="mdl-menu__item" id="saveButton"><i class="material-icons" style="vertical-align:middle;color: green;">add</i>Save</li>--%>
+            <%--<li class="mdl-menu__item" id="cancelButton"><i class="material-icons" style="vertical-align:middle;color: red;">clear</i>Dismiss</li>--%>
+        <%--</ul>--%>
+
+        <ct:textToInputText id="fldDescription" text="${issue.description}"/>
 
         <div class="mdl-card__title"><h5>Activity</h5></div>
         <c:forEach var="comment" items="${comments}">
@@ -168,83 +171,6 @@
         </div>
     </div>
 </div>
-
-<%--<table class="list">--%>
-    <%--<tr>--%>
-        <%--<td colspan="2">--%>
-            <%--<h2 style="margin: 0;">${issue.title}</h2>--%>
-            <%--<h5 style="margin: 0;">${issue.project.name} ${issue.project.prefix}-${issue.id}</h5>--%>
-            <%--<h5 style="margin: 0;">${issue.zone.name}</h5>--%>
-            <%--<br>--%>
-        <%--</td>--%>
-    <%--</tr>--%>
-    <%--<tr>--%>
-        <%--<td style="width: 66%;">--%>
-
-            <%--<h5>Details</h5>--%>
-
-            <%--<form name="frmSave" id="frmSave" method="post" action="${pageContext.request.contextPath}/view?tab1=modify&action=save">--%>
-                <%--<table class="list">--%>
-                    <%--<tr>--%>
-                        <%--<td style="padding: 0 20px;">Type:</td>--%>
-                        <%--<td style="padding: 0 20px;">${issue.issueType.name}</td>--%>
-                        <%--<td style="padding: 0 20px;">Status:</td>--%>
-                        <%--<td style="padding: 0 20px;">${issue.status}</td>--%>
-                    <%--</tr>--%>
-                    <%--<tr>--%>
-                        <%--<td style="padding: 0 20px;">Created On:</td>--%>
-                        <%--<td style="padding: 0 20px;"><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yy hh:mm a"/></td>--%>
-                        <%--<td style="padding: 0 20px;">Last Updated:</td>--%>
-                        <%--<td style="padding: 0 20px;"><fmt:formatDate value="${issue.lastUpdatedOn}" pattern="dd/MMM/yy hh:mm a"/></td>--%>
-                    <%--</tr>--%>
-                    <%--<tr>--%>
-                        <%--<td style="padding: 0 20px;">Severity:</td>--%>
-                        <%--<td style="padding: 0 20px;">${issue.severity.name}</td>--%>
-                        <%--<td style="padding: 0 20px;"></td>--%>
-                        <%--<td style="padding: 0 20px;"></td>--%>
-                    <%--</tr>--%>
-                <%--</table>--%>
-
-                <%--<h5>Description</h5>--%>
-                <%--<div style="padding: 0 20px;">${issue.description}</div>--%>
-            <%--</form>--%>
-
-            <%--<br>--%>
-            <%--<h5>Activity</h5>--%>
-            <%--<c:forEach var="comment" items="${comments}">--%>
-                <%--<div style="padding: 0 20px;">--%>
-                    <%--${comment.createdBy} commented on <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy hh:mm a"/>--%>
-                    <%--<br>--%>
-                    <%--${comment.content}--%>
-                <%--</div>--%>
-                <%--<hr>--%>
-            <%--</c:forEach>--%>
-            <%--<br>--%>
-            <%--<input type="button" value="Comment" class="btn btn-default" onclick="showAddComment();"/>--%>
-        <%--</td>--%>
-        <%--<td style="width: 33%;vertical-align: top">--%>
-            <%--<h5>People</h5>--%>
-            <%--<table class="list">--%>
-                <%--<tr>--%>
-                    <%--<td style="padding: 0 20px;">Assignee:</td>--%>
-                    <%--<td style="padding: 0 20px;">${issue.assignee}</td>--%>
-                <%--</tr>--%>
-                <%--<tr>--%>
-                    <%--<td style="padding: 0 20px;">Reporter:</td>--%>
-                    <%--<td style="padding: 0 20px;">${issue.reporter}</td>--%>
-                <%--</tr>--%>
-                <%--<tr>--%>
-                    <%--<td style="padding: 0 20px;">Watchers:</td>--%>
-                    <%--<td style="padding: 0 20px;">--%>
-                        <%--<c:forEach var="watcher" items="${watchers}">--%>
-                            <%--${watcher.logonId}<br>--%>
-                        <%--</c:forEach>--%>
-                    <%--</td>--%>
-                <%--</tr>--%>
-            <%--</table>--%>
-        <%--</td>--%>
-    <%--</tr>--%>
-<%--</table>--%>
 
 <div aria-live="assertive" aria-atomic="true" aria-relevant="text" class="mdl-snackbar mdl-js-snackbar">
     <div class="mdl-snackbar__text"></div>

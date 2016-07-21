@@ -8,6 +8,11 @@
 <link rel="stylesheet" href="../../styles/jquery-ui.min.css" />
 <%-- JQuery --%>
 
+<%-- Select2 --%>
+<script src="../../js/select2/select2.full.min.js"></script>
+<link rel="stylesheet" href="../../js/select2/select2.min.css" />
+<%-- Select2 --%>
+
 <%-- MDL --%>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-red.min.css">
