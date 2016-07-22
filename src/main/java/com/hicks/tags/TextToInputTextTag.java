@@ -37,6 +37,7 @@ public class TextToInputTextTag extends TagSupport
                     "    </script>";
         }
 
+        String menuId = id + "Menu";
         String saveButtonId = id + "SaveButton";
         String cancelButtonId = id + "CancelButton";
         output += "" +
@@ -44,7 +45,7 @@ public class TextToInputTextTag extends TagSupport
                 "            " + text + "\n" +
                 "        </div>\n" +
                 "\n" +
-                "        <ul class=\"mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect\" id=\"fldDescriptionMenu\" for=\"fldDescription\">\n" +
+                "        <ul class=\"mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect\" id=\"" + menuId + "\" for=\"" + id + "\">\n" +
                 "            <li class=\"mdl-menu__item\" id=\"" + saveButtonId + "\"><i class=\"material-icons\" style=\"vertical-align:middle;color: green;\">add</i>Save</li>\n" +
                 "            <li class=\"mdl-menu__item\" id=\"" + cancelButtonId + "\"><i class=\"material-icons\" style=\"vertical-align:middle;color: red;\">clear</i>Dismiss</li>\n" +
                 "        </ul>";

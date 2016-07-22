@@ -1,5 +1,6 @@
 package com.hicks.beans;
 
+import com.hicks.ISelectTagSupport;
 import net.ehicks.eoi.EOI;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "severities")
-public class Severity implements Serializable
+public class Severity implements Serializable, ISelectTagSupport
 {
 //    @Version
 //    @Column(name = "version")
@@ -42,6 +43,18 @@ public class Severity implements Serializable
     public String toString()
     {
         return this.getClass().getSimpleName() + ":" + id.toString();
+    }
+
+    @Override
+    public String getValue()
+    {
+        return id.toString();
+    }
+
+    @Override
+    public String getText()
+    {
+        return name;
     }
 
     public static List<Severity> getAll()

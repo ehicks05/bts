@@ -142,6 +142,14 @@ public class DefaultDataLoader
             zone = new Zone();
             zone.setName("Bridgewater");
             EOI.insert(zone);
+
+            zone = new Zone();
+            zone.setName("Califon");
+            EOI.insert(zone);
+
+            zone = new Zone();
+            zone.setName("Flemington");
+            EOI.insert(zone);
         }
 
         List<ZoneMap> zoneMaps = ZoneMap.getAll();

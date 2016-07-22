@@ -79,7 +79,9 @@
                 <table>
                     <tr>
                         <td style="padding: 0 8px;">Type:</td>
-                        <td style="padding: 0 8px;">${issue.issueType.name}</td>
+                        <td style="padding: 0 8px;">
+                            <ct:textToSelect id="fldIssueType" value="${issue.issueType.id}" text="${issue.issueType.name}" items="${issueTypes}"/>
+                        </td>
                         <td style="padding: 0 8px;">Status:</td>
                         <td style="padding: 0 8px;">${issue.status}</td>
                     </tr>
@@ -91,7 +93,9 @@
                     </tr>
                     <tr>
                         <td style="padding: 0 8px;">Severity:</td>
-                        <td style="padding: 0 8px;">${issue.severity.name}</td>
+                        <td style="padding: 0 8px;">
+                            <ct:textToSelect id="fldSeverity" value="${issue.severity.id}" text="${issue.severity.name}" items="${severities}"/>
+                        </td>
                         <td style="padding: 0 8px;">Zone:</td>
                         <td style="padding: 0 8px;">
                             <ct:textToSelect id="fldZone" value="${issue.zone.id}" text="${issue.zone.name}" items="${zones}"/>
@@ -105,15 +109,6 @@
     <div class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>Description</h5></div>
 
-        <%--<div class="mdl-card__supporting-text" contenteditable="true" id="fldDescription" onfocus="enableEditMode(this)" onblur="disableEditMode(this)">--%>
-            <%--${issue.description}--%>
-        <%--</div>--%>
-
-        <%--<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" id="fldDescriptionMenu" for="fldDescription">--%>
-            <%--<li class="mdl-menu__item" id="saveButton"><i class="material-icons" style="vertical-align:middle;color: green;">add</i>Save</li>--%>
-            <%--<li class="mdl-menu__item" id="cancelButton"><i class="material-icons" style="vertical-align:middle;color: red;">clear</i>Dismiss</li>--%>
-        <%--</ul>--%>
-
         <ct:textToInputText id="fldDescription" text="${issue.description}"/>
 
         <div class="mdl-card__title"><h5>Activity</h5></div>
@@ -125,7 +120,10 @@
                 commented on
                 <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy h:mm a"/>
                 <br>
-                <div class="mdl-card__supporting-text" contenteditable="true">${comment.content}</div>
+                <div class="mdl-card__supporting-text" contenteditable="true">
+                    <%--${comment.content}--%>
+                    <ct:textToInputText id="${comment.id}fldContent" text="${comment.content}"/>
+                </div>
             </div>
             <hr>
         </c:forEach>

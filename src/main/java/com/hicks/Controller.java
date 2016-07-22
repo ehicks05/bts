@@ -104,6 +104,7 @@ public class Controller extends HttpServlet
         request.setAttribute("zones", Zone.getAllForUser(userSession));
         request.setAttribute("projects", Project.getAll());
         request.setAttribute("issueTypes", IssueType.getAll());
+        request.setAttribute("severities", Severity.getAll());
 
         String tab1   = request.getParameter("tab1") == null ? "main" : request.getParameter("tab1");
         String tab2   = request.getParameter("tab2") == null ? "dash" : request.getParameter("tab2");

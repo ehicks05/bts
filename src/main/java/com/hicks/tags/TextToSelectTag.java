@@ -28,12 +28,7 @@ public class TextToSelectTag extends TagSupport
         // print js script
         if (count == 1)
         {
-            output += "        <script type=\"text/javascript\">\n" +
-                    "            $(document).ready(function ()\n" +
-                    "            {\n" +
-                    "//                $('#fldZone').hide();\n" +
-                    "            });\n" +
-                    "\n" +
+            output += "\n        <script type=\"text/javascript\">\n" +
                     "            function select2Enable(textId, selectId)\n" +
                     "            {\n" +
                     "                var currentText = $('#' + textId).text();\n" +

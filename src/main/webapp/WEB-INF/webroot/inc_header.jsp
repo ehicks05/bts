@@ -19,6 +19,6 @@
 <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
 <%-- MDL --%>
 
-<link rel="shortcut icon" href="../../images/calendar.gif">
+<link rel="shortcut icon" href="../../images/bug_16.png">
 <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" type="text/css" href="../../styles/cinemang.css" media="screen" />
