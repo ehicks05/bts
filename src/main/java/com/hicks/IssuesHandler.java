@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class IssuesHandler
@@ -127,6 +128,11 @@ public class IssuesHandler
             updateLog += "Reporter to " + IssueType.getById(reporterId).getName();
         }
 
+        if (updateLog.length() > 0)
+        {
+            issue.setLastUpdatedOn(new Date());
+        }
+
         EOI.update(issue);
 
         String toastMessage = "Updated " + updateLog;
@@ -189,6 +195,53 @@ public class IssuesHandler
         List<Issue> filteredIssues = EOI.executeQuery(filmQuery.query, filmQuery.args);
 
         return new SearchResult(page, filteredIssues, sortColumn, sortDirection, resultSize, resultsPerPage);
+    }
+
+    public static void addComment(HttpServletRequest request,  HttpServletResponse response) throws IOException, ParseException
+    {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+
+        Long issueId    = Common.stringToLong(request.getParameter("issueId"));
+        Long zoneId     = Common.stringToLong(request.getParameter("fldZone"));
+        String content  = Common.getSafeString(request.getParameter("fldContent"));
+
+        Comment comment = new Comment();
+        comment.setIssueId(issueId);
+        comment.setZoneId(zoneId);
+        comment.setCreatedByUserId(userSession.getUserId());
+        comment.setCreatedOn(new Date());
+        comment.setContent(content);
+        EOI.insert(comment);
+
+        response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + issueId);
+    }
+
+
+    public static void updateComment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    {
+        Long commentId        = Common.stringToLong(request.getParameter("commentId"));
+        String fieldName    = Common.getSafeString(request.getParameter("fldFieldName"));
+        String fieldValue   = Common.getSafeString(request.getParameter("fldFieldValue"));
+
+        String content       = !fieldName.equals("fldContent" + commentId) ? "" : Common.getSafeString(fieldValue);
+
+        String updateLog = "";
+        Comment comment = Comment.getById(commentId);
+        if (content.length() != 0)
+        {
+            comment.setContent(content);
+            updateLog += "Content to " + Common.limit(content, 64);
+        }
+
+        if (updateLog.length() > 0)
+        {
+            comment.setLastUpdatedOn(new Date());
+        }
+
+        EOI.update(comment);
+
+        String toastMessage = "Updated " + updateLog;
+        response.getWriter().println(toastMessage);
     }
 
     private static PSIngredients buildFilmSQLQuery(IssuesForm issuesForm, String sortColumn, String sortDirection, String page, long resultsPerPage)

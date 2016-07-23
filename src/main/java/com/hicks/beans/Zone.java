@@ -68,7 +68,7 @@ public class Zone implements Serializable, ISelectTagSupport
         List<Zone> zones = new ArrayList<>();
         List<ZoneMap> zoneMaps = ZoneMap.getByUserId(userSession.getUserId());
         for (ZoneMap zoneMap : zoneMaps)
-            zones.add(Zone.getById(zoneMap.getId()));
+            zones.add(Zone.getById(zoneMap.getZoneId()));
 
         return zones;
     }

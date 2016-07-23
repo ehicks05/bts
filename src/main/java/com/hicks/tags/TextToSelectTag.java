@@ -14,6 +14,7 @@ public class TextToSelectTag extends TagSupport
     private String id = "";
     private String value = "";
     private String text = "";
+    private String submitAction = "";
     private List<ISelectTagSupport> items;
 
     @Override
@@ -55,7 +56,7 @@ public class TextToSelectTag extends TagSupport
                     "                var oldText = $('#' + textId).text();\n" +
                     "                if (newText != oldText)\n" +
                     "                {\n" +
-                    "                    updateIssue(selectId, newValue);\n" +
+                    "                    update(selectId, newValue, '" + submitAction + "');\n" +
                     "                }\n" +
                     "\n" +
                     "                $('#' + textId).text(newText);\n" +
@@ -134,5 +135,15 @@ public class TextToSelectTag extends TagSupport
     public void setItems(List<ISelectTagSupport> items)
     {
         this.items = items;
+    }
+
+    public String getSubmitAction()
+    {
+        return submitAction;
+    }
+
+    public void setSubmitAction(String submitAction)
+    {
+        this.submitAction = submitAction;
     }
 }

@@ -58,6 +58,11 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <name>submitAction</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
 
     <tag>
@@ -72,6 +77,11 @@
         </attribute>
         <attribute>
             <name>text</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>submitAction</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

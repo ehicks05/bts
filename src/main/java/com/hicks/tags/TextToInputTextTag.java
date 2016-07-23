@@ -11,6 +11,7 @@ public class TextToInputTextTag extends TagSupport
 {
     private String id = "";
     private String text = "";
+    private String submitAction = "";
 
     @Override
     public int doStartTag() throws JspException
@@ -26,9 +27,9 @@ public class TextToInputTextTag extends TagSupport
         {
             output += "\n" +
                     "    <script>\n" +
-                    "        function enableEditMode(element)\n" +
+                    "        function enableEditMode(element, url)\n" +
                     "        {\n" +
-                    "            $(document).on('click', '#' + element.id + 'SaveButton', function(){updateIssue(element.id, element.innerHTML)});\n" +
+                    "            $(document).on('click', '#' + element.id + 'SaveButton', function(){update(element.id, element.innerHTML, url)});\n" +
                     "        }\n" +
                     "        function disableEditMode(element)\n" +
                     "        {\n" +
@@ -41,7 +42,7 @@ public class TextToInputTextTag extends TagSupport
         String saveButtonId = id + "SaveButton";
         String cancelButtonId = id + "CancelButton";
         output += "" +
-                "        <div class=\"mdl-card__supporting-text\" contenteditable=\"true\" id=\"" + id + "\" onfocus=\"enableEditMode(this)\" onblur=\"disableEditMode(this)\">\n" +
+                "        <div class=\"mdl-card__supporting-text\" contenteditable=\"true\" id=\"" + id + "\" onfocus=\"enableEditMode(this, '" + submitAction + "')\" onblur=\"disableEditMode(this)\">\n" +
                 "            " + text + "\n" +
                 "        </div>\n" +
                 "\n" +
@@ -88,5 +89,15 @@ public class TextToInputTextTag extends TagSupport
     public void setText(String text)
     {
         this.text = text;
+    }
+
+    public String getSubmitAction()
+    {
+        return submitAction;
+    }
+
+    public void setSubmitAction(String submitAction)
+    {
+        this.submitAction = submitAction;
     }
 }

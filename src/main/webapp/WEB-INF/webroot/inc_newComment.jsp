@@ -1,0 +1,6 @@
+  '<form class="mdl-card__supporting-text" id="frmNewComment" name="frmNewComment" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=addComment&issueId=${issue.id}">'
++ '    <div style="padding: 0 16px;" class="mdl-textfield mdl-js-textfield">                                                                                                                        '
++ '        <textarea id="fldContent" name="fldContent" class="mdl-textfield__input" type="text" rows= "3"></textarea>                                                      '
++ '        <label class="mdl-textfield__label" for="fldContent"></label>                                                                                      '
++ '    </div>                                                                                                                                                              '
++ '</form>                                                                                                                                                                 '

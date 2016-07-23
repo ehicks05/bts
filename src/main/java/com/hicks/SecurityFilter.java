@@ -15,38 +15,45 @@ public class SecurityFilter implements Filter
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
     {
-        HttpServletRequest  request  = (HttpServletRequest) servletRequest;
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
-
-        boolean isResource = false;
-        String servletPath = request.getServletPath();
-
-        if (servletPath.startsWith("/images/"))     isResource = true;
-        if (servletPath.startsWith("/styles/"))     isResource = true;
-        if (servletPath.endsWith(".css"))           isResource = true;
-        if (servletPath.endsWith(".ttf"))           isResource = true;
-        if (servletPath.endsWith(".jpg"))           isResource = true;
-        if (servletPath.endsWith(".gif"))           isResource = true;
-        if (servletPath.endsWith(".js"))            isResource = true;
-        if (servletPath.endsWith(".html"))            isResource = true;
-
-        if (!isResource)
+        try
         {
-            if (!servletPath.startsWith("/view"))
+            HttpServletRequest  request  = (HttpServletRequest) servletRequest;
+            HttpServletResponse response = (HttpServletResponse) servletResponse;
+
+            boolean isResource = false;
+            String servletPath = request.getServletPath();
+
+            if (servletPath.startsWith("/images/"))     isResource = true;
+            if (servletPath.startsWith("/styles/"))     isResource = true;
+            if (servletPath.endsWith(".css"))           isResource = true;
+            if (servletPath.endsWith(".ttf"))           isResource = true;
+            if (servletPath.endsWith(".jpg"))           isResource = true;
+            if (servletPath.endsWith(".gif"))           isResource = true;
+            if (servletPath.endsWith(".js"))            isResource = true;
+            if (servletPath.endsWith(".html"))            isResource = true;
+
+            if (!isResource)
             {
-                String newURL = request.getScheme() + "://" + request.getServerName()  + ":" + request.getServerPort() + "/" + request.getContextPath();
-                response.sendRedirect(newURL + "view?action=form");
-                return;
-            }
+                if (!servletPath.startsWith("/view"))
+                {
+                    String newURL = request.getScheme() + "://" + request.getServerName()  + ":" + request.getServerPort() + "/" + request.getContextPath();
+                    response.sendRedirect(newURL + "view?action=form");
+                    return;
+                }
 
-            filterChain.doFilter(request, response);
+                filterChain.doFilter(request, response);
+            }
+            else
+            {
+                // Deal with resources such as /images and /styles
+                filterChain.doFilter(request, response);
+            }
         }
-        else
+        catch (Exception e)
         {
-            // Deal with resources such as /images and /styles
-            filterChain.doFilter(request, response);
+            System.out.println(e.getMessage());
         }
     }
 

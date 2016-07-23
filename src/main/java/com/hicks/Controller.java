@@ -127,6 +127,11 @@ public class Controller extends HttpServlet
                         IssuesHandler.createIssue(request, response);
                     if (action.equals("update"))
                         IssuesHandler.updateIssue(request, response);
+
+                    if (action.equals("addComment"))
+                        IssuesHandler.addComment(request, response);
+                    if (action.equals("updateComment"))
+                        IssuesHandler.updateComment(request, response);
                 }
                 if (tab2.equals("user"))
                 {
