@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -40,27 +41,52 @@ public class IssuesHandler
         request.setAttribute("issue", issue);
         List<Comment> comments = Comment.getByIssueId(issueId);
         request.setAttribute("comments", comments);
-        List<User> watchers = WatcherMap.getWatchersForIssue(issueId);
-        request.setAttribute("watchers", watchers);
+        List<WatcherMap> watcherMaps = WatcherMap.getByIssueId(issueId);
+        request.setAttribute("watcherMaps", watcherMaps);
+
+        List<User> potentialWatchers = User.getAllUsers();
+        potentialWatchers.removeAll(WatcherMap.getWatchersForIssue(issueId));
+        request.setAttribute("potentialWatchers", potentialWatchers);
+
+        List<User> potentialAssignees = User.getAllUsers();
+//        potentialAssignees.remove(issue.getAssignee());
+        request.setAttribute("potentialAssignees", potentialAssignees);
+
+        List<User> potentialReporters = User.getAllUsers();
+//        potentialReporters.remove(issue.getReporter());
+        request.setAttribute("potentialReporters", potentialReporters);
 
         return "/WEB-INF/webroot/issueForm.jsp";
     }
 
     public static void createIssue(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+
         Long projectId      = Common.stringToLong(request.getParameter("fldProject"));
         Long zoneId         = Common.stringToLong(request.getParameter("fldZone"));
         Long issueTypeId    = Common.stringToLong(request.getParameter("fldIssueType"));
+        Long severityId     = Common.stringToLong(request.getParameter("fldSeverity"));
         String title        = Common.getSafeString(request.getParameter("fldTitle"));
+        String description  = Common.getSafeString(request.getParameter("fldDescription"));
 
         Issue issue = new Issue();
+        issue.setReporterUserId(userSession.getUserId());
         issue.setProjectId(projectId);
         issue.setZoneId(zoneId);
         issue.setIssueTypeId(issueTypeId);
+        issue.setSeverityId(severityId);
         issue.setTitle(title);
-        Long newKey = EOI.insert(issue);
+        issue.setDescription(description);
+        issue.setCreatedOn(new Date());
+        Long newIssueId = EOI.insert(issue);
 
-        response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + newKey);
+        WatcherMap watcherMap = new WatcherMap();
+        watcherMap.setIssueId(newIssueId);
+        watcherMap.setUserId(userSession.getUserId());
+        EOI.insert(watcherMap);
+
+        response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + newIssueId);
     }
 
     public static void updateIssue(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
@@ -84,7 +110,7 @@ public class IssuesHandler
         if (projectId != 0)
         {
             issue.setProjectId(projectId);
-            updateLog += "ID to " + projectId;
+            updateLog += "ID to " + Project.getById(projectId).getName();
         }
         if (issueTypeId != 0)
         {
@@ -120,12 +146,12 @@ public class IssuesHandler
         if (assigneeId != 0)
         {
             issue.setAssigneeUserId(assigneeId);
-            updateLog += "Assignee to " + IssueType.getById(assigneeId).getName();
+            updateLog += "Assignee to " + User.getByUserId(assigneeId).getLogonId();
         }
         if (reporterId != 0)
         {
             issue.setReporterUserId(reporterId);
-            updateLog += "Reporter to " + IssueType.getById(reporterId).getName();
+            updateLog += "Reporter to " + User.getByUserId(reporterId).getLogonId();
         }
 
         if (updateLog.length() > 0)
@@ -242,6 +268,34 @@ public class IssuesHandler
 
         String toastMessage = "Updated " + updateLog;
         response.getWriter().println(toastMessage);
+    }
+
+    public static void addWatcher(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+
+        Long issueId    = Common.stringToLong(request.getParameter("issueId"));
+        Long userId    = Common.stringToLong(request.getParameter("userId"));
+
+        WatcherMap watcherMap = new WatcherMap();
+        watcherMap.setIssueId(issueId);
+        watcherMap.setUserId(userId);
+        EOI.insert(watcherMap);
+
+        response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + issueId);
+    }
+
+    public static void removeWatcher(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+
+        Long issueId    = Common.stringToLong(request.getParameter("issueId"));
+        Long watcherMapId    = Common.stringToLong(request.getParameter("watcherMapId"));
+
+        WatcherMap watcherMap = WatcherMap.getById(watcherMapId);
+        EOI.executeDelete(watcherMap);
+
+        response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + issueId);
     }
 
     private static PSIngredients buildFilmSQLQuery(IssuesForm issuesForm, String sortColumn, String sortDirection, String page, long resultsPerPage)

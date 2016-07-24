@@ -26,7 +26,10 @@
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
         <div class="mdl-card__title">
             <h5>
-                <div class="mdl-card__title-text">${user.logonId}</div>
+                <div class="mdl-card__title-text">
+                    <img src="${user.avatar.base64}" style="padding-right: 8px; height: 48px;"/>
+                    ${user.logonId}
+                </div>
                 <div class="mdl-card__subtitle-text">
                     <c:forEach var="role" items="${user.allRoles}">
                         ${role.roleName}

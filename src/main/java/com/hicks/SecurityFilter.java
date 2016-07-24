@@ -53,7 +53,7 @@ public class SecurityFilter implements Filter
         }
         catch (Exception e)
         {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 

@@ -51,6 +51,9 @@ h1,h2,h3,h4,h5,h6 {margin: 12px 0 8px;}
 .sortableHeader {cursor: pointer; color: navy}
 .sortableHeaderSelected {cursor: pointer; color: white;}
 
+.editable {}
+.editable:hover {background-color: #F5F5F5;}
+
 /* Media */
 @media (min-width: 1175px)
 {

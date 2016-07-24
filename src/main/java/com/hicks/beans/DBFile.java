@@ -1,22 +1,25 @@
 package com.hicks.beans;
 
 import com.hicks.ISelectTagSupport;
+import com.hicks.UserSession;
+import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Blob;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Entity
-@Table(name = "projects")
-public class Project implements Serializable, ISelectTagSupport
+@Table(name = "db_files")
+public class DBFile implements Serializable, ISelectTagSupport
 {
 //    @Version
 //    @Column(name = "version")
 //    private Long version;
 
-    // create sequence eric.role_seq start with 1 increment by 1;
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ROLE_SEQ")
     @SequenceGenerator(name="ROLE_SEQ", sequenceName="ROLE_SEQ", allocationSize=1)
@@ -26,14 +29,14 @@ public class Project implements Serializable, ISelectTagSupport
     @Column(name = "name", nullable = false, unique = true)
     private String name = "";
 
-    @Column(name = "prefix", nullable = false, unique = true)
-    private String prefix = "";
+    @Column(name = "content", nullable = false, unique = true)
+    private byte[] content;
 
     @Override
     public boolean equals(Object obj)
     {
-        if (!(obj instanceof Project)) return false;
-        Project that = (Project) obj;
+        if (!(obj instanceof DBFile)) return false;
+        DBFile that = (DBFile) obj;
         return this.id.equals(that.getId());
     }
 
@@ -60,18 +63,22 @@ public class Project implements Serializable, ISelectTagSupport
         return name;
     }
 
-    public static List<Project> getAll()
+    public static List<DBFile> getAll()
     {
-        return EOI.executeQuery("select * from projects");
+        return EOI.executeQuery("select * from db_files");
     }
 
-    public static Project getById(Long id)
+    public static DBFile getById(Long id)
     {
-        return EOI.executeQueryOneResult("select * from projects where id=?", Arrays.asList(id));
+        return EOI.executeQueryOneResult("select * from db_files where id=?", Arrays.asList(id));
+    }
+
+    public String getBase64()
+    {
+        return "data:image/png;base64," + Common.byteArrayToBase64(content);
     }
 
     // -------- Getters / Setters ----------
-
 
     public Long getId()
     {
@@ -93,13 +100,13 @@ public class Project implements Serializable, ISelectTagSupport
         this.name = name;
     }
 
-    public String getPrefix()
+    public byte[] getContent()
     {
-        return prefix;
+        return content;
     }
 
-    public void setPrefix(String prefix)
+    public void setContent(byte[] content)
     {
-        this.prefix = prefix;
+        this.content = content;
     }
 }

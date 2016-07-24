@@ -78,6 +78,11 @@ public class WatcherMap implements Serializable
         return watchers;
     }
 
+    public User getWatcher()
+    {
+        return User.getByUserId(userId);
+    }
+
     // -------- Getters / Setters ----------
 
     public Long getId()

@@ -4,8 +4,9 @@
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <jsp:useBean id="issue" type="com.hicks.beans.Issue" scope="request"/>
 <jsp:useBean id="comments" type="java.util.List<com.hicks.beans.Comment>" scope="request"/>
-<jsp:useBean id="watchers" type="java.util.List<com.hicks.beans.User>" scope="request"/>
+<jsp:useBean id="watcherMaps" type="java.util.List<com.hicks.beans.WatcherMap>" scope="request"/>
 <jsp:useBean id="zones" type="java.util.List<com.hicks.beans.Zone>" scope="request"/>
+<jsp:useBean id="potentialWatchers" type="java.util.List<com.hicks.beans.User>" scope="request"/>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
@@ -16,7 +17,21 @@
     <script>
         function initHeader()
         {
+            $('#fldWatcher').select2();
 
+            // QTIP
+            $('#showWatchers').each(function() {
+                $(this).qtip({
+                    content: {
+                        text: $(this).next('.watchersDiv')
+                    },
+                    style: {
+                        classes: 'qtip-bootstrap'
+                    },
+                    show: 'click',
+                    hide: 'unfocus'
+                });
+            });
         }
 
         function update(fieldName, fieldValue, url)
@@ -49,14 +64,11 @@
             });
         }
 
-//        function enableEditMode(element)
-//        {
-//            $(document).on('click', '#' + element.id + 'SaveButton', function(){updateIssue(element.id, element.innerHTML)});
-//        }
-//        function disableEditMode(element)
-//        {
-//
-//        }
+        function addWatcher(elementId, issueId)
+        {
+            var userId = $('#' + elementId).val();
+            location.href = "${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=addWatcher&issueId=${issue.id}&userId=" + userId;
+        }
     </script>
 
 </head>
@@ -68,8 +80,13 @@
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
         <div class="mdl-card__title">
             <h5>
-                <div class="mdl-card__title-text">${issue.title}</div>
-                <div class="mdl-card__subtitle-text">${issue.project.name} ${issue.project.prefix}-${issue.id}</div>
+                <div class="mdl-card__title-text">
+                    <ct:textToInputText id="fldTitle" text="${issue.title}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                </div>
+                <div class="mdl-card__subtitle-text">
+                    <ct:textToSelect id="fldProject" value="${issue.projectId}" text="${issue.project.name}" items="${projects}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                    ${issue.project.prefix}-${issue.id}
+                </div>
             </h5>
         </div>
 
@@ -110,13 +127,16 @@
     <div class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>Description</h5></div>
 
-        <ct:textToInputText id="fldDescription" text="${issue.description}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+        <div class="mdl-card__supporting-text">
+            <ct:textToInputText id="fldDescription" text="${issue.description}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+        </div>
 
         <div class="mdl-card__title"><h5>Activity</h5></div>
         <c:forEach var="comment" items="${comments}">
             <div style="padding: 0 8px;">
                 <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${comment.createdByUserId}">
-                    ${comment.createdBy}</a>
+                    <img src="${comment.createdBy.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;">${comment.createdBy}</a>
+
                 commented on
                 <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy h:mm a"/>
                 <c:if test="${!empty comment.lastUpdatedOn && comment.createdOn != comment.lastUpdatedOn}">
@@ -172,24 +192,60 @@
                     <td style="padding: 0 8px;">Assignee:</td>
                     <td style="padding: 0 8px;">
                         <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${issue.assigneeUserId}">
-                            ${issue.assignee}</a>
+                            <img src="${issue.assignee.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
+
+                    <ct:textToSelect id="fldAssigneeId" value="${issue.assigneeUserId}" text="${issue.assignee.logonId}" items="${potentialAssignees}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 0 8px;">Reporter:</td>
                     <td style="padding: 0 8px;">
                         <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${issue.reporterUserId}">
-                            ${issue.reporter}</a>
+                            <img src="${issue.reporter.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
+
+                    <ct:textToSelect id="fldReporterId" value="${issue.reporterUserId}" text="${issue.reporter.logonId}" items="${potentialReporters}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                     </td>
                 </tr>
+                <tr><td colspan="2"><hr></td></tr>
                 <tr>
-                    <td style="padding: 0 8px;">Watchers:</td>
+                    <td style="padding: 0 8px;vertical-align: top;">Watchers:</td>
                     <td style="padding: 0 8px;">
-                        <c:forEach var="watcher" items="${watchers}">
-                            <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${watcher.id}">
-                                ${watcher.logonId}</a>
+                        <c:if test="${!empty watcherMaps}">
+                            <a id="showWatchers" style="cursor: pointer">
+                                View
+                            </a>
+
+                            <div class="watchersDiv" style="display: none;">
+                                <table>
+                                    <c:forEach var="watcherMap" items="${watcherMaps}">
+                                        <tr>
+                                            <td>
+                                                <a style="" href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${watcherMap.watcher.id}">
+                                                ${watcherMap.watcher.logonId}</a>
+                                            </td>
+                                            <td>
+                                                <a style="vertical-align: sub" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=removeWatcher&issueId=${issue.id}&watcherMapId=${watcherMap.id}"><i style="color:gray;" class="material-icons">delete</i></a>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </table>
+                            </div>
                             <br>
-                        </c:forEach>
+                        </c:if>
+
+                        <c:if test="${!empty potentialWatchers}">
+                            Add:
+
+                            <select id="fldWatcher" style="z-index: 100" class="js-example-basic-single">
+                                <c:forEach var="potentialWatchers" items="${potentialWatchers}">
+                                    <option value="${potentialWatchers.id}">${potentialWatchers.logonId}</option>
+                                </c:forEach>
+                            </select>
+
+                            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onclick="addWatcher('fldWatcher', '${issue.id}')">
+                                <i class="material-icons">add</i>
+                            </button>
+                        </c:if>
                     </td>
                 </tr>
             </table>

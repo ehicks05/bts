@@ -3,6 +3,9 @@ package com.hicks;
 import com.hicks.beans.*;
 import net.ehicks.eoi.EOI;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +21,7 @@ public class DefaultDataLoader
             User user = new User();
             user.setLogonId("***REMOVED***");
             user.setPassword("eric");
+            user.setAvatarId(2L);
             user.setCreatedOn(new Date());
             user.setUpdatedOn(new Date());
             EOI.insert(user);
@@ -25,6 +29,7 @@ public class DefaultDataLoader
             user = new User();
             user.setLogonId("***REMOVED***");
             user.setPassword("val");
+            user.setAvatarId(1L);
             user.setCreatedOn(new Date());
             EOI.insert(user);
 
@@ -218,6 +223,32 @@ public class DefaultDataLoader
             watcherMap.setUserId(3L);
             watcherMap.setIssueId(2L);
             EOI.insert(watcherMap);
+        }
+
+        List<DBFile> dbFiles = DBFile.getAll();
+        if (dbFiles.size() == 0)
+        {
+            byte[] content = null;
+            byte[] content2 = null;
+            try
+            {
+                content = Files.readAllBytes(Paths.get(SystemInfo.getServletContext().getRealPath("/images/no_avatar.png")));
+                content2 = Files.readAllBytes(Paths.get(SystemInfo.getServletContext().getRealPath("/images/avatar.jpg")));
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
+            DBFile dbFile = new DBFile();
+            dbFile.setName("no-avatar");
+            dbFile.setContent(content);
+            EOI.insert(dbFile);
+
+            dbFile = new DBFile();
+            dbFile.setName("eric");
+            dbFile.setContent(content2);
+            EOI.insert(dbFile);
         }
     }
 }

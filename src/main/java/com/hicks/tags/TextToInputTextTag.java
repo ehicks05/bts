@@ -42,11 +42,11 @@ public class TextToInputTextTag extends TagSupport
         String saveButtonId = id + "SaveButton";
         String cancelButtonId = id + "CancelButton";
         output += "" +
-                "        <div class=\"mdl-card__supporting-text\" contenteditable=\"true\" id=\"" + id + "\" onfocus=\"enableEditMode(this, '" + submitAction + "')\" onblur=\"disableEditMode(this)\">\n" +
+                "        <div class=\"editable\" contenteditable=\"true\" id=\"" + id + "\" onfocus=\"enableEditMode(this, '" + submitAction + "')\" onblur=\"disableEditMode(this)\">\n" +
                 "            " + text + "\n" +
                 "        </div>\n" +
                 "\n" +
-                "        <ul class=\"mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect\" id=\"" + menuId + "\" for=\"" + id + "\">\n" +
+                "        <ul class=\"mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect\" id=\"" + menuId + "\" for=\"" + id + "\">\n" +
                 "            <li class=\"mdl-menu__item\" id=\"" + saveButtonId + "\"><i class=\"material-icons\" style=\"vertical-align:middle;color: green;\">add</i>Save</li>\n" +
                 "            <li class=\"mdl-menu__item\" id=\"" + cancelButtonId + "\"><i class=\"material-icons\" style=\"vertical-align:middle;color: red;\">clear</i>Dismiss</li>\n" +
                 "        </ul>";

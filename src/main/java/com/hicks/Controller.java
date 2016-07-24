@@ -132,6 +132,10 @@ public class Controller extends HttpServlet
                         IssuesHandler.addComment(request, response);
                     if (action.equals("updateComment"))
                         IssuesHandler.updateComment(request, response);
+                    if (action.equals("addWatcher"))
+                        IssuesHandler.addWatcher(request, response);
+                    if (action.equals("removeWatcher"))
+                        IssuesHandler.removeWatcher(request, response);
                 }
                 if (tab2.equals("user"))
                 {

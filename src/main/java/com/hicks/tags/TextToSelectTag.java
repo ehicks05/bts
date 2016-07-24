@@ -68,7 +68,7 @@ public class TextToSelectTag extends TagSupport
         }
 
         String divId = id + "Text";
-        output += "        <div id=\"" + divId + "\" onclick=\"select2Enable(this.id, $('#" + id + "').attr('id'))\">" + text + "</div>\n" +
+        output += "        <span class=\"editable\" id=\"" + divId + "\" onclick=\"select2Enable(this.id, $('#" + id + "').attr('id'))\">" + text + "</span>\n" +
                 "        <select id=\"" + id + "\" class=\"js-example-basic-single\" style=\"display:none;\">\n";
 
         for (ISelectTagSupport item : items)

@@ -1,5 +1,6 @@
 package com.hicks.beans;
 
+import com.hicks.ISelectTagSupport;
 import net.ehicks.eoi.EOI;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "bts_users")
-public class User implements Serializable
+public class User implements Serializable, ISelectTagSupport
 {
     @Version
     @Column(name = "version")
@@ -28,6 +29,9 @@ public class User implements Serializable
 
     @Column(name = "password", nullable = false)
     private String password = "";
+
+    @Column(name = "avatar_id")
+    private Long avatarId;
 
     @Column(name = "created_on")
     @Temporal(TemporalType.DATE)
@@ -52,6 +56,18 @@ public class User implements Serializable
     }
 
     public String toString()
+    {
+        return logonId;
+    }
+
+    @Override
+    public String getValue()
+    {
+        return id.toString();
+    }
+
+    @Override
+    public String getText()
     {
         return logonId;
     }
@@ -81,6 +97,11 @@ public class User implements Serializable
     public List<Role> getAllRoles()
     {
         return Role.getByUserId(id);
+    }
+
+    public DBFile getAvatar()
+    {
+        return DBFile.getById(avatarId);
     }
     // -------- Getters / Setters ----------
 
@@ -122,6 +143,16 @@ public class User implements Serializable
     public void setPassword(String password)
     {
         this.password = password;
+    }
+
+    public Long getAvatarId()
+    {
+        return avatarId;
+    }
+
+    public void setAvatarId(Long avatarId)
+    {
+        this.avatarId = avatarId;
     }
 
     public Date getCreatedOn()
