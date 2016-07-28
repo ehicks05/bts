@@ -242,7 +242,7 @@
                                 </c:forEach>
                             </select>
 
-                            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onclick="addWatcher('fldWatcher', '${issue.id}')">
+                            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect" onclick="addWatcher('fldWatcher', '${issue.id}')">
                                 <i class="material-icons">add</i>
                             </button>
                         </c:if>

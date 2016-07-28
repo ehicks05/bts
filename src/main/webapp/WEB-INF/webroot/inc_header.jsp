@@ -15,7 +15,7 @@
 
 <%-- MDL --%>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-red.min.css">
+<link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue_grey-teal.min.css">
 <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
 <%-- MDL --%>
 

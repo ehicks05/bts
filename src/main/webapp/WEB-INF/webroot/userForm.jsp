@@ -30,12 +30,6 @@
                     <img src="${user.avatar.base64}" style="padding-right: 8px; height: 48px;"/>
                     ${user.logonId}
                 </div>
-                <div class="mdl-card__subtitle-text">
-                    <c:forEach var="role" items="${user.allRoles}">
-                        ${role.roleName}
-                        <br>
-                    </c:forEach>
-                </div>
             </h5>
         </div>
     </div>
@@ -51,6 +45,15 @@
                         <td style="padding: 0 8px;">Updated:</td>
                         <td style="padding: 0 8px;"><fmt:formatDate value="${user.updatedOn}" pattern="dd/MMM/yy h:mm a"/></td>
                     </tr>
+                    <tr>
+                        <td style="padding: 0 8px;">Roles:</td>
+                        <td style="padding: 0 8px;">
+                            <c:forEach var="role" items="${user.allRoles}">
+                                ${role.roleName}
+                                <br>
+                            </c:forEach>
+                        </td>
+                    </tr>
                 </table>
             </div>
         </form>
@@ -63,7 +66,7 @@
             <c:forEach var="comment" items="${user.allComments}">
                 <div style="padding: 0 8px;">
                     <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${user.id}">
-                        ${user.logonId}
+                        <img src="${user.avatar.base64}" style="padding-right: 4px; height: 24px;"/>${user.logonId}
                     </a>
                     commented on
                     <a href="${pageContext.request.contextPath}/view?tab2=issue&action=form&issueId=${comment.issue.id}">

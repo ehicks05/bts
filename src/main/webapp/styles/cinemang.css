@@ -1,19 +1,11 @@
 body {
     font-family: 'Open Sans', sans-serif;
-    background-color: #2f6080;
+    background-color: #f9f9f9;
     margin: 0;
-    animation-name: example;
-    animation-duration: 20s;
-    animation-iteration-count: infinite;
-    animation-timing-function: ease-in-out;
 }
 
-@keyframes example {
-    0%   {background-color: #2f6080;}
-    33% {background-color: #2f7f5d;}
-    67% {background-color: #69517f;}
-    100% {background-color: #2f6080;}
-}
+a {color: #3b73af; text-decoration: none;}
+a:hover, a:focus, a:active {text-decoration: underline;}
 
 /* Tables */
 .alignleft {text-align: left}
@@ -71,49 +63,4 @@ h1,h2,h3,h4,h5,h6 {margin: 12px 0 8px;}
 {
     .mediumPriority {display:none;}
     .lowPriority {display:none;}
-}
-
-.btn
-{
-    display: inline-block;
-    padding: 6px 12px;
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.42857143;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    cursor: pointer;
-    border: 1px solid transparent;
-    border-radius: 4px;
-}
-
-.btn-primary {
-    color: #fff;
-    background-color: #337ab7;
-    border-color: #2e6da4;
-}
-.btn-primary:hover {
-    color: #fff;
-    background-color: #286090;
-    border-color: #204d74;
-}
-
-.btn-default {
-    color: #000;
-    background-color: #fff;
-    border-color: #aaa;
-}
-.btn-default:hover {
-    color: #000;
-    background-color: #ddd;
-    border-color: #999;
-}
-
-.btn-xs {
-    padding: 1px 5px;
-    font-size: 12px;
-    line-height: 1.5;
-    border-radius: 3px;
 }

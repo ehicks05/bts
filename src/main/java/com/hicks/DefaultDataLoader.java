@@ -29,13 +29,14 @@ public class DefaultDataLoader
             user = new User();
             user.setLogonId("***REMOVED***");
             user.setPassword("val");
-            user.setAvatarId(1L);
+            user.setAvatarId(3L);
             user.setCreatedOn(new Date());
             EOI.insert(user);
 
             user = new User();
             user.setLogonId("valeric@yahoo.com");
             user.setPassword("valeric");
+            user.setAvatarId(1L);
             user.setCreatedOn(new Date());
             user.setUpdatedOn(new Date());
             EOI.insert(user);
@@ -230,10 +231,12 @@ public class DefaultDataLoader
         {
             byte[] content = null;
             byte[] content2 = null;
+            byte[] content3 = null;
             try
             {
-                content = Files.readAllBytes(Paths.get(SystemInfo.getServletContext().getRealPath("/images/no_avatar.png")));
-                content2 = Files.readAllBytes(Paths.get(SystemInfo.getServletContext().getRealPath("/images/avatar.jpg")));
+                content = Files.readAllBytes(Paths.get(SystemInfo.getServletContext().getRealPath("/images/avatars/png/avatar.png")));
+                content2 = Files.readAllBytes(Paths.get(SystemInfo.getServletContext().getRealPath("/images/avatars/png/avatar-2.png")));
+                content3 = Files.readAllBytes(Paths.get(SystemInfo.getServletContext().getRealPath("/images/avatars/png/avatar-1.png")));
             }
             catch (Exception e)
             {
@@ -248,6 +251,11 @@ public class DefaultDataLoader
             dbFile = new DBFile();
             dbFile.setName("eric");
             dbFile.setContent(content2);
+            EOI.insert(dbFile);
+
+            dbFile = new DBFile();
+            dbFile.setName("val");
+            dbFile.setContent(content3);
             EOI.insert(dbFile);
         }
     }

@@ -56,7 +56,7 @@
                 </a>
                 <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${userSession.userId}">
                     <i class="material-icons">account_circle</i>
-                    ${sessionScope.userSession.logonId}
+                    Profile
                 </a>
                 <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&action=logout">
                     <i class="material-icons">power_settings_new</i>
