@@ -21,8 +21,6 @@ a:hover, a:focus, a:active {text-decoration: underline;}
 .listrowodd { background-color: white}
 .listroweven {background-color: lavender}
 
-.notecard td {border: none;}
-
 /* JQuery */
 .ui-datepicker {z-index: 4 !important;}
 div.ui-datepicker{
@@ -35,7 +33,7 @@ div.ui-datepicker{
 /* Material */
 .mdl-grid {padding: 0;}
 .mdl-layout__drawer .mdl-navigation {padding-top: 8px;}
-.mdl-card__title {padding: 8px;}
+.mdl-card__title {padding: 8px; background-color: #cedff9;}
 .mdl-card__supporting-text {padding: 8px;}
 /* Material */
 h1,h2,h3,h4,h5,h6 {margin: 12px 0 8px;}

@@ -132,24 +132,60 @@
         </div>
 
         <div class="mdl-card__title"><h5>Activity</h5></div>
-        <c:forEach var="comment" items="${comments}">
-            <div style="padding: 0 8px;">
-                <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${comment.createdByUserId}">
-                    <img src="${comment.createdBy.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;">${comment.createdBy}</a>
 
-                commented on
-                <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy h:mm a"/>
-                <c:if test="${!empty comment.lastUpdatedOn && comment.createdOn != comment.lastUpdatedOn}">
-                    <span title="Edited ${comment.lastUpdatedOn}">*</span>
-                </c:if>
-                <br>
-                <div class="mdl-card__supporting-text">
-                    <%--${comment.content}--%>
-                    <ct:textToInputText id="fldContent${comment.id}" text="${comment.content}" submitAction="/view?tab1=main&tab2=issue&action=updateComment&commentId=${comment.id}"/>
-                </div>
+        <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+            <div class="mdl-tabs__tab-bar">
+                <a href="#comments-panel" class="mdl-tabs__tab is-active">Comments</a>
+                <a href="#starks-panel" class="mdl-tabs__tab">Starks</a>
+                <a href="#lannisters-panel" class="mdl-tabs__tab">Lannisters</a>
             </div>
-            <hr>
-        </c:forEach>
+            <div class="mdl-tabs__panel is-active" id="comments-panel">
+                <c:set var="commentIndex" value="${0}"/>
+                <c:forEach var="comment" items="${comments}">
+                    <c:if test="${commentIndex == 0}">
+                        <div style="height: 16px;"></div>
+                    </c:if>
+                    <c:if test="${commentIndex != 0}">
+                        <hr>
+                    </c:if>
+                    <c:set var="commentIndex" value="${commentIndex + 1}"/>
+
+                    <div style="padding: 0 8px;">
+                        <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${comment.createdByUserId}">
+                            <img src="${comment.createdBy.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;">${comment.createdBy}</a>
+
+                        commented on
+                        <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy h:mm a"/>
+                        <c:if test="${!empty comment.lastUpdatedOn && comment.createdOn != comment.lastUpdatedOn}">
+                            <span title="Edited ${comment.lastUpdatedOn}">*</span>
+                        </c:if>
+                        <br>
+                        <div class="mdl-card__supporting-text">
+                            <ct:textToInputText id="fldContent${comment.id}" text="${comment.content}" submitAction="/view?tab1=main&tab2=issue&action=updateComment&commentId=${comment.id}"/>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
+            <div class="mdl-tabs__panel" id="starks-panel">
+                <ul>
+                    <li>Eddard</li>
+                    <li>Catelyn</li>
+                    <li>Robb</li>
+                    <li>Sansa</li>
+                    <li>Brandon</li>
+                    <li>Arya</li>
+                    <li>Rickon</li>
+                </ul>
+            </div>
+            <div class="mdl-tabs__panel" id="lannisters-panel">
+                <ul>
+                    <li>Tywin</li>
+                    <li>Cersei</li>
+                    <li>Jamie</li>
+                    <li>Tyrion</li>
+                </ul>
+            </div>
+        </div>
 
         <script>
             function showAddComment()

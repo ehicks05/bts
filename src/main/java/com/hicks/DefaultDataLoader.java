@@ -208,7 +208,7 @@ public class DefaultDataLoader
             comment.setZoneId(2L);
             comment.setCreatedByUserId(2L);
             comment.setCreatedOn(new Date());
-            comment.setContent("OK AWESOME TO HEAR SO.");
+            comment.setContent("OK that will be great :).");
             EOI.insert(comment);
         }
 
