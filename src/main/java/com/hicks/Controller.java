@@ -128,6 +128,9 @@ public class Controller extends HttpServlet
                     if (action.equals("update"))
                         IssuesHandler.updateIssue(request, response);
 
+                    if (action.equals("search"))
+                        IssuesHandler.search(request, response);
+
                     if (action.equals("addComment"))
                         IssuesHandler.addComment(request, response);
                     if (action.equals("updateComment"))
@@ -146,9 +149,6 @@ public class Controller extends HttpServlet
                     if (action.equals("create"))
                         IssuesHandler.createIssue(request, response);
                 }
-
-                if (action.equals("search"))
-                    IssuesHandler.search(request, response);
 
                 if (action.equals("debug"))
                     DebugHandler.getDebugInfo(request, response);

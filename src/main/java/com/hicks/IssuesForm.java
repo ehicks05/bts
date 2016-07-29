@@ -8,9 +8,9 @@ public class IssuesForm
 
     private String title = "";
     private String description = "";
-    private String severity = "";
     private String status = "";
 
+    private Long severity;
     private Long bucketId;
     private Long zoneId;
     private Long issueTypeId;
@@ -22,13 +22,13 @@ public class IssuesForm
     private String sortDirection;
     private String page;
 
-    public IssuesForm(String id, String title, String description, String severity, String status, Long bucketId, Long zoneId)
+    public IssuesForm(String id, String title, String description, String status, Long severity, Long bucketId, Long zoneId)
     {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.severity = severity;
         this.status = status;
+        this.severity = severity;
         this.bucketId = bucketId;
         this.zoneId = zoneId;
     }
@@ -37,9 +37,11 @@ public class IssuesForm
     {
         return
         "\r\nIssuesForm: " +
-        "\r\nid: " + id +
-        "\r\ntitle: " + title +
-        "\r\n";
+        "\r\n  id: " + id +
+        "\r\n  title: " + title +
+        "\r\n  description: " + description +
+        "\r\n  severity: " + severity +
+        "\r\n  ";
     }
 
     // Getter / Setter
@@ -74,16 +76,6 @@ public class IssuesForm
         this.description = description;
     }
 
-    public String getSeverity()
-    {
-        return severity;
-    }
-
-    public void setSeverity(String severity)
-    {
-        this.severity = severity;
-    }
-
     public String getStatus()
     {
         return status;
@@ -92,6 +84,16 @@ public class IssuesForm
     public void setStatus(String status)
     {
         this.status = status;
+    }
+
+    public Long getSeverity()
+    {
+        return severity;
+    }
+
+    public void setSeverity(Long severity)
+    {
+        this.severity = severity;
     }
 
     public Long getBucketId()

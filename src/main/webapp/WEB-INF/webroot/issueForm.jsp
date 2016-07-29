@@ -136,8 +136,7 @@
         <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
             <div class="mdl-tabs__tab-bar">
                 <a href="#comments-panel" class="mdl-tabs__tab is-active">Comments</a>
-                <a href="#starks-panel" class="mdl-tabs__tab">Starks</a>
-                <a href="#lannisters-panel" class="mdl-tabs__tab">Lannisters</a>
+                <a href="#changeLog-panel" class="mdl-tabs__tab">Change Log</a>
             </div>
             <div class="mdl-tabs__panel is-active" id="comments-panel">
                 <c:set var="commentIndex" value="${0}"/>
@@ -166,7 +165,7 @@
                     </div>
                 </c:forEach>
             </div>
-            <div class="mdl-tabs__panel" id="starks-panel">
+            <div class="mdl-tabs__panel" id="changeLog-panel">
                 <ul>
                     <li>Eddard</li>
                     <li>Catelyn</li>
@@ -175,14 +174,6 @@
                     <li>Brandon</li>
                     <li>Arya</li>
                     <li>Rickon</li>
-                </ul>
-            </div>
-            <div class="mdl-tabs__panel" id="lannisters-panel">
-                <ul>
-                    <li>Tywin</li>
-                    <li>Cersei</li>
-                    <li>Jamie</li>
-                    <li>Tyrion</li>
                 </ul>
             </div>
         </div>
@@ -242,14 +233,17 @@
                     <ct:textToSelect id="fldReporterId" value="${issue.reporterUserId}" text="${issue.reporter.logonId}" items="${potentialReporters}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                     </td>
                 </tr>
-                <tr><td colspan="2"><hr></td></tr>
+            </table>
+        </div>
+        <hr>
+        <div class="mdl-card__supporting-text">
+            <table>
                 <tr>
                     <td style="padding: 0 8px;vertical-align: top;">Watchers:</td>
                     <td style="padding: 0 8px;">
                         <c:if test="${!empty watcherMaps}">
                             <a id="showWatchers" style="cursor: pointer">
-                                View
-                            </a>
+                                View</a>
 
                             <div class="watchersDiv" style="display: none;">
                                 <table>

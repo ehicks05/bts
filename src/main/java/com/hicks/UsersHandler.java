@@ -85,12 +85,12 @@ public class UsersHandler
         String id           = Common.getSafeString(request.getParameter("id"));
         String title        = Common.getSafeString(request.getParameter("title"));
         String description  = Common.getSafeString(request.getParameter("description"));
-        String severity     = Common.getSafeString(request.getParameter("severity"));
         String status       = Common.getSafeString(request.getParameter("status"));
+        Long severity       = Common.stringToLong(request.getParameter("severity"));
         Long bucketId       = Common.stringToLong(request.getParameter("bucketId"));
         Long zoneId         = Common.stringToLong(request.getParameter("zoneId"));
 
-        IssuesForm issuesForm = new IssuesForm(id, title, description, severity, status, bucketId, zoneId);
+        IssuesForm issuesForm = new IssuesForm(id, title, description, status, severity, bucketId, zoneId);
         if (Common.getSafeString(request.getParameter("resetPage")).equals("yes"))
             issuesForm.setPage("1");
 

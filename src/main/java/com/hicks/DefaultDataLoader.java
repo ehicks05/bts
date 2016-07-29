@@ -6,9 +6,12 @@ import net.ehicks.eoi.EOI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Blob;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class DefaultDataLoader
 {
@@ -109,13 +112,19 @@ public class DefaultDataLoader
             issue.setIssueTypeId(1L);
             issue.setSeverityId(1L);
             issue.setStatus("OPEN");
-            issue.setCreatedOn(new Date());
+
+            issue.setCreatedOn(getRandomDateTime());
             issue.setLastUpdatedOn(new Date());
             EOI.insert(issue);
+            issue.setCreatedOn(getRandomDateTime());
             EOI.insert(issue);
+            issue.setCreatedOn(getRandomDateTime());
             EOI.insert(issue);
+            issue.setCreatedOn(getRandomDateTime());
             EOI.insert(issue);
+            issue.setCreatedOn(getRandomDateTime());
             EOI.insert(issue);
+            issue.setCreatedOn(getRandomDateTime());
             EOI.insert(issue);
 
             issue = new Issue();
@@ -128,13 +137,18 @@ public class DefaultDataLoader
             issue.setIssueTypeId(2L);
             issue.setSeverityId(2L);
             issue.setStatus("OPEN");
-            issue.setCreatedOn(new Date());
+            issue.setCreatedOn(getRandomDateTime());
             issue.setLastUpdatedOn(new Date());
             EOI.insert(issue);
+            issue.setCreatedOn(getRandomDateTime());
             EOI.insert(issue);
+            issue.setCreatedOn(getRandomDateTime());
             EOI.insert(issue);
+            issue.setCreatedOn(getRandomDateTime());
             EOI.insert(issue);
+            issue.setCreatedOn(getRandomDateTime());
             EOI.insert(issue);
+            issue.setCreatedOn(getRandomDateTime());
             EOI.insert(issue);
         }
 
@@ -258,5 +272,13 @@ public class DefaultDataLoader
             dbFile.setContent(content3);
             EOI.insert(dbFile);
         }
+    }
+
+    private static Date getRandomDateTime()
+    {
+        LocalDateTime ldt = LocalDateTime.now();
+        Random r = new Random();
+        LocalDateTime createdOnLdt = ldt.minusDays(r.nextInt(5)).minusHours(r.nextInt(24)).minusMinutes(r.nextInt(60)).minusSeconds(r.nextInt(60));
+        return Date.from(createdOnLdt.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

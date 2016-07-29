@@ -30,6 +30,8 @@ div.ui-datepicker{
 .ui-dialog {font-size: 11pt;}
 /* JQuery */
 
+.js-example-basic-single {padding-right: 24px;}
+
 /* Material */
 .mdl-grid {padding: 0;}
 .mdl-layout__drawer .mdl-navigation {padding-top: 8px;}

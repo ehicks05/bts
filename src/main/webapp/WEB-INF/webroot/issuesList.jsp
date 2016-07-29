@@ -65,7 +65,7 @@
 
 <div class="mdl-grid">
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-shadow--2dp">
-        <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&action=search">
+        <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=search">
             <input type="hidden" id="fldRating" name="fldRating">
             <input type="hidden" name="sortColumn" id="sortColumn" value="${searchResult.sortColumn}"/>
             <input type="hidden" name="sortDirection" id="sortDirection" value="${searchResult.sortDirection}"/>
@@ -78,19 +78,13 @@
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="id" name="id" value="${issuesForm.id}">
-                    <label class="mdl-textfield__label" for="id">ID</label>
+                    <label class="mdl-textfield__label" for="id">Contains Text:</label>
                 </div>
 
                 <br>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="title" name="title" value="${issuesForm.title}">
-                    <label class="mdl-textfield__label" for="title">Title</label>
-                </div>
-
-                <br>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="description" name="description" value="${issuesForm.description}">
-                    <label class="mdl-textfield__label" for="description">Description</label>
+                <div>
+                    <label for="severity">Severity: </label>
+                    <ct:select id="severity" value="${issuesForm.severity}" items="${severities}" required="${false}"/>
                 </div>
             </div>
             <div class="mdl-card__actions">
@@ -107,10 +101,10 @@
             <thead>
             <tr class="listheading">
                 <%--<td></td>--%>
-                <ct:sortableCell code="id" label="ID" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
+                <ct:sortableCell code="id" label="ID" style="text-align:right;" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
                 <ct:sortableCell code="title" label="Title" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
-                <ct:sortableCell code="createdOn" label="Created" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
-                <ct:sortableCell code="lastUpdatedOn" label="Updated" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
+                <ct:sortableCell code="createdOn" label="Created" style="text-align:right;" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
+                <ct:sortableCell code="lastUpdatedOn" label="Updated" style="text-align:right;" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
             </tr>
             </thead>
 
@@ -122,7 +116,7 @@
 
                 <tr class="${rowStyle}">
                     <%--<td class="alignright"><fmt:formatNumber value="${count}" pattern="#,###"/></td>--%>
-                    <td>
+                    <td class="alignright">
                         <a href="${pageContext.request.contextPath}/view?tab2=issue&action=form&issueId=${issue.id}">
                                 ${issue.id}
                         </a>

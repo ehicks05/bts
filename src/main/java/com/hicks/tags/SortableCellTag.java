@@ -10,6 +10,7 @@ public class SortableCellTag extends TagSupport
 {
     private String code = "";
     private String label = "";
+    private String style = "";
     private String sortColumn = "";
     private String sortDirection = "";
 
@@ -19,7 +20,7 @@ public class SortableCellTag extends TagSupport
         JspWriter writer = pageContext.getOut();
 
         String output =
-                "        <td class=\"sortableHeader\" onclick=\"sortFilms(this, '" + code + "')\">" + label + "\n" +
+                "        <td class=\"sortableHeader\" style=\"" + style + "\" onclick=\"sortFilms(this, '" + code + "')\">" + label + "\n" +
                 "            <span>\n";
 
         if (code.equals(sortColumn))
@@ -68,6 +69,16 @@ public class SortableCellTag extends TagSupport
     public void setLabel(String label)
     {
         this.label = label;
+    }
+
+    public String getStyle()
+    {
+        return style;
+    }
+
+    public void setStyle(String style)
+    {
+        this.style = style;
     }
 
     public String getSortColumn()

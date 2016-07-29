@@ -23,7 +23,7 @@ public class IssuesHandler
         if (searchResult == null)
         {
             // set some defaults
-            IssuesForm issuesForm = new IssuesForm("", "", "", "", "", 0L, 0L);
+            IssuesForm issuesForm = new IssuesForm("", "", "", "", 0L, 0L, 0L);
             request.getSession().setAttribute("issuesForm", issuesForm);
 
             searchResult = performSearch(request, issuesForm);
@@ -170,12 +170,13 @@ public class IssuesHandler
         String id           = Common.getSafeString(request.getParameter("id"));
         String title        = Common.getSafeString(request.getParameter("title"));
         String description  = Common.getSafeString(request.getParameter("description"));
-        String severity     = Common.getSafeString(request.getParameter("severity"));
         String status       = Common.getSafeString(request.getParameter("status"));
+        Long severity       = Common.stringToLong(request.getParameter("severity"));
+        if (severity == 0) severity = null;
         Long bucketId       = Common.stringToLong(request.getParameter("bucketId"));
         Long zoneId         = Common.stringToLong(request.getParameter("zoneId"));
 
-        IssuesForm issuesForm = new IssuesForm(id, title, description, severity, status, bucketId, zoneId);
+        IssuesForm issuesForm = new IssuesForm(id, title, description, status, severity, bucketId, zoneId);
         if (Common.getSafeString(request.getParameter("resetPage")).equals("yes"))
             issuesForm.setPage("1");
 
@@ -323,6 +324,13 @@ public class IssuesHandler
             if (whereClause.length() > 0) whereClause += " and ";
             whereClause += " lower(description) like ? ";
             args.add("%" + issuesForm.getDescription().toLowerCase().replaceAll("\\*","%") + "%");
+        }
+
+        if (issuesForm.getSeverity() != null && issuesForm.getSeverity() != 0)
+        {
+            if (whereClause.length() > 0) whereClause += " and ";
+            whereClause += " severity_id like ? ";
+            args.add(issuesForm.getSeverity().toString());
         }
 
         if (args.size() == 0) selectClause = selectClause.replace("where", "");
