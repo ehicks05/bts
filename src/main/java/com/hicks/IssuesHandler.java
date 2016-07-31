@@ -23,7 +23,7 @@ public class IssuesHandler
         if (searchResult == null)
         {
             // set some defaults
-            IssuesForm issuesForm = new IssuesForm("", "", "", "", 0L, 0L, 0L);
+            IssuesForm issuesForm = new IssuesForm("", "", "", "", 0L, 0L, 0L, null, null);
             request.getSession().setAttribute("issuesForm", issuesForm);
 
             searchResult = performSearch(request, issuesForm);
@@ -175,8 +175,10 @@ public class IssuesHandler
         if (severity == 0) severity = null;
         Long bucketId       = Common.stringToLong(request.getParameter("bucketId"));
         Long zoneId         = Common.stringToLong(request.getParameter("zoneId"));
+        Date createdOn      = Common.stringToDate(request.getParameter("createdOn"));
+        Date lastUpdatedOn  = Common.stringToDate(request.getParameter("lastUpdatedOn"));
 
-        IssuesForm issuesForm = new IssuesForm(id, title, description, status, severity, bucketId, zoneId);
+        IssuesForm issuesForm = new IssuesForm(id, title, description, status, severity, bucketId, zoneId, createdOn, lastUpdatedOn);
         if (Common.getSafeString(request.getParameter("resetPage")).equals("yes"))
             issuesForm.setPage("1");
 
@@ -213,12 +215,16 @@ public class IssuesHandler
             if (page == null) page = "1";
         }
 
+        issuesForm.setSortColumn(sortColumn);
+        issuesForm.setSortDirection(sortDirection);
+        issuesForm.setPage(page);
+
         long resultsPerPage = 10;
         PSIngredients filmQuery = buildFilmSQLQuery(issuesForm, sortColumn, sortDirection, page, resultsPerPage);
         String countVersionOfQuery = SQLGenerator.getCountVersionOfQuery(filmQuery.query);
 
-        List result = EOI.executeQueryOneResult(countVersionOfQuery, filmQuery.args);
-        long resultSize = (Long) result.get(0);
+        List countResult = EOI.executeQueryOneResult(countVersionOfQuery, filmQuery.args);
+        long resultSize = (Long) countResult.get(0);
         List<Issue> filteredIssues = EOI.executeQuery(filmQuery.query, filmQuery.args);
 
         return new SearchResult(page, filteredIssues, sortColumn, sortDirection, resultSize, resultsPerPage);

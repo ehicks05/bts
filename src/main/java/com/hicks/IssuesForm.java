@@ -17,12 +17,13 @@ public class IssuesForm
 
     private Long createdByUserId;
     private Date createdOn;
+    private Date lastUpdatedOn;
 
     private String sortColumn;
     private String sortDirection;
     private String page;
 
-    public IssuesForm(String id, String title, String description, String status, Long severity, Long bucketId, Long zoneId)
+    public IssuesForm(String id, String title, String description, String status, Long severity, Long bucketId, Long zoneId, Date createdOn, Date lastUpdatedOn)
     {
         this.id = id;
         this.title = title;
@@ -31,6 +32,8 @@ public class IssuesForm
         this.severity = severity;
         this.bucketId = bucketId;
         this.zoneId = zoneId;
+        this.createdOn = createdOn;
+        this.lastUpdatedOn = lastUpdatedOn;
     }
 
     public String toString()
@@ -41,6 +44,8 @@ public class IssuesForm
         "\r\n  title: " + title +
         "\r\n  description: " + description +
         "\r\n  severity: " + severity +
+        "\r\n  createdOn: " + createdOn +
+        "\r\n  lastUpdatedOn: " + lastUpdatedOn +
         "\r\n  ";
     }
 
@@ -144,6 +149,16 @@ public class IssuesForm
     public void setCreatedOn(Date createdOn)
     {
         this.createdOn = createdOn;
+    }
+
+    public Date getLastUpdatedOn()
+    {
+        return lastUpdatedOn;
+    }
+
+    public void setLastUpdatedOn(Date lastUpdatedOn)
+    {
+        this.lastUpdatedOn = lastUpdatedOn;
     }
 
     public String getSortColumn()

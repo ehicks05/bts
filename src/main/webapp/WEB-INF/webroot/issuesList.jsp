@@ -12,10 +12,10 @@
     <title>BTS</title>
     <jsp:include page="inc_header.jsp"/>
     <script>
-        var page = ${searchResult.page};
+        var page = ${issuesForm.page};
         var pages = ${searchResult.pages};
-        var sortColumn = '${searchResult.sortColumn}';
-        var sortDirection = '${searchResult.sortDirection}';
+        var sortColumn = '${issuesForm.sortColumn}';
+        var sortDirection = '${issuesForm.sortDirection}';
 
         function initHeader()
         {
@@ -67,9 +67,9 @@
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-shadow--2dp">
         <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=search">
             <input type="hidden" id="fldRating" name="fldRating">
-            <input type="hidden" name="sortColumn" id="sortColumn" value="${searchResult.sortColumn}"/>
-            <input type="hidden" name="sortDirection" id="sortDirection" value="${searchResult.sortDirection}"/>
-            <input type="hidden" name="page" id="page" value="${searchResult.page}"/>
+            <input type="hidden" name="sortColumn" id="sortColumn" value="${issuesForm.sortColumn}"/>
+            <input type="hidden" name="sortDirection" id="sortDirection" value="${issuesForm.sortDirection}"/>
+            <input type="hidden" name="page" id="page" value="${issuesForm.page}"/>
             <input type="hidden" name="resetPage" id="resetPage"/>
 
             <div class="mdl-card__title"><h5>Search for Issues</h5></div>
@@ -100,22 +100,20 @@
         <table id="filmTable" style="width:100%;margin: 0 auto" class="list">
             <thead>
             <tr class="listheading">
-                <%--<td></td>--%>
-                <ct:sortableCell code="id" label="ID" style="text-align:right;" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
-                <ct:sortableCell code="title" label="Title" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
-                <ct:sortableCell code="createdOn" label="Created" style="text-align:right;" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
-                <ct:sortableCell code="lastUpdatedOn" label="Updated" style="text-align:right;" sortColumn="${searchResult.sortColumn}" sortDirection="${searchResult.sortDirection}"/>
+                <ct:sortableCell code="id" label="ID" style="text-align:right;" sortColumn="${issuesForm.sortColumn}" sortDirection="${issuesForm.sortDirection}"/>
+                <ct:sortableCell code="title" label="Title" sortColumn="${issuesForm.sortColumn}" sortDirection="${issuesForm.sortDirection}"/>
+                <ct:sortableCell code="created_on" label="Created" style="text-align:right;" sortColumn="${issuesForm.sortColumn}" sortDirection="${issuesForm.sortDirection}"/>
+                <ct:sortableCell code="last_updated_on" label="Updated" style="text-align:right;" sortColumn="${issuesForm.sortColumn}" sortDirection="${issuesForm.sortDirection}"/>
             </tr>
             </thead>
 
             <tbody id="myTBody">
-            <c:set var="count" value="${1 + ((searchResult.page - 1) * 100)}"/>
+            <c:set var="count" value="${1 + ((issuesForm.page - 1) * 100)}"/>
             <c:set var="rowStyle" value="listrowodd"/>
             <c:set var="rowToggle" value="${true}"/>
             <c:forEach var="issue" items="${searchResult.searchResults}">
 
                 <tr class="${rowStyle}">
-                    <%--<td class="alignright"><fmt:formatNumber value="${count}" pattern="#,###"/></td>--%>
                     <td class="alignright">
                         <a href="${pageContext.request.contextPath}/view?tab2=issue&action=form&issueId=${issue.id}">
                                 ${issue.id}
@@ -126,7 +124,6 @@
                                 ${issue.title}
                         </a>
                     </td>
-                        <%--<td class="alignright">${fn:substring(issue.description, 0, 160)}</td>--%>
                     <td class="alignright"><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yy" /></td>
                     <td class="alignright"><fmt:formatDate value="${issue.lastUpdatedOn}" pattern="dd/MMM/yy" /></td>
                 </tr>
@@ -145,7 +142,6 @@
         </table>
     </div>
 </div>
-
 
 <jsp:include page="footer.jsp"/>
 </body>
