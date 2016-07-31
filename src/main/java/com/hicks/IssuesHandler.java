@@ -227,7 +227,7 @@ public class IssuesHandler
         long resultSize = (Long) countResult.get(0);
         List<Issue> filteredIssues = EOI.executeQuery(filmQuery.query, filmQuery.args);
 
-        return new SearchResult(page, filteredIssues, sortColumn, sortDirection, resultSize, resultsPerPage);
+        return new SearchResult(page, filteredIssues, resultSize, resultsPerPage);
     }
 
     public static void addComment(HttpServletRequest request,  HttpServletResponse response) throws IOException, ParseException

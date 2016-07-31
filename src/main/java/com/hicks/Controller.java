@@ -56,16 +56,17 @@ public class Controller extends HttpServlet
     private void createTables()
     {
         long subTaskStart;
+        int tablesCreated = 0;
         subTaskStart = System.currentTimeMillis();
         for (DBMap dbMap : DBMap.dbMaps)
             if (!EOI.isTableExists(dbMap))
             {
-                System.out.println("Creating table " + dbMap.tableName + "...");
                 String createTableStatement = SQLGenerator.getCreateTableStatement(dbMap);
-                System.out.println(createTableStatement);
+//                System.out.println(createTableStatement);
                 EOI.executeUpdate(createTableStatement);
+                tablesCreated++;
             }
-        System.out.println("Made sure all tables exist (creating if necessary) in " + (System.currentTimeMillis() - subTaskStart) + "ms");
+        System.out.println("Autocreated " + tablesCreated + " tables in " + (System.currentTimeMillis() - subTaskStart) + "ms");
     }
 
     private void dropTables()
@@ -74,8 +75,8 @@ public class Controller extends HttpServlet
         subTaskStart = System.currentTimeMillis();
         for (DBMap dbMap : DBMap.dbMaps)
         {
-            System.out.print("Dropping " + dbMap.tableName + "...");
-            System.out.println(EOI.executeUpdate("drop table " + dbMap.tableName));
+//            System.out.print("Dropping " + dbMap.tableName + "...");
+            EOI.executeUpdate("drop table " + dbMap.tableName);
         }
         System.out.println("Dropped existing tables in " + (System.currentTimeMillis() - subTaskStart) + "ms");
     }

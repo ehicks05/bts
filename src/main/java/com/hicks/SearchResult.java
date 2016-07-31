@@ -10,15 +10,11 @@ public class SearchResult
     private long size;
     private long resultsPerPage;
     private String page;
-    private String sortColumn;
-    private String sortDirection;
 
-    public SearchResult(String pageParam, List<Issue> searchResults, String sortColumn, String sortDirection, long size, long resultsPerPage)
+    public SearchResult(String pageParam, List<Issue> searchResults, long size, long resultsPerPage)
     {
         this.page = pageParam;
         this.searchResults = searchResults;
-        this.sortColumn = sortColumn;
-        this.sortDirection = sortDirection;
         this.size = size;
         this.resultsPerPage = resultsPerPage;
     }
@@ -79,25 +75,5 @@ public class SearchResult
     public void setPage(String page)
     {
         this.page = page;
-    }
-
-    public String getSortColumn()
-    {
-        return sortColumn;
-    }
-
-    public void setSortColumn(String sortColumn)
-    {
-        this.sortColumn = sortColumn;
-    }
-
-    public String getSortDirection()
-    {
-        return sortDirection;
-    }
-
-    public void setSortDirection(String sortDirection)
-    {
-        this.sortDirection = sortDirection;
     }
 }
