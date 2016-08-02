@@ -34,21 +34,20 @@
         <div class="mdl-layout__drawer">
             <span class="mdl-layout-title">BTS</span>
             <nav class="mdl-navigation">
-                <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&action=form">
-                    <i class="material-icons">dashboard</i>
-                    Dashboard
+                <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&tab2=dashboard&action=form">
+                    <i class="material-icons" style="padding-right: 10px;">dashboard</i>Dashboard
                 </a>
-                <a class="mdl-navigation__link" href="#">
-                    <i class="material-icons">settings</i>
-                    Settings
+                <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&action=form">
+                    <i class="material-icons" style="padding-right: 10px;">search</i>Search
+                </a>
+                <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&tab2=settings&action=form&userId=${userSession.userId}">
+                    <i class="material-icons" style="padding-right: 10px;">settings</i>Settings
                 </a>
                 <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${userSession.userId}">
-                    <i class="material-icons">account_circle</i>
-                    Profile
+                    <i class="material-icons" style="padding-right: 10px;">account_circle</i>Profile
                 </a>
                 <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&action=logout">
-                    <i class="material-icons">power_settings_new</i>
-                    Logout
+                    <i class="material-icons" style="padding-right: 10px;">power_settings_new</i>Logout
                 </a>
             </nav>
         </div>

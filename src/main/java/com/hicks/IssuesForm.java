@@ -6,12 +6,13 @@ public class IssuesForm
 {
     private String id = "";
 
+    private String containsText = "";
+
     private String title = "";
     private String description = "";
     private String status = "";
 
     private Long severity;
-    private Long bucketId;
     private Long zoneId;
     private Long issueTypeId;
 
@@ -23,14 +24,14 @@ public class IssuesForm
     private String sortDirection;
     private String page;
 
-    public IssuesForm(String id, String title, String description, String status, Long severity, Long bucketId, Long zoneId, Date createdOn, Date lastUpdatedOn)
+    public IssuesForm(String id, String containsText, String title, String description, String status, Long severity, Long zoneId, Date createdOn, Date lastUpdatedOn)
     {
         this.id = id;
+        this.containsText = containsText;
         this.title = title;
         this.description = description;
         this.status = status;
         this.severity = severity;
-        this.bucketId = bucketId;
         this.zoneId = zoneId;
         this.createdOn = createdOn;
         this.lastUpdatedOn = lastUpdatedOn;
@@ -59,6 +60,16 @@ public class IssuesForm
     public void setId(String id)
     {
         this.id = id;
+    }
+
+    public String getContainsText()
+    {
+        return containsText;
+    }
+
+    public void setContainsText(String containsText)
+    {
+        this.containsText = containsText;
     }
 
     public String getTitle()
@@ -99,16 +110,6 @@ public class IssuesForm
     public void setSeverity(Long severity)
     {
         this.severity = severity;
-    }
-
-    public Long getBucketId()
-    {
-        return bucketId;
-    }
-
-    public void setBucketId(Long bucketId)
-    {
-        this.bucketId = bucketId;
     }
 
     public Long getZoneId()

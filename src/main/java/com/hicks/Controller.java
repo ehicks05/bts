@@ -106,6 +106,7 @@ public class Controller extends HttpServlet
         request.setAttribute("projects", Project.getAll());
         request.setAttribute("issueTypes", IssueType.getAll());
         request.setAttribute("severities", Severity.getAll());
+        request.setAttribute("issueForms", IssueForm.getByUserId(userSession.getUserId()));
 
         String tab1   = request.getParameter("tab1") == null ? "main" : request.getParameter("tab1");
         String tab2   = request.getParameter("tab2") == null ? "dash" : request.getParameter("tab2");
@@ -132,6 +133,12 @@ public class Controller extends HttpServlet
                     if (action.equals("search"))
                         IssuesHandler.search(request, response);
 
+                    if (action.equals("saveIssueForm"))
+                        IssuesHandler.saveIssueForm(request, response);
+
+                    if (action.equals("loadIssueForm"))
+                        IssuesHandler.loadIssueForm(request, response);
+
                     if (action.equals("addComment"))
                         IssuesHandler.addComment(request, response);
                     if (action.equals("updateComment"))
@@ -140,6 +147,21 @@ public class Controller extends HttpServlet
                         IssuesHandler.addWatcher(request, response);
                     if (action.equals("removeWatcher"))
                         IssuesHandler.removeWatcher(request, response);
+                }
+                if (tab2.equals("issueForm"))
+                {
+                    if (action.equals("form"))
+                        viewJsp = IssueFormHandler.showIssueForms(request, response);
+                }
+                if (tab2.equals("settings"))
+                {
+                    if (action.equals("form"))
+                        viewJsp = SettingsHandler.showSettings(request, response);
+                }
+                if (tab2.equals("dashboard"))
+                {
+                    if (action.equals("form"))
+                        viewJsp = DashboardHandler.showDashboard(request, response);
                 }
                 if (tab2.equals("user"))
                 {

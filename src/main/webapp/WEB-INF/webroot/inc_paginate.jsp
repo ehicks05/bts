@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:useBean id="searchResult" type="com.hicks.SearchResult" scope="session"/>
-<jsp:useBean id="issuesForm" type="com.hicks.IssuesForm" scope="session"/>
+<jsp:useBean id="issuesForm" type="com.hicks.beans.IssueForm" scope="session"/>
 <tr>
     <td colspan="100" style="text-align: center;">
         <button class="firstButton" value="First" onclick="goToPage('first')" <c:if test="${!searchResult.hasPrevious}">disabled</c:if>>

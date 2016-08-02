@@ -1,17 +1,21 @@
 package com.hicks.beans;
 
 
+import com.hicks.IssuesHandler;
+import com.hicks.SearchResult;
 import net.ehicks.eoi.EOI;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "issues")
-public class Issue implements Serializable
+@Table(name = "issue_forms")
+public class IssueForm implements Serializable
 {
 //    @Version
 //    @Column(name = "version")
@@ -21,13 +25,19 @@ public class Issue implements Serializable
     @Column(name = "id", updatable = false, nullable = false, columnDefinition = "bigint not null auto_increment primary key")
     private Long id;
 
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "contains_text", length = 2000)
+    private String containsText = "";
+
     @Column(name = "title", length = 2000)
     private String title = "";
     @Column(name = "description", columnDefinition = "varchar2(32000 CHAR)")
     private String description = "";
 
-    @Column(name = "bucket_id")
-    private Long bucketId;
+    @Column(name = "issue_id")
+    private Long issueId;
     @Column(name = "zone_id")
     private Long zoneId;
     @Column(name = "issue_type_id")
@@ -58,11 +68,38 @@ public class Issue implements Serializable
     @Temporal(TemporalType.DATE)
     private Date lastUpdatedOn;
 
+    @Column(name = "sort_column", length = 2000)
+    private String sortColumn = "";
+
+    @Column(name = "sort_direction", length = 2000)
+    private String sortDirection = "";
+
+    @Column(name = "page", length = 2000)
+    private String page = "";
+
+    public IssueForm()
+    {
+    }
+
+    public IssueForm(Long issueId, Long userId, String containsText, String title, String description, String status, Long severityId, Long zoneId, Date createdOn, Date lastUpdatedOn)
+    {
+        this.issueId = issueId;
+        this.userId = userId;
+        this.containsText = containsText;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.severityId = severityId;
+        this.zoneId = zoneId;
+        this.createdOn = createdOn;
+        this.lastUpdatedOn = lastUpdatedOn;
+    }
+
     @Override
     public boolean equals(Object obj)
     {
-        if (!(obj instanceof Issue)) return false;
-        Issue that = (Issue) obj;
+        if (!(obj instanceof IssueForm)) return false;
+        IssueForm that = (IssueForm) obj;
         return this.id.equals(that.getId());
     }
 
@@ -79,44 +116,24 @@ public class Issue implements Serializable
 
     // --------
 
-    public static List<Issue> getAll()
+    public static List<IssueForm> getAll()
     {
-        return EOI.executeQuery("select * from issues");
+        return EOI.executeQuery("select * from issue_forms");
     }
 
-    public static Issue getById(Long id)
+    public static IssueForm getById(Long id)
     {
-        return EOI.executeQueryOneResult("select * from issues where id=?", Arrays.asList(id));
+        return EOI.executeQueryOneResult("select * from issue_forms where id=?", Arrays.asList(id));
     }
 
-    public Project getProject()
+    public static List<IssueForm> getByUserId(Long userId)
     {
-        return Project.getById(projectId);
+        return EOI.executeQuery("select * from issue_forms where user_id=?", Arrays.asList(userId));
     }
 
-    public Zone getZone()
+    public SearchResult getSearchResult() throws IOException, ParseException
     {
-        return Zone.getById(zoneId);
-    }
-
-    public IssueType getIssueType()
-    {
-        return IssueType.getById(issueTypeId);
-    }
-
-    public Severity getSeverity()
-    {
-        return Severity.getById(severityId);
-    }
-
-    public User getAssignee()
-    {
-        return User.getByUserId(assigneeUserId);
-    }
-
-    public User getReporter()
-    {
-        return User.getByUserId(reporterUserId);
+        return IssuesHandler.performSearch(null, this);
     }
 
     // -------- Getters / Setters ----------
@@ -130,6 +147,36 @@ public class Issue implements Serializable
     public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public Long getUserId()
+    {
+        return userId;
+    }
+
+    public void setUserId(Long userId)
+    {
+        this.userId = userId;
+    }
+
+    public String getContainsText()
+    {
+        return containsText;
+    }
+
+    public void setContainsText(String containsText)
+    {
+        this.containsText = containsText;
+    }
+
+    public Long getIssueId()
+    {
+        return issueId;
+    }
+
+    public void setIssueId(Long issueId)
+    {
+        this.issueId = issueId;
     }
 
     public String getTitle()
@@ -150,16 +197,6 @@ public class Issue implements Serializable
     public void setDescription(String description)
     {
         this.description = description;
-    }
-
-    public Long getBucketId()
-    {
-        return bucketId;
-    }
-
-    public void setBucketId(Long bucketId)
-    {
-        this.bucketId = bucketId;
     }
 
     public Long getZoneId()
@@ -270,5 +307,35 @@ public class Issue implements Serializable
     public void setLastUpdatedOn(Date lastUpdatedOn)
     {
         this.lastUpdatedOn = lastUpdatedOn;
+    }
+
+    public String getSortColumn()
+    {
+        return sortColumn;
+    }
+
+    public void setSortColumn(String sortColumn)
+    {
+        this.sortColumn = sortColumn;
+    }
+
+    public String getSortDirection()
+    {
+        return sortDirection;
+    }
+
+    public void setSortDirection(String sortDirection)
+    {
+        this.sortDirection = sortDirection;
+    }
+
+    public String getPage()
+    {
+        return page;
+    }
+
+    public void setPage(String page)
+    {
+        this.page = page;
     }
 }

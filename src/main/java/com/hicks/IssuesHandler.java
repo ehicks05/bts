@@ -23,10 +23,10 @@ public class IssuesHandler
         if (searchResult == null)
         {
             // set some defaults
-            IssuesForm issuesForm = new IssuesForm("", "", "", "", 0L, 0L, 0L, null, null);
-            request.getSession().setAttribute("issuesForm", issuesForm);
+            IssueForm issueForm = new IssueForm(0L, 0L, "", "", "", "", 0L, 0L, null, null);
+            request.getSession().setAttribute("issuesForm", issueForm);
 
-            searchResult = performSearch(request, issuesForm);
+            searchResult = performSearch(request, issueForm);
             request.getSession().setAttribute("searchResult", searchResult);
         }
 
@@ -167,36 +167,71 @@ public class IssuesHandler
 
     public static void search(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
-        String id           = Common.getSafeString(request.getParameter("id"));
+        Long id             = Common.stringToLong(request.getParameter("id"));
+        String containsText = Common.getSafeString(request.getParameter("containsText"));
         String title        = Common.getSafeString(request.getParameter("title"));
         String description  = Common.getSafeString(request.getParameter("description"));
         String status       = Common.getSafeString(request.getParameter("status"));
         Long severity       = Common.stringToLong(request.getParameter("severity"));
         if (severity == 0) severity = null;
-        Long bucketId       = Common.stringToLong(request.getParameter("bucketId"));
         Long zoneId         = Common.stringToLong(request.getParameter("zoneId"));
         Date createdOn      = Common.stringToDate(request.getParameter("createdOn"));
         Date lastUpdatedOn  = Common.stringToDate(request.getParameter("lastUpdatedOn"));
 
-        IssuesForm issuesForm = new IssuesForm(id, title, description, status, severity, bucketId, zoneId, createdOn, lastUpdatedOn);
-        if (Common.getSafeString(request.getParameter("resetPage")).equals("yes"))
-            issuesForm.setPage("1");
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
 
-        SearchResult searchResult = performSearch(request, issuesForm);
-        request.getSession().setAttribute("issuesForm", issuesForm);
+        IssueForm issueForm = new IssueForm(id, userSession.getUserId(), containsText, title, description, status, severity, zoneId, createdOn, lastUpdatedOn);
+        if (Common.getSafeString(request.getParameter("resetPage")).equals("yes"))
+            issueForm.setPage("1");
+
+        SearchResult searchResult = performSearch(request, issueForm);
+        request.getSession().setAttribute("issuesForm", issueForm);
         request.getSession().setAttribute("searchResult", searchResult);
 
         response.sendRedirect("view?action=form");
     }
 
-    private static SearchResult performSearch(HttpServletRequest request, IssuesForm issuesForm) throws ParseException, IOException
+    public static void saveIssueForm(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    {
+        Long id             = Common.stringToLong(request.getParameter("id"));
+        String containsText = Common.getSafeString(request.getParameter("containsText"));
+        String title        = Common.getSafeString(request.getParameter("title"));
+        String description  = Common.getSafeString(request.getParameter("description"));
+        String status       = Common.getSafeString(request.getParameter("status"));
+        Long severity       = Common.stringToLong(request.getParameter("severity"));
+        if (severity == 0) severity = null;
+        Long zoneId         = Common.stringToLong(request.getParameter("zoneId"));
+        Date createdOn      = Common.stringToDate(request.getParameter("createdOn"));
+        Date lastUpdatedOn  = Common.stringToDate(request.getParameter("lastUpdatedOn"));
+
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+
+        IssueForm issuesForm = new IssueForm(id, userSession.getUserId(), containsText, title, description, status, severity, zoneId, createdOn, lastUpdatedOn);
+        EOI.insert(issuesForm);
+
+        response.sendRedirect("view?action=form");
+    }
+
+    public static void loadIssueForm(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    {
+        Long issueFormId = Common.stringToLong(request.getParameter("issueFormId"));
+
+        IssueForm issueForm = IssueForm.getById(issueFormId);
+        SearchResult searchResult = performSearch(request, issueForm);
+        request.getSession().setAttribute("issuesForm", issueForm);
+        request.getSession().setAttribute("searchResult", searchResult);
+
+        response.sendRedirect("view?action=form");
+    }
+
+    public static SearchResult performSearch(HttpServletRequest request, IssueForm issueForm) throws ParseException, IOException
     {
         // parse sorting fields
-        String sortColumn = issuesForm.getSortColumn();
-        String sortDirection = issuesForm.getSortDirection();
+        String sortColumn = issueForm.getSortColumn();
+        String sortDirection = issueForm.getSortDirection();
         if (sortColumn == null)
         {
-            if (request.getParameter("sortColumn") == null)
+            if (request == null || request.getParameter("sortColumn") == null)
             {
                 sortColumn = "id";
                 sortDirection = "asc";
@@ -205,22 +240,22 @@ public class IssuesHandler
                 sortColumn = request.getParameter("sortColumn");
         }
 
-        String directionParam = request.getParameter("sortDirection");
+        String directionParam = request == null ? null : request.getParameter("sortDirection");
         if (sortDirection == null) sortDirection = directionParam == null ? "asc" : directionParam;
 
-        String page = issuesForm.getPage();
-        if (page == null)
+        String page = issueForm.getPage();
+        if (page == null || page.length() == 0)
         {
-            page = request.getParameter("page");
+            page = request == null ? null : request.getParameter("page");
             if (page == null) page = "1";
         }
 
-        issuesForm.setSortColumn(sortColumn);
-        issuesForm.setSortDirection(sortDirection);
-        issuesForm.setPage(page);
+        issueForm.setSortColumn(sortColumn);
+        issueForm.setSortDirection(sortDirection);
+        issueForm.setPage(page);
 
         long resultsPerPage = 10;
-        PSIngredients filmQuery = buildFilmSQLQuery(issuesForm, sortColumn, sortDirection, page, resultsPerPage);
+        PSIngredients filmQuery = buildFilmSQLQuery(issueForm, sortColumn, sortDirection, page, resultsPerPage);
         String countVersionOfQuery = SQLGenerator.getCountVersionOfQuery(filmQuery.query);
 
         List countResult = EOI.executeQueryOneResult(countVersionOfQuery, filmQuery.args);
@@ -305,38 +340,51 @@ public class IssuesHandler
         response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + issueId);
     }
 
-    private static PSIngredients buildFilmSQLQuery(IssuesForm issuesForm, String sortColumn, String sortDirection, String page, long resultsPerPage)
+    private static PSIngredients buildFilmSQLQuery(IssueForm issueForm, String sortColumn, String sortDirection, String page, long resultsPerPage)
     {
         List<Object> args = new ArrayList<>();
         String selectClause = "select * from issues where ";
         String whereClause = "";
 
-        if (issuesForm.getId().length() > 0)
+        if (issueForm.getIssueId() != null && issueForm.getIssueId() != 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
             whereClause += " lower(id) like ? ";
-            args.add(issuesForm.getId().toLowerCase().replaceAll("\\*","%"));
+            args.add(issueForm.getIssueId());
         }
 
-        if (issuesForm.getTitle().length() > 0)
+        if (issueForm.getContainsText().length() > 0)
+        {
+            if (whereClause.length() > 0) whereClause += " and ";
+            whereClause += "( ";
+            whereClause += " lower(id) like ? ";
+            whereClause += " or lower(title) like ? ";
+            whereClause += " or lower(description) like ? ";
+            whereClause += ") ";
+            args.add("%" + issueForm.getContainsText().toLowerCase().replaceAll("\\*","%") + "%");
+            args.add("%" + issueForm.getContainsText().toLowerCase().replaceAll("\\*","%") + "%");
+            args.add("%" + issueForm.getContainsText().toLowerCase().replaceAll("\\*","%") + "%");
+        }
+
+        if (issueForm.getTitle().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
             whereClause += " lower(title) like ? ";
-            args.add("%" + issuesForm.getTitle().toLowerCase().replaceAll("\\*","%") + "%");
+            args.add("%" + issueForm.getTitle().toLowerCase().replaceAll("\\*","%") + "%");
         }
 
-        if (issuesForm.getDescription().length() > 0)
+        if (issueForm.getDescription().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
             whereClause += " lower(description) like ? ";
-            args.add("%" + issuesForm.getDescription().toLowerCase().replaceAll("\\*","%") + "%");
+            args.add("%" + issueForm.getDescription().toLowerCase().replaceAll("\\*","%") + "%");
         }
 
-        if (issuesForm.getSeverity() != null && issuesForm.getSeverity() != 0)
+        if (issueForm.getSeverityId() != null && issueForm.getSeverityId() != 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
             whereClause += " severity_id like ? ";
-            args.add(issuesForm.getSeverity().toString());
+            args.add(issueForm.getSeverityId().toString());
         }
 
         if (args.size() == 0) selectClause = selectClause.replace("where", "");
