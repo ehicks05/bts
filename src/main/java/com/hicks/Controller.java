@@ -109,7 +109,7 @@ public class Controller extends HttpServlet
         request.setAttribute("issueForms", IssueForm.getByUserId(userSession.getUserId()));
 
         String tab1   = request.getParameter("tab1") == null ? "main" : request.getParameter("tab1");
-        String tab2   = request.getParameter("tab2") == null ? "dash" : request.getParameter("tab2");
+        String tab2   = request.getParameter("tab2") == null ? "list" : request.getParameter("tab2");
         String action = request.getParameter("action") == null ? "form" : request.getParameter("action");
 
         String viewJsp = "";
@@ -117,36 +117,36 @@ public class Controller extends HttpServlet
         {
             if (tab1.equals("main"))
             {
-                if (tab2.equals("dash"))
+                if (tab2.equals("list"))
                     if (action.equals("form"))
                         viewJsp = IssuesHandler.showIssues(request, response);
 
                 if (tab2.equals("issue"))
                 {
                     if (action.equals("form"))
-                        viewJsp = IssuesHandler.showModifyIssue(request, response);
+                        viewJsp = ModifyIssueHandler.showModifyIssue(request, response);
                     if (action.equals("create"))
-                        IssuesHandler.createIssue(request, response);
+                        ModifyIssueHandler.createIssue(request, response);
                     if (action.equals("update"))
-                        IssuesHandler.updateIssue(request, response);
+                        ModifyIssueHandler.updateIssue(request, response);
 
                     if (action.equals("search"))
                         IssuesHandler.search(request, response);
 
+                    if (action.equals("ajaxGetPageOfResults"))
+                        IssuesHandler.ajaxGetPageOfResults(request, response);
+
                     if (action.equals("saveIssueForm"))
                         IssuesHandler.saveIssueForm(request, response);
 
-                    if (action.equals("loadIssueForm"))
-                        IssuesHandler.loadIssueForm(request, response);
-
                     if (action.equals("addComment"))
-                        IssuesHandler.addComment(request, response);
+                        ModifyIssueHandler.addComment(request, response);
                     if (action.equals("updateComment"))
-                        IssuesHandler.updateComment(request, response);
+                        ModifyIssueHandler.updateComment(request, response);
                     if (action.equals("addWatcher"))
-                        IssuesHandler.addWatcher(request, response);
+                        ModifyIssueHandler.addWatcher(request, response);
                     if (action.equals("removeWatcher"))
-                        IssuesHandler.removeWatcher(request, response);
+                        ModifyIssueHandler.removeWatcher(request, response);
                 }
                 if (tab2.equals("issueForm"))
                 {
@@ -170,7 +170,7 @@ public class Controller extends HttpServlet
                     if (action.equals("list"))
                         viewJsp = UsersHandler.showUsers(request, response);
                     if (action.equals("create"))
-                        IssuesHandler.createIssue(request, response);
+                        ModifyIssueHandler.createIssue(request, response);
                 }
 
                 if (action.equals("debug"))

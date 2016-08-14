@@ -1,6 +1,7 @@
 package com.hicks;
 
 import com.hicks.beans.Issue;
+import com.hicks.beans.IssueForm;
 import net.ehicks.eoi.EOICache;
 
 import javax.servlet.ServletOutputStream;
@@ -40,9 +41,9 @@ public class DebugHandler
             String attrName = attrNames.nextElement();
             Object attrValue = session.getAttribute(attrName);
 
-            if (attrValue instanceof IssuesForm)
+            if (attrValue instanceof IssueForm)
             {
-                IssuesForm issuesForm = (IssuesForm) attrValue;
+                IssueForm issueForm = (IssueForm) attrValue;
             }
             if (attrValue instanceof SearchResult)
             {

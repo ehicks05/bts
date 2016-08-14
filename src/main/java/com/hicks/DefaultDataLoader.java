@@ -272,6 +272,27 @@ public class DefaultDataLoader
             dbFile.setContent(content3);
             EOI.insert(dbFile);
         }
+
+        List<IssueForm> issueForms = IssueForm.getAll();
+        if (issueForms.size() == 0)
+        {
+            IssueForm issueForm = new IssueForm();
+            issueForm.setFormName("Assigned To Me");
+            issueForm.setUserId(1L);
+            issueForm.setAssigneeUserId(1L);
+            EOI.insert(issueForm);
+
+            issueForm = new IssueForm();
+            issueForm.setFormName("Assigned To Me");
+            issueForm.setUserId(2L);
+            issueForm.setAssigneeUserId(2L);
+            EOI.insert(issueForm);
+
+            issueForm = new IssueForm();
+            issueForm.setFormName("All Issues");
+            issueForm.setUserId(1L);
+            EOI.insert(issueForm);
+        }
     }
 
     private static Date getRandomDateTime()

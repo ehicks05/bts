@@ -26,7 +26,7 @@
                     ID
                 </td>
                 <td>
-                    Text Contains
+                    Name
                 </td>
             </tr>
 
@@ -36,12 +36,12 @@
 
                 <tr class="${rowStyle}">
                     <td class="alignright">
-                        <a href="${pageContext.request.contextPath}/view?tab2=issue&action=loadIssueForm&issueFormId=${issueForm.id}">
-                                ${issueForm.id}
+                        <a href="${pageContext.request.contextPath}/view?tab2=list&action=form&issueFormId=${issueForm.id}">
+                            ${issueForm.id}
                         </a>
                     </td>
                     <td>
-                            ${issueForm.containsText}
+                        ${issueForm.formName}
                     </td>
                 </tr>
 

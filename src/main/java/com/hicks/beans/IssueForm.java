@@ -4,11 +4,13 @@ package com.hicks.beans;
 import com.hicks.IssuesHandler;
 import com.hicks.SearchResult;
 import net.ehicks.eoi.EOI;
+import net.ehicks.eoi.PSIngredients;
 
 import javax.persistence.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +32,9 @@ public class IssueForm implements Serializable
 
     @Column(name = "contains_text", length = 2000)
     private String containsText = "";
+
+    @Column(name = "form_name", length = 2000)
+    private String formName = "";
 
     @Column(name = "title", length = 2000)
     private String title = "";
@@ -95,6 +100,75 @@ public class IssueForm implements Serializable
         this.lastUpdatedOn = lastUpdatedOn;
     }
 
+    public static PSIngredients buildFilmSQLQuery(IssueForm issueForm, long resultsPerPage)
+    {
+        List<Object> args = new ArrayList<>();
+        String selectClause = "select * from issues where ";
+        String whereClause = "";
+
+        if (issueForm.getIssueId() != null && issueForm.getIssueId() != 0)
+        {
+            if (whereClause.length() > 0) whereClause += " and ";
+            whereClause += " lower(id) like ? ";
+            args.add(issueForm.getIssueId());
+        }
+
+        if (issueForm.getContainsText().length() > 0)
+        {
+            if (whereClause.length() > 0) whereClause += " and ";
+            whereClause += "( ";
+            whereClause += " lower(id) like ? ";
+            whereClause += " or lower(title) like ? ";
+            whereClause += " or lower(description) like ? ";
+            whereClause += ") ";
+            args.add("%" + issueForm.getContainsText().toLowerCase().replaceAll("\\*","%") + "%");
+            args.add("%" + issueForm.getContainsText().toLowerCase().replaceAll("\\*","%") + "%");
+            args.add("%" + issueForm.getContainsText().toLowerCase().replaceAll("\\*","%") + "%");
+        }
+
+        if (issueForm.getTitle().length() > 0)
+        {
+            if (whereClause.length() > 0) whereClause += " and ";
+            whereClause += " lower(title) like ? ";
+            args.add("%" + issueForm.getTitle().toLowerCase().replaceAll("\\*","%") + "%");
+        }
+
+        if (issueForm.getDescription().length() > 0)
+        {
+            if (whereClause.length() > 0) whereClause += " and ";
+            whereClause += " lower(description) like ? ";
+            args.add("%" + issueForm.getDescription().toLowerCase().replaceAll("\\*","%") + "%");
+        }
+
+        if (issueForm.getSeverityId() != null && issueForm.getSeverityId() != 0)
+        {
+            if (whereClause.length() > 0) whereClause += " and ";
+            whereClause += " severity_id = ? ";
+            args.add(issueForm.getSeverityId().toString());
+        }
+
+        if (issueForm.getAssigneeUserId() != null && issueForm.getAssigneeUserId() != 0)
+        {
+            if (whereClause.length() > 0) whereClause += " and ";
+            whereClause += " assignee_user_id = ? ";
+            args.add(issueForm.getAssigneeUserId().toString());
+        }
+
+        if (args.size() == 0) selectClause = selectClause.replace("where", "");
+
+        String orderByClause = "";
+        if (issueForm.getSortColumn().length() > 0)
+        {
+            orderByClause += " order by " + issueForm.getSortColumn() + " " + issueForm.getSortDirection() + ", id nulls last " ;
+        }
+
+        String offset = String.valueOf((Integer.valueOf(issueForm.getPage()) - 1) * resultsPerPage);
+        String paginationClause = " limit " + resultsPerPage + " offset " + offset;
+
+        String completeQuery = selectClause + whereClause + orderByClause + paginationClause;
+        return new PSIngredients(completeQuery, args);
+    }
+
     @Override
     public boolean equals(Object obj)
     {
@@ -133,7 +207,7 @@ public class IssueForm implements Serializable
 
     public SearchResult getSearchResult() throws IOException, ParseException
     {
-        return IssuesHandler.performSearch(null, this);
+        return IssuesHandler.performSearch(this);
     }
 
     // -------- Getters / Setters ----------
@@ -167,6 +241,16 @@ public class IssueForm implements Serializable
     public void setContainsText(String containsText)
     {
         this.containsText = containsText;
+    }
+
+    public String getFormName()
+    {
+        return formName;
+    }
+
+    public void setFormName(String formName)
+    {
+        this.formName = formName;
     }
 
     public Long getIssueId()
