@@ -84,10 +84,14 @@ public class IssueForm implements Serializable
 
     public IssueForm()
     {
+        this.sortColumn = "id";
+        this.sortDirection = "asc";
+        this.page = "1";
     }
 
     public IssueForm(Long issueId, Long userId, String containsText, String title, String description, String status, Long severityId, Long zoneId, Date createdOn, Date lastUpdatedOn)
     {
+        this();
         this.issueId = issueId;
         this.userId = userId;
         this.containsText = containsText;

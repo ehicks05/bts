@@ -6,8 +6,6 @@
 <jsp:useBean id="searchResult" type="com.hicks.SearchResult" scope="request"/>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<%@taglib prefix="tagFile" tagdir="/WEB-INF/tags" %>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,19 +34,6 @@
             }
             $('#sortColumn').val(column);
             $('#sortDirection').val(direction);
-
-            $('#frmFilter').submit();
-        }
-
-        function goToPage(pageNumber)
-        {
-            var parsedPage = '';
-            if (pageNumber == 'first') parsedPage = 1;
-            if (pageNumber == 'last') parsedPage = pages;
-            if (pageNumber == 'next') parsedPage = (page + 1);
-            if (pageNumber == 'previous') parsedPage = (page - 1);
-
-            $('#page').val(parsedPage);
 
             $('#frmFilter').submit();
         }
@@ -127,7 +112,6 @@
 
         <div class="tableContainer">
             <jsp:include page="issueTable.jsp"/>
-            <%--<tagFile:issueTable issueForm="${issueForm}" searchResult="${searchResult}"/>--%>
         </div>
     </div>
 </div>

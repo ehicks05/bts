@@ -32,6 +32,9 @@ div.ui-datepicker{
 
 .js-example-basic-single {padding-right: 24px;}
 
+.clickable {cursor: pointer;}
+.clickable:hover {text-decoration: underline}
+
 /* Material */
 .mdl-grid {padding: 0;}
 .mdl-layout__drawer .mdl-navigation {padding-top: 8px;}

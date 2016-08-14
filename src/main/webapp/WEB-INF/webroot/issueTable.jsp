@@ -49,10 +49,4 @@
         <tr><td colspan="100">No Results</td></tr>
     </c:if>
     <jsp:include page="inc_paginate.jsp"/>
-    <tr>
-        <td colspan="100">
-            <button onclick="ajaxFilms(this, '${issueForm.id}', '${issueForm.page - 1}', '', '')">back</button>
-            <button onclick="ajaxFilms(this, '${issueForm.id}', '${issueForm.page + 1}', '', '')">forward</button>
-        </td>
-    </tr>
 </table>

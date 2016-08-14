@@ -25,12 +25,7 @@ public class IssuesHandler
         IssueForm issueForm = IssueForm.getById(issueFormId);
 
         if (issueForm == null)
-        {
             issueForm = new IssueForm(0L, 0L, "", "", "", "", 0L, 0L, null, null);
-            issueForm.setSortColumn("id");
-            issueForm.setSortDirection("asc");
-            issueForm.setPage("1");
-        }
 
         SearchResult searchResult = issueForm.getSearchResult();
 
@@ -46,12 +41,7 @@ public class IssuesHandler
         IssueForm issueForm = IssueForm.getById(issueFormId);
 
         if (issueForm == null)
-        {
             issueForm = new IssueForm(0L, 0L, "", "", "", "", 0L, 0L, null, null);
-            issueForm.setSortColumn("id");
-            issueForm.setSortDirection("asc");
-            issueForm.setPage("1");
-        }
 
         // parse sorting fields
         String sortColumn = request.getParameter("sortColumn");
@@ -79,32 +69,6 @@ public class IssuesHandler
         request.setAttribute("searchResult", searchResult);
 
         request.getRequestDispatcher("/WEB-INF/webroot/issueTable.jsp").forward(request, response);
-
-
-//        HttpServletResponseWrapper responseWrapper = new HttpServletResponseWrapper(response) {
-//            private final StringWriter sw = new StringWriter();
-//
-//            @Override
-//            public PrintWriter getWriter() throws IOException {
-//                return new PrintWriter(sw);
-//            }
-//
-//            @Override
-//            public String toString() {
-//                return sw.toString();
-//            }
-//        };
-//        request.getRequestDispatcher("/WEB-INF/webroot/issueTable.jsp").include(request, responseWrapper);
-//        String content = responseWrapper.toString();
-////        System.out.println("Output : " + content);
-////        response.getWriter().write(content);
-//        response.setContentType("text/plain");  // Set content type of the response so that jQuery knows what it can expect.
-//        response.setCharacterEncoding("UTF-8"); // You want world domination, huh?
-//        response.getWriter().write(content);       // Write response body.
-//
-////        response.getOutputStream().print(content);
-////        response.getOutputStream().flush();
-
     }
 
     public static void search(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException

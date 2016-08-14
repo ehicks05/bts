@@ -48,7 +48,6 @@
             <div class="mdl-card__title"><h5>${issueForm.formName}: ${searchResult.size} Issues<i class="material-icons">mode_edit</i></h5></div>
 
             <div class="tableContainer">
-
                 <c:set var="issueForm" value="${issueForm}" scope="request"/>
                 <c:set var="searchResult" value="${searchResult}" scope="request"/>
                 <jsp:include page="issueTable.jsp"/>
