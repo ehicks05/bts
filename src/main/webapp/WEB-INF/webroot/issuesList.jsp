@@ -19,7 +19,11 @@
 
         function initHeader()
         {
-
+            $('.testselect2').SumoSelect({
+                placeholder: 'Any',
+                csvDispCount: 3,
+                search: true
+            });
         }
 
         function sortFilms(element, column)
@@ -78,7 +82,9 @@
 <jsp:include page="header.jsp"/>
 
 <div class="mdl-grid">
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-shadow--2dp">
+    <div class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-shadow--2dp">
+        <c:set var="formName" value="${fn:length(issueForm.formName) == 0 ? 'New Filter' : issueForm.formName}"/>
+        <div class="mdl-card__title"><h5>Issue Filter: ${formName}</h5></div>
         <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=search">
             <input type="hidden" id="fldRating" name="fldRating">
             <input type="hidden" name="sortColumn" id="sortColumn" value="${issueForm.sortColumn}"/>
@@ -86,7 +92,7 @@
             <input type="hidden" name="page" id="page" value="${issueForm.page}"/>
             <input type="hidden" name="resetPage" id="resetPage"/>
 
-            <div class="mdl-card__supporting-text">
+            <div style="padding: 10px;">
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="containsText" name="containsText" value="${issueForm.containsText}">
@@ -98,6 +104,21 @@
                     <label for="severity">Severity: </label>
                     <ct:select id="severity" value="${issueForm.severityId}" items="${severities}" required="${false}"/>
                 </div>
+
+                <br>
+                <div>
+                    <label for="zone">Zone: </label>
+                    <select id="zone" name="zone" class="testselect2" multiple>
+                        <option value="Alpha">Alpha</option>
+                        <option value="Bridgewater">Bridgewater</option>
+                        <option value="Flemington" selected>Flemington</option>
+                        <option value="Readington" selected>Readington</option>
+                        <option value="Warren">Warren1</option>
+                        <option value="Warren">Warren2</option>
+                        <option value="Warren">Warren3</option>
+                        <option value="Warren">Warren4</option>
+                    </select>
+                </div>
             </div>
             <div class="mdl-card__actions">
                 <input type="submit" value="Search" class="mdl-button mdl-js-button mdl-button--raised" onclick="resetPagination();" />
@@ -107,7 +128,7 @@
     </div>
 
     <br>
-    <div class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--4-col-tablet mdl-shadow--2dp">
+    <div class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--8-col-tablet mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>Found ${searchResult.size} Issues</h5></div>
 
         <div class="tableContainer">

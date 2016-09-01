@@ -37,7 +37,7 @@
                 <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&tab2=dashboard&action=form">
                     <i class="material-icons" style="padding-right: 10px;">dashboard</i>Dashboard
                 </a>
-                <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&action=form">
+                <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&tab2=list&action=form">
                     <i class="material-icons" style="padding-right: 10px;">search</i>Search
                 </a>
                 <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&tab2=settings&action=form&userId=${userSession.userId}">

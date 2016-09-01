@@ -109,7 +109,7 @@ public class Controller extends HttpServlet
         request.setAttribute("issueForms", IssueForm.getByUserId(userSession.getUserId()));
 
         String tab1   = request.getParameter("tab1") == null ? "main" : request.getParameter("tab1");
-        String tab2   = request.getParameter("tab2") == null ? "list" : request.getParameter("tab2");
+        String tab2   = request.getParameter("tab2") == null ? "dashboard" : request.getParameter("tab2");
         String action = request.getParameter("action") == null ? "form" : request.getParameter("action");
 
         String viewJsp = "";

@@ -13,6 +13,11 @@
 <link rel="stylesheet" href="../../js/select2/select2.min.css" />
 <%-- Select2 --%>
 
+<%-- SumoSelect --%>
+<script src="../../js/sumoselect/jquery.sumoselect.min.js"></script>
+<link rel="stylesheet" href="../../js/sumoselect/sumoselect.css" />
+<%-- SumoSelect --%>
+
 <%-- MDL --%>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-blue.min.css">

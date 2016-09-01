@@ -40,6 +40,10 @@ div.ui-datepicker{
 .mdl-layout__drawer .mdl-navigation {padding-top: 8px;}
 .mdl-card__title {padding: 8px; background-color: #cedff9;}
 .mdl-card__supporting-text {padding: 8px;}
+.mdl-card {
+    overflow: visible;
+    z-index: auto;
+}
 /* Material */
 h1,h2,h3,h4,h5,h6 {margin: 12px 0 8px;}
 
@@ -49,21 +53,5 @@ h1,h2,h3,h4,h5,h6 {margin: 12px 0 8px;}
 .editable {}
 .editable:hover {background-color: #F5F5F5;}
 
-/* Media */
-@media (min-width: 1175px)
-{
-}
-@media (min-width: 900px) and (max-width: 1174px)
-{
-    .lowPriority {display:none;}
-}
-@media (min-width: 700px) and (max-width: 899px)
-{
-    .mediumPriority {display:none;}
-    .lowPriority {display:none;}
-}
-@media (max-width: 699px)
-{
-    .mediumPriority {display:none;}
-    .lowPriority {display:none;}
-}
+.SumoSelect.open > .optWrapper {position: absolute}
+.SumoSelect > .optWrapper > .options{max-height: 220px}
