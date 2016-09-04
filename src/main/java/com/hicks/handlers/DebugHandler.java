@@ -1,5 +1,6 @@
-package com.hicks;
+package com.hicks.handlers;
 
+import com.hicks.SearchResult;
 import com.hicks.beans.Issue;
 import com.hicks.beans.IssueForm;
 import net.ehicks.eoi.EOICache;

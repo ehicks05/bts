@@ -65,7 +65,7 @@
         <div class="mdl-card__supporting-text">
             <c:forEach var="comment" items="${user.allComments}">
                 <div style="padding: 0 8px;">
-                    <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${user.id}">
+                    <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${user.id}">
                         <img src="${user.avatar.base64}" style="padding-right: 4px; height: 24px;"/>${user.logonId}
                     </a>
                     commented on

@@ -101,7 +101,7 @@
                             <ct:textToSelect id="fldIssueType" value="${issue.issueType.id}" text="${issue.issueType.name}" items="${issueTypes}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                         </td>
                         <td style="padding: 0 8px;">Status:</td>
-                        <td style="padding: 0 8px;">${issue.status}</td>
+                        <td style="padding: 0 8px;">${issue.statusId}</td>
                     </tr>
                     <tr>
                         <td style="padding: 0 8px;">Created:</td>
@@ -150,7 +150,7 @@
                     <c:set var="commentIndex" value="${commentIndex + 1}"/>
 
                     <div style="padding: 0 8px;">
-                        <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${comment.createdByUserId}">
+                        <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${comment.createdByUserId}">
                             <img src="${comment.createdBy.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;">${comment.createdBy}</a>
 
                         commented on
@@ -219,7 +219,7 @@
                     <td style="padding: 0 8px;">Assignee:</td>
                     <td style="padding: 0 8px;">
                         <c:if test="${!empty issue.assignee}">
-                            <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${issue.assigneeUserId}">
+                            <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${issue.assigneeUserId}">
                                 <img src="${issue.assignee.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
 
                             <ct:textToSelect id="fldAssigneeId" value="${issue.assigneeUserId}" text="${issue.assignee.logonId}" items="${potentialAssignees}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
@@ -232,7 +232,7 @@
                 <tr>
                     <td style="padding: 0 8px;">Reporter:</td>
                     <td style="padding: 0 8px;">
-                        <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${issue.reporterUserId}">
+                        <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${issue.reporterUserId}">
                             <img src="${issue.reporter.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
 
                         <ct:textToSelect id="fldReporterId" value="${issue.reporterUserId}" text="${issue.reporter.logonId}" items="${potentialReporters}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
@@ -255,7 +255,7 @@
                                     <c:forEach var="watcherMap" items="${watcherMaps}">
                                         <tr>
                                             <td>
-                                                <a style="" href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${watcherMap.watcher.id}">
+                                                <a style="" href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${watcherMap.watcher.id}">
                                                 ${watcherMap.watcher.logonId}</a>
                                             </td>
                                             <td>

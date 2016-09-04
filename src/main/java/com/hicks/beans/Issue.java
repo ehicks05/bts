@@ -40,9 +40,8 @@ public class Issue implements Serializable
     private Long reporterUserId;
     @Column(name = "severity_id")
     private Long severityId;
-
-    @Column(name = "status")
-    private String status;
+    @Column(name = "status_id")
+    private Long statusId;
 
     @Column(name = "created_by_user_id")
     private Long createdByUserId;
@@ -222,14 +221,14 @@ public class Issue implements Serializable
         this.severityId = severityId;
     }
 
-    public String getStatus()
+    public Long getStatusId()
     {
-        return status;
+        return statusId;
     }
 
-    public void setStatus(String status)
+    public void setStatusId(Long statusId)
     {
-        this.status = status;
+        this.statusId = statusId;
     }
 
     public Long getCreatedByUserId()

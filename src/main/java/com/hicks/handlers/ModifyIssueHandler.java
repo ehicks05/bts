@@ -1,5 +1,6 @@
-package com.hicks;
+package com.hicks.handlers;
 
+import com.hicks.UserSession;
 import com.hicks.beans.*;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
@@ -21,12 +22,12 @@ public class ModifyIssueHandler
         request.setAttribute("comments", Comment.getByIssueId(issueId));
         request.setAttribute("watcherMaps", WatcherMap.getByIssueId(issueId));
 
-        List<User> potentialWatchers = User.getAllUsers();
+        List<User> potentialWatchers = User.getAll();
         potentialWatchers.removeAll(WatcherMap.getWatchersForIssue(issueId));
         request.setAttribute("potentialWatchers", potentialWatchers);
 
-        request.setAttribute("potentialAssignees", User.getAllUsers());
-        request.setAttribute("potentialReporters", User.getAllUsers());
+        request.setAttribute("potentialAssignees", User.getAll());
+        request.setAttribute("potentialReporters", User.getAll());
 
         return "/WEB-INF/webroot/issueForm.jsp";
     }
@@ -69,7 +70,7 @@ public class ModifyIssueHandler
 
         Long projectId      = !fieldName.equals("fldProject") ? 0 : Common.stringToLong(fieldValue);
         Long issueTypeId    = !fieldName.equals("fldIssueType") ? 0 : Common.stringToLong(fieldValue);
-        String status       = !fieldName.equals("fldStatus") ? "" : Common.getSafeString(fieldValue);
+        Long statusId       = !fieldName.equals("fldStatusId") ? 0 : Common.stringToLong(fieldValue);
         Long severityId     = !fieldName.equals("fldSeverity") ? 0 : Common.stringToLong(fieldValue);
         Long zoneId         = !fieldName.equals("fldZone") ? 0 : Common.stringToLong(fieldValue);
         String title        = !fieldName.equals("fldTitle") ? "" : Common.getSafeString(fieldValue);
@@ -89,11 +90,10 @@ public class ModifyIssueHandler
             issue.setIssueTypeId(issueTypeId);
             updateLog += "Type to " + IssueType.getById(issueTypeId).getName();
         }
-        if (status.length() != 0)
+        if (statusId != 0)
         {
-            issue.setStatus(status);
-            updateLog += "Status to " + status;
-
+            issue.setStatusId(statusId);
+            updateLog += "Status to " + statusId;
         }
         if (severityId != 0)
         {

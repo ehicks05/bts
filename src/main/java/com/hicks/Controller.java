@@ -1,6 +1,7 @@
 package com.hicks;
 
 import com.hicks.beans.*;
+import com.hicks.handlers.*;
 import net.ehicks.eoi.DBMap;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.SQLGenerator;
@@ -62,7 +63,6 @@ public class Controller extends HttpServlet
             if (!EOI.isTableExists(dbMap))
             {
                 String createTableStatement = SQLGenerator.getCreateTableStatement(dbMap);
-//                System.out.println(createTableStatement);
                 EOI.executeUpdate(createTableStatement);
                 tablesCreated++;
             }
@@ -75,7 +75,6 @@ public class Controller extends HttpServlet
         subTaskStart = System.currentTimeMillis();
         for (DBMap dbMap : DBMap.dbMaps)
         {
-//            System.out.print("Dropping " + dbMap.tableName + "...");
             EOI.executeUpdate("drop table " + dbMap.tableName);
         }
         System.out.println("Dropped existing tables in " + (System.currentTimeMillis() - subTaskStart) + "ms");
@@ -106,6 +105,8 @@ public class Controller extends HttpServlet
         request.setAttribute("projects", Project.getAll());
         request.setAttribute("issueTypes", IssueType.getAll());
         request.setAttribute("severities", Severity.getAll());
+        request.setAttribute("statuses", Status.getAll());
+        request.setAttribute("users", User.getAll());
         request.setAttribute("issueForms", IssueForm.getByUserId(userSession.getUserId()));
 
         String tab1   = request.getParameter("tab1") == null ? "main" : request.getParameter("tab1");
@@ -117,9 +118,17 @@ public class Controller extends HttpServlet
         {
             if (tab1.equals("main"))
             {
-                if (tab2.equals("list"))
+                if (tab2.equals("search"))
+                {
                     if (action.equals("form"))
-                        viewJsp = IssuesHandler.showIssues(request, response);
+                        viewJsp = IssueSearchHandler.showIssues(request, response);
+                    if (action.equals("search"))
+                        IssueSearchHandler.search(request, response);
+                    if (action.equals("ajaxGetPageOfResults"))
+                        IssueSearchHandler.ajaxGetPageOfResults(request, response);
+                    if (action.equals("saveIssueForm"))
+                        IssueSearchHandler.saveIssueForm(request, response);
+                }
 
                 if (tab2.equals("issue"))
                 {
@@ -129,16 +138,6 @@ public class Controller extends HttpServlet
                         ModifyIssueHandler.createIssue(request, response);
                     if (action.equals("update"))
                         ModifyIssueHandler.updateIssue(request, response);
-
-                    if (action.equals("search"))
-                        IssuesHandler.search(request, response);
-
-                    if (action.equals("ajaxGetPageOfResults"))
-                        IssuesHandler.ajaxGetPageOfResults(request, response);
-
-                    if (action.equals("saveIssueForm"))
-                        IssuesHandler.saveIssueForm(request, response);
-
                     if (action.equals("addComment"))
                         ModifyIssueHandler.addComment(request, response);
                     if (action.equals("updateComment"))
@@ -158,19 +157,19 @@ public class Controller extends HttpServlet
                     if (action.equals("form"))
                         viewJsp = SettingsHandler.showSettings(request, response);
                 }
+
                 if (tab2.equals("dashboard"))
                 {
                     if (action.equals("form"))
                         viewJsp = DashboardHandler.showDashboard(request, response);
                 }
-                if (tab2.equals("user"))
+
+                if (tab2.equals("profile"))
                 {
                     if (action.equals("form"))
-                        viewJsp = UsersHandler.showModifyUser(request, response);
-                    if (action.equals("list"))
-                        viewJsp = UsersHandler.showUsers(request, response);
+                        viewJsp = ProfileHandler.showModifyUser(request, response);
                     if (action.equals("create"))
-                        ModifyIssueHandler.createIssue(request, response);
+                        ProfileHandler.createUser(request, response);
                 }
 
                 if (action.equals("debug"))

@@ -14,7 +14,7 @@
     <script>
         function ajaxFilms(callingElementId, issueFormId, newPage, newSortColumn, newSortDirection)
         {
-            var myUrl = '${pageContext.request.contextPath}/view?tab2=issue&action=ajaxGetPageOfResults';
+            var myUrl = '${pageContext.request.contextPath}/view?tab2=search&action=ajaxGetPageOfResults';
             var params = {};
             if (issueFormId) params.issueFormId = issueFormId;
             if (newPage) params.page = newPage;

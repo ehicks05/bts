@@ -36,7 +36,7 @@
 
                 <tr class="${rowStyle}">
                     <td class="alignright">
-                        <a href="${pageContext.request.contextPath}/view?tab2=list&action=form&issueFormId=${issueForm.id}">
+                        <a href="${pageContext.request.contextPath}/view?tab2=search&action=form&issueFormId=${issueForm.id}">
                             ${issueForm.id}
                         </a>
                     </td>

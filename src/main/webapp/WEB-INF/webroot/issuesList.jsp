@@ -12,49 +12,19 @@
     <title>BTS</title>
     <jsp:include page="inc_header.jsp"/>
     <script>
-        var page = ${issueForm.page};
-        var pages = ${searchResult.pages};
-        var sortColumn = '${issueForm.sortColumn}';
-        var sortDirection = '${issueForm.sortDirection}';
-
         function initHeader()
         {
-            $('.testselect2').SumoSelect({
-                placeholder: 'Any',
-                csvDispCount: 3,
-                search: true
-            });
+
         }
 
-        function sortFilms(element, column)
+        function showSaveIssueFormDialog()
         {
-            var previousColumn = sortColumn;
-            var previousDirection = sortDirection;
-            var direction = 'desc';
-            if (column === previousColumn)
-            {
-                if (previousDirection === 'asc') direction = 'desc';
-                if (previousDirection === 'desc') direction = 'asc';
-            }
-            $('#sortColumn').val(column);
-            $('#sortDirection').val(direction);
-
-            $('#frmFilter').submit();
-        }
-
-        function resetPagination()
-        {
-            $('#resetPage').val('yes');
-        }
-
-        function saveIssueForm()
-        {
-            $('#frmFilter').attr('action', '${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=saveIssueForm');
+            $('#frmFilter').attr('action', '${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=saveIssueForm');
         }
 
         function ajaxFilms(callingElementId, issueFormId, newPage, newSortColumn, newSortDirection)
         {
-            var myUrl = '${pageContext.request.contextPath}/view?tab2=issue&action=ajaxGetPageOfResults';
+            var myUrl = '${pageContext.request.contextPath}/view?tab2=search&action=ajaxGetPageOfResults';
             var params = {};
             if (issueFormId) params.issueFormId = issueFormId;
             if (newPage) params.page = newPage;
@@ -85,7 +55,7 @@
     <div class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-shadow--2dp">
         <c:set var="formName" value="${fn:length(issueForm.formName) == 0 ? 'New Filter' : issueForm.formName}"/>
         <div class="mdl-card__title"><h5>Issue Filter: ${formName}</h5></div>
-        <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=search">
+        <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=search">
             <input type="hidden" id="fldRating" name="fldRating">
             <input type="hidden" name="sortColumn" id="sortColumn" value="${issueForm.sortColumn}"/>
             <input type="hidden" name="sortDirection" id="sortDirection" value="${issueForm.sortDirection}"/>
@@ -100,29 +70,21 @@
                 </div>
 
                 <br>
-                <div>
-                    <label for="severity">Severity: </label>
-                    <ct:select id="severity" value="${issueForm.severityId}" items="${severities}" required="${false}"/>
-                </div>
-
+                <label for="zoneIds">Zones: </label>
+                <ct:multiSelect id="zoneIds" selectedValues="${issueForm.zoneIds}" items="${zones}" required="${false}"/>
                 <br>
-                <div>
-                    <label for="zone">Zone: </label>
-                    <select id="zone" name="zone" class="testselect2" multiple>
-                        <option value="Alpha">Alpha</option>
-                        <option value="Bridgewater">Bridgewater</option>
-                        <option value="Flemington" selected>Flemington</option>
-                        <option value="Readington" selected>Readington</option>
-                        <option value="Warren">Warren1</option>
-                        <option value="Warren">Warren2</option>
-                        <option value="Warren">Warren3</option>
-                        <option value="Warren">Warren4</option>
-                    </select>
-                </div>
+                <label for="severityIds">Severities: </label>
+                <ct:multiSelect id="severityIds" selectedValues="${issueForm.severityIdsAsList}" items="${severities}" required="${false}"/>
+                <br>
+                <label for="statusIds">Statuses: </label>
+                <ct:multiSelect id="statusIds" selectedValues="${issueForm.statusIdsAsList}" items="${statuses}" required="${false}"/>
+                <br>
+                <label for="assigneeIds">Assignees: </label>
+                <ct:multiSelect id="assigneeIds" selectedValues="${issueForm.assigneeUserIdsAsList}" items="${users}" required="${false}"/>
             </div>
             <div class="mdl-card__actions">
-                <input type="submit" value="Search" class="mdl-button mdl-js-button mdl-button--raised" onclick="resetPagination();" />
-                <input type="submit" value="Save" class="mdl-button mdl-js-button mdl-button--raised" onclick="saveIssueForm();" />
+                <input type="submit" value="Search" class="mdl-button mdl-js-button mdl-button--raised" />
+                <input type="button" value="Save" class="mdl-button mdl-js-button mdl-button--raised" id="showSaveIssueFormDialog" />
             </div>
         </form>
     </div>
@@ -136,6 +98,44 @@
         </div>
     </div>
 </div>
+
+<dialog class="mdl-dialog">
+    <h4 class="mdl-dialog__title">Save Issue Filter</h4>
+    <div class="mdl-dialog__content">
+        <form id="frmSave" name="frmSave" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=saveIssueForm">
+            <table>
+                <tr>
+                    <td>Filter Name:</td>
+                    <td><input type="text" name="fldName" size="20" maxlength="256" value="" required/></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button save">Save</button>
+        <button type="button" class="mdl-button close">Cancel</button>
+    </div>
+</dialog>
+<script>
+    var dialog = document.querySelector('dialog');
+    var showDialogButton = document.querySelector('#showSaveIssueFormDialog');
+    if (!dialog.showModal)
+    {
+        dialogPolyfill.registerDialog(dialog);
+    }
+    showDialogButton.addEventListener('click', function ()
+    {
+        dialog.showModal();
+    });
+    dialog.querySelector('.save').addEventListener('click', function ()
+    {
+        $('#frmSave').submit()
+    });
+    dialog.querySelector('.close').addEventListener('click', function ()
+    {
+        dialog.close();
+    });
+</script>
 
 <jsp:include page="footer.jsp"/>
 </body>

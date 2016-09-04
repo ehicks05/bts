@@ -74,7 +74,7 @@ public class User implements Serializable, ISelectTagSupport
 
     // --------
 
-    public static List<User> getAllUsers()
+    public static List<User> getAll()
     {
         return EOI.executeQuery("select * from bts_users;");
     }

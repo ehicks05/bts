@@ -1,5 +1,6 @@
-package com.hicks;
+package com.hicks.handlers;
 
+import com.hicks.UserSession;
 import com.hicks.beans.IssueForm;
 
 import javax.servlet.http.HttpServletRequest;

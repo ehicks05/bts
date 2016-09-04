@@ -53,5 +53,5 @@ h1,h2,h3,h4,h5,h6 {margin: 12px 0 8px;}
 .editable {}
 .editable:hover {background-color: #F5F5F5;}
 
-.SumoSelect.open > .optWrapper {position: absolute}
-.SumoSelect > .optWrapper > .options{max-height: 220px}
+/*.SumoSelect.open > .optWrapper {position: absolute}*/
+/*.SumoSelect > .optWrapper > .options{max-height: 220px}*/

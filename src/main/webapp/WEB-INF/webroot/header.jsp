@@ -37,13 +37,13 @@
                 <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&tab2=dashboard&action=form">
                     <i class="material-icons" style="padding-right: 10px;">dashboard</i>Dashboard
                 </a>
-                <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&tab2=list&action=form">
+                <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=form">
                     <i class="material-icons" style="padding-right: 10px;">search</i>Search
                 </a>
                 <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&tab2=settings&action=form&userId=${userSession.userId}">
                     <i class="material-icons" style="padding-right: 10px;">settings</i>Settings
                 </a>
-                <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&tab2=user&action=form&userId=${userSession.userId}">
+                <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${userSession.userId}">
                     <i class="material-icons" style="padding-right: 10px;">account_circle</i>Profile
                 </a>
                 <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&action=logout">

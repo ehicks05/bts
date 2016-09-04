@@ -1,7 +1,7 @@
 package com.hicks.beans;
 
 
-import com.hicks.IssuesHandler;
+import com.hicks.handlers.IssueSearchHandler;
 import com.hicks.SearchResult;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.PSIngredients;
@@ -10,10 +10,7 @@ import javax.persistence.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "issue_forms")
@@ -43,21 +40,21 @@ public class IssueForm implements Serializable
 
     @Column(name = "issue_id")
     private Long issueId;
-    @Column(name = "zone_id")
-    private Long zoneId;
-    @Column(name = "issue_type_id")
-    private Long issueTypeId;
-    @Column(name = "project_id")
-    private Long projectId;
-    @Column(name = "assignee_user_id")
-    private Long assigneeUserId;
-    @Column(name = "reporter_user_id")
-    private Long reporterUserId;
-    @Column(name = "severity_id")
-    private Long severityId;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "zone_ids")
+    private String zoneIds;
+    @Column(name = "issue_type_ids")
+    private String issueTypeIds;
+    @Column(name = "project_ids")
+    private String projectIds;
+    @Column(name = "assignee_user_ids")
+    private String assigneeUserIds;
+    @Column(name = "reporter_user_ids")
+    private String reporterUserIds;
+    @Column(name = "severity_ids")
+    private String severityIds;
+    @Column(name = "status_ids")
+    private String statusIds;
 
     @Column(name = "created_by_user_id")
     private Long createdByUserId;
@@ -89,7 +86,8 @@ public class IssueForm implements Serializable
         this.page = "1";
     }
 
-    public IssueForm(Long issueId, Long userId, String containsText, String title, String description, String status, Long severityId, Long zoneId, Date createdOn, Date lastUpdatedOn)
+    public IssueForm(Long issueId, Long userId, String containsText, String title, String description, String statusIds,
+                     String severityIds, String zoneIds, String assigneeUserIds, Date createdOn, Date lastUpdatedOn)
     {
         this();
         this.issueId = issueId;
@@ -97,9 +95,10 @@ public class IssueForm implements Serializable
         this.containsText = containsText;
         this.title = title;
         this.description = description;
-        this.status = status;
-        this.severityId = severityId;
-        this.zoneId = zoneId;
+        this.statusIds = statusIds;
+        this.severityIds = severityIds;
+        this.zoneIds = zoneIds;
+        this.assigneeUserIds = assigneeUserIds;
         this.createdOn = createdOn;
         this.lastUpdatedOn = lastUpdatedOn;
     }
@@ -144,18 +143,18 @@ public class IssueForm implements Serializable
             args.add("%" + issueForm.getDescription().toLowerCase().replaceAll("\\*","%") + "%");
         }
 
-        if (issueForm.getSeverityId() != null && issueForm.getSeverityId() != 0)
+        if (issueForm.getSeverityIds() != null && issueForm.getSeverityIds().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
-            whereClause += " severity_id = ? ";
-            args.add(issueForm.getSeverityId().toString());
+            whereClause += " severity_id in (?) ";
+            args.add(issueForm.getSeverityIds());
         }
 
-        if (issueForm.getAssigneeUserId() != null && issueForm.getAssigneeUserId() != 0)
+        if (issueForm.getAssigneeUserIds() != null && issueForm.getAssigneeUserIds().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
-            whereClause += " assignee_user_id = ? ";
-            args.add(issueForm.getAssigneeUserId().toString());
+            whereClause += " assignee_user_id in (?) ";
+            args.add(issueForm.getAssigneeUserIds());
         }
 
         if (args.size() == 0) selectClause = selectClause.replace("where", "");
@@ -211,7 +210,28 @@ public class IssueForm implements Serializable
 
     public SearchResult getSearchResult() throws IOException, ParseException
     {
-        return IssuesHandler.performSearch(this);
+        return IssueSearchHandler.performSearch(this);
+    }
+
+    public List<String> getSeverityIdsAsList()
+    {
+        if (severityIds == null)
+            return Collections.EMPTY_LIST;
+        return new ArrayList<>(Arrays.asList(severityIds.split(",")));
+    }
+
+    public List<String> getStatusIdsAsList()
+    {
+        if (statusIds == null)
+            return Collections.EMPTY_LIST;
+        return new ArrayList<>(Arrays.asList(statusIds.split(",")));
+    }
+
+    public List<String> getAssigneeUserIdsAsList()
+    {
+        if (assigneeUserIds == null)
+            return Collections.EMPTY_LIST;
+        return new ArrayList<>(Arrays.asList(assigneeUserIds.split(",")));
     }
 
     // -------- Getters / Setters ----------
@@ -287,74 +307,74 @@ public class IssueForm implements Serializable
         this.description = description;
     }
 
-    public Long getZoneId()
+    public String getZoneIds()
     {
-        return zoneId;
+        return zoneIds;
     }
 
-    public void setZoneId(Long zoneId)
+    public void setZoneIds(String zoneIds)
     {
-        this.zoneId = zoneId;
+        this.zoneIds = zoneIds;
     }
 
-    public Long getIssueTypeId()
+    public String getIssueTypeIds()
     {
-        return issueTypeId;
+        return issueTypeIds;
     }
 
-    public void setIssueTypeId(Long issueTypeId)
+    public void setIssueTypeIds(String issueTypeIds)
     {
-        this.issueTypeId = issueTypeId;
+        this.issueTypeIds = issueTypeIds;
     }
 
-    public Long getProjectId()
+    public String getProjectIds()
     {
-        return projectId;
+        return projectIds;
     }
 
-    public void setProjectId(Long projectId)
+    public void setProjectIds(String projectIds)
     {
-        this.projectId = projectId;
+        this.projectIds = projectIds;
     }
 
-    public Long getAssigneeUserId()
+    public String getAssigneeUserIds()
     {
-        return assigneeUserId;
+        return assigneeUserIds;
     }
 
-    public void setAssigneeUserId(Long assigneeUserId)
+    public void setAssigneeUserIds(String assigneeUserIds)
     {
-        this.assigneeUserId = assigneeUserId;
+        this.assigneeUserIds = assigneeUserIds;
     }
 
-    public Long getReporterUserId()
+    public String getReporterUserIds()
     {
-        return reporterUserId;
+        return reporterUserIds;
     }
 
-    public void setReporterUserId(Long reporterUserId)
+    public void setReporterUserIds(String reporterUserIds)
     {
-        this.reporterUserId = reporterUserId;
+        this.reporterUserIds = reporterUserIds;
     }
 
-    public Long getSeverityId()
+    public String getSeverityIds()
     {
-        return severityId;
+        return severityIds;
     }
 
-    public void setSeverityId(Long severityId)
+    public void setSeverityIds(String severityIds)
     {
-        this.severityId = severityId;
+        this.severityIds = severityIds;
     }
 
-    public String getStatus()
+    public String getStatusIds()
     {
-        return status;
+        return statusIds;
     }
 
-    public void setStatus(String status)
+    public void setStatusIds(String statusIds)
     {
-        this.status = status;
+        this.statusIds = statusIds;
     }
 
     public Long getCreatedByUserId()

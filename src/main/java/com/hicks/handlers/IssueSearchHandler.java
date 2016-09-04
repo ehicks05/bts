@@ -1,5 +1,7 @@
-package com.hicks;
+package com.hicks.handlers;
 
+import com.hicks.SearchResult;
+import com.hicks.UserSession;
 import com.hicks.beans.*;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
@@ -17,7 +19,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-public class IssuesHandler
+public class IssueSearchHandler
 {
     public static String showIssues(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
@@ -25,7 +27,7 @@ public class IssuesHandler
         IssueForm issueForm = IssueForm.getById(issueFormId);
 
         if (issueForm == null)
-            issueForm = new IssueForm(0L, 0L, "", "", "", "", 0L, 0L, null, null);
+            issueForm = new IssueForm();
 
         SearchResult searchResult = issueForm.getSearchResult();
 
@@ -41,7 +43,7 @@ public class IssuesHandler
         IssueForm issueForm = IssueForm.getById(issueFormId);
 
         if (issueForm == null)
-            issueForm = new IssueForm(0L, 0L, "", "", "", "", 0L, 0L, null, null);
+            issueForm = new IssueForm();
 
         // parse sorting fields
         String sortColumn = request.getParameter("sortColumn");
@@ -84,16 +86,16 @@ public class IssuesHandler
 
     private static IssueForm getIssueFormFromRequest(HttpServletRequest request)
     {
-        Long id             = Common.stringToLong(request.getParameter("id"));
-        String containsText = Common.getSafeString(request.getParameter("containsText"));
-        String title        = Common.getSafeString(request.getParameter("title"));
-        String description  = Common.getSafeString(request.getParameter("description"));
-        String status       = Common.getSafeString(request.getParameter("status"));
-        Long severity       = Common.stringToLong(request.getParameter("severity"));
-        if (severity == 0) severity = null;
-        Long zoneId         = Common.stringToLong(request.getParameter("zoneId"));
-        Date createdOn      = Common.stringToDate(request.getParameter("createdOn"));
-        Date lastUpdatedOn  = Common.stringToDate(request.getParameter("lastUpdatedOn"));
+        Long id                 = Common.stringToLong(request.getParameter("id"));
+        String containsText     = Common.getSafeString(request.getParameter("containsText"));
+        String title            = Common.getSafeString(request.getParameter("title"));
+        String description      = Common.getSafeString(request.getParameter("description"));
+        String statusIds        = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("status")));
+        String severityIds      = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("severity")));
+        String zoneIds          = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("zoneIds")));
+        String assigneeIds      = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("assigneeIds")));
+        Date createdOn          = Common.stringToDate(request.getParameter("createdOn"));
+        Date lastUpdatedOn      = Common.stringToDate(request.getParameter("lastUpdatedOn"));
 
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
 
@@ -113,7 +115,7 @@ public class IssuesHandler
         if (page == null || page.length() == 0)
             page = "1";
 
-        IssueForm issueForm = new IssueForm(id, userSession.getUserId(), containsText, title, description, status, severity, zoneId, createdOn, lastUpdatedOn);
+        IssueForm issueForm = new IssueForm(id, userSession.getUserId(), containsText, title, description, statusIds, severityIds, zoneIds, assigneeIds, createdOn, lastUpdatedOn);
         issueForm.setSortColumn(sortColumn);
         issueForm.setSortDirection(sortDirection);
         issueForm.setPage(page);

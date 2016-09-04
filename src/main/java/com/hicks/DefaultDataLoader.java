@@ -8,10 +8,7 @@ import java.nio.file.Paths;
 import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class DefaultDataLoader
 {
@@ -86,6 +83,19 @@ public class DefaultDataLoader
             EOI.insert(project);
         }
 
+        result = EOI.executeQueryOneResult("select count(*) from statuses", new ArrayList<>());
+        rows = (Long) result.get(0);
+        if (rows == 0)
+        {
+            Status status = new Status();
+            status.setName("Open");
+            EOI.insert(status);
+
+            status = new Status();
+            status.setName("Closed");
+            EOI.insert(status);
+        }
+
         List<Severity> severities = Severity.getAll();
         if (severities.size() == 0)
         {
@@ -111,7 +121,7 @@ public class DefaultDataLoader
             issue.setReporterUserId(1L);
             issue.setIssueTypeId(1L);
             issue.setSeverityId(1L);
-            issue.setStatus("OPEN");
+            issue.setStatusId(1L);
 
             issue.setCreatedOn(getRandomDateTime());
             issue.setLastUpdatedOn(new Date());
@@ -136,7 +146,7 @@ public class DefaultDataLoader
             issue.setReporterUserId(2L);
             issue.setIssueTypeId(2L);
             issue.setSeverityId(2L);
-            issue.setStatus("OPEN");
+            issue.setStatusId(1L);
             issue.setCreatedOn(getRandomDateTime());
             issue.setLastUpdatedOn(new Date());
             EOI.insert(issue);
@@ -279,13 +289,14 @@ public class DefaultDataLoader
             IssueForm issueForm = new IssueForm();
             issueForm.setFormName("Assigned To Me");
             issueForm.setUserId(1L);
-            issueForm.setAssigneeUserId(1L);
+            issueForm.setAssigneeUserIds("1");
+            issueForm.setStatusIds("1,2");
             EOI.insert(issueForm);
 
             issueForm = new IssueForm();
             issueForm.setFormName("Assigned To Me");
             issueForm.setUserId(2L);
-            issueForm.setAssigneeUserId(2L);
+            issueForm.setAssigneeUserIds("2");
             EOI.insert(issueForm);
 
             issueForm = new IssueForm();
