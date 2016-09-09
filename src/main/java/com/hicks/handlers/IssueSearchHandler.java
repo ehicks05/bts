@@ -27,7 +27,9 @@ public class IssueSearchHandler
         IssueForm issueForm = IssueForm.getById(issueFormId);
 
         if (issueForm == null)
-            issueForm = new IssueForm();
+        {
+            issueForm = getIssueFormFromRequest(request);
+        }
 
         SearchResult searchResult = issueForm.getSearchResult();
 
@@ -81,7 +83,7 @@ public class IssueSearchHandler
         request.setAttribute("issueForm", issueForm);
         request.setAttribute("searchResult", searchResult);
 
-        response.sendRedirect("view?action=form");
+        response.sendRedirect("view?tab2=search&action=form");
     }
 
     private static IssueForm getIssueFormFromRequest(HttpServletRequest request)

@@ -143,18 +143,46 @@ public class IssueForm implements Serializable
             args.add("%" + issueForm.getDescription().toLowerCase().replaceAll("\\*","%") + "%");
         }
 
+        if (issueForm.getZoneIds() != null && issueForm.getZoneIds().length() > 0)
+        {
+            if (whereClause.length() > 0) whereClause += " and ";
+            String questionMarks = "";
+            for (String id : issueForm.getZoneIds().split(","))
+            {
+                if (questionMarks.length() > 0)
+                    questionMarks += ",";
+                questionMarks += "?";
+                args.add(id);
+            }
+            whereClause += " zone_id in (" + questionMarks +") ";
+        }
+
         if (issueForm.getSeverityIds() != null && issueForm.getSeverityIds().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
-            whereClause += " severity_id in (?) ";
-            args.add(issueForm.getSeverityIds());
+            String questionMarks = "";
+            for (String id : issueForm.getSeverityIds().split(","))
+            {
+                if (questionMarks.length() > 0)
+                    questionMarks += ",";
+                questionMarks += "?";
+                args.add(id);
+            }
+            whereClause += " severity_id in (" + questionMarks + ") ";
         }
 
         if (issueForm.getAssigneeUserIds() != null && issueForm.getAssigneeUserIds().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
-            whereClause += " assignee_user_id in (?) ";
-            args.add(issueForm.getAssigneeUserIds());
+            String questionMarks = "";
+            for (String id : issueForm.getAssigneeUserIds().split(","))
+            {
+                if (questionMarks.length() > 0)
+                    questionMarks += ",";
+                questionMarks += "?";
+                args.add(id);
+            }
+            whereClause += " assignee_user_id in (" + questionMarks + ") ";
         }
 
         if (args.size() == 0) selectClause = selectClause.replace("where", "");
@@ -188,7 +216,8 @@ public class IssueForm implements Serializable
 
     public String toString()
     {
-        return this.getClass().getSimpleName() + ":" + id.toString();
+        String thisId = id == null ? "" : id.toString();
+        return this.getClass().getSimpleName() + ":" + thisId;
     }
 
     // --------
@@ -211,6 +240,13 @@ public class IssueForm implements Serializable
     public SearchResult getSearchResult() throws IOException, ParseException
     {
         return IssueSearchHandler.performSearch(this);
+    }
+
+    public List<String> getZoneIdsAsList()
+    {
+        if (zoneIds == null)
+            return Collections.EMPTY_LIST;
+        return new ArrayList<>(Arrays.asList(zoneIds.split(",")));
     }
 
     public List<String> getSeverityIdsAsList()

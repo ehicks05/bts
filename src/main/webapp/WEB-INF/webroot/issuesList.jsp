@@ -55,7 +55,7 @@
     <div class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-shadow--2dp">
         <c:set var="formName" value="${fn:length(issueForm.formName) == 0 ? 'New Filter' : issueForm.formName}"/>
         <div class="mdl-card__title"><h5>Issue Filter: ${formName}</h5></div>
-        <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=search">
+        <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=form">
             <input type="hidden" id="fldRating" name="fldRating">
             <input type="hidden" name="sortColumn" id="sortColumn" value="${issueForm.sortColumn}"/>
             <input type="hidden" name="sortDirection" id="sortDirection" value="${issueForm.sortDirection}"/>
@@ -71,7 +71,7 @@
 
                 <br>
                 <label for="zoneIds">Zones: </label>
-                <ct:multiSelect id="zoneIds" selectedValues="${issueForm.zoneIds}" items="${zones}" required="${false}"/>
+                <ct:multiSelect id="zoneIds" selectedValues="${issueForm.zoneIdsAsList}" items="${zones}" required="${false}"/>
                 <br>
                 <label for="severityIds">Severities: </label>
                 <ct:multiSelect id="severityIds" selectedValues="${issueForm.severityIdsAsList}" items="${severities}" required="${false}"/>
