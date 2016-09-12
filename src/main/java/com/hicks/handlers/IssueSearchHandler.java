@@ -11,10 +11,7 @@ import net.ehicks.eoi.SQLGenerator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -26,9 +23,16 @@ public class IssueSearchHandler
         Long issueFormId = Common.stringToLong(request.getParameter("issueFormId"));
         IssueForm issueForm = IssueForm.getById(issueFormId);
 
+        // check the session
         if (issueForm == null)
         {
-            issueForm = getIssueFormFromRequest(request);
+            issueForm = (IssueForm) request.getSession().getAttribute("issueForm");
+        }
+
+        if (issueForm == null)
+        {
+            issueForm = new IssueForm();
+            issueForm = updateIssueFormFromRequest(issueForm, request);
         }
 
         SearchResult searchResult = issueForm.getSearchResult();
@@ -77,23 +81,39 @@ public class IssueSearchHandler
 
     public static void search(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
-        IssueForm issueForm = getIssueFormFromRequest(request);
-        SearchResult searchResult = performSearch(issueForm);
+        Long issueFormId = Common.stringToLong(request.getParameter("filterId"));
+        IssueForm issueForm = IssueForm.getById(issueFormId);
+        if (issueForm == null)
+        {
+            issueForm = new IssueForm();
+        }
 
-        request.setAttribute("issueForm", issueForm);
-        request.setAttribute("searchResult", searchResult);
+        issueForm = updateIssueFormFromRequest(issueForm, request);
+//        SearchResult searchResult = performSearch(issueForm);
+
+        if (issueFormId == 0)
+        {
+            request.getSession().setAttribute("issueForm", issueForm);
+//            request.getSession().setAttribute("searchResult", searchResult);
+        }
+        else
+        {
+            request.setAttribute("issueForm", issueForm);
+//            request.setAttribute("searchResult", searchResult);
+        }
 
         response.sendRedirect("view?tab2=search&action=form");
     }
 
-    private static IssueForm getIssueFormFromRequest(HttpServletRequest request)
+    private static IssueForm updateIssueFormFromRequest(IssueForm issueForm, HttpServletRequest request)
     {
-        Long id                 = Common.stringToLong(request.getParameter("id"));
+        String filterName       = Common.getSafeString(request.getParameter("filterName"));
         String containsText     = Common.getSafeString(request.getParameter("containsText"));
         String title            = Common.getSafeString(request.getParameter("title"));
         String description      = Common.getSafeString(request.getParameter("description"));
         String statusIds        = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("status")));
         String severityIds      = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("severity")));
+        String projectIds       = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("projectIds")));
         String zoneIds          = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("zoneIds")));
         String assigneeIds      = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("assigneeIds")));
         Date createdOn          = Common.stringToDate(request.getParameter("createdOn"));
@@ -117,7 +137,8 @@ public class IssueSearchHandler
         if (page == null || page.length() == 0)
             page = "1";
 
-        IssueForm issueForm = new IssueForm(id, userSession.getUserId(), containsText, title, description, statusIds, severityIds, zoneIds, assigneeIds, createdOn, lastUpdatedOn);
+        issueForm.updateFields(filterName, userSession.getUserId(), containsText, title, description, statusIds, severityIds, projectIds, zoneIds, assigneeIds, createdOn, lastUpdatedOn);
+
         issueForm.setSortColumn(sortColumn);
         issueForm.setSortDirection(sortDirection);
         issueForm.setPage(page);
@@ -127,8 +148,19 @@ public class IssueSearchHandler
 
     public static void saveIssueForm(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
-        IssueForm issueForm = getIssueFormFromRequest(request);
-        long issueFormId = EOI.insert(issueForm);
+        Long issueFormId = Common.stringToLong(request.getParameter("filterId"));
+        IssueForm issueForm = IssueForm.getById(issueFormId);
+        if (issueForm == null)
+        {
+            issueForm = new IssueForm();
+            issueForm = updateIssueFormFromRequest(issueForm, request);
+            issueFormId = EOI.insert(issueForm);
+        }
+        else
+        {
+            issueForm = updateIssueFormFromRequest(issueForm, request);
+            EOI.update(issueForm);
+        }
 
         response.sendRedirect("view?action=form&issueFormId=" + issueFormId);
     }

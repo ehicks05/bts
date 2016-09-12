@@ -86,17 +86,17 @@ public class IssueForm implements Serializable
         this.page = "1";
     }
 
-    public IssueForm(Long issueId, Long userId, String containsText, String title, String description, String statusIds,
-                     String severityIds, String zoneIds, String assigneeUserIds, Date createdOn, Date lastUpdatedOn)
+    public void updateFields(String filterName, Long userId, String containsText, String title, String description, String statusIds,
+                     String severityIds, String projectIds, String zoneIds, String assigneeUserIds, Date createdOn, Date lastUpdatedOn)
     {
-        this();
-        this.issueId = issueId;
+        this.setFormName(filterName);
         this.userId = userId;
         this.containsText = containsText;
         this.title = title;
         this.description = description;
         this.statusIds = statusIds;
         this.severityIds = severityIds;
+        this.projectIds = projectIds;
         this.zoneIds = zoneIds;
         this.assigneeUserIds = assigneeUserIds;
         this.createdOn = createdOn;
@@ -141,6 +141,20 @@ public class IssueForm implements Serializable
             if (whereClause.length() > 0) whereClause += " and ";
             whereClause += " lower(description) like ? ";
             args.add("%" + issueForm.getDescription().toLowerCase().replaceAll("\\*","%") + "%");
+        }
+
+        if (issueForm.getProjectIds() != null && issueForm.getProjectIds().length() > 0)
+        {
+            if (whereClause.length() > 0) whereClause += " and ";
+            String questionMarks = "";
+            for (String id : issueForm.getProjectIds().split(","))
+            {
+                if (questionMarks.length() > 0)
+                    questionMarks += ",";
+                questionMarks += "?";
+                args.add(id);
+            }
+            whereClause += " project_id in (" + questionMarks +") ";
         }
 
         if (issueForm.getZoneIds() != null && issueForm.getZoneIds().length() > 0)
@@ -240,6 +254,13 @@ public class IssueForm implements Serializable
     public SearchResult getSearchResult() throws IOException, ParseException
     {
         return IssueSearchHandler.performSearch(this);
+    }
+
+    public List<String> getProjectIdsAsList()
+    {
+        if (projectIds == null)
+            return Collections.EMPTY_LIST;
+        return new ArrayList<>(Arrays.asList(projectIds.split(",")));
     }
 
     public List<String> getZoneIdsAsList()

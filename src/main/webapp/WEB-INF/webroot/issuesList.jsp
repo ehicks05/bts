@@ -17,9 +17,9 @@
 
         }
 
-        function showSaveIssueFormDialog()
+        function saveIssueForm()
         {
-            $('#frmFilter').attr('action', '${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=saveIssueForm');
+            $('#frmFilter').attr('action', '${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=saveIssueForm').submit();
         }
 
         function ajaxFilms(callingElementId, issueFormId, newPage, newSortColumn, newSortDirection)
@@ -55,12 +55,13 @@
     <div class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-shadow--2dp">
         <c:set var="formName" value="${fn:length(issueForm.formName) == 0 ? 'New Filter' : issueForm.formName}"/>
         <div class="mdl-card__title"><h5>Issue Filter: ${formName}</h5></div>
-        <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=form">
+        <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=search">
             <input type="hidden" id="fldRating" name="fldRating">
             <input type="hidden" name="sortColumn" id="sortColumn" value="${issueForm.sortColumn}"/>
             <input type="hidden" name="sortDirection" id="sortDirection" value="${issueForm.sortDirection}"/>
             <input type="hidden" name="page" id="page" value="${issueForm.page}"/>
-            <input type="hidden" name="resetPage" id="resetPage"/>
+            <input type="hidden" name="filterName" id="filterName"/>
+            <input type="hidden" name="filterId" id="filterId" value="${issueForm.id}"/>
 
             <div style="padding: 10px;">
 
@@ -69,6 +70,9 @@
                     <label class="mdl-textfield__label" for="containsText">Contains Text:</label>
                 </div>
 
+                <br>
+                <label for="projectIds">Projects: </label>
+                <ct:multiSelect id="projectIds" selectedValues="${issueForm.projectIdsAsList}" items="${projects}" required="${false}"/>
                 <br>
                 <label for="zoneIds">Zones: </label>
                 <ct:multiSelect id="zoneIds" selectedValues="${issueForm.zoneIdsAsList}" items="${zones}" required="${false}"/>
@@ -99,14 +103,14 @@
     </div>
 </div>
 
-<dialog class="mdl-dialog">
+<dialog class="mdl-dialog" id="saveFilterDialog">
     <h4 class="mdl-dialog__title">Save Issue Filter</h4>
     <div class="mdl-dialog__content">
         <form id="frmSave" name="frmSave" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=saveIssueForm">
             <table>
                 <tr>
                     <td>Filter Name:</td>
-                    <td><input type="text" name="fldName" size="20" maxlength="256" value="" required/></td>
+                    <td><input type="text" id="fldName" name="fldName" size="20" maxlength="256" value="${issueForm.formName}" required/></td>
                 </tr>
             </table>
         </form>
@@ -117,7 +121,7 @@
     </div>
 </dialog>
 <script>
-    var dialog = document.querySelector('dialog');
+    var dialog = document.querySelector('#saveFilterDialog');
     var showDialogButton = document.querySelector('#showSaveIssueFormDialog');
     if (!dialog.showModal)
     {
@@ -129,7 +133,9 @@
     });
     dialog.querySelector('.save').addEventListener('click', function ()
     {
-        $('#frmSave').submit()
+        var filterName = $('#fldName').val();
+        $('#filterName').val(filterName);
+        saveIssueForm();
     });
     dialog.querySelector('.close').addEventListener('click', function ()
     {
