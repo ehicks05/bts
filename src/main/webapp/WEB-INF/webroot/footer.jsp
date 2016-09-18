@@ -4,7 +4,7 @@
 <dialog class="mdl-dialog">
     <h4 class="mdl-dialog__title">Create Issue</h4>
     <div class="mdl-dialog__content">
-        <form id="frmCreate" name="frmCreate" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=create">
+        <form id="frmCreate" name="frmCreate" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab1=main&tab2=issue&action=create">
             <table>
                 <tr>
                     <td>Title:</td>

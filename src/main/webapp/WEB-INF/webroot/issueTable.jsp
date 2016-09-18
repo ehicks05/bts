@@ -25,12 +25,12 @@
 
         <tr class="${rowStyle}">
             <td class="alignright">
-                <a href="${pageContext.request.contextPath}/view?tab2=issue&action=form&issueId=${issue.id}">
+                <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=form&issueId=${issue.id}">
                         ${issue.id}
                 </a>
             </td>
             <td>
-                <a href="${pageContext.request.contextPath}/view?tab2=issue&action=form&issueId=${issue.id}">
+                <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=form&issueId=${issue.id}">
                         ${issue.title}
                 </a>
             </td>

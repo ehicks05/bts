@@ -14,7 +14,8 @@
     <script>
         function initHeader()
         {
-
+            var filterName = $('#fldName').val();
+            $('#filterName').val(filterName);
         }
 
         function saveIssueForm()
@@ -24,7 +25,7 @@
 
         function ajaxFilms(callingElementId, issueFormId, newPage, newSortColumn, newSortDirection)
         {
-            var myUrl = '${pageContext.request.contextPath}/view?tab2=search&action=ajaxGetPageOfResults';
+            var myUrl = '${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=ajaxGetPageOfResults';
             var params = {};
             if (issueFormId) params.issueFormId = issueFormId;
             if (newPage) params.page = newPage;

@@ -69,7 +69,7 @@
                         <img src="${user.avatar.base64}" style="padding-right: 4px; height: 24px;"/>${user.logonId}
                     </a>
                     commented on
-                    <a href="${pageContext.request.contextPath}/view?tab2=issue&action=form&issueId=${comment.issue.id}">
+                    <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=form&issueId=${comment.issue.id}">
                         ${comment.issue.project.prefix}-${comment.issue.id} -  ${comment.issue.title} <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy h:mm a"/>
                     </a>
 

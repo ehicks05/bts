@@ -1,1 +1,1 @@
-<% response.sendRedirect("cinemang/view?action=form"); %>
+<% response.sendRedirect("cinemang/view?tab1=main&tab2=dashboard&action=form"); %>

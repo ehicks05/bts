@@ -84,25 +84,16 @@ public class IssueSearchHandler
         Long issueFormId = Common.stringToLong(request.getParameter("filterId"));
         IssueForm issueForm = IssueForm.getById(issueFormId);
         if (issueForm == null)
-        {
             issueForm = new IssueForm();
-        }
 
         issueForm = updateIssueFormFromRequest(issueForm, request);
-//        SearchResult searchResult = performSearch(issueForm);
 
         if (issueFormId == 0)
-        {
             request.getSession().setAttribute("issueForm", issueForm);
-//            request.getSession().setAttribute("searchResult", searchResult);
-        }
         else
-        {
             request.setAttribute("issueForm", issueForm);
-//            request.setAttribute("searchResult", searchResult);
-        }
 
-        response.sendRedirect("view?tab2=search&action=form");
+        response.sendRedirect("view?tab1=main&tab2=search&action=form&issueFormId=" + issueFormId);
     }
 
     private static IssueForm updateIssueFormFromRequest(IssueForm issueForm, HttpServletRequest request)

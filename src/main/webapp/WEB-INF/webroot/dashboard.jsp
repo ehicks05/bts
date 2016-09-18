@@ -14,7 +14,7 @@
     <script>
         function ajaxFilms(callingElementId, issueFormId, newPage, newSortColumn, newSortDirection)
         {
-            var myUrl = '${pageContext.request.contextPath}/view?tab2=search&action=ajaxGetPageOfResults';
+            var myUrl = '${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=ajaxGetPageOfResults';
             var params = {};
             if (issueFormId) params.issueFormId = issueFormId;
             if (newPage) params.page = newPage;
@@ -44,8 +44,8 @@
     <c:forEach var="issueForm" items="${issueForms}">
         <c:set var="searchResult" value="${issueForm.searchResult}"/>
 
-        <div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-            <div class="mdl-card__title"><h5>${issueForm.formName}: ${searchResult.size} Issues<a class="material-icons" href="${pageContext.request.contextPath}/view?tab2=search&action=form&issueFormId=${issueForm.id}">mode_edit</a></h5></div>
+        <div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+            <div class="mdl-card__title"><h5>${issueForm.formName}: ${searchResult.size} Issues<a class="material-icons" href="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=form&issueFormId=${issueForm.id}">mode_edit</a></h5></div>
 
             <div class="tableContainer">
                 <c:set var="issueForm" value="${issueForm}" scope="request"/>

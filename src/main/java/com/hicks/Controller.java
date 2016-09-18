@@ -109,6 +109,12 @@ public class Controller extends HttpServlet
         request.setAttribute("users", User.getAll());
         request.setAttribute("issueForms", IssueForm.getByUserId(userSession.getUserId()));
 
+        if (request.getParameter("tab1") == null)
+        {
+            response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
+            return;
+        }
+
         String tab1   = request.getParameter("tab1") == null ? "main" : request.getParameter("tab1");
         String tab2   = request.getParameter("tab2") == null ? "dashboard" : request.getParameter("tab2");
         String action = request.getParameter("action") == null ? "form" : request.getParameter("action");
@@ -177,6 +183,19 @@ public class Controller extends HttpServlet
                 if (action.equals("logout"))
                     logout(request, response);
             }
+            if (tab1.equals("admin"))
+            {
+                if (tab2.equals("overview"))
+                {
+                    if (action.equals("form"))
+                        viewJsp = AdminHandler.showOverview(request, response);
+                }
+                if (tab2.equals("users"))
+                {
+                    if (action.equals("form"))
+                        viewJsp = AdminHandler.showManageUsers(request, response);
+                }
+            }
 
         }
         catch (ParseException e)
@@ -210,6 +229,6 @@ public class Controller extends HttpServlet
     private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         request.getSession().invalidate();
-        response.sendRedirect("view?action=form");
+        response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
     }
 }
