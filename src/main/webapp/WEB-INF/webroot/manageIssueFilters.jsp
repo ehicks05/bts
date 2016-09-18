@@ -20,34 +20,29 @@
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--4-col-tablet mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>Saved Filters: ${fn:length(issueForms)}</h5></div>
 
-        <table id="issueForms" style="margin: 0 auto" class="list">
-            <tr class="listheading">
-                <td>
+        <table id="issueForms" style="margin: 0 auto" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+            <thead>
+            <tr>
+                <th>
                     ID
-                </td>
-                <td>
+                </th>
+                <th class="mdl-data-table__cell--non-numeric">
                     Name
-                </td>
+                </th>
             </tr>
+            </thead>
 
-            <c:set var="rowStyle" value="listrowodd"/>
-            <c:set var="rowToggle" value="${true}"/>
             <c:forEach var="issueForm" items="${issueForms}">
-
-                <tr class="${rowStyle}">
-                    <td class="alignright">
+                <tr>
+                    <td>
                         <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=form&issueFormId=${issueForm.id}">
                             ${issueForm.id}
                         </a>
                     </td>
-                    <td>
+                    <td class="mdl-data-table__cell--non-numeric">
                         ${issueForm.formName}
                     </td>
                 </tr>
-
-                <c:if test="${rowToggle}"><c:set var="rowStyle" value="listroweven"/></c:if>
-                <c:if test="${!rowToggle}"><c:set var="rowStyle" value="listrowodd"/></c:if>
-                <c:set var="rowToggle" value="${!rowToggle}"/>
             </c:forEach>
 
             <c:if test="${empty issueForms}">
