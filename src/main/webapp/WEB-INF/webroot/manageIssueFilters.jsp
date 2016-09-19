@@ -18,7 +18,7 @@
 <div class="mdl-grid">
     <br>
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--4-col-tablet mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Saved Filters: ${fn:length(issueForms)}</h5></div>
+        <div class="mdl-card__title"><h5>Your Saved Filters: ${fn:length(issueForms)}</h5></div>
 
         <table id="issueForms" style="margin: 0 auto" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
             <thead>
@@ -29,6 +29,8 @@
                 <th class="mdl-data-table__cell--non-numeric">
                     Name
                 </th>
+                <th>On Dashboard</th>
+                <th></th>
             </tr>
             </thead>
 
@@ -41,6 +43,12 @@
                     </td>
                     <td class="mdl-data-table__cell--non-numeric">
                         ${issueForm.formName}
+                    </td>
+                    <td class="mdl-data-table__cell--non-numeric">
+                        ${issueForm.onDash}
+                    </td>
+                    <td>
+                        <a class="material-icons" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issueForm&action=delete&issueFormId=${issueForm.id}">delete</a>
                     </td>
                 </tr>
             </c:forEach>

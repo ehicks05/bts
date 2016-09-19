@@ -27,11 +27,14 @@ public class IssueForm implements Serializable
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "contains_text", length = 2000)
-    private String containsText = "";
-
     @Column(name = "form_name", length = 2000)
     private String formName = "";
+
+    @Column(name = "on_dash")
+    private Boolean onDash;
+
+    @Column(name = "contains_text", length = 2000)
+    private String containsText = "";
 
     @Column(name = "title", length = 2000)
     private String title = "";
@@ -314,16 +317,6 @@ public class IssueForm implements Serializable
         this.userId = userId;
     }
 
-    public String getContainsText()
-    {
-        return containsText;
-    }
-
-    public void setContainsText(String containsText)
-    {
-        this.containsText = containsText;
-    }
-
     public String getFormName()
     {
         return formName;
@@ -332,6 +325,26 @@ public class IssueForm implements Serializable
     public void setFormName(String formName)
     {
         this.formName = formName;
+    }
+
+    public Boolean getOnDash()
+    {
+        return onDash;
+    }
+
+    public void setOnDash(Boolean onDash)
+    {
+        this.onDash = onDash;
+    }
+
+    public String getContainsText()
+    {
+        return containsText;
+    }
+
+    public void setContainsText(String containsText)
+    {
+        this.containsText = containsText;
     }
 
     public Long getIssueId()

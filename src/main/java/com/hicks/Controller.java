@@ -157,6 +157,10 @@ public class Controller extends HttpServlet
                 {
                     if (action.equals("form"))
                         viewJsp = IssueFormHandler.showIssueForms(request, response);
+                    if (action.equals("delete"))
+                        IssueFormHandler.deleteIssueForm(request, response);
+                    if (action.equals("addToDashboard"))
+                        IssueFormHandler.addToDashboard(request, response);
                 }
                 if (tab2.equals("settings"))
                 {
@@ -168,6 +172,8 @@ public class Controller extends HttpServlet
                 {
                     if (action.equals("form"))
                         viewJsp = DashboardHandler.showDashboard(request, response);
+                    if (action.equals("remove"))
+                        DashboardHandler.removeIssueForm(request, response);
                 }
 
                 if (tab2.equals("profile"))

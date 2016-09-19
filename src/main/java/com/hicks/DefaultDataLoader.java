@@ -288,6 +288,7 @@ public class DefaultDataLoader
         {
             IssueForm issueForm = new IssueForm();
             issueForm.setFormName("Assigned To Me");
+            issueForm.setOnDash(true);
             issueForm.setUserId(1L);
             issueForm.setAssigneeUserIds("1");
             issueForm.setStatusIds("1,2");
@@ -295,12 +296,14 @@ public class DefaultDataLoader
 
             issueForm = new IssueForm();
             issueForm.setFormName("Assigned To Me");
+            issueForm.setOnDash(true);
             issueForm.setUserId(2L);
             issueForm.setAssigneeUserIds("2");
             EOI.insert(issueForm);
 
             issueForm = new IssueForm();
             issueForm.setFormName("All Issues");
+            issueForm.setOnDash(true);
             issueForm.setUserId(1L);
             EOI.insert(issueForm);
         }

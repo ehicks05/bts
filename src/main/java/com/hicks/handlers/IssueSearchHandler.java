@@ -153,7 +153,7 @@ public class IssueSearchHandler
             EOI.update(issueForm);
         }
 
-        response.sendRedirect("view?action=form&issueFormId=" + issueFormId);
+        response.sendRedirect("view?tab1=main&tab2=search&action=form&issueFormId=" + issueFormId);
     }
 
     public static SearchResult performSearch(IssueForm issueForm) throws ParseException, IOException

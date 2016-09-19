@@ -2,6 +2,8 @@ package com.hicks.handlers;
 
 import com.hicks.UserSession;
 import com.hicks.beans.IssueForm;
+import net.ehicks.common.Common;
+import net.ehicks.eoi.EOI;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,5 +20,31 @@ public class IssueFormHandler
         request.setAttribute("issueForms", issueForms);
 
         return "/WEB-INF/webroot/manageIssueFilters.jsp";
+    }
+
+    public static void deleteIssueForm(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        long id = Common.stringToLong(request.getParameter("issueFormId"));
+        IssueForm issueForm = IssueForm.getById(id);
+        if (issueForm != null)
+        {
+            int result = EOI.executeDelete(issueForm);
+            System.out.println(result);
+        }
+
+        response.sendRedirect("view?tab1=main&tab2=issueForm&action=form");
+    }
+
+    public static void addToDashboard(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        long id = Common.stringToLong(request.getParameter("issueFormId"));
+        IssueForm issueForm = IssueForm.getById(id);
+        if (issueForm != null)
+        {
+            issueForm.setOnDash(true);
+            EOI.update(issueForm);
+        }
+
+        response.sendRedirect("view?tab1=main&tab2=issueForm&action=form");
     }
 }
