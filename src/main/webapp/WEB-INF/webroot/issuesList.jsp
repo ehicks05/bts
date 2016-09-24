@@ -96,7 +96,7 @@
                 <input type="submit" value="Search" class="mdl-button mdl-js-button mdl-button--raised" />
                 <input type="button" value="Save" class="mdl-button mdl-js-button mdl-button--raised" id="showSaveIssueFormDialog" />
 
-                <c:if test="${!issueForm.onDash}">
+                <c:if test="${issueForm.id > 0 && !issueForm.onDash}">
                     <input type="button" value="Add to Dash" class="mdl-button mdl-js-button mdl-button--raised" onclick="addToDashboard('${issueForm.id}');" />
                 </c:if>
             </div>
