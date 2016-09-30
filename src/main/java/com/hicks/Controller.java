@@ -75,7 +75,14 @@ public class Controller extends HttpServlet
         subTaskStart = System.currentTimeMillis();
         for (DBMap dbMap : DBMap.dbMaps)
         {
-            EOI.executeUpdate("drop table " + dbMap.tableName);
+            try
+            {
+                EOI.executeUpdate("drop table " + dbMap.tableName);
+            }
+            catch (Exception e)
+            {
+                System.out.println("didnt drop " + dbMap.tableName);
+            }
         }
         System.out.println("Dropped existing tables in " + (System.currentTimeMillis() - subTaskStart) + "ms");
     }

@@ -106,62 +106,6 @@ public class DefaultDataLoader
             EOI.insert(severity);
         }
 
-        result = EOI.executeQueryOneResult("select count(*) from issues", new ArrayList<>());
-        rows = (Long) result.get(0);
-        if (rows == 0)
-        {
-            Issue issue = new Issue();
-            issue.setTitle("Thing is Broken");
-            issue.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras quis lorem ac dui scelerisque gravida. Nulla efficitur turpis nec augue finibus, a dictum neque elementum. Ut eget aliquam nisl. Cras ultricies semper blandit. Nulla in semper leo. Phasellus cursus metus tortor, non lacinia purus hendrerit vitae. Etiam venenatis erat in magna maximus volutpat. Aenean dapibus nisi nisl, vitae viverra nulla cursus a. Nullam efficitur quam non elementum aliquet. Cras odio risus, dapibus ac mauris ut, malesuada pellentesque nunc.\n" +
-                    "<br><br>" +
-                    "Suspendisse consectetur augue dolor, et dignissim libero dapibus non. Nulla accumsan sollicitudin hendrerit. Aliquam ex eros, volutpat ac lobortis id, aliquet quis odio. Curabitur vel suscipit lorem. Sed a felis justo. Phasellus lacinia lorem eget sem venenatis dapibus. Nulla facilisi. Donec finibus urna sit amet dui porttitor, non laoreet enim luctus. Mauris luctus, tellus vitae tincidunt congue, purus dui faucibus eros, sit amet venenatis lectus orci eget felis. Maecenas tempus, urna nec varius bibendum, ligula libero egestas sapien, et varius eros odio ut libero. Nullam scelerisque consectetur purus, a auctor dui pharetra ac. Sed congue vel risus non bibendum.");
-            issue.setProjectId(1L);
-            issue.setZoneId(1L);
-            issue.setAssigneeUserId(2L);
-            issue.setReporterUserId(1L);
-            issue.setIssueTypeId(1L);
-            issue.setSeverityId(1L);
-            issue.setStatusId(1L);
-
-            issue.setCreatedOn(getRandomDateTime());
-            issue.setLastUpdatedOn(new Date());
-            EOI.insert(issue);
-            issue.setCreatedOn(getRandomDateTime());
-            EOI.insert(issue);
-            issue.setCreatedOn(getRandomDateTime());
-            EOI.insert(issue);
-            issue.setCreatedOn(getRandomDateTime());
-            EOI.insert(issue);
-            issue.setCreatedOn(getRandomDateTime());
-            EOI.insert(issue);
-            issue.setCreatedOn(getRandomDateTime());
-            EOI.insert(issue);
-
-            issue = new Issue();
-            issue.setTitle("We Would Like This New Thing");
-            issue.setDescription("Aliquam nec rhoncus lorem. Curabitur maximus ligula lectus, id fermentum mauris tempus nec. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed vel neque accumsan, sodales velit sed, gravida ipsum. Aliquam erat volutpat. Fusce et nulla dui. Nulla congue dolor vitae nulla imperdiet scelerisque. In iaculis dapibus dolor, id tempus erat sagittis a. Vivamus sed facilisis leo, vel consectetur libero. Pellentesque quis faucibus nisl, in lobortis justo. Donec id quam consectetur, euismod ex nec, porttitor mauris. Quisque sollicitudin arcu nec ex vehicula, quis tempus nibh imperdiet. Vestibulum cursus dui ut diam interdum, eu cursus justo hendrerit. Aliquam molestie dui ex, eu eleifend ipsum pulvinar ut. Mauris mollis, justo at finibus porttitor, tortor diam porttitor lectus, eget varius augue ex at arcu. Maecenas sit amet tellus accumsan, feugiat ligula in, egestas nisl.");
-            issue.setProjectId(2L);
-            issue.setZoneId(2L);
-            issue.setAssigneeUserId(1L);
-            issue.setReporterUserId(2L);
-            issue.setIssueTypeId(2L);
-            issue.setSeverityId(2L);
-            issue.setStatusId(1L);
-            issue.setCreatedOn(getRandomDateTime());
-            issue.setLastUpdatedOn(new Date());
-            EOI.insert(issue);
-            issue.setCreatedOn(getRandomDateTime());
-            EOI.insert(issue);
-            issue.setCreatedOn(getRandomDateTime());
-            EOI.insert(issue);
-            issue.setCreatedOn(getRandomDateTime());
-            EOI.insert(issue);
-            issue.setCreatedOn(getRandomDateTime());
-            EOI.insert(issue);
-            issue.setCreatedOn(getRandomDateTime());
-            EOI.insert(issue);
-        }
-
         List<Zone> zones = Zone.getAll();
         if (zones.size() == 0)
         {
@@ -180,6 +124,89 @@ public class DefaultDataLoader
             zone = new Zone();
             zone.setName("Flemington");
             EOI.insert(zone);
+        }
+
+        List<IssueType> issueTypes = IssueType.getAll();
+        if (issueTypes.size() == 0)
+        {
+            IssueType issueType = new IssueType();
+            issueType.setName("Bug");
+            EOI.insert(issueType);
+            issueType.setName("New Feature");
+            EOI.insert(issueType);
+            issueType.setName("Question");
+            EOI.insert(issueType);
+        }
+
+        List<String> adjectives = Arrays.asList("deactivated", "decommissioned", "ineffective", "ineffectual", "useless "+
+                "inoperable", "unusable", "unworkable arrested", "asleep", "dormant", "fallow", "idle", "inert",
+                "latent", "lifeless", "nonproductive", "quiescent", "sleepy", "stagnating", "unproductive", "vegetating");
+
+        List<String> nouns = Arrays.asList("feature", "screen", "page", "report", "functionality");
+
+        List<String> latin = Arrays.asList("annus", "ante meridiem", "aqua", "bene", "canis", "caput", "circus", "cogito",
+                "corpus", "de facto", "deus", "ego", "equus", "ergo", "est", "hortus", "id", "in", "index", "iris", "latex",
+                "legere", "librarium", "locus", "magnus", "mare", "mens", "murus", "musica", "nihil", "non", "nota", "novus",
+                "opus", "orbus", "placebo", "post", "post meridian", "primus", "pro", "sanus", "solus", "sum", "tacete",
+                "tempus", "terra", "urbs", "veni", "vici", "vidi");
+
+        List<String> questions = Arrays.asList("Is", "How come I'm getting", "Why is", "What's with the", "Fix this",
+                "Help with", "Problem regarding");
+
+        Random r = new Random();
+
+        result = EOI.executeQueryOneResult("select count(*) from issues", new ArrayList<>());
+        rows = (Long) result.get(0);
+        if (rows == 0)
+        {
+            for (int i = 0; i < 32768; i++)
+            {
+                Issue issue = new Issue();
+                long value = (long) r.nextInt(Project.getAll().size());
+                issue.setProjectId(value > 0 ? value : 1);
+                value = (long) r.nextInt(Zone.getAll().size());
+                issue.setZoneId(value > 0 ? value : 1);
+                value = (long) r.nextInt(User.getAll().size());
+                issue.setAssigneeUserId(value > 0 ? value : 1);
+                value = (long) r.nextInt(User.getAll().size());
+                issue.setReporterUserId(value > 0 ? value : 1);
+                value = (long) r.nextInt(IssueType.getAll().size());
+                issue.setIssueTypeId(value > 0 ? value : 1);
+                value = (long) r.nextInt(Severity.getAll().size());
+                issue.setSeverityId(value > 0 ? value : 1);
+                value = (long) r.nextInt(Status.getAll().size());
+                issue.setStatusId(value > 0 ? value : 1);
+
+                String noun = nouns.get(r.nextInt(nouns.size()));
+                String adjective = adjectives.get(r.nextInt(adjectives.size()));
+                String title = adjective + " " + noun;
+
+                if (r.nextBoolean())
+                    title = questions.get(r.nextInt(questions.size())) + " " + title;
+                if (r.nextBoolean())
+                    title = title.toUpperCase();
+                if (r.nextBoolean())
+                    title += "!";
+                if (r.nextBoolean())
+                    title += "?";
+                if (r.nextInt(5) <= 1)
+                    title += "...";
+                issue.setTitle(title);
+
+                String description = "";
+                for (int j = 0; j < r.nextInt(24); j++)
+                {
+                    if (description.length() > 0)
+                        description += " " ;
+                    description += latin.get(r.nextInt(latin.size()));
+                }
+                issue.setDescription(description);
+
+                Date createdOn = getRandomDateTime();
+                issue.setCreatedOn(createdOn);
+                issue.setLastUpdatedOn(getRandomDateTimeForward(createdOn));
+                EOI.insert(issue);
+            }
         }
 
         List<ZoneMap> zoneMaps = ZoneMap.getAll();
@@ -202,18 +229,6 @@ public class DefaultDataLoader
                 zoneMap.setZoneId(zone.getId());
                 EOI.insert(zoneMap);
             }
-        }
-
-        List<IssueType> issueTypes = IssueType.getAll();
-        if (issueTypes.size() == 0)
-        {
-            IssueType issueType = new IssueType();
-            issueType.setName("Bug");
-            EOI.insert(issueType);
-            issueType.setName("New Feature");
-            EOI.insert(issueType);
-            issueType.setName("Question");
-            EOI.insert(issueType);
         }
 
         List<Comment> comments = Comment.getAll();
@@ -313,7 +328,23 @@ public class DefaultDataLoader
     {
         LocalDateTime ldt = LocalDateTime.now();
         Random r = new Random();
-        LocalDateTime createdOnLdt = ldt.minusDays(r.nextInt(5)).minusHours(r.nextInt(24)).minusMinutes(r.nextInt(60)).minusSeconds(r.nextInt(60));
+        LocalDateTime createdOnLdt = ldt.minusYears(r.nextInt(5)).minusWeeks(r.nextInt(52))
+                .minusDays(r.nextInt(7))
+                .minusHours(r.nextInt(24))
+                .minusMinutes(r.nextInt(60))
+                .minusSeconds(r.nextInt(60));
+        return Date.from(createdOnLdt.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    private static Date getRandomDateTimeForward(Date ldt)
+    {
+        Random r = new Random();
+        LocalDateTime createdOnLdt = LocalDateTime.ofInstant(ldt.toInstant(), ZoneId.systemDefault())
+                .plusWeeks(r.nextInt(2))
+                .plusDays(r.nextInt(7))
+                .plusHours(r.nextInt(24))
+                .plusMinutes(r.nextInt(60))
+                .plusSeconds(r.nextInt(60));
         return Date.from(createdOnLdt.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

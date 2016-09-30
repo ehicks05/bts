@@ -77,7 +77,7 @@
     {
         dialog.showModal();
     });
-    dialog.querySelector('.create').addEventListener('click', function ()
+    document.querySelector('.create').addEventListener('click', function ()
     {
         $('#frmCreate').submit()
     });

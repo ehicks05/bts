@@ -11,6 +11,7 @@ public class SortableCellTag extends TagSupport
     private String code = "";
     private String label = "";
     private String style = "";
+    private String issueFormId = "";
     private String sortColumn = "";
     private String sortDirection = "";
 
@@ -20,7 +21,7 @@ public class SortableCellTag extends TagSupport
         JspWriter writer = pageContext.getOut();
 
         String output =
-                "        <td class=\"sortableHeader\" style=\"" + style + "\" onclick=\"sortFilms(this, '" + code + "')\">" + label + "\n" +
+                "        <td id=\"fld_" + code + issueFormId + "\" class=\"sortableHeader\" style=\"" + style + "\" onclick=\"ajaxItems(this.id, '" + pageContext.getRequest().getServletContext().getContextPath() + "', '" + issueFormId + "', 0, '" + code + "', '" + sortDirection + "')\">" + label + "\n" +
                 "            <span>\n";
 
         if (code.equals(sortColumn))
@@ -79,6 +80,16 @@ public class SortableCellTag extends TagSupport
     public void setStyle(String style)
     {
         this.style = style;
+    }
+
+    public String getIssueFormId()
+    {
+        return issueFormId;
+    }
+
+    public void setIssueFormId(String issueFormId)
+    {
+        this.issueFormId = issueFormId;
     }
 
     public String getSortColumn()

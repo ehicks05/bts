@@ -25,9 +25,7 @@ public class IssueSearchHandler
 
         // check the session
         if (issueForm == null)
-        {
             issueForm = (IssueForm) request.getSession().getAttribute("issueForm");
-        }
 
         if (issueForm == null)
         {
@@ -48,34 +46,50 @@ public class IssueSearchHandler
         Long issueFormId = Common.stringToLong(request.getParameter("issueFormId"));
         IssueForm issueForm = IssueForm.getById(issueFormId);
 
+        // check the session
+        if (issueForm == null)
+            issueForm = (IssueForm) request.getSession().getAttribute("issueForm");
+
         if (issueForm == null)
             issueForm = new IssueForm();
 
         // parse sorting fields
         String sortColumn = request.getParameter("sortColumn");
         String sortDirection = request.getParameter("sortDirection");
-        if (sortColumn == null)
+
+        // we must be doing a resort
+        if (sortColumn != null && sortDirection != null)
         {
-            sortColumn = "id";
-            sortDirection = "asc";
+            if (sortColumn.equals(issueForm.getSortColumn()))
+            {
+                if (sortDirection.equals("asc"))
+                    sortDirection = "desc";
+                else
+                    sortDirection = "asc";
+            }
+
+            issueForm.setSortColumn(sortColumn);
+            issueForm.setSortDirection(sortDirection);
+
+            // we want to persist sorting preferences
+            if (issueFormId > 0)
+                EOI.update(issueForm);
         }
 
-        if (sortDirection == null)
-            sortDirection = "asc";
-
         String page = request.getParameter("page");
-        if (page == null || page.length() == 0)
-            page = "1";
-
-        issueForm.setSortColumn(sortColumn);
-        issueForm.setSortDirection(sortDirection);
-        issueForm.setPage(page);
+        if (page != null)
+            issueForm.setPage(page);
 
         SearchResult searchResult = issueForm.getSearchResult();
 
         request.setAttribute("issueForm", issueForm);
         request.setAttribute("searchResult", searchResult);
 
+        if (issueFormId == 0)
+        {
+            request.getSession().setAttribute("issueForm", issueForm);
+            request.getSession().setAttribute("searchResult", searchResult);
+        }
         request.getRequestDispatcher("/WEB-INF/webroot/issueTable.jsp").forward(request, response);
     }
 

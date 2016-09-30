@@ -10,10 +10,10 @@
 <table id="filmTable" style="width:100%;margin: 0 auto" class="list">
     <thead>
     <tr class="listheading">
-        <ct:sortableCell code="id" label="ID" style="text-align:right;" sortColumn="${issueForm.sortColumn}" sortDirection="${issueForm.sortDirection}"/>
-        <ct:sortableCell code="title" label="Title" sortColumn="${issueForm.sortColumn}" sortDirection="${issueForm.sortDirection}"/>
-        <ct:sortableCell code="created_on" label="Created" style="text-align:right;" sortColumn="${issueForm.sortColumn}" sortDirection="${issueForm.sortDirection}"/>
-        <ct:sortableCell code="last_updated_on" label="Updated" style="text-align:right;" sortColumn="${issueForm.sortColumn}" sortDirection="${issueForm.sortDirection}"/>
+        <ct:sortableCell code="id" label="ID" style="text-align:right;" issueFormId="${issueForm.id}" sortColumn="${issueForm.sortColumn}" sortDirection="${issueForm.sortDirection}"/>
+        <ct:sortableCell code="title" label="Title" sortColumn="${issueForm.sortColumn}" issueFormId="${issueForm.id}" sortDirection="${issueForm.sortDirection}"/>
+        <ct:sortableCell code="created_on" label="Created" style="text-align:right;" issueFormId="${issueForm.id}" sortColumn="${issueForm.sortColumn}" sortDirection="${issueForm.sortDirection}"/>
+        <ct:sortableCell code="last_updated_on" label="Updated" style="text-align:right;" issueFormId="${issueForm.id}" sortColumn="${issueForm.sortColumn}" sortDirection="${issueForm.sortDirection}"/>
     </tr>
     </thead>
 

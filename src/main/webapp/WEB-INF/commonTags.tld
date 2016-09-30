@@ -27,6 +27,11 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <name>issueFormId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <name>sortColumn</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>

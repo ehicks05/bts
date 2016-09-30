@@ -59,7 +59,8 @@ public class SearchResult
             delta++;
         }
 
-        return null;
+        Collections.sort(navPages);
+        return navPages;
     }
 
     public boolean isHasNext()
