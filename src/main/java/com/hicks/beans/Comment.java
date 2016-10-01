@@ -29,7 +29,7 @@ public class Comment implements Serializable
     @Column(name = "zone_id", nullable = false)
     private Long zoneId;
 
-    @Column(name = "content", nullable = false, unique = true)
+    @Column(name = "content", columnDefinition = "varchar2(32000 CHAR)")
     private String content = "";
 
     @Column(name = "created_by_user_id")

@@ -5,9 +5,13 @@
 <tr>
     <td colspan="100" style="text-align: center;">
         <c:if test="${searchResult.hasPrevious}">
-            <span id="first${issueForm.id}" onclick="ajaxItems(this.id, '${pageContext.request.contextPath}', '${issueForm.id}', '1', '', '')" style="vertical-align: middle;" class="clickable material-icons">first_page</span>
-            <span id="previous${issueForm.id}" onclick="ajaxItems(this.id, '${pageContext.request.contextPath}', '${issueForm.id}', '${issueForm.page - 1}', '', '')" style="vertical-align: middle;" class="clickable material-icons">chevron_left</span>
+            <c:set var="visibility" value="normal"/>
         </c:if>
+        <c:if test="${searchResult.hasPrevious == false}">
+            <c:set var="visibility" value="hidden"/>
+        </c:if>
+        <span id="first${issueForm.id}" onclick="ajaxItems(this.id, '${pageContext.request.contextPath}', '${issueForm.id}', '1', '', '')" style="vertical-align: middle;visibility: ${visibility}" class="clickable material-icons">first_page</span>
+        <span id="previous${issueForm.id}" onclick="ajaxItems(this.id, '${pageContext.request.contextPath}', '${issueForm.id}', '${issueForm.page - 1}', '', '')" style="vertical-align: middle;visibility: ${visibility}" class="clickable material-icons">chevron_left</span>
 
         <c:forEach var="navPage" items="${searchResult.navPages}">
             <c:if test="${navPage == searchResult.page}">

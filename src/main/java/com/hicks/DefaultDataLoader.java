@@ -3,6 +3,9 @@ package com.hicks;
 import com.hicks.beans.*;
 import net.ehicks.eoi.EOI;
 
+import javax.persistence.criteria.Path;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Blob;
@@ -14,6 +17,7 @@ public class DefaultDataLoader
 {
     static void createDemoData()
     {
+        System.out.print("Seeding dummy data...");
         List result = EOI.executeQueryOneResult("select count(*) from bts_users", new ArrayList<>());
         long rows = (Long) result.get(0);
         if (rows == 0)
@@ -21,7 +25,7 @@ public class DefaultDataLoader
             User user = new User();
             user.setLogonId("***REMOVED***");
             user.setPassword("eric");
-            user.setAvatarId(2L);
+            user.setAvatarId(11L);
             user.setCreatedOn(new Date());
             user.setUpdatedOn(new Date());
             EOI.insert(user);
@@ -34,9 +38,17 @@ public class DefaultDataLoader
             EOI.insert(user);
 
             user = new User();
-            user.setLogonId("valeric@yahoo.com");
-            user.setPassword("valeric");
-            user.setAvatarId(1L);
+            user.setLogonId("khicks@yahoo.com");
+            user.setPassword("khicks");
+            user.setAvatarId(9L);
+            user.setCreatedOn(new Date());
+            user.setUpdatedOn(new Date());
+            EOI.insert(user);
+
+            user = new User();
+            user.setLogonId("***REMOVED***");
+            user.setPassword("steve");
+            user.setAvatarId(15L);
             user.setCreatedOn(new Date());
             user.setUpdatedOn(new Date());
             EOI.insert(user);
@@ -66,6 +78,20 @@ public class DefaultDataLoader
             role.setUserId(user.getId());
             role.setRoleName("user");
             EOI.insert(role);
+
+            role = new Role();
+            user = User.getByUserId(3L);
+            role.setLogonId(user.getLogonId());
+            role.setUserId(user.getId());
+            role.setRoleName("user");
+            EOI.insert(role);
+
+            role = new Role();
+            user = User.getByUserId(4L);
+            role.setLogonId(user.getLogonId());
+            role.setUserId(user.getId());
+            role.setRoleName("user");
+            EOI.insert(role);
         }
 
         result = EOI.executeQueryOneResult("select count(*) from projects", new ArrayList<>());
@@ -81,6 +107,11 @@ public class DefaultDataLoader
             project.setName("SchoolFI");
             project.setPrefix("SF");
             EOI.insert(project);
+
+            project = new Project();
+            project.setName("Cinemang");
+            project.setPrefix("CM");
+            EOI.insert(project);
         }
 
         result = EOI.executeQueryOneResult("select count(*) from statuses", new ArrayList<>());
@@ -94,6 +125,10 @@ public class DefaultDataLoader
             status = new Status();
             status.setName("Closed");
             EOI.insert(status);
+
+            status = new Status();
+            status.setName("Re-opened");
+            EOI.insert(status);
         }
 
         List<Severity> severities = Severity.getAll();
@@ -103,6 +138,8 @@ public class DefaultDataLoader
             severity.setName("High");
             EOI.insert(severity);
             severity.setName("Low");
+            EOI.insert(severity);
+            severity.setName("Blocker");
             EOI.insert(severity);
         }
 
@@ -136,6 +173,8 @@ public class DefaultDataLoader
             EOI.insert(issueType);
             issueType.setName("Question");
             EOI.insert(issueType);
+            issueType.setName("Data Issue");
+            EOI.insert(issueType);
         }
 
         List<String> adjectives = Arrays.asList("deactivated", "decommissioned", "ineffective", "ineffectual", "useless "+
@@ -159,22 +198,22 @@ public class DefaultDataLoader
         rows = (Long) result.get(0);
         if (rows == 0)
         {
-            for (int i = 0; i < 32768; i++)
+            for (int i = 0; i < 1024; i++)
             {
                 Issue issue = new Issue();
-                long value = (long) r.nextInt(Project.getAll().size());
+                long value = (long) r.nextInt(Project.getAll().size() + 1);
                 issue.setProjectId(value > 0 ? value : 1);
-                value = (long) r.nextInt(Zone.getAll().size());
+                value = (long) r.nextInt(Zone.getAll().size() + 1);
                 issue.setZoneId(value > 0 ? value : 1);
-                value = (long) r.nextInt(User.getAll().size());
+                value = (long) r.nextInt(User.getAll().size() + 1);
                 issue.setAssigneeUserId(value > 0 ? value : 1);
-                value = (long) r.nextInt(User.getAll().size());
+                value = (long) r.nextInt(User.getAll().size() + 1);
                 issue.setReporterUserId(value > 0 ? value : 1);
-                value = (long) r.nextInt(IssueType.getAll().size());
+                value = (long) r.nextInt(IssueType.getAll().size() + 1);
                 issue.setIssueTypeId(value > 0 ? value : 1);
-                value = (long) r.nextInt(Severity.getAll().size());
+                value = (long) r.nextInt(Severity.getAll().size() + 1);
                 issue.setSeverityId(value > 0 ? value : 1);
-                value = (long) r.nextInt(Status.getAll().size());
+                value = (long) r.nextInt(Status.getAll().size() + 1);
                 issue.setStatusId(value > 0 ? value : 1);
 
                 String noun = nouns.get(r.nextInt(nouns.size()));
@@ -194,7 +233,7 @@ public class DefaultDataLoader
                 issue.setTitle(title);
 
                 String description = "";
-                for (int j = 0; j < r.nextInt(24); j++)
+                for (int j = 0; j < r.nextInt(128); j++)
                 {
                     if (description.length() > 0)
                         description += " " ;
@@ -234,6 +273,33 @@ public class DefaultDataLoader
         List<Comment> comments = Comment.getAll();
         if (comments.size() == 0)
         {
+            for (Issue issue : Issue.getAll())
+            {
+                long issueId = issue.getId();
+                if (issueId == 2)
+                    continue;
+
+                long zoneId = issue.getZoneId();
+                for (int i = 0; i < r.nextInt(24); i++)
+                {
+                    Comment comment = new Comment();
+                    comment.setIssueId(issueId);
+                    comment.setZoneId(zoneId);
+                    comment.setCreatedByUserId((long) r.nextInt((User.getAll().size())) + 1);
+                    comment.setCreatedOn(new Date());
+
+                    String content = "";
+                    for (int j = 0; j < r.nextInt(128); j++)
+                    {
+                        if (content.length() > 0)
+                            content += " " ;
+                        content += latin.get(r.nextInt(latin.size()));
+                    }
+                    comment.setContent(content);
+                    EOI.insert(comment);
+                }
+            }
+
             Comment comment = new Comment();
             comment.setIssueId(2L);
             comment.setZoneId(2L);
@@ -268,34 +334,32 @@ public class DefaultDataLoader
         List<DBFile> dbFiles = DBFile.getAll();
         if (dbFiles.size() == 0)
         {
-            byte[] content = null;
-            byte[] content2 = null;
-            byte[] content3 = null;
-            try
+            File avatarDir = Paths.get(SystemInfo.getServletContext().getRealPath("/images/avatars/png/")).toFile();
+            if (avatarDir.exists() && avatarDir.isDirectory())
             {
-                content = Files.readAllBytes(Paths.get(SystemInfo.getServletContext().getRealPath("/images/avatars/png/avatar.png")));
-                content2 = Files.readAllBytes(Paths.get(SystemInfo.getServletContext().getRealPath("/images/avatars/png/avatar-2.png")));
-                content3 = Files.readAllBytes(Paths.get(SystemInfo.getServletContext().getRealPath("/images/avatars/png/avatar-1.png")));
+                List<File> avatars = Arrays.asList(avatarDir.listFiles());
+                Collections.sort(avatars);
+                for (File avatar : avatars)
+                {
+                    if (avatar.exists() && avatar.isFile())
+                    {
+                        byte[] content = null;
+                        try
+                        {
+                            content = Files.readAllBytes(avatar.toPath());
+                        }
+                        catch (IOException e)
+                        {
+                            System.out.println(e.getMessage());
+                        }
+
+                        DBFile dbFile = new DBFile();
+                        dbFile.setName(avatar.getName());
+                        dbFile.setContent(content);
+                        EOI.insert(dbFile);
+                    }
+                }
             }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-
-            DBFile dbFile = new DBFile();
-            dbFile.setName("no-avatar");
-            dbFile.setContent(content);
-            EOI.insert(dbFile);
-
-            dbFile = new DBFile();
-            dbFile.setName("eric");
-            dbFile.setContent(content2);
-            EOI.insert(dbFile);
-
-            dbFile = new DBFile();
-            dbFile.setName("val");
-            dbFile.setContent(content3);
-            EOI.insert(dbFile);
         }
 
         List<IssueForm> issueForms = IssueForm.getAll();
@@ -322,6 +386,8 @@ public class DefaultDataLoader
             issueForm.setUserId(1L);
             EOI.insert(issueForm);
         }
+        System.out.println("done");
+
     }
 
     private static Date getRandomDateTime()

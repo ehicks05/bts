@@ -10,31 +10,6 @@
 <head>
     <title>BTS</title>
     <jsp:include page="inc_header.jsp"/>
-
-    <script>
-        function ajaxFilms(callingElementId, issueFormId, newPage, newSortColumn, newSortDirection)
-        {
-            var myUrl = '${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=ajaxGetPageOfResults';
-            var params = {};
-            if (issueFormId) params.issueFormId = issueFormId;
-            if (newPage) params.page = newPage;
-            if (newSortColumn) params.sortColumn = newSortColumn;
-            if (newSortDirection) params.sortDirection = newSortDirection;
-
-            $.get(myUrl, params,
-                    function(data, textStatus, xhr)
-                    {
-                        if(textStatus == "success")
-                        {
-                            var rows = [];
-
-                            $(callingElementId).closest('.tableContainer').html(data);
-                        }
-                        if (textStatus == "error")
-                            alert("Error: " + xhr.status + ": " + xhr.statusText);
-                    });
-        }
-    </script>
 </head>
 <body>
 
