@@ -25,7 +25,7 @@ public class DefaultDataLoader
             User user = new User();
             user.setLogonId("***REMOVED***");
             user.setPassword("eric");
-            user.setAvatarId(11L);
+            user.setAvatarId(2L);
             user.setCreatedOn(new Date());
             user.setUpdatedOn(new Date());
             EOI.insert(user);
@@ -40,7 +40,7 @@ public class DefaultDataLoader
             user = new User();
             user.setLogonId("khicks@yahoo.com");
             user.setPassword("khicks");
-            user.setAvatarId(9L);
+            user.setAvatarId(8L);
             user.setCreatedOn(new Date());
             user.setUpdatedOn(new Date());
             EOI.insert(user);
@@ -49,6 +49,22 @@ public class DefaultDataLoader
             user.setLogonId("***REMOVED***");
             user.setPassword("steve");
             user.setAvatarId(15L);
+            user.setCreatedOn(new Date());
+            user.setUpdatedOn(new Date());
+            EOI.insert(user);
+
+            user = new User();
+            user.setLogonId("thicks@yahoo.com");
+            user.setPassword("test");
+            user.setAvatarId(5L);
+            user.setCreatedOn(new Date());
+            user.setUpdatedOn(new Date());
+            EOI.insert(user);
+
+            user = new User();
+            user.setLogonId("bhicks@yahoo.com");
+            user.setPassword("test");
+            user.setAvatarId(10L);
             user.setCreatedOn(new Date());
             user.setUpdatedOn(new Date());
             EOI.insert(user);

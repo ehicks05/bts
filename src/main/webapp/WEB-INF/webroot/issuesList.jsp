@@ -23,29 +23,6 @@
             $('#frmFilter').attr('action', '${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=saveIssueForm').submit();
         }
 
-        function ajaxFilms(callingElementId, issueFormId, newPage, newSortColumn, newSortDirection)
-        {
-            var myUrl = '${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=ajaxGetPageOfResults';
-            var params = {};
-            if (issueFormId) params.issueFormId = issueFormId;
-            if (newPage) params.page = newPage;
-            if (newSortColumn) params.sortColumn = newSortColumn;
-            if (newSortDirection) params.sortDirection = newSortDirection;
-
-            $.get(myUrl, params,
-                    function(data, textStatus, xhr)
-                    {
-                        if(textStatus == "success")
-                        {
-                            var rows = [];
-
-                            $(callingElementId).closest('.tableContainer').html(data);
-                        }
-                        if (textStatus == "error")
-                            alert("Error: " + xhr.status + ": " + xhr.statusText);
-                    });
-        }
-
         function addToDashboard(issueFormId)
         {
             location.href = '${pageContext.request.contextPath}/view?tab1=main&tab2=issueForm&action=addToDashboard&issueFormId=' + issueFormId;
@@ -77,19 +54,19 @@
                 </div>
 
                 <br>
-                <label for="projectIds">Projects: </label>
+                <label for="projectIds">Projects: </label><br>
                 <ct:multiSelect id="projectIds" selectedValues="${issueForm.projectIdsAsList}" items="${projects}" required="${false}"/>
                 <br>
-                <label for="zoneIds">Zones: </label>
+                <label for="zoneIds">Zones: </label><br>
                 <ct:multiSelect id="zoneIds" selectedValues="${issueForm.zoneIdsAsList}" items="${zones}" required="${false}"/>
                 <br>
-                <label for="severityIds">Severities: </label>
+                <label for="severityIds">Severities: </label><br>
                 <ct:multiSelect id="severityIds" selectedValues="${issueForm.severityIdsAsList}" items="${severities}" required="${false}"/>
                 <br>
-                <label for="statusIds">Statuses: </label>
+                <label for="statusIds">Statuses: </label><br>
                 <ct:multiSelect id="statusIds" selectedValues="${issueForm.statusIdsAsList}" items="${statuses}" required="${false}"/>
                 <br>
-                <label for="assigneeIds">Assignees: </label>
+                <label for="assigneeIds">Assignees: </label><br>
                 <ct:multiSelect id="assigneeIds" selectedValues="${issueForm.assigneeUserIdsAsList}" items="${users}" required="${false}"/>
             </div>
             <div class="mdl-card__actions">
