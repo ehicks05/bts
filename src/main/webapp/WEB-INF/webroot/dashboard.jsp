@@ -20,7 +20,7 @@
         <c:set var="searchResult" value="${issueForm.searchResult}"/>
         <c:if test="${fn:length(dashBoardIssueForms) < 2}"><c:set var="cols" value="12" /></c:if>
         <c:if test="${fn:length(dashBoardIssueForms) >= 2}"><c:set var="cols" value="6" /></c:if>
-        <div class="mdl-card mdl-cell mdl-cell--${cols}-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+        <div class="mdl-card mdl-cell mdl-cell--${cols}-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-cell--top mdl-shadow--2dp">
             <div class="mdl-card__title"><h5>${issueForm.formName}: ${searchResult.size} Issues
                 <br>
                 <a class="material-icons" href="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=form&issueFormId=${issueForm.id}">mode_edit</a>

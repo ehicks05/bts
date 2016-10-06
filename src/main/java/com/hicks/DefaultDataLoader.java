@@ -12,6 +12,7 @@ import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class DefaultDataLoader
 {
@@ -214,7 +215,7 @@ public class DefaultDataLoader
         rows = (Long) result.get(0);
         if (rows == 0)
         {
-            for (int i = 0; i < 1024; i++)
+            IntStream.range(1, 4096).parallel().forEach(i ->
             {
                 Issue issue = new Issue();
                 long value = (long) r.nextInt(Project.getAll().size() + 1);
@@ -261,7 +262,7 @@ public class DefaultDataLoader
                 issue.setCreatedOn(createdOn);
                 issue.setLastUpdatedOn(getRandomDateTimeForward(createdOn));
                 EOI.insert(issue);
-            }
+            });
         }
 
         List<ZoneMap> zoneMaps = ZoneMap.getAll();

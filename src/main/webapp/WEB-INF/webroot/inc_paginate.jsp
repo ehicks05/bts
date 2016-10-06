@@ -21,7 +21,7 @@
                 <c:set var="fontWeight" value="normal"/>
             </c:if>
 
-            <span id="page${navPage}${issueForm.id}" class="clickable" onclick="ajaxItems(this.id, '${pageContext.request.contextPath}', '${issueForm.id}', '${navPage}', '', '')" style="vertical-align: middle; font-weight:${fontWeight};">
+            <span id="page${navPage}${issueForm.id}" class="clickable" onclick="ajaxItems(this.id, '${pageContext.request.contextPath}', '${issueForm.id}', '${navPage}', '', '')" style="font-family: 'Droid Sans Mono', monospace;vertical-align: middle; font-weight:${fontWeight};">
                 ${navPage}
             </span>
         </c:forEach>

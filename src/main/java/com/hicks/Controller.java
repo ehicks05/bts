@@ -31,7 +31,8 @@ public class Controller extends HttpServlet
         long controllerStart = System.currentTimeMillis();
         System.out.println("Max Memory: " + new DecimalFormat("#,###").format(Runtime.getRuntime().maxMemory()));
 
-        EOI.init("jdbc:h2:~/bts;TRACE_LEVEL_FILE=1;CACHE_SIZE=131072;");
+        int cacheKBs = 1_048_576;
+        EOI.init("jdbc:h2:~/bts;TRACE_LEVEL_FILE=1;CACHE_SIZE=" + cacheKBs + ";");
         SystemInfo.setServletContext(getServletContext());
         SystemInfo.setDebugLevel(DEBUG_LEVEL);
 
@@ -215,6 +216,9 @@ public class Controller extends HttpServlet
         {
             System.out.println(e.getMessage());
         }
+
+        // Set standard HTTP/1.1 no-cache headers.
+        response.setHeader("Cache-Control", "private, no-store, no-cache, must-revalidate");
 
         if (viewJsp.length() > 0)
         {

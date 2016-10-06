@@ -210,7 +210,7 @@
         </div>
     </div>
 
-    <div class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+    <div class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-cell--top mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>People</h5></div>
 
         <div class="mdl-card__supporting-text">
