@@ -108,6 +108,11 @@ public class Issue implements Serializable
         return Severity.getById(severityId);
     }
 
+    public Status getStatus()
+    {
+        return Status.getById(statusId);
+    }
+
     public User getAssignee()
     {
         return User.getByUserId(assigneeUserId);

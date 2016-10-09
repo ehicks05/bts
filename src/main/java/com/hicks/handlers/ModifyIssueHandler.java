@@ -71,7 +71,7 @@ public class ModifyIssueHandler
 
         Long projectId      = !fieldName.equals("fldProject") ? 0 : Common.stringToLong(fieldValue);
         Long issueTypeId    = !fieldName.equals("fldIssueType") ? 0 : Common.stringToLong(fieldValue);
-        Long statusId       = !fieldName.equals("fldStatusId") ? 0 : Common.stringToLong(fieldValue);
+        Long statusId       = !fieldName.equals("fldStatus") ? 0 : Common.stringToLong(fieldValue);
         Long severityId     = !fieldName.equals("fldSeverity") ? 0 : Common.stringToLong(fieldValue);
         Long zoneId         = !fieldName.equals("fldZone") ? 0 : Common.stringToLong(fieldValue);
         String title        = !fieldName.equals("fldTitle") ? "" : Common.getSafeString(fieldValue);
@@ -94,7 +94,7 @@ public class ModifyIssueHandler
         if (statusId != 0)
         {
             issue.setStatusId(statusId);
-            updateLog += "Status to " + statusId;
+            updateLog += "Status to " + Status.getById(statusId).getName();
         }
         if (severityId != 0)
         {

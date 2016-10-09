@@ -101,7 +101,9 @@
                             <ct:textToSelect id="fldIssueType" value="${issue.issueType.id}" text="${issue.issueType.name}" items="${issueTypes}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                         </td>
                         <td style="padding: 0 8px;">Status:</td>
-                        <td style="padding: 0 8px;">${issue.statusId}</td>
+                        <td style="padding: 0 8px;">
+                            <ct:textToSelect id="fldStatus" value="${issue.status.id}" text="${issue.status.name}" items="${statuses}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                        </td>
                     </tr>
                     <tr>
                         <td style="padding: 0 8px;">Created:</td>
