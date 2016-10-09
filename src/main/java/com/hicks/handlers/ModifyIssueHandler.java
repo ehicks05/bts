@@ -1,5 +1,6 @@
 package com.hicks.handlers;
 
+import com.hicks.EmailEngine;
 import com.hicks.UserSession;
 import com.hicks.beans.*;
 import net.ehicks.common.Common;
@@ -151,7 +152,17 @@ public class ModifyIssueHandler
         comment.setCreatedByUserId(userSession.getUserId());
         comment.setCreatedOn(new Date());
         comment.setContent(content);
-        EOI.insert(comment);
+        long commentId = EOI.insert(comment);
+
+        EmailMessage emailMessage = new EmailMessage();
+        emailMessage.setUserId(userSession.getUserId());
+        emailMessage.setIssueId(issueId);
+        emailMessage.setAction("added a comment");
+        emailMessage.setActionSourceId(commentId);
+        emailMessage.setDescription(content);
+        EOI.insert(emailMessage);
+
+        EmailEngine.sendEmail(emailMessage);
 
         response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + issueId);
     }

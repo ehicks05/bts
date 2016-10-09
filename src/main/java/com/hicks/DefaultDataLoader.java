@@ -337,15 +337,25 @@ public class DefaultDataLoader
         List<WatcherMap> watcherMaps = WatcherMap.getAll();
         if (watcherMaps.size() == 0)
         {
-            WatcherMap watcherMap = new WatcherMap();
-            watcherMap.setUserId(2L);
-            watcherMap.setIssueId(2L);
-            EOI.insert(watcherMap);
+            List<User> users = User.getAll();
+            for (Issue issue : Issue.getAll())
+            {
+                List<Integer> selectedUserIndexes = new ArrayList<>();
+                for (int i = 0; i < r.nextInt(5); i++)
+                {
+                    int userIndex = r.nextInt(users.size());
+                    if (!selectedUserIndexes.contains(userIndex))
+                        selectedUserIndexes.add(userIndex);
+                }
 
-            watcherMap = new WatcherMap();
-            watcherMap.setUserId(3L);
-            watcherMap.setIssueId(2L);
-            EOI.insert(watcherMap);
+                for (int userIndex : selectedUserIndexes)
+                {
+                    WatcherMap watcherMap = new WatcherMap();
+                    watcherMap.setUserId(users.get(userIndex).getId());
+                    watcherMap.setIssueId(issue.getId());
+                    EOI.insert(watcherMap);
+                }
+            }
         }
 
         List<DBFile> dbFiles = DBFile.getAll();

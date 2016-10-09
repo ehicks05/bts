@@ -34,7 +34,7 @@
             <div class="mdl-card__supporting-text">
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="email" size="20" maxlength="32" id="j_username" name="j_username">
+                    <input class="mdl-textfield__input" type="emailMessage" size="20" maxlength="32" id="j_username" name="j_username">
                     <label class="mdl-textfield__label" for="j_username">Email</label>
                 </div>
                 <br>

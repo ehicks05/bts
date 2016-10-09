@@ -2,6 +2,7 @@ package com.hicks;
 
 import com.hicks.beans.*;
 import com.hicks.handlers.*;
+import net.ehicks.common.Common;
 import net.ehicks.eoi.DBMap;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.SQLGenerator;
@@ -13,10 +14,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Properties;
 
 @WebServlet(value = "/view", loadOnStartup = 1)
 public class Controller extends HttpServlet
@@ -28,6 +31,10 @@ public class Controller extends HttpServlet
     @Override
     public void init() throws ServletException
     {
+        loadProperties();
+        SystemInfo.setEmailFromAddress("noreply@eric-hicks.com");
+        SystemInfo.setEmailFromName("Bug Tracking System");
+
         long controllerStart = System.currentTimeMillis();
         System.out.println("Max Memory: " + new DecimalFormat("#,###").format(Runtime.getRuntime().maxMemory()));
 
@@ -53,6 +60,25 @@ public class Controller extends HttpServlet
                 System.out.println(argument);
 
         System.out.println("Controller.init finished in " + (System.currentTimeMillis() - controllerStart) + " ms");
+    }
+
+    private void loadProperties()
+    {
+        Properties properties = new Properties();
+
+        try (InputStream input = getServletContext().getResourceAsStream("/WEB-INF/bts.properties");)
+        {
+            properties.load(input);
+        }
+        catch (IOException e)
+        {
+            System.out.println(e.getMessage());
+        }
+
+        SystemInfo.setEmailHost(properties.getProperty("emailHost"));
+        SystemInfo.setEmailPort(Common.stringToInt(properties.getProperty("emailPort")));
+        SystemInfo.setEmailUser(properties.getProperty("emailUser"));
+        SystemInfo.setEmailPassword(properties.getProperty("emailPassword"));
     }
 
     private void createTables()

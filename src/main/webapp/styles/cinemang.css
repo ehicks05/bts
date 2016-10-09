@@ -44,7 +44,13 @@ div.ui-datepicker{
     overflow: visible;
     z-index: auto;
 }
+
+@media (max-width: 399px)
+{
+    .mdl-card {margin: 0;}
+}
 /* Material */
+
 h1,h2,h3,h4,h5,h6 {margin: 12px 0 8px;}
 
 .sortableHeader {cursor: pointer; color: navy}
