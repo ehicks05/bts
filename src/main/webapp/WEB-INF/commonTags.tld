@@ -101,26 +101,4 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-
-    <tag>
-        <name>textToInputText</name>
-        <tag-class>com.hicks.tags.TextToInputTextTag</tag-class>
-        <body-content>JSP</body-content>
-
-        <attribute>
-            <name>id</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>text</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>submitAction</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
 </taglib>

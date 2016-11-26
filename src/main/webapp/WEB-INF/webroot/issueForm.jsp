@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <jsp:useBean id="issue" type="com.hicks.beans.Issue" scope="request"/>
 <jsp:useBean id="comments" type="java.util.List<com.hicks.beans.Comment>" scope="request"/>
 <jsp:useBean id="watcherMaps" type="java.util.List<com.hicks.beans.WatcherMap>" scope="request"/>
@@ -81,7 +82,7 @@
         <div class="mdl-card__title">
             <h5>
                 <div class="mdl-card__title-text">
-                    <ct:textToInputText id="fldTitle" text="${issue.title}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                    <t:textToInputText id="fldTitle" text="${issue.title}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                 </div>
                 <div class="mdl-card__subtitle-text">
                     <ct:textToSelect id="fldProject" value="${issue.projectId}" text="${issue.project.name}" items="${projects}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
@@ -130,7 +131,7 @@
         <div class="mdl-card__title"><h5>Description</h5></div>
 
         <div class="mdl-card__supporting-text">
-            <ct:textToInputText id="fldDescription" text="${issue.description}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+            <t:textToInputText id="fldDescription" text="${issue.description}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
         </div>
 
         <div class="mdl-card__title"><h5>Activity</h5></div>
@@ -162,7 +163,7 @@
                         </c:if>
                         <br>
                         <div class="mdl-card__supporting-text">
-                            <ct:textToInputText id="fldContent${comment.id}" text="${comment.content}" submitAction="/view?tab1=main&tab2=issue&action=updateComment&commentId=${comment.id}"/>
+                            <t:textToInputText id="fldContent${comment.id}" text="${comment.content}" submitAction="/view?tab1=main&tab2=issue&action=updateComment&commentId=${comment.id}"/>
                         </div>
                     </div>
                 </c:forEach>

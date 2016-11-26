@@ -5,7 +5,7 @@
 <%@attribute name="items" fragment="false" type="java.util.List<com.hicks.ISelectTagSupport>" %>
 <%@attribute name="selectedValues" fragment="false" %>
 
-<c:set var="multiSelectCounter" value="${requestScope.multiSelect + 1}" scope="request"/>
+<c:set var="multiSelectCounter" value="${requestScope.multiSelectCounter + 1}" scope="request"/>
 <c:if test="${multiSelectCounter == 1}">
     <script>
        $(document).ready(function () {
