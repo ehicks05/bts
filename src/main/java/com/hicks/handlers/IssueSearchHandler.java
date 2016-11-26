@@ -116,8 +116,8 @@ public class IssueSearchHandler
         String containsText     = Common.getSafeString(request.getParameter("containsText"));
         String title            = Common.getSafeString(request.getParameter("title"));
         String description      = Common.getSafeString(request.getParameter("description"));
-        String statusIds        = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("status")));
-        String severityIds      = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("severity")));
+        String statusIds        = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("statusIds")));
+        String severityIds      = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("severityIds")));
         String projectIds       = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("projectIds")));
         String zoneIds          = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("zoneIds")));
         String assigneeIds      = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("assigneeIds")));

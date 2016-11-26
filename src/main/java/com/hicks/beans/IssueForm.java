@@ -188,6 +188,20 @@ public class IssueForm implements Serializable
             whereClause += " severity_id in (" + questionMarks + ") ";
         }
 
+        if (issueForm.getStatusIds() != null && issueForm.getStatusIds().length() > 0)
+        {
+            if (whereClause.length() > 0) whereClause += " and ";
+            String questionMarks = "";
+            for (String id : issueForm.getStatusIds().split(","))
+            {
+                if (questionMarks.length() > 0)
+                    questionMarks += ",";
+                questionMarks += "?";
+                args.add(id);
+            }
+            whereClause += " status_id in (" + questionMarks + ") ";
+        }
+
         if (issueForm.getAssigneeUserIds() != null && issueForm.getAssigneeUserIds().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
