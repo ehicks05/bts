@@ -1,7 +1,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
 <jsp:useBean id="issueForm" type="com.hicks.beans.IssueForm" scope="request"/>
 <jsp:useBean id="searchResult" type="com.hicks.SearchResult" scope="request"/>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -55,19 +56,19 @@
 
                 <br>
                 <label for="projectIds">Projects: </label><br>
-                <ct:multiSelect id="projectIds" selectedValues="${issueForm.projectIdsAsList}" items="${projects}" required="${false}"/>
+                <t:multiSelect id="projectIds" selectedValues="${issueForm.projectIdsAsList}" items="${projects}"/>
                 <br>
                 <label for="zoneIds">Zones: </label><br>
-                <ct:multiSelect id="zoneIds" selectedValues="${issueForm.zoneIdsAsList}" items="${zones}" required="${false}"/>
+                <t:multiSelect id="zoneIds" selectedValues="${issueForm.zoneIdsAsList}" items="${zones}"/>
                 <br>
                 <label for="severityIds">Severities: </label><br>
-                <ct:multiSelect id="severityIds" selectedValues="${issueForm.severityIdsAsList}" items="${severities}" required="${false}"/>
+                <t:multiSelect id="severityIds" selectedValues="${issueForm.severityIdsAsList}" items="${severities}"/>
                 <br>
                 <label for="statusIds">Statuses: </label><br>
-                <ct:multiSelect id="statusIds" selectedValues="${issueForm.statusIdsAsList}" items="${statuses}" required="${false}"/>
+                <t:multiSelect id="statusIds" selectedValues="${issueForm.statusIdsAsList}" items="${statuses}"/>
                 <br>
                 <label for="assigneeIds">Assignees: </label><br>
-                <ct:multiSelect id="assigneeIds" selectedValues="${issueForm.assigneeUserIdsAsList}" items="${users}" required="${false}"/>
+                <t:multiSelect id="assigneeIds" selectedValues="${issueForm.assigneeUserIdsAsList}" items="${users}"/>
             </div>
             <div class="mdl-card__actions">
                 <input type="submit" value="Search" class="mdl-button mdl-js-button mdl-button--raised" />

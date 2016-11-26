@@ -215,7 +215,7 @@ public class DefaultDataLoader
         rows = (Long) result.get(0);
         if (rows == 0)
         {
-            IntStream.range(1, 4096).parallel().forEach(i ->
+            IntStream.range(1, 1024).parallel().forEach(i ->
             {
                 Issue issue = new Issue();
                 long value = (long) r.nextInt(Project.getAll().size() + 1);
