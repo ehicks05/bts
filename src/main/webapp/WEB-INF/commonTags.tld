@@ -44,33 +44,6 @@
     </tag>
 
     <tag>
-        <name>select</name>
-        <tag-class>com.hicks.tags.SelectTag</tag-class>
-        <body-content>JSP</body-content>
-
-        <attribute>
-            <name>id</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>value</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>items</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>required</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <tag>
         <name>textToSelect</name>
         <tag-class>com.hicks.tags.TextToSelectTag</tag-class>
         <body-content>JSP</body-content>

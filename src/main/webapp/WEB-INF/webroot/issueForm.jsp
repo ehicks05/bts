@@ -1,7 +1,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <jsp:useBean id="issue" type="com.hicks.beans.Issue" scope="request"/>
 <jsp:useBean id="comments" type="java.util.List<com.hicks.beans.Comment>" scope="request"/>
@@ -85,7 +84,7 @@
                     <t:textToInputText id="fldTitle" text="${issue.title}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                 </div>
                 <div class="mdl-card__subtitle-text">
-                    <ct:textToSelect id="fldProject" value="${issue.projectId}" text="${issue.project.name}" items="${projects}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                    <t:textToSelect id="fldProject" value="${issue.projectId}" text="${issue.project.name}" items="${projects}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                     ${issue.project.prefix}-${issue.id}
                 </div>
             </h5>
@@ -99,11 +98,11 @@
                     <tr>
                         <td style="padding: 0 8px;">Type:</td>
                         <td style="padding: 0 8px;">
-                            <ct:textToSelect id="fldIssueType" value="${issue.issueType.id}" text="${issue.issueType.name}" items="${issueTypes}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                            <t:textToSelect id="fldIssueType" value="${issue.issueType.id}" text="${issue.issueType.name}" items="${issueTypes}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                         </td>
                         <td style="padding: 0 8px;">Status:</td>
                         <td style="padding: 0 8px;">
-                            <ct:textToSelect id="fldStatus" value="${issue.status.id}" text="${issue.status.name}" items="${statuses}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                            <t:textToSelect id="fldStatus" value="${issue.status.id}" text="${issue.status.name}" items="${statuses}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                         </td>
                     </tr>
                     <tr>
@@ -115,11 +114,11 @@
                     <tr>
                         <td style="padding: 0 8px;">Severity:</td>
                         <td style="padding: 0 8px;">
-                            <ct:textToSelect id="fldSeverity" value="${issue.severity.id}" text="${issue.severity.name}" items="${severities}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                            <t:textToSelect id="fldSeverity" value="${issue.severity.id}" text="${issue.severity.name}" items="${severities}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                         </td>
                         <td style="padding: 0 8px;">Zone:</td>
                         <td style="padding: 0 8px;">
-                            <ct:textToSelect id="fldZone" value="${issue.zone.id}" text="${issue.zone.name}" items="${zones}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                            <t:textToSelect id="fldZone" value="${issue.zone.id}" text="${issue.zone.name}" items="${zones}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                         </td>
                     </tr>
                 </table>
@@ -225,11 +224,8 @@
                             <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${issue.assigneeUserId}">
                                 <img src="${issue.assignee.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
 
-                            <ct:textToSelect id="fldAssigneeId" value="${issue.assigneeUserId}" text="${issue.assignee.logonId}" items="${potentialAssignees}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                            <t:textToSelect id="fldAssigneeId" value="${issue.assigneeUserId}" text="${issue.assignee.logonId}" items="${potentialAssignees}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                         </c:if>
-                        <%--<c:if test="${empty issue.assignee}">--%>
-                            <%--<ct:select id="fldAssigneeId" value="" required="${true}" items="${potentialAssignees}"/>--%>
-                        <%--</c:if>--%>
                     </td>
                 </tr>
                 <tr>
@@ -238,7 +234,7 @@
                         <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${issue.reporterUserId}">
                             <img src="${issue.reporter.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
 
-                        <ct:textToSelect id="fldReporterId" value="${issue.reporterUserId}" text="${issue.reporter.logonId}" items="${potentialReporters}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                        <t:textToSelect id="fldReporterId" value="${issue.reporterUserId}" text="${issue.reporter.logonId}" items="${potentialReporters}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                     </td>
                 </tr>
             </table>
