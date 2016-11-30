@@ -7,26 +7,38 @@
 
 <c:set var="textToInputTextCounter" value="${requestScope.textToInputTextCounter + 1}" scope="request"/>
 <c:if test="${textToInputTextCounter == 1}">
-    <script>
-        function enableEditMode(element, url)
-        {
-            $(document).on('click', '#' + element.id + 'SaveButton', function ()
-            {
-                update(element.id, element.innerHTML, url)
-            });
-        }
-        function disableEditMode(element)
-        {
 
-        }
-    </script>
 </c:if>
 
-<div class="editable" contenteditable="true" id="${id}" onfocus="enableEditMode(this, '${submitAction}')" onblur="disableEditMode(this)">
-    ${text}
-</div>
+<div contenteditable="true" id="${id}" class="editable">${text}</div>
+<script>
+    CKEDITOR.disableAutoInline = true;
+    CKEDITOR.config.extraAllowedContent = 'div(*)';
+    CKEDITOR.inline( '${id}' );
 
-<ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" id="${id}Menu" for="${id}">
-    <li class="mdl-menu__item" id="${id}SaveButton"><i class="material-icons" style="vertical-align:middle;color: green;">add</i>Save</li>
-    <li class="mdl-menu__item" id="${id}CancelButton"><i class="material-icons" style="vertical-align:middle;color: red;">clear</i>Dismiss</li>
-</ul>
+    CKEDITOR.on( 'instanceReady', function( evt ) {
+        var editor = evt.editor;
+
+        editor.commands.save.setState(CKEDITOR.TRISTATE_DISABLED);
+
+        editor.on( 'change', function( ev ) {
+            ev.editor.commands.save.setState(CKEDITOR.TRISTATE_ON);
+        });
+
+        editor.on( 'save', function( ev ) {
+            var data = ev.editor.getData();
+
+            if (data != '${text}')
+            {
+                update('${id}', ev.editor.getData(), '${submitAction}');
+                editor.commands.save.setState(CKEDITOR.TRISTATE_DISABLED);
+                editor.commands.undo.setState(CKEDITOR.TRISTATE_DISABLED);
+            }
+        });
+    });
+
+    CKEDITOR.on( 'loaded', function( evt ) {
+        // your stuff here
+    } );
+
+</script>
