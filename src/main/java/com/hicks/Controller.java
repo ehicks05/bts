@@ -39,7 +39,8 @@ public class Controller extends HttpServlet
         System.out.println("Max Memory: " + new DecimalFormat("#,###").format(Runtime.getRuntime().maxMemory()));
 
         int cacheKBs = 1_048_576;
-        EOI.init("jdbc:h2:~/bts;TRACE_LEVEL_FILE=1;CACHE_SIZE=" + cacheKBs + ";");
+//        EOI.init("jdbc:h2:~/bts;TRACE_LEVEL_FILE=1;CACHE_SIZE=" + cacheKBs + ";");
+        EOI.init("jdbc:h2:tcp://localhost/~/bts;TRACE_LEVEL_FILE=1;CACHE_SIZE=" + cacheKBs + ";");
         SystemInfo.setServletContext(getServletContext());
         SystemInfo.setDebugLevel(DEBUG_LEVEL);
 

@@ -47,9 +47,7 @@
     </script>
 </c:if>
 
-<span class="editable" id="${id}Text" onclick="select2Enable(this.id, $('#${id}').attr('id'))">
-    ${text}
-</span>
+<span class="editable" id="${id}Text" onclick="select2Enable(this.id, $('#${id}').attr('id'))">${text}</span>
 <select id="${id}" class="js-example-basic-single" style="display: none;">
     <c:forEach var="item" items="${items}">
         <option value="${item.value}">${item.text}</option>

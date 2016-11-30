@@ -51,6 +51,7 @@
                                 timeout: 2500
                             }
                     );
+                    return 'success';
                 }
                 else
                 {
@@ -60,6 +61,7 @@
                                 timeout: 2500
                             }
                     );
+                    return 'fail';
                 }
             });
         }
@@ -81,7 +83,7 @@
         <div class="mdl-card__title">
             <h5>
                 <div class="mdl-card__title-text">
-                    <t:textToInputText id="fldTitle" text="${issue.title}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                    <t:textToInputText tag="h5" id="fldTitle" text="${issue.title}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                 </div>
                 <div class="mdl-card__subtitle-text">
                     <t:textToSelect id="fldProject" value="${issue.projectId}" text="${issue.project.name}" items="${projects}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>

@@ -26,9 +26,12 @@
 
 <%-- qTip --%>
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.css">
-<script defer src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.js"></script>
 <%-- qTip --%>
 
+<%-- CKEditor --%>
+<script src="../../ckeditor/ckeditor.js"></script>
+<%-- CKEditor --%>
 
 <link rel="shortcut icon" href="../../images/bug_16.png">
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>

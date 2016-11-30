@@ -31,6 +31,7 @@ public class SecurityFilter implements Filter
             if (servletPath.endsWith(".ttf"))           isResource = true;
             if (servletPath.endsWith(".jpg"))           isResource = true;
             if (servletPath.endsWith(".gif"))           isResource = true;
+            if (servletPath.endsWith(".png"))           isResource = true;
             if (servletPath.endsWith(".js"))            isResource = true;
             if (servletPath.endsWith(".html"))            isResource = true;
 
