@@ -9,6 +9,9 @@ public class SystemInfo
     private static Properties properties;
     private static ServletContext servletContext;
     private static int debugLevel;
+    private static long systemStart;
+
+    private static long databaseCacheInKBs;
 
     private static String emailHost = "";
     private static int emailPort;
@@ -52,6 +55,26 @@ public class SystemInfo
     public static void setDebugLevel(int debugLevel)
     {
         SystemInfo.debugLevel = debugLevel;
+    }
+
+    public static long getSystemStart()
+    {
+        return systemStart;
+    }
+
+    public static void setSystemStart(long systemStart)
+    {
+        SystemInfo.systemStart = systemStart;
+    }
+
+    public static long getDatabaseCacheInKBs()
+    {
+        return databaseCacheInKBs;
+    }
+
+    public static void setDatabaseCacheInKBs(long databaseCacheInKBs)
+    {
+        SystemInfo.databaseCacheInKBs = databaseCacheInKBs;
     }
 
     public static String getEmailHost()

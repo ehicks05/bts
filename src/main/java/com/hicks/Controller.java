@@ -31,22 +31,14 @@ public class Controller extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        loadProperties();
-        SystemInfo.setEmailFromAddress("noreply@eric-hicks.com");
-        SystemInfo.setEmailFromName("Bug Tracking System");
-
-        long controllerStart = System.currentTimeMillis();
-        System.out.println("Max Memory: " + new DecimalFormat("#,###").format(Runtime.getRuntime().maxMemory()));
-
-        int cacheKBs = 1_048_576;
-//        EOI.init("jdbc:h2:~/bts;TRACE_LEVEL_FILE=1;CACHE_SIZE=" + cacheKBs + ";");
-        EOI.init("jdbc:h2:tcp://localhost/~/bts;TRACE_LEVEL_FILE=1;CACHE_SIZE=" + cacheKBs + ";");
+        SystemInfo.setSystemStart(System.currentTimeMillis());
         SystemInfo.setServletContext(getServletContext());
         SystemInfo.setDebugLevel(DEBUG_LEVEL);
+        loadProperties();
 
-        long subTaskStart = System.currentTimeMillis();
-        DBMap.loadDbMaps(getServletContext().getRealPath("/WEB-INF/classes/com/hicks/beans"), "com.hicks.beans");
-        System.out.println("Loaded DBMAPS in " + (System.currentTimeMillis() - subTaskStart) + "ms");
+        EOI.init("jdbc:h2:tcp://localhost/~/bts;TRACE_LEVEL_FILE=1;CACHE_SIZE=" + SystemInfo.getDatabaseCacheInKBs() + ";");
+
+        loadDBMaps();
 
         if (DROP_TABLES)
             dropTables();
@@ -57,10 +49,20 @@ public class Controller extends HttpServlet
         DefaultDataLoader.createDemoData();
 
         if (DEBUG_LEVEL > 1)
+        {
+            System.out.println("Max Memory: " + new DecimalFormat("#,###").format(Runtime.getRuntime().maxMemory()));
             for (String argument : ManagementFactory.getRuntimeMXBean().getInputArguments())
                 System.out.println(argument);
+        }
 
-        System.out.println("Controller.init finished in " + (System.currentTimeMillis() - controllerStart) + " ms");
+        System.out.println("Controller.init finished in " + (System.currentTimeMillis() - SystemInfo.getSystemStart()) + " ms");
+    }
+
+    private void loadDBMaps()
+    {
+        long subTaskStart = System.currentTimeMillis();
+        DBMap.loadDbMaps(getServletContext().getRealPath("/WEB-INF/classes/com/hicks/beans"), "com.hicks.beans");
+        System.out.println("Loaded DBMAPS in " + (System.currentTimeMillis() - subTaskStart) + "ms");
     }
 
     private void loadProperties()
@@ -76,17 +78,19 @@ public class Controller extends HttpServlet
             System.out.println(e.getMessage());
         }
 
+        SystemInfo.setDatabaseCacheInKBs(Common.stringToLong(properties.getProperty("databaseCacheInKBs")));
         SystemInfo.setEmailHost(properties.getProperty("emailHost"));
         SystemInfo.setEmailPort(Common.stringToInt(properties.getProperty("emailPort")));
         SystemInfo.setEmailUser(properties.getProperty("emailUser"));
         SystemInfo.setEmailPassword(properties.getProperty("emailPassword"));
+        SystemInfo.setEmailFromAddress(properties.getProperty("emailFromAddress"));
+        SystemInfo.setEmailFromName(properties.getProperty("emailFromName"));
     }
 
     private void createTables()
     {
-        long subTaskStart;
+        long subTaskStart = System.currentTimeMillis();
         int tablesCreated = 0;
-        subTaskStart = System.currentTimeMillis();
         for (DBMap dbMap : DBMap.dbMaps)
             if (!EOI.isTableExists(dbMap))
             {
