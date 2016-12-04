@@ -10,6 +10,14 @@
 <head>
     <title>BTS</title>
     <jsp:include page="${pageContext.request.contextPath}/WEB-INF/webroot/inc_header.jsp"/>
+
+    <script>
+        function deleteUser(userId)
+        {
+            if (confirm('Are you sure?'))
+                location.href="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&action=delete&userId=" + userId;
+        }
+    </script>
 </head>
 <body>
 
@@ -26,18 +34,67 @@
                     <tr>
                         <th>Object Id</th>
                         <th>Logon Id</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <c:forEach var="user" items="${users}">
                     <tr>
                         <td><a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${user.id}">${user.id}</a></td>
                         <td><a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${user.id}">${user.logonId}</a></td>
+                        <td><a onclick="deleteUser('${user.id}');" class="clickable material-icons">delete</a></td>
                     </tr>
                 </c:forEach>
             </table>
         </div>
+
+        <div class="mdl-card__actions">
+            <input id="addUserButton" type="button" value="Add User" class="mdl-button mdl-js-button mdl-button--raised" />
+        </div>
     </div>
 </div>
+
+<dialog id="addUserDialog" class="mdl-dialog">
+    <h4 class="mdl-dialog__title">Add User</h4>
+    <div class="mdl-dialog__content">
+        <form id="frmCreateUser" name="frmCreateUser" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&action=create">
+            <table>
+                <tr>
+                    <td>Logon Id:</td>
+                    <td>
+                        <input type="text" id="fldLogonId" name="fldLogonId" size="20" maxlength="256" value="" required/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button create">Create</button>
+        <button type="button" class="mdl-button close">Cancel</button>
+    </div>
+</dialog>
+<script>
+    var addUserDialog = document.querySelector('#addUserDialog');
+    var addUserButton = document.querySelector('#addUserButton');
+    if (!addUserDialog.showModal)
+    {
+        dialogPolyfill.registerDialog(addUserDialog);
+    }
+    addUserButton.addEventListener('click', function ()
+    {
+        addUserDialog.showModal();
+    });
+    document.querySelector('#addUserDialog .create').addEventListener('click', function ()
+    {
+        if (!document.querySelector('#fldLogonId').value)
+            alert('Please enter a Logon Id.');
+        else
+            $('#frmCreateUser').submit();
+    });
+    addUserDialog.querySelector('#addUserDialog .close').addEventListener('click', function ()
+    {
+        addUserDialog.close();
+    });
+</script>
 
 <jsp:include page="${pageContext.request.contextPath}/WEB-INF/webroot/footer.jsp"/>
 </body>

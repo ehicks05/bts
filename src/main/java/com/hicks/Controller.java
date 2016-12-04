@@ -239,6 +239,10 @@ public class Controller extends HttpServlet
                 {
                     if (action.equals("form"))
                         viewJsp = AdminHandler.showManageUsers(request, response);
+                    if (action.equals("create"))
+                        AdminHandler.createUser(request, response);
+                    if (action.equals("delete"))
+                        AdminHandler.deleteUser(request, response);
                 }
             }
 
