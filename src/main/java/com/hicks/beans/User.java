@@ -30,6 +30,9 @@ public class User implements Serializable, ISelectTagSupport
     @Column(name = "password", nullable = false)
     private String password = "";
 
+    @Column(name = "enabled")
+    private Boolean enabled;
+
     @Column(name = "avatar_id")
     private Long avatarId;
 
@@ -148,6 +151,16 @@ public class User implements Serializable, ISelectTagSupport
     public void setPassword(String password)
     {
         this.password = password;
+    }
+
+    public Boolean getEnabled()
+    {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled)
+    {
+        this.enabled = enabled;
     }
 
     public Long getAvatarId()

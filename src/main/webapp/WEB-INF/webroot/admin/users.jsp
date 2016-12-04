@@ -33,14 +33,16 @@
                 <thead>
                     <tr>
                         <th>Object Id</th>
-                        <th>Logon Id</th>
+                        <th class="mdl-data-table__cell--non-numeric">Logon Id</th>
+                        <th>Enabled</th>
                         <th></th>
                     </tr>
                 </thead>
                 <c:forEach var="user" items="${users}">
                     <tr>
                         <td><a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${user.id}">${user.id}</a></td>
-                        <td><a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${user.id}">${user.logonId}</a></td>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${user.id}">${user.logonId}</a></td>
+                        <td class="mdl-data-table__cell--non-numeric">${user.enabled}</td>
                         <td><a onclick="deleteUser('${user.id}');" class="clickable material-icons">delete</a></td>
                     </tr>
                 </c:forEach>
