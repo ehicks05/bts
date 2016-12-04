@@ -34,7 +34,7 @@
 
 
             <c:if test="${!empty sessionScope.userSession}">
-                <button id="show-create-issue-dialog" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--accent" onclick="showCreateDialog();">
+                <button id="show-create-issue-dialog" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--accent">
                     <i class="material-icons">add</i>
                 </button>
             </c:if>
