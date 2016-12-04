@@ -1,10 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<dialog class="mdl-dialog">
+<dialog id="createIssueDialog" class="mdl-dialog">
     <h4 class="mdl-dialog__title">Create Issue</h4>
     <div class="mdl-dialog__content">
-        <form id="frmCreate" name="frmCreate" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab1=main&tab2=issue&action=create">
+        <form id="frmCreateIssue" name="frmCreateIssue" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab1=main&tab2=issue&action=create">
             <table>
                 <tr>
                     <td>Title:</td>
@@ -67,22 +67,22 @@
     </div>
 </dialog>
 <script>
-    var dialog = document.querySelector('dialog');
+    var createIssueDialog = document.querySelector('#createIssueDialog');
     var showDialogButton = document.querySelector('#show-create-issue-dialog');
-    if (!dialog.showModal)
+    if (!createIssueDialog.showModal)
     {
-        dialogPolyfill.registerDialog(dialog);
+        dialogPolyfill.registerDialog(createIssueDialog);
     }
     showDialogButton.addEventListener('click', function ()
     {
-        dialog.showModal();
+        createIssueDialog.showModal();
     });
-    document.querySelector('.create').addEventListener('click', function ()
+    document.querySelector('#createIssueDialog .create').addEventListener('click', function ()
     {
-        $('#frmCreate').submit()
+        $('#frmCreateIssue').submit()
     });
-    dialog.querySelector('.close').addEventListener('click', function ()
+    createIssueDialog.querySelector('#createIssueDialog .close').addEventListener('click', function ()
     {
-        dialog.close();
+        createIssueDialog.close();
     });
 </script>
