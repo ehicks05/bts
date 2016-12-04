@@ -3,12 +3,10 @@ package com.hicks;
 import com.hicks.beans.*;
 import net.ehicks.eoi.EOI;
 
-import javax.persistence.criteria.Path;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -19,101 +17,45 @@ public class DefaultDataLoader
     static void createDemoData()
     {
         System.out.print("Seeding dummy data...");
-        List result = EOI.executeQueryOneResult("select count(*) from bts_users", new ArrayList<>());
-        long rows = (Long) result.get(0);
-        if (rows == 0)
+
+        if (User.getAll().size() == 0)
         {
-            User user = new User();
-            user.setLogonId("***REMOVED***");
-            user.setPassword("eric");
-            user.setAvatarId(2L);
-            user.setCreatedOn(new Date());
-            user.setUpdatedOn(new Date());
-            EOI.insert(user);
+            Map<String, List<String>> users = new HashMap<>();
+            users.put("***REMOVED***", new ArrayList<>(Arrays.asList("eric", "2")));
+            users.put("***REMOVED***", new ArrayList<>(Arrays.asList("val", "3")));
+            users.put("khicks@yahoo.com", new ArrayList<>(Arrays.asList("khicks", "8")));
+            users.put("***REMOVED***", new ArrayList<>(Arrays.asList("steve", "15")));
+            users.put("thicks@yahoo.com", new ArrayList<>(Arrays.asList("test", "5")));
+            users.put("bhicks@yahoo.com", new ArrayList<>(Arrays.asList("test", "10")));
 
-            user = new User();
-            user.setLogonId("***REMOVED***");
-            user.setPassword("val");
-            user.setAvatarId(3L);
-            user.setCreatedOn(new Date());
-            EOI.insert(user);
+            for (String key : users.keySet())
+            {
+                User user = new User();
+                user.setLogonId(key);
+                user.setPassword(users.get(key).get(0));
+                user.setEnabled(true);
+                if (key.equals("thicks@yahoo.com"))
+                    user.setEnabled(false);
+                user.setAvatarId(Long.valueOf(users.get(key).get(1)));
+                user.setCreatedOn(new Date());
+                user.setUpdatedOn(new Date());
+                long userId = EOI.insert(user);
 
-            user = new User();
-            user.setLogonId("khicks@yahoo.com");
-            user.setPassword("khicks");
-            user.setAvatarId(8L);
-            user.setCreatedOn(new Date());
-            user.setUpdatedOn(new Date());
-            EOI.insert(user);
+                Role role = new Role();
+                role.setLogonId(user.getLogonId());
+                role.setUserId(userId);
+                role.setRoleName("user");
+                EOI.insert(role);
 
-            user = new User();
-            user.setLogonId("***REMOVED***");
-            user.setPassword("steve");
-            user.setAvatarId(15L);
-            user.setCreatedOn(new Date());
-            user.setUpdatedOn(new Date());
-            EOI.insert(user);
-
-            user = new User();
-            user.setLogonId("thicks@yahoo.com");
-            user.setPassword("test");
-            user.setAvatarId(5L);
-            user.setCreatedOn(new Date());
-            user.setUpdatedOn(new Date());
-            EOI.insert(user);
-
-            user = new User();
-            user.setLogonId("bhicks@yahoo.com");
-            user.setPassword("test");
-            user.setAvatarId(10L);
-            user.setCreatedOn(new Date());
-            user.setUpdatedOn(new Date());
-            EOI.insert(user);
+                if (user.getLogonId().equals("***REMOVED***"))
+                {
+                    role.setRoleName("admin");
+                    EOI.insert(role);
+                }
+            }
         }
 
-        result = EOI.executeQueryOneResult("select count(*) from bts_roles", new ArrayList<>());
-        rows = (Long) result.get(0);
-        if (rows == 0)
-        {
-            Role role = new Role();
-            User user = User.getByUserId(1L);
-            role.setLogonId(user.getLogonId());
-            role.setUserId(user.getId());
-            role.setRoleName("user");
-            EOI.insert(role);
-
-            role = new Role();
-            user = User.getByUserId(1L);
-            role.setLogonId(user.getLogonId());
-            role.setUserId(user.getId());
-            role.setRoleName("admin");
-            EOI.insert(role);
-
-            role = new Role();
-            user = User.getByUserId(2L);
-            role.setLogonId(user.getLogonId());
-            role.setUserId(user.getId());
-            role.setRoleName("user");
-            EOI.insert(role);
-
-            role = new Role();
-            user = User.getByUserId(3L);
-            role.setLogonId(user.getLogonId());
-            role.setUserId(user.getId());
-            role.setRoleName("user");
-            EOI.insert(role);
-
-            role = new Role();
-            user = User.getByUserId(4L);
-            role.setLogonId(user.getLogonId());
-            role.setUserId(user.getId());
-            role.setRoleName("user");
-            EOI.insert(role);
-        }
-
-        result = EOI.executeQueryOneResult("select count(*) from projects", new ArrayList<>());
-        rows = (Long) result.get(0);
-        if (rows == 0)
+        if (Project.getAll().size() == 0)
         {
             Project project = new Project();
             project.setName("Genesis");
@@ -131,9 +73,7 @@ public class DefaultDataLoader
             EOI.insert(project);
         }
 
-        result = EOI.executeQueryOneResult("select count(*) from statuses", new ArrayList<>());
-        rows = (Long) result.get(0);
-        if (rows == 0)
+        if (Status.getAll().size() == 0)
         {
             Status status = new Status();
             status.setName("Open");
@@ -160,8 +100,7 @@ public class DefaultDataLoader
             EOI.insert(severity);
         }
 
-        List<Zone> zones = Zone.getAll();
-        if (zones.size() == 0)
+        if (Zone.getAll().size() == 0)
         {
             Zone zone = new Zone();
             zone.setName("Readington");
@@ -211,8 +150,8 @@ public class DefaultDataLoader
 
         Random r = new Random();
 
-        result = EOI.executeQueryOneResult("select count(*) from issues", new ArrayList<>());
-        rows = (Long) result.get(0);
+        List result = EOI.executeQueryOneResult("select count(*) from issues", new ArrayList<>());
+        long rows = (Long) result.get(0);
         if (rows == 0)
         {
             IntStream.range(1, 512).parallel().forEach(i ->
@@ -268,22 +207,16 @@ public class DefaultDataLoader
         List<ZoneMap> zoneMaps = ZoneMap.getAll();
         if (zoneMaps.size() == 0)
         {
-            User user = User.getByUserId(1L);
-            zones = Zone.getAll();
-            for (Zone zone : zones)
+            List<Zone> zones = Zone.getAll();
+            for (User user : User.getAll())
             {
-                ZoneMap zoneMap = new ZoneMap();
-                zoneMap.setUserId(user.getId());
-                zoneMap.setZoneId(zone.getId());
-                EOI.insert(zoneMap);
-            }
-            user = User.getByUserId(2L);
-            for (Zone zone : zones)
-            {
-                ZoneMap zoneMap = new ZoneMap();
-                zoneMap.setUserId(user.getId());
-                zoneMap.setZoneId(zone.getId());
-                EOI.insert(zoneMap);
+                for (Zone zone : zones)
+                {
+                    ZoneMap zoneMap = new ZoneMap();
+                    zoneMap.setUserId(user.getId());
+                    zoneMap.setZoneId(zone.getId());
+                    EOI.insert(zoneMap);
+                }
             }
         }
 

@@ -138,7 +138,29 @@ public class Controller extends HttpServlet
 
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         if (userSession == null)
+        {
             userSession = createSession(request);
+
+            // this will hit if they 1. log out, 2. hit F5, and 3. attempt to log back in.
+            // without this check, they will log in and immediately be logged out again.
+            if (request.getParameter("action").equals("logout"))
+            {
+                response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
+                return;
+            }
+        }
+
+        if (!User.getByUserId(userSession.getUserId()).getEnabled())
+        {
+            request.setAttribute("clientMessage", "Your account is disabled...");
+            String viewJsp = logout(request, response);
+            RequestDispatcher dispatcher = request.getRequestDispatcher(viewJsp);
+            dispatcher.forward(request, response);
+            return;
+        }
+
+        // Set standard HTTP/1.1 no-cache headers.
+        response.setHeader("Cache-Control", "private, no-store, no-cache, must-revalidate");
 
         request.setAttribute("zones", Zone.getAllForUser(userSession));
         request.setAttribute("projects", Project.getAll());
@@ -154,6 +176,20 @@ public class Controller extends HttpServlet
             return;
         }
 
+        String viewJsp = processRequest(request, response);
+
+        if (viewJsp.length() > 0)
+        {
+            RequestDispatcher dispatcher = request.getRequestDispatcher(viewJsp);
+            dispatcher.forward(request, response);
+        }
+
+        if (DEBUG_LEVEL > 1)
+            System.out.println((System.currentTimeMillis() - start) + " ms for last request " + request.getQueryString());
+    }
+
+    private String processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
+    {
         String tab1   = request.getParameter("tab1") == null ? "main" : request.getParameter("tab1");
         String tab2   = request.getParameter("tab2") == null ? "dashboard" : request.getParameter("tab2");
         String action = request.getParameter("action") == null ? "form" : request.getParameter("action");
@@ -226,7 +262,7 @@ public class Controller extends HttpServlet
                 if (action.equals("debug"))
                     DebugHandler.getDebugInfo(request, response);
                 if (action.equals("logout"))
-                    logout(request, response);
+                    viewJsp = logout(request, response);
             }
             if (tab1.equals("admin"))
             {
@@ -251,18 +287,7 @@ public class Controller extends HttpServlet
         {
             System.out.println(e.getMessage());
         }
-
-        // Set standard HTTP/1.1 no-cache headers.
-        response.setHeader("Cache-Control", "private, no-store, no-cache, must-revalidate");
-
-        if (viewJsp.length() > 0)
-        {
-            RequestDispatcher dispatcher = request.getRequestDispatcher(viewJsp);
-            dispatcher.forward(request, response);
-        }
-
-        if (DEBUG_LEVEL > 1)
-            System.out.println((System.currentTimeMillis() - start) + " ms for last request " + request.getQueryString());
+        return viewJsp;
     }
 
     private UserSession createSession(HttpServletRequest request)
@@ -278,9 +303,9 @@ public class Controller extends HttpServlet
         return userSession;
     }
 
-    private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException
+    private String logout(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         request.getSession().invalidate();
-        response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
+        return "/WEB-INF/webroot/logged-out.jsp";
     }
 }
