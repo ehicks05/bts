@@ -95,6 +95,15 @@ public class Comment implements Serializable
         return User.getByUserId(createdByUserId);
     }
 
+    public void setDefaultAvatar()
+    {
+        //
+    }
+    public DBFile getDefaultAvatar()
+    {
+        return DBFile.getByName("no_avatar.png");
+    }
+
     // -------- Getters / Setters ----------
 
 

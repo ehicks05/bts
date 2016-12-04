@@ -155,7 +155,7 @@
 
                     <div style="padding: 0 8px;">
                         <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${comment.createdByUserId}">
-                            <img src="${comment.createdBy.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;">${comment.createdBy}</a>
+                            <img src="${!empty comment.createdBy.avatar.base64 ? comment.createdBy.avatar.base64 : comment.defaultAvatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;">${comment.createdBy}</a>
 
                         commented on
                         <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy h:mm a"/>

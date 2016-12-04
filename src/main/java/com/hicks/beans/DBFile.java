@@ -73,6 +73,11 @@ public class DBFile implements Serializable, ISelectTagSupport
         return EOI.executeQueryOneResult("select * from db_files where id=?", Arrays.asList(id));
     }
 
+    public static DBFile getByName(String name)
+    {
+        return EOI.executeQueryOneResult("select * from db_files where name=?", Arrays.asList(name));
+    }
+
     public String getBase64()
     {
         return "data:image/png;base64," + Common.byteArrayToBase64(content);

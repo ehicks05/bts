@@ -103,6 +103,11 @@ public class User implements Serializable, ISelectTagSupport
     {
         return DBFile.getById(avatarId);
     }
+
+    public static DBFile getDefaultAvatar()
+    {
+        return DBFile.getByName("no-avatar.png");
+    }
     // -------- Getters / Setters ----------
 
     public Long getVersion()
