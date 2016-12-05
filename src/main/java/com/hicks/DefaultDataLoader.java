@@ -325,26 +325,18 @@ public class DefaultDataLoader
         List<IssueForm> issueForms = IssueForm.getAll();
         if (issueForms.size() == 0)
         {
-            IssueForm issueForm = new IssueForm();
-            issueForm.setFormName("Assigned To Me");
-            issueForm.setOnDash(true);
-            issueForm.setUserId(1L);
-            issueForm.setAssigneeUserIds("1");
-            issueForm.setStatusIds("1,2");
-            EOI.insert(issueForm);
+            for (User user : User.getAll())
+            {
+                IssueForm issueForm = new IssueForm();
+                issueForm.setFormName("All Issues");
+                issueForm.setOnDash(true);
+                issueForm.setUserId(user.getId());
+                EOI.insert(issueForm);
 
-            issueForm = new IssueForm();
-            issueForm.setFormName("Assigned To Me");
-            issueForm.setOnDash(true);
-            issueForm.setUserId(2L);
-            issueForm.setAssigneeUserIds("2");
-            EOI.insert(issueForm);
-
-            issueForm = new IssueForm();
-            issueForm.setFormName("All Issues");
-            issueForm.setOnDash(true);
-            issueForm.setUserId(1L);
-            EOI.insert(issueForm);
+                issueForm.setFormName("Assigned To Me");
+                issueForm.setAssigneeUserIds(String.valueOf(user.getId()));
+                EOI.insert(issueForm);
+            }
         }
         System.out.println("done");
 
