@@ -4,6 +4,11 @@
 <%@attribute name="id" fragment="false" %>
 <%@attribute name="items" fragment="false" type="java.util.List<com.hicks.ISelectTagSupport>" %>
 <%@attribute name="selectedValues" fragment="false" %>
+<%@attribute name="placeHolder" fragment="false" %>
+
+<c:if test="${empty placeHolder}">
+    <c:set var="placeHolder" value="Any"/>
+</c:if>
 
 <c:set var="multiSelectCounter" value="${requestScope.multiSelectCounter + 1}" scope="request"/>
 <c:if test="${multiSelectCounter == 1}">
@@ -15,7 +20,7 @@
        function initSumo()
        {
            $('.mySumo').SumoSelect({
-               placeholder: 'Any',
+               placeholder: '${placeHolder}',
                captionFormatAllSelected: '{0} selected',
                csvDispCount: 3,
                search: true});

@@ -25,10 +25,7 @@
                 <div style="width: 30px;"></div>
                 <span style="font-size: 1em;" class="mdl-layout-title">${param.tab1}</span>
                 <span style="font-size: 1em;" class="mdl-layout-title">.${param.tab2}</span>
-                <span style="font-size: 1em;" class="mdl-layout-title">
-                    <c:if test="${!empty param.tab3}">.</c:if>
-                    ${param.tab3}
-                </span>
+                <span style="font-size: 1em;" class="mdl-layout-title"><c:if test="${!empty param.tab3}">.</c:if>${param.tab3}</span>
             </c:if>
             <div class="mdl-layout-spacer"></div>
 

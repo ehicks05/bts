@@ -1,5 +1,6 @@
 package com.hicks.beans;
 
+import com.hicks.ISelectTagSupport;
 import net.ehicks.eoi.EOI;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "bts_roles")
-public class Role implements Serializable
+public class Role implements Serializable, ISelectTagSupport
 {
     @Version
     @Column(name = "version")
@@ -50,6 +51,18 @@ public class Role implements Serializable
         return roleName;
     }
 
+    @Override
+    public String getValue()
+    {
+        return id.toString();
+    }
+
+    @Override
+    public String getText()
+    {
+        return logonId;
+    }
+
     // -------- Magic ----------
     public static List<Role> getAll()
     {
@@ -64,6 +77,11 @@ public class Role implements Serializable
     public static List<Role> getByUserId(Long userId)
     {
         return EOI.executeQuery("select * from bts_roles where user_id=?", Arrays.asList(userId));
+    }
+
+    public static Role getByUserIdAndRoleName(Long userId, String roleName)
+    {
+        return EOI.executeQueryOneResult("select * from bts_roles where user_id=? and role_name=?", Arrays.asList(userId, roleName));
     }
 
     // -------- Getters / Setters ----------

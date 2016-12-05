@@ -192,6 +192,7 @@ public class Controller extends HttpServlet
     {
         String tab1   = request.getParameter("tab1") == null ? "main" : request.getParameter("tab1");
         String tab2   = request.getParameter("tab2") == null ? "dashboard" : request.getParameter("tab2");
+        String tab3   = request.getParameter("tab3") == null ? "" : request.getParameter("tab3");
         String action = request.getParameter("action") == null ? "form" : request.getParameter("action");
 
         String viewJsp = "";
@@ -279,6 +280,14 @@ public class Controller extends HttpServlet
                         AdminHandler.createUser(request, response);
                     if (action.equals("delete"))
                         AdminHandler.deleteUser(request, response);
+
+                    if (tab3.equals("modify"))
+                    {
+                        if (action.equals("form"))
+                            viewJsp = AdminHandler.showModifyUser(request, response);
+                        if (action.equals("modify"))
+                            AdminHandler.modifyUser(request, response);
+                    }
                 }
             }
 
