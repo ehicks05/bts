@@ -55,6 +55,33 @@ public class DefaultDataLoader
             }
         }
 
+        if (Group.getAll().isEmpty())
+        {
+            Group group = new Group();
+            group.setName("Customer");
+            EOI.insert(group);
+            group.setName("Support");
+            EOI.insert(group);
+            group.setName("Admin");
+            EOI.insert(group);
+        }
+
+        if (GroupMap.getAll().isEmpty())
+        {
+            Group customer = Group.getByName("Customer");
+            Group admin = Group.getByName("Admin");
+
+            for (User user : User.getAll())
+            {
+                GroupMap groupMap = new GroupMap();
+                groupMap.setUserId(user.getId());
+                groupMap.setGroupId(customer.getId());
+                if (user.getLogonId().equals("***REMOVED***"))
+                    groupMap.setGroupId(admin.getId());
+                EOI.insert(groupMap);
+            }
+        }
+
         if (Project.getAll().size() == 0)
         {
             Project project = new Project();
@@ -134,7 +161,7 @@ public class DefaultDataLoader
         }
 
         List<String> adjectives = Arrays.asList("deactivated", "decommissioned", "ineffective", "ineffectual", "useless "+
-                "inoperable", "unusable", "unworkable arrested", "asleep", "dormant", "fallow", "idle", "inert",
+                        "inoperable", "unusable", "unworkable arrested", "asleep", "dormant", "fallow", "idle", "inert",
                 "latent", "lifeless", "nonproductive", "quiescent", "sleepy", "stagnating", "unproductive", "vegetating");
 
         List<String> nouns = Arrays.asList("feature", "screen", "page", "report", "functionality");

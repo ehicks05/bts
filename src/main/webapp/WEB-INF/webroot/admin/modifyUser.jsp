@@ -24,7 +24,7 @@
 
             var avatarId = avatarOption.id;
             var src = document.getElementById('avatar' + avatarId).src;
-            var $avatar = $('<span><img style="padding-bottom:5px; height:24px;" src="' + src + '" class="img-flag" /> ' + avatarOption.text +  '</span>');
+            var $avatar = $('<span><img style="padding-bottom:5px; height:22px;" src="' + src + '" class="img-flag" /> ' + avatarOption.text +  '</span>');
             return $avatar;
         }
     </script>
@@ -55,13 +55,15 @@
                     <label class="mdl-textfield__label" for="logonId">Logon Id:</label>
                 </div>
                 <br>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <div>
                     <label class="" for="avatarId">Avatar:</label>
                     <t:select id="avatarId" items="${avatars}" value="${user.avatarId}" formatFunction="formatAvatar"/>
                 </div>
                 <br>
-                <label class="" for="roles">Roles:</label>
-                <t:multiSelect id="roles" items="${ct:stringToISelectTag('user=User,admin=Admin')}" selectedValues="${user.allRoles}" placeHolder="None"/>
+                <div>
+                    <label class="" for="groups">Groups:</label>
+                    <t:multiSelect id="groups" items="${groups}" selectedValues="${user.allGroups}" placeHolder="None"/>
+                </div>
             </div>
 
             <div class="mdl-card__actions">

@@ -168,6 +168,7 @@ public class Controller extends HttpServlet
         request.setAttribute("severities", Severity.getAll());
         request.setAttribute("statuses", Status.getAll());
         request.setAttribute("users", User.getAll());
+        request.setAttribute("groups", Group.getAll());
         request.setAttribute("issueForms", IssueForm.getByUserId(userSession.getUserId()));
 
         if (request.getParameter("tab1") == null)

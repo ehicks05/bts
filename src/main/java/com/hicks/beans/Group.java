@@ -67,6 +67,16 @@ public class Group implements Serializable, ISelectTagSupport
         return EOI.executeQueryOneResult("select * from groups where id=?", Arrays.asList(id));
     }
 
+    public static Group getByName(String name)
+    {
+        return EOI.executeQueryOneResult("select * from groups where name=?", Arrays.asList(name));
+    }
+
+    public static List<Group> getByUserId(Long userId)
+    {
+        return EOI.executeQueryOneResult("select * from groups where name=?", Arrays.asList(userId));
+    }
+
     // -------- Getters / Setters ----------
 
 

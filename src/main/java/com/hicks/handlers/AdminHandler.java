@@ -1,10 +1,7 @@
 package com.hicks.handlers;
 
 import com.hicks.UserSession;
-import com.hicks.beans.DBFile;
-import com.hicks.beans.IssueForm;
-import com.hicks.beans.Role;
-import com.hicks.beans.User;
+import com.hicks.beans.*;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 
@@ -15,6 +12,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AdminHandler
 {
@@ -78,22 +76,22 @@ public class AdminHandler
             user.setAvatarId(avatarId);
             EOI.update(user);
 
-            List<String> selectedRoles = Arrays.asList(request.getParameterValues("roles"));
+            List<Long> selectedGroupIds = Arrays.stream(request.getParameterValues("groups")).map(Long::valueOf).collect(Collectors.toList());
+
             // remove existing roles that weren't selected
-            for (Role role : Role.getByUserId(userId))
-                if (!selectedRoles.contains(role.getRoleName()))
-                    EOI.executeDelete(role);
+            for (GroupMap groupMap : GroupMap.getByUserId(userId))
+                if (!selectedGroupIds.contains(groupMap.getGroupId()))
+                    EOI.executeDelete(groupMap);
             // add new roles that were selected but didn't already exist
-            for (String roleName : selectedRoles)
+            for (Long groupId : selectedGroupIds)
             {
-                Role role = Role.getByUserIdAndRoleName(userId, roleName);
-                if (role == null)
+                GroupMap groupMap = GroupMap.getByGroupIdAndUserId(userId, groupId);
+                if (groupMap == null)
                 {
-                    role = new Role();
-                    role.setLogonId(user.getLogonId());
-                    role.setUserId(user.getId());
-                    role.setRoleName(roleName);
-                    EOI.insert(role);
+                    groupMap = new GroupMap();
+                    groupMap.setUserId(user.getId());
+                    groupMap.setGroupId(groupId);
+                    EOI.insert(groupMap);
                 }
             }
         }

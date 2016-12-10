@@ -12,4 +12,13 @@
         <function-class>com.hicks.tags.TagUtils</function-class>
         <function-signature>java.util.List stringToISelectTag(java.lang.String)</function-signature>
     </function>
+
+    <function>
+        <description>
+            JavaScript Escape function
+        </description>
+        <name>escapeJS</name>
+        <function-class>org.apache.commons.lang3.StringEscapeUtils</function-class>
+        <function-signature>java.lang.String escapeEcmaScript(java.lang.String)</function-signature>
+    </function>
 </taglib>

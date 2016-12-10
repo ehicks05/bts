@@ -102,6 +102,11 @@ public class User implements Serializable, ISelectTagSupport
         return Role.getByUserId(id);
     }
 
+    public List<Group> getAllGroups()
+    {
+        return Group.getByUserId(id);
+    }
+
     public DBFile getAvatar()
     {
         return DBFile.getById(avatarId);

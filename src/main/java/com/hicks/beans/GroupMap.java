@@ -66,6 +66,11 @@ public class GroupMap implements Serializable
         return EOI.executeQueryOneResult("select * from group_maps where id=?", Arrays.asList(id));
     }
 
+    public static GroupMap getByGroupIdAndUserId(Long groupId, Long userId)
+    {
+        return EOI.executeQueryOneResult("select * from group_maps where group_id=? and user_id", Arrays.asList(groupId, userId));
+    }
+
     // -------- Getters / Setters ----------
 
     public Long getId()
