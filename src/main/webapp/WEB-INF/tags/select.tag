@@ -22,7 +22,7 @@
         }).val('${value}').trigger('change');
     });
 </script>
-<select id="${id}" name="${id}" class="js-example-basic-single" style="width: 60%;">
+<select id="${id}" name="${id}" class="js-example-basic-single">
     <c:forEach var="item" items="${items}">
         <option value="${item.value}">${item.text}</option>
     </c:forEach>

@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="t" uri="http://eric-hicks.com/bts/commontags" %>
 
 <%@tag description="Text To Input Tag" pageEncoding="UTF-8" %>
 <%@attribute name="id" fragment="false" %>
@@ -12,10 +13,10 @@
 
 <c:set var="textToInputTextCounter" value="${requestScope.textToInputTextCounter + 1}" scope="request"/>
 <c:if test="${textToInputTextCounter == 1}">
-   <script>
-       CKEDITOR.disableAutoInline = true;
-       CKEDITOR.config.extraAllowedContent = 'div(*)';
-   </script>
+    <script>
+        CKEDITOR.disableAutoInline = true;
+        CKEDITOR.config.extraAllowedContent = 'div(*)';
+    </script>
 </c:if>
 
 <${tag} contenteditable="true" id="${id}" class="editable">${text}</${tag}>
@@ -35,7 +36,7 @@
                     var editor = ev.editor;
                     var data = editor.getData();
 
-                    if (data != '${text}')
+                    if (data != '${t:escapeJS(text)}')
                     {
                         update('${id}', data, '${submitAction}');
                         editor.commands.save.setState(CKEDITOR.TRISTATE_DISABLED);
