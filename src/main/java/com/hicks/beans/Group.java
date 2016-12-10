@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "groups")
@@ -74,7 +75,8 @@ public class Group implements Serializable, ISelectTagSupport
 
     public static List<Group> getByUserId(Long userId)
     {
-        return EOI.executeQueryOneResult("select * from groups where name=?", Arrays.asList(userId));
+        List<GroupMap> groupMaps = GroupMap.getByUserId(userId);
+        return groupMaps.stream().map(groupMap -> Group.getById(groupMap.getGroupId())).collect(Collectors.toList());
     }
 
     // -------- Getters / Setters ----------

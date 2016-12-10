@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "bts_users")
@@ -105,6 +106,11 @@ public class User implements Serializable, ISelectTagSupport
     public List<Group> getAllGroups()
     {
         return Group.getByUserId(id);
+    }
+
+    public List<Long> getAllGroupIds()
+    {
+        return Group.getByUserId(id).stream().map(Group::getId).collect(Collectors.toList());
     }
 
     public DBFile getAvatar()

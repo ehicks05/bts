@@ -62,7 +62,7 @@
                 <br>
                 <div>
                     <label class="" for="groups">Groups:</label>
-                    <t:multiSelect id="groups" items="${groups}" selectedValues="${user.allGroups}" placeHolder="None"/>
+                    <t:multiSelect id="groups" items="${groups}" selectedValues="${user.allGroupIds}" placeHolder="None"/>
                 </div>
             </div>
 
