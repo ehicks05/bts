@@ -12,23 +12,25 @@
 
 <c:set var="multiSelectCounter" value="${requestScope.multiSelectCounter + 1}" scope="request"/>
 <c:if test="${multiSelectCounter == 1}">
-    <script>
-       $(document).ready(function () {
-          initSumo();
-       });
 
-       function initSumo()
-       {
-           $('.mySumo').SumoSelect({
-               placeholder: '${placeHolder}',
-               captionFormatAllSelected: '{0} selected',
-               csvDispCount: 3,
-               search: true});
-       }
-   </script>
 </c:if>
 
-<select name="${id}" id="${id}" class="mySumo" multiple>
+<script>
+    $(document).ready(function ()
+    {
+        $('#${id}').select2({
+            placeholder: "Any"
+        });
+        $('#${id}').on('select2:open', function (e) {
+            var container = $(this).select('select2-container');
+            var position = container.offset().top;
+            var availableHeight = $(window).height() - position - container.outerHeight();
+            var bottomPadding = 50; // Set as needed
+            $('ul.select2-results__options').css('max-height', (availableHeight - bottomPadding) + 'px');
+        });
+    });
+</script>
+<select id="${id}" name="${id}" class="js-example-basic-single" multiple>
     <c:forEach var="item" items="${items}">
         <c:set var="selected" value=""/>
         <c:if test="${selectedValues.contains(item.value)}">
