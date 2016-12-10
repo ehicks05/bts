@@ -39,6 +39,9 @@ public class EmailEngine
     private static void sendHtmlEmail(EmailMessage emailMessage, List<String> recipients) throws MalformedURLException, EmailException
     {
         User user = User.getByUserId(emailMessage.getUserId());
+        String avatarId = String.valueOf(user.getAvatarId());
+        if (avatarId.length() == 1)
+            avatarId = "0" + avatarId;
         Issue issue = Issue.getById(emailMessage.getIssueId());
         // load your HTML email template
         String htmlEmailTemplate =
@@ -55,7 +58,7 @@ public class EmailEngine
                         "            <tr>\n" +
                         "                <td style=\"padding: 10px;\">\n" +
                         "                    <h3>\n" +
-                        "                        <img style=\"width: 32px;\" src=\"http://192.168.1.100:8080/images/avatars/png/avatar-01.png\" />\n" +
+                        "                        <img style=\"width: 32px;\" src=\"http://192.168.1.100:8080/images/avatars/png/avatar-" + avatarId + ".png\" />\n" +
                         "                        " + user.getLogonId() + " " + emailMessage.getAction() + ".\n" +
                         "                    </h3>\n" +
                         "                    <p>" + emailMessage.getDescription() + "</p>\n" +

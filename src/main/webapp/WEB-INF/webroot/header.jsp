@@ -14,6 +14,15 @@
     {
         location.href='${pageContext.request.contextPath}/view?tab1=main&action=form';
     }
+
+    function followBreadcrumbs(tab1, tab2, tab3)
+    {
+        var tabs = '';
+        if (tab1) tabs += 'tab1=' + tab1;
+        if (tab2) tabs += '&tab2=' + tab2;
+        if (tab3) tabs += '&tab3=' + tab3;
+        location.href = '${pageContext.request.contextPath}/view?' + tabs + '&action=form';
+    }
 </script>
 
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
@@ -23,9 +32,9 @@
 
             <c:if test="${!empty sessionScope.userSession}">
                 <div style="width: 30px;"></div>
-                <span style="font-size: 1em;" class="mdl-layout-title">${param.tab1}</span>
-                <span style="font-size: 1em;" class="mdl-layout-title">.${param.tab2}</span>
-                <span style="font-size: 1em;" class="mdl-layout-title"><c:if test="${!empty param.tab3}">.</c:if>${param.tab3}</span>
+                <span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}')">${param.tab1}</span>
+                <span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}')">.${param.tab2}</span>
+                <span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}','${param.tab3}')"><c:if test="${!empty param.tab3}">.</c:if>${param.tab3}</span>
             </c:if>
             <div class="mdl-layout-spacer"></div>
 

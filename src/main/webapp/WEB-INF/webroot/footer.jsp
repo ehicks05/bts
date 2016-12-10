@@ -53,6 +53,16 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>Status:</td>
+                    <td>
+                        <select name="fldStatus" required>
+                            <c:forEach var="status" items="${statuses}">
+                                <option name="${status.name}" value="${status.id}">${status.name}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
                     <td>Description:</td>
                     <td>
                         <input type="text" name="fldDescription" size="20" maxlength="1024" value=""/>

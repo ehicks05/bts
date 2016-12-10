@@ -19,6 +19,9 @@ public class ModifyIssueHandler
     {
         Long issueId = Common.stringToLong(request.getParameter("issueId"));
 
+        if (Issue.getById(issueId) == null)
+            return "/WEB-INF/webroot/error.jsp";
+
         request.setAttribute("issue", Issue.getById(issueId));
         request.setAttribute("comments", Comment.getByIssueId(issueId));
         request.setAttribute("watcherMaps", WatcherMap.getByIssueId(issueId));
@@ -41,15 +44,18 @@ public class ModifyIssueHandler
         Long zoneId         = Common.stringToLong(request.getParameter("fldZone"));
         Long issueTypeId    = Common.stringToLong(request.getParameter("fldIssueType"));
         Long severityId     = Common.stringToLong(request.getParameter("fldSeverity"));
+        Long statusId       = Common.stringToLong(request.getParameter("fldStatus"));
         String title        = Common.getSafeString(request.getParameter("fldTitle"));
         String description  = Common.getSafeString(request.getParameter("fldDescription"));
 
         Issue issue = new Issue();
         issue.setReporterUserId(userSession.getUserId());
+        issue.setAssigneeUserId(userSession.getUserId());
         issue.setProjectId(projectId);
         issue.setZoneId(zoneId);
         issue.setIssueTypeId(issueTypeId);
         issue.setSeverityId(severityId);
+        issue.setStatusId(statusId);
         issue.setTitle(title);
         issue.setDescription(description);
         issue.setCreatedOn(new Date());

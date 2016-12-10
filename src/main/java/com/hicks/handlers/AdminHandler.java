@@ -48,7 +48,7 @@ public class AdminHandler
         Long userId = Common.stringToLong(request.getParameter("userId"));
         User user = User.getByUserId(userId);
         if (user != null)
-            EOI.executeDelete(User.getByUserId(userId));
+            EOI.executeDelete(user);
 
         response.sendRedirect("view?tab1=admin&tab2=users&action=form");
     }
@@ -58,7 +58,6 @@ public class AdminHandler
         Long userId = Common.stringToLong(request.getParameter("userId"));
         User user = User.getByUserId(userId);
         request.setAttribute("user", user);
-        request.setAttribute("roles", new ArrayList<>(Arrays.asList("user", "admin")));
         request.setAttribute("avatars", DBFile.getAll());
 
         return "/WEB-INF/webroot/admin/modifyUser.jsp";
@@ -97,5 +96,60 @@ public class AdminHandler
         }
 
         response.sendRedirect("view?tab1=admin&tab2=users&tab3=modify&action=form&userId=" + userId);
+    }
+
+    public static String showManageProjects(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        request.setAttribute("projects", Project.getAll());
+
+        return "/WEB-INF/webroot/admin/projects.jsp";
+    }
+
+    public static void createProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        String name = Common.getSafeString(request.getParameter("fldName"));
+        String prefix = Common.getSafeString(request.getParameter("fldPrefix"));
+        Project project = new Project();
+        project.setName(name);
+        project.setPrefix(prefix);
+        long projectId = EOI.insert(project);
+
+        response.sendRedirect("view?tab1=admin&tab2=projects&action=form");
+    }
+
+    public static void deleteProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        Long projectId = Common.stringToLong(request.getParameter("projectId"));
+        Project project = Project.getById(projectId);
+        if (project != null)
+            EOI.executeDelete(project);
+
+        response.sendRedirect("view?tab1=admin&tab2=projects&action=form");
+    }
+
+    public static String showModifyProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        Long projectId = Common.stringToLong(request.getParameter("projectId"));
+        Project project = Project.getById(projectId);
+        request.setAttribute("project", project);
+
+        return "/WEB-INF/webroot/admin/modifyProject.jsp";
+    }
+
+    public static void modifyProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        Long projectId = Common.stringToLong(request.getParameter("projectId"));
+        Project project = Project.getById(projectId);
+        if (project != null)
+        {
+            String name = Common.getSafeString(request.getParameter("name"));
+            String prefix = Common.getSafeString(request.getParameter("prefix"));
+            project.setName(name);
+            project.setPrefix(prefix);
+            EOI.update(project);
+        }
+
+        response.sendRedirect("view?tab1=admin&tab2=projects&tab3=modify&action=form&projectId=" + projectId);
     }
 }

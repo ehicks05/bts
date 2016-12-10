@@ -192,7 +192,7 @@ public class Controller extends HttpServlet
     private String processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
         String tab1   = request.getParameter("tab1") == null ? "main" : request.getParameter("tab1");
-        String tab2   = request.getParameter("tab2") == null ? "dashboard" : request.getParameter("tab2");
+        String tab2   = request.getParameter("tab2") == null && tab1.equals("main") ? "dashboard" : request.getParameter("tab2");
         String tab3   = request.getParameter("tab3") == null ? "" : request.getParameter("tab3");
         String action = request.getParameter("action") == null ? "form" : request.getParameter("action");
 
@@ -268,6 +268,11 @@ public class Controller extends HttpServlet
             }
             if (tab1.equals("admin"))
             {
+                if (tab2 == null || tab2.isEmpty())
+                {
+                    response.sendRedirect("view?tab1=admin&tab2=overview&action=form");
+                    return "";
+                }
                 if (tab2.equals("overview"))
                 {
                     if (action.equals("form"))
@@ -288,6 +293,23 @@ public class Controller extends HttpServlet
                             viewJsp = AdminHandler.showModifyUser(request, response);
                         if (action.equals("modify"))
                             AdminHandler.modifyUser(request, response);
+                    }
+                }
+                if (tab2.equals("projects"))
+                {
+                    if (action.equals("form"))
+                        viewJsp = AdminHandler.showManageProjects(request, response);
+                    if (action.equals("create"))
+                        AdminHandler.createProject(request, response);
+                    if (action.equals("delete"))
+                        AdminHandler.deleteProject(request, response);
+
+                    if (tab3.equals("modify"))
+                    {
+                        if (action.equals("form"))
+                            viewJsp = AdminHandler.showModifyProject(request, response);
+                        if (action.equals("modify"))
+                            AdminHandler.modifyProject(request, response);
                     }
                 }
             }

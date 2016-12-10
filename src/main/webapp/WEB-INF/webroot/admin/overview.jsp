@@ -22,6 +22,9 @@
         <div class="tableContainer">
             <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&action=form">Manage Users</a>
         </div>
+        <div>
+            <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=projects&action=form">Manage Projects</a>
+        </div>
     </div>
 </div>
 
