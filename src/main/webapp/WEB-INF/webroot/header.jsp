@@ -4,15 +4,11 @@
 </c:if>
 
 <script>
-    function doSearch(searchTerm)
+    function goToIssue()
     {
-        $('#header_title').val(searchTerm);
-        $('#header_description').val(searchTerm);
-    }
-
-    function goToDashboard()
-    {
-        location.href='${pageContext.request.contextPath}/view?tab1=main&action=form';
+        var issueId = document.getElementById('goToIssue').value;
+        if (issueId)
+            location.href = '${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=form&issueId=' + issueId;
     }
 
     function followBreadcrumbs(tab1, tab2, tab3)
@@ -35,11 +31,14 @@
                 <span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}')">${param.tab1}</span>
                 <span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}')">.${param.tab2}</span>
                 <span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}','${param.tab3}')"><c:if test="${!empty param.tab3}">.</c:if>${param.tab3}</span>
-            </c:if>
-            <div class="mdl-layout-spacer"></div>
 
+                <input id="goToIssue" type="text" size="10" maxlength="32" style="margin-left: 30px;font-size:18px;" onkeypress="document.getElementById('goToIssueButton').disabled = false;"/>
+                <button id="goToIssueButton" class="mdl-button mdl-js-button mdl-button--icon" onclick="goToIssue();" disabled>
+                    <i class="material-icons">search</i>
+                </button>
 
-            <c:if test="${!empty sessionScope.userSession}">
+                <div class="mdl-layout-spacer"></div>
+
                 <button id="show-create-issue-dialog" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--accent">
                     <i class="material-icons">add</i>
                 </button>

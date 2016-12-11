@@ -30,7 +30,7 @@ div.ui-datepicker{
 .ui-dialog {font-size: 11pt;}
 /* JQuery */
 
-.js-example-basic-single {padding-right: 24px;}
+.js-example-basic-single {padding-right: 24px; width: 100%}
 
 .clickable {cursor: pointer;}
 .clickable:hover {text-decoration: underline}
