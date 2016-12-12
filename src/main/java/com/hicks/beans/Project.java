@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "projects")
@@ -68,6 +69,18 @@ public class Project implements Serializable, ISelectTagSupport
     public static Project getById(Long id)
     {
         return EOI.executeQueryOneResult("select * from projects where id=?", Arrays.asList(id));
+    }
+
+    public static List<Project> getAllForUser(Long userId)
+    {
+        User user = User.getByUserId(userId);
+        if (user.isAdmin() || user.isSupport())
+            return Project.getAll();
+        else
+        {
+            List<ProjectMap> projectMaps = ProjectMap.getByUserId(userId);
+            return projectMaps.stream().map(projectMap -> Project.getById(projectMap.getProjectId())).collect(Collectors.toList());
+        }
     }
 
     // -------- Getters / Setters ----------

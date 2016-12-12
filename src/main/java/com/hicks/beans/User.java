@@ -5,10 +5,7 @@ import net.ehicks.eoi.EOI;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -83,6 +80,26 @@ public class User implements Serializable, ISelectTagSupport
         return EOI.executeQuery("select * from bts_users;");
     }
 
+    public static List<User> getAllForUser(Long userId)
+    {
+        User user = User.getByUserId(userId);
+        if (user.isAdmin() || user.isSupport())
+            return User.getAll();
+        else
+        {
+            List<Zone> zones = Zone.getAllForUser(userId);
+            Set<User> users = new HashSet<>();
+            for (Zone zone : zones)
+                users.addAll(getAllUsersInZone(zone.getId()));
+            return new ArrayList<>(users);
+        }
+    }
+
+    public static List<User> getAllUsersInZone(Long zoneId)
+    {
+        return EOI.executeQuery("select * from bts_users where id in (select user_id from zone_maps where zone_id=?)", new ArrayList<>(Arrays.asList(zoneId)));
+    }
+
     public static User getByLogonId(String logonid)
     {
         return EOI.executeQueryOneResult("select * from bts_users where logon_id=?;", new ArrayList<>(Arrays.asList(logonid)));
@@ -113,6 +130,16 @@ public class User implements Serializable, ISelectTagSupport
         return Group.getByUserId(id).stream().map(Group::getId).collect(Collectors.toList());
     }
 
+    public List<Zone> getAllZones()
+    {
+        return Zone.getAllForUser(id);
+    }
+
+    public List<Project> getAllProjects()
+    {
+        return Project.getAllForUser(id);
+    }
+
     public DBFile getAvatar()
     {
         return DBFile.getById(avatarId);
@@ -121,6 +148,25 @@ public class User implements Serializable, ISelectTagSupport
     public static DBFile getDefaultAvatar()
     {
         return DBFile.getByName("no-avatar.png");
+    }
+
+    public boolean isAdmin()
+    {
+        List<Group> groups =  GroupMap.getByUserId(id).stream().map(groupMap -> Group.getById(groupMap.getGroupId())).collect(Collectors.toList());
+        for (Group group : groups)
+            if (group.getAdmin())
+                return true;
+        return false;
+    }
+
+    public boolean isSupport()
+    {
+        return GroupMap.getByUserId(id).stream().map(groupMap -> Group.getById(groupMap.getId())).anyMatch(Group::getSupport);
+    }
+
+    public boolean isCustomer()
+    {
+        return !(isAdmin() || isSupport());
     }
     // -------- Getters / Setters ----------
 

@@ -1,9 +1,16 @@
 package com.hicks;
 
+import com.hicks.beans.User;
+
 public class UserSession
 {
     private Long userId;
     private String logonId = "";
+
+    public User getUser()
+    {
+        return User.getByUserId(userId);
+    }
 
     public Long getUserId()
     {

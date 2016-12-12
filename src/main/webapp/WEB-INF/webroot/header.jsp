@@ -88,9 +88,13 @@
                 <c:if test="${param.tab1 != 'admin'}">
                     <c:set var="statusClass" value=""/>
                 </c:if>
-                <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=admin&tab2=overview&action=form">
-                    <i class="material-icons" style="padding-right: 10px;">build</i>Admin
-                </a>
+
+                <c:if test="${userSession.user.admin}">
+                    <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=admin&tab2=overview&action=form">
+                        <i class="material-icons" style="padding-right: 10px;">build</i>Admin
+                    </a>
+                </c:if>
+
                 <c:if test="${param.tab2 == 'profile'}">
                     <c:set var="statusClass" value="selectedLink"/>
                 </c:if>

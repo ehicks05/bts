@@ -61,8 +61,11 @@ public class DefaultDataLoader
             group.setName("Customer");
             EOI.insert(group);
             group.setName("Support");
+            group.setSupport(true);
             EOI.insert(group);
             group.setName("Admin");
+            group.setSupport(false);
+            group.setAdmin(true);
             EOI.insert(group);
         }
 
@@ -75,9 +78,10 @@ public class DefaultDataLoader
             {
                 GroupMap groupMap = new GroupMap();
                 groupMap.setUserId(user.getId());
-                groupMap.setGroupId(customer.getId());
                 if (user.getLogonId().equals("***REMOVED***"))
                     groupMap.setGroupId(admin.getId());
+                else
+                    groupMap.setGroupId(customer.getId());
                 EOI.insert(groupMap);
             }
         }
@@ -234,16 +238,28 @@ public class DefaultDataLoader
         List<ZoneMap> zoneMaps = ZoneMap.getAll();
         if (zoneMaps.size() == 0)
         {
-            List<Zone> zones = Zone.getAll();
             for (User user : User.getAll())
             {
-                for (Zone zone : zones)
-                {
-                    ZoneMap zoneMap = new ZoneMap();
-                    zoneMap.setUserId(user.getId());
-                    zoneMap.setZoneId(zone.getId());
-                    EOI.insert(zoneMap);
-                }
+                long zoneId = r.nextInt(Zone.getAll().size() + 1);
+
+                ZoneMap zoneMap = new ZoneMap();
+                zoneMap.setUserId(user.getId());
+                zoneMap.setZoneId(zoneId);
+                EOI.insert(zoneMap);
+            }
+        }
+
+        List<ProjectMap> projectMaps = ProjectMap.getAll();
+        if (projectMaps.size() == 0)
+        {
+            for (User user : User.getAll())
+            {
+                long projectId = r.nextInt(Project.getAll().size() + 1);
+
+                ProjectMap projectMap = new ProjectMap();
+                projectMap.setUserId(user.getId());
+                projectMap.setProjectId(projectId);
+                EOI.insert(projectMap);
             }
         }
 

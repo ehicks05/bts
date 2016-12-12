@@ -27,6 +27,12 @@ public class Group implements Serializable, ISelectTagSupport
     @Column(name = "name", nullable = false, unique = true)
     private String name = "";
 
+    @Column(name = "admin")
+    private Boolean admin;
+
+    @Column(name = "support")
+    private Boolean support;
+
     @Override
     public boolean equals(Object obj)
     {
@@ -100,5 +106,25 @@ public class Group implements Serializable, ISelectTagSupport
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public Boolean getAdmin()
+    {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin)
+    {
+        this.admin = admin;
+    }
+
+    public Boolean getSupport()
+    {
+        return support;
+    }
+
+    public void setSupport(Boolean support)
+    {
+        this.support = support;
     }
 }

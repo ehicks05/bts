@@ -160,15 +160,17 @@ public class Controller extends HttpServlet
         }
 
         // Set standard HTTP/1.1 no-cache headers.
-        response.setHeader("Cache-Control", "private, no-store, no-cache, must-revalidate");
+        response.setHeader("Cache-)Control", "private, no-store, no-cache, must-revalidate");
 
-        request.setAttribute("zones", Zone.getAllForUser(userSession));
-        request.setAttribute("projects", Project.getAll());
         request.setAttribute("issueTypes", IssueType.getAll());
         request.setAttribute("severities", Severity.getAll());
         request.setAttribute("statuses", Status.getAll());
-        request.setAttribute("users", User.getAll());
         request.setAttribute("groups", Group.getAll());
+
+        // the following collections have restricted access
+        request.setAttribute("zones", Zone.getAllForUser(userSession.getUserId()));
+        request.setAttribute("projects", Project.getAllForUser(userSession.getUserId()));
+        request.setAttribute("users", User.getAllForUser(userSession.getUserId()));
         request.setAttribute("issueForms", IssueForm.getByUserId(userSession.getUserId()));
 
         if (request.getParameter("tab1") == null)
@@ -177,7 +179,7 @@ public class Controller extends HttpServlet
             return;
         }
 
-        String viewJsp = processRequest(request, response);
+        String viewJsp = processRequest(request, response, userSession);
 
         if (viewJsp.length() > 0)
         {
@@ -189,12 +191,16 @@ public class Controller extends HttpServlet
             System.out.println((System.currentTimeMillis() - start) + " ms for last request " + request.getQueryString());
     }
 
-    private String processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
+    private String processRequest(HttpServletRequest request, HttpServletResponse response, UserSession userSession) throws IOException, ServletException
     {
         String tab1   = request.getParameter("tab1") == null ? "main" : request.getParameter("tab1");
         String tab2   = request.getParameter("tab2") == null && tab1.equals("main") ? "dashboard" : request.getParameter("tab2");
         String tab3   = request.getParameter("tab3") == null ? "" : request.getParameter("tab3");
         String action = request.getParameter("action") == null ? "form" : request.getParameter("action");
+
+        // security
+        if (tab1.equals("admin") && !userSession.getUser().isAdmin())
+            return "/WEB-INF/webroot/error.jsp";
 
         String viewJsp = "";
         try

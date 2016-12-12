@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "zones")
@@ -63,14 +64,16 @@ public class Zone implements Serializable, ISelectTagSupport
         return EOI.executeQuery("select * from zones");
     }
 
-    public static List<Zone> getAllForUser(UserSession userSession)
+    public static List<Zone> getAllForUser(Long userId)
     {
-        List<Zone> zones = new ArrayList<>();
-        List<ZoneMap> zoneMaps = ZoneMap.getByUserId(userSession.getUserId());
-        for (ZoneMap zoneMap : zoneMaps)
-            zones.add(Zone.getById(zoneMap.getZoneId()));
-
-        return zones;
+        User user = User.getByUserId(userId);
+        if (user.isAdmin() || user.isSupport())
+            return Zone.getAll();
+        else
+        {
+            List<ZoneMap> zoneMaps = ZoneMap.getByUserId(userId);
+            return zoneMaps.stream().map(zoneMap -> Zone.getById(zoneMap.getZoneId())).collect(Collectors.toList());
+        }
     }
 
     public static Zone getById(Long id)

@@ -54,6 +54,33 @@
                             </c:forEach>
                         </td>
                     </tr>
+                    <tr>
+                        <td style="padding: 0 8px;">Groups:</td>
+                        <td style="padding: 0 8px;">
+                            <c:forEach var="group" items="${user.allGroups}">
+                                ${group.name}
+                                <br>
+                            </c:forEach>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0 8px;">Zones:</td>
+                        <td style="padding: 0 8px;">
+                            <c:forEach var="zone" items="${user.allZones}">
+                                ${zone.name}
+                                <br>
+                            </c:forEach>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0 8px;">Projects:</td>
+                        <td style="padding: 0 8px;">
+                            <c:forEach var="project" items="${user.allProjects}">
+                                ${project.name}
+                                <br>
+                            </c:forEach>
+                        </td>
+                    </tr>
                 </table>
             </div>
         </form>
