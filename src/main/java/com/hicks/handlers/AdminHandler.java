@@ -4,12 +4,12 @@ import com.hicks.UserSession;
 import com.hicks.beans.*;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
+import net.ehicks.eoi.EOICache;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +23,24 @@ public class AdminHandler
         request.setAttribute("issueForms", issueForms);
 
         return "/WEB-INF/webroot/admin/overview.jsp";
+    }
+
+    public static String showCacheInfo(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        request.setAttribute("size", EOICache.cache.size());
+        request.setAttribute("hits", EOICache.hits);
+        request.setAttribute("misses", EOICache.misses);
+        request.setAttribute("keyHitObjectMiss", EOICache.keyHitObjectMiss);
+
+        return "/WEB-INF/webroot/admin/cacheInfo.jsp";
+    }
+
+    public static void clearCache(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        EOICache.cache.clear();
+
+        response.sendRedirect("view?tab1=admin&tab2=cache&action=form");
     }
 
     public static String showManageUsers(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException

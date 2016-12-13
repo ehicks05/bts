@@ -28,6 +28,9 @@
         <div>
             <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=zones&action=form">Manage Zones</a>
         </div>
+        <div>
+            <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=cache&action=form">Cache Info</a>
+        </div>
     </div>
 </div>
 

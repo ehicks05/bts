@@ -284,6 +284,13 @@ public class Controller extends HttpServlet
                     if (action.equals("form"))
                         viewJsp = AdminHandler.showOverview(request, response);
                 }
+                if (tab2.equals("cache"))
+                {
+                    if (action.equals("form"))
+                        viewJsp = AdminHandler.showCacheInfo(request, response);
+                    if (action.equals("clearCache"))
+                        AdminHandler.clearCache(request, response);
+                }
                 if (tab2.equals("users"))
                 {
                     if (action.equals("form"))
