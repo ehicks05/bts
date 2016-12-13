@@ -32,6 +32,9 @@ public class Comment implements Serializable
     @Column(name = "content", columnDefinition = "varchar2(32000 CHAR)")
     private String content = "";
 
+    @Column(name = "visible_to_group_id")
+    private Long visibleToGroupId;
+
     @Column(name = "created_by_user_id")
     private Long createdByUserId;
 
@@ -104,6 +107,10 @@ public class Comment implements Serializable
         return DBFile.getByName("no_avatar.png");
     }
 
+    public Group getVisibleToGroup()
+    {
+        return Group.getById(visibleToGroupId);
+    }
     // -------- Getters / Setters ----------
 
 
@@ -145,6 +152,16 @@ public class Comment implements Serializable
     public void setContent(String content)
     {
         this.content = content;
+    }
+
+    public Long getVisibleToGroupId()
+    {
+        return visibleToGroupId;
+    }
+
+    public void setVisibleToGroupId(Long visibleToGroupId)
+    {
+        this.visibleToGroupId = visibleToGroupId;
     }
 
     public Long getCreatedByUserId()

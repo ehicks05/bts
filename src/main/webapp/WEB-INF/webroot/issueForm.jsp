@@ -162,6 +162,11 @@
                         <c:if test="${!empty comment.lastUpdatedOn && comment.createdOn != comment.lastUpdatedOn}">
                             <span title="Edited ${comment.lastUpdatedOn}">*</span>
                         </c:if>
+                        <c:if test="${comment.visibleToGroupId != 0}">
+                            <span style="font-size: 14px;color:red;">
+                                <i class="material-icons" style="font-size: 14px">lock</i> Visible to ${comment.visibleToGroup.name}
+                            </span>
+                        </c:if>
                         <br>
                         <div class="mdl-card__supporting-text">
                             <t:textToInputText id="fldContent${comment.id}" text="${comment.content}" submitAction="/view?tab1=main&tab2=issue&action=updateComment&commentId=${comment.id}"/>
@@ -189,14 +194,12 @@
                 $('#submitAddComment').show();
                 $('#cancelAddComment').show();
 
-                var inject = <jsp:include page="inc_newComment.jsp"/>;
-                $('#activityActions').before(inject);
+                $('#newCommentFormContainer').show();
                 $('#fldContent').focus();
             }
             function cancelAddComment()
             {
-
-                $('#activityActions').prev('#frmNewComment').remove();
+                $('#newCommentFormContainer').hide();
                 $('#submitAddComment').hide();
                 $('#cancelAddComment').hide();
                 $('#showAddComment').show();
@@ -206,6 +209,24 @@
                 $('#frmNewComment').submit();
             }
         </script>
+
+        <div id="newCommentFormContainer" style="display: none;">
+            <form class="mdl-card__supporting-text" style="width: 100%" id="frmNewComment" name="frmNewComment" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=addComment&issueId=${issue.id}">
+                <hr>
+                <div class="mdl-textfield mdl-js-textfield" style="width: 98%">
+                    <textarea class="mdl-textfield__input" type="text" rows="3" maxrows="6" id="fldContent" name="fldContent"></textarea>
+                    <label class="mdl-textfield__label" for="fldContent">Comment:</label>
+                </div>
+                <br>
+                Visibility Level:
+                <select id="fldVisibility" name="fldVisibility">
+                    <option value="">Default</option>
+                    <c:forEach var="group" items="${groups}">
+                        <option value="${group.id}">${group.name}</option>
+                    </c:forEach>
+                </select>
+            </form>
+        </div>
 
         <div id="activityActions" class="mdl-card__actions">
             <input type="button" value="Comment" id="showAddComment" class="mdl-button mdl-js-button mdl-button--raised" onclick="showAddComment();" />

@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ModifyIssueHandler
 {
@@ -22,8 +24,11 @@ public class ModifyIssueHandler
         if (Issue.getById(issueId) == null)
             return "/WEB-INF/webroot/error.jsp";
 
+        List<Comment> comments = Comment.getByIssueId(issueId);
+        retainVisibleComments(comments, (UserSession) request.getSession().getAttribute("userSession"));
+
         request.setAttribute("issue", Issue.getById(issueId));
-        request.setAttribute("comments", Comment.getByIssueId(issueId));
+        request.setAttribute("comments", comments);
         request.setAttribute("watcherMaps", WatcherMap.getByIssueId(issueId));
 
         List<User> potentialWatchers = User.getAll();
@@ -34,6 +39,25 @@ public class ModifyIssueHandler
         request.setAttribute("potentialReporters", User.getAll());
 
         return "/WEB-INF/webroot/issueForm.jsp";
+    }
+
+    private static List<Comment> retainVisibleComments(List<Comment> comments, UserSession userSession)
+    {
+        if (userSession.getUser().isAdmin() || userSession.getUser().isSupport())
+            return comments;
+        else
+        {
+            List<Group> userGroups = Group.getByUserId(userSession.getUserId());
+            List<Long> userGroupIds = userGroups.stream().map(Group::getId).collect(Collectors.toList());
+            for (Iterator<Comment> i = comments.iterator(); i.hasNext();)
+            {
+                Comment comment = i.next();
+                Long visibleToGroup = comment.getVisibleToGroupId();
+                if (visibleToGroup != 0 && !userGroupIds.contains(comment.getCreatedByUserId()))
+                    i.remove();
+            }
+            return comments;
+        }
     }
 
     public static void createIssue(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
@@ -151,6 +175,7 @@ public class ModifyIssueHandler
         Long issueId    = Common.stringToLong(request.getParameter("issueId"));
         Long zoneId     = Common.stringToLong(request.getParameter("fldZone"));
         String content  = Common.getSafeString(request.getParameter("fldContent"));
+        Long visibility = Common.stringToLong(request.getParameter("fldVisibility"));
 
         Comment comment = new Comment();
         comment.setIssueId(issueId);
@@ -158,6 +183,7 @@ public class ModifyIssueHandler
         comment.setCreatedByUserId(userSession.getUserId());
         comment.setCreatedOn(new Date());
         comment.setContent(content);
+        comment.setVisibleToGroupId(visibility);
         long commentId = EOI.insert(comment);
 
         EmailMessage emailMessage = new EmailMessage();
