@@ -318,6 +318,23 @@ public class Controller extends HttpServlet
                             AdminHandler.modifyProject(request, response);
                     }
                 }
+                if (tab2.equals("zones"))
+                {
+                    if (action.equals("form"))
+                        viewJsp = AdminHandler.showManageZones(request, response);
+                    if (action.equals("create"))
+                        AdminHandler.createZone(request, response);
+                    if (action.equals("delete"))
+                        AdminHandler.deleteZone(request, response);
+
+                    if (tab3.equals("modify"))
+                    {
+                        if (action.equals("form"))
+                            viewJsp = AdminHandler.showModifyZone(request, response);
+                        if (action.equals("modify"))
+                            AdminHandler.modifyZone(request, response);
+                    }
+                }
             }
 
         }

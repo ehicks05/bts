@@ -152,4 +152,55 @@ public class AdminHandler
 
         response.sendRedirect("view?tab1=admin&tab2=projects&tab3=modify&action=form&projectId=" + projectId);
     }
+
+    public static String showManageZones(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        request.setAttribute("zones", Zone.getAll());
+
+        return "/WEB-INF/webroot/admin/zones.jsp";
+    }
+
+    public static void createZone(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        String name = Common.getSafeString(request.getParameter("fldName"));
+        Zone zone = new Zone();
+        zone.setName(name);
+        long zoneId = EOI.insert(zone);
+
+        response.sendRedirect("view?tab1=admin&tab2=zones&action=form");
+    }
+
+    public static void deleteZone(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        Long zoneId = Common.stringToLong(request.getParameter("zoneId"));
+        Zone zone = Zone.getById(zoneId);
+        if (zone != null)
+            EOI.executeDelete(zone);
+
+        response.sendRedirect("view?tab1=admin&tab2=zones&action=form");
+    }
+
+    public static String showModifyZone(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        Long zoneId = Common.stringToLong(request.getParameter("zoneId"));
+        Zone zone = Zone.getById(zoneId);
+        request.setAttribute("zone", zone);
+
+        return "/WEB-INF/webroot/admin/modifyZone.jsp";
+    }
+
+    public static void modifyZone(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        Long zoneId = Common.stringToLong(request.getParameter("zoneId"));
+        Zone zone = Zone.getById(zoneId);
+        if (zone != null)
+        {
+            String name = Common.getSafeString(request.getParameter("name"));
+            zone.setName(name);
+            EOI.update(zone);
+        }
+
+        response.sendRedirect("view?tab1=admin&tab2=zones&tab3=modify&action=form&zoneId=" + zoneId);
+    }
 }
