@@ -211,8 +211,8 @@
         </script>
 
         <div id="newCommentFormContainer" style="display: none;">
+            <hr>
             <form class="mdl-card__supporting-text" style="width: 100%" id="frmNewComment" name="frmNewComment" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=addComment&issueId=${issue.id}">
-                <hr>
                 <div class="mdl-textfield mdl-js-textfield" style="width: 98%">
                     <textarea class="mdl-textfield__input" type="text" rows="3" maxrows="6" id="fldContent" name="fldContent"></textarea>
                     <label class="mdl-textfield__label" for="fldContent">Comment:</label>

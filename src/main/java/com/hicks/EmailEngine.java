@@ -75,7 +75,8 @@ public class EmailEngine
         setConnectionFields(email);
 
         for (String recipient : recipients)
-            email.addTo(recipient, recipient);
+            if (recipient.equals("***REMOVED***")) // todo remove this safeguard
+                email.addTo(recipient, recipient);
 
         email.setSubject(user.getLogonId() + " " + emailMessage.getAction() + " to " + issue.getProject().getPrefix() + "-" + issue.getId() + " " + issue.getTitle());
 
