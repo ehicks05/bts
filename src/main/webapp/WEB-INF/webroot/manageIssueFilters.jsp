@@ -45,7 +45,8 @@
                         ${issueForm.formName}
                     </td>
                     <td class="mdl-data-table__cell--non-numeric">
-                        ${issueForm.onDash}
+                        <c:if test="${issueForm.onDash}"><i class="material-icons" style="color: green;">check</i></c:if>
+                        <c:if test="${!issueForm.onDash}"><i class="material-icons" style="color: red;">clear</i></c:if>
                     </td>
                     <td>
                         <a class="material-icons" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issueForm&action=delete&issueFormId=${issueForm.id}">delete</a>

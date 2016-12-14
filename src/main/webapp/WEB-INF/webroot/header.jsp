@@ -24,15 +24,14 @@
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">BTS</span>
+            <%--<span class="mdl-layout-title">BTS</span>--%>
 
             <c:if test="${!empty sessionScope.userSession}">
-                <div style="width: 30px;"></div>
                 <span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}')">${param.tab1}</span>
                 <span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}')">.${param.tab2}</span>
                 <span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}','${param.tab3}')"><c:if test="${!empty param.tab3}">.</c:if>${param.tab3}</span>
 
-                <input id="goToIssue" type="text" size="10" maxlength="32" style="margin-left: 30px;font-size:18px;" onkeypress="document.getElementById('goToIssueButton').disabled = false;"/>
+                <input id="goToIssue" type="text" size="1" maxlength="32" style="margin-left: 30px;font-size:18px;" onkeypress="document.getElementById('goToIssueButton').disabled = false;" onclick="document.getElementById('goToIssueButton').disabled = false;"/>
                 <button id="goToIssueButton" class="mdl-button mdl-js-button mdl-button--icon" onclick="goToIssue();" disabled>
                     <i class="material-icons">search</i>
                 </button>

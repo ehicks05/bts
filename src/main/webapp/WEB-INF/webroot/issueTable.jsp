@@ -11,7 +11,7 @@
         <tr class="listheading">
             <t:sortableCell code="id" label="ID" style="text-align:right;" issueForm="${issueForm}" />
             <t:sortableCell code="title" label="Title" issueForm="${issueForm}"/>
-            <t:sortableCell code="created_on" label="Created" style="text-align:right;" issueForm="${issueForm}" />
+            <t:sortableCell code="created_on" label="Created" style="text-align:right;" cssClass="hideOnSmall" issueForm="${issueForm}" />
             <t:sortableCell code="last_updated_on" label="Updated" style="text-align:right;" issueForm="${issueForm}" />
         </tr>
     </thead>
@@ -25,7 +25,7 @@
             <td>
                 <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=form&issueId=${issue.id}">${issue.title}</a>
             </td>
-            <td class="alignright"><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yy" /></td>
+            <td class="alignright hideOnSmall"><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yy" /></td>
             <td class="alignright"><fmt:formatDate value="${issue.lastUpdatedOn}" pattern="dd/MMM/yy" /></td>
         </tr>
     </c:forEach>

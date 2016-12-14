@@ -46,16 +46,7 @@
                         <td style="padding: 0 8px;"><fmt:formatDate value="${user.updatedOn}" pattern="dd/MMM/yy h:mm a"/></td>
                     </tr>
                     <tr>
-                        <td style="padding: 0 8px;">Roles:</td>
-                        <td style="padding: 0 8px;">
-                            <c:forEach var="role" items="${user.allRoles}">
-                                ${role.roleName}
-                                <br>
-                            </c:forEach>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0 8px;">Groups:</td>
+                        <td style="padding: 0 8px;vertical-align: top">Groups:</td>
                         <td style="padding: 0 8px;">
                             <c:forEach var="group" items="${user.allGroups}">
                                 ${group.name}
@@ -64,7 +55,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding: 0 8px;">Zones:</td>
+                        <td style="padding: 0 8px;vertical-align: top">Zones:</td>
                         <td style="padding: 0 8px;">
                             <c:forEach var="zone" items="${user.allZones}">
                                 ${zone.name}
@@ -73,7 +64,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding: 0 8px;">Projects:</td>
+                        <td style="padding: 0 8px;vertical-align: top">Projects:</td>
                         <td style="padding: 0 8px;">
                             <c:forEach var="project" items="${user.allProjects}">
                                 ${project.name}
