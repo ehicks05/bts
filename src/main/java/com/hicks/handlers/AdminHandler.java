@@ -44,6 +44,13 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=cache&action=form");
     }
 
+    public static String showSystemInfo(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+
+        return "/WEB-INF/webroot/admin/systemInfo.jsp";
+    }
+
     public static String showManageUsers(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");

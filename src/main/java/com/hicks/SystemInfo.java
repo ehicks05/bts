@@ -1,6 +1,9 @@
 package com.hicks;
 
 import javax.servlet.ServletContext;
+import java.lang.management.ManagementFactory;
+import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 public enum SystemInfo
@@ -21,7 +24,47 @@ public enum SystemInfo
     private String emailFromAddress = "";
     private String emailFromName = "";
 
-    public long getFreeRamMb()
+    public Date getSystemStartTime()
+    {
+        return new Date(systemStart);
+    }
+
+    public List<String> getRuntimeMXBeanArguments()
+    {
+        return ManagementFactory.getRuntimeMXBean().getInputArguments();
+    }
+
+    public String getDatabaseCache()
+    {
+        return Common.toMetric(getDatabaseCacheInKBs() * 1024);
+    }
+
+    public String getUsedRam()
+    {
+        return Common.toMetric(_getUsedRam());
+    }
+
+    private long _getUsedRam()
+    {
+        return _getMaxRam() - _getFreeRam();
+    }
+
+    public String getMaxRam()
+    {
+        return Common.toMetric(_getMaxRam());
+    }
+
+    private long _getMaxRam()
+    {
+        return Runtime.getRuntime().maxMemory();
+    }
+
+    public String getFreeRam()
+    {
+        return Common.toMetric(_getFreeRam());
+    }
+
+    private long _getFreeRam()
     {
         long maxMemory = Runtime.getRuntime().maxMemory() ;
         long allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());

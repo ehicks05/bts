@@ -50,8 +50,8 @@ public class Controller extends HttpServlet
 
         if (DEBUG_LEVEL > 1)
         {
-            System.out.println("Max Memory: " + new DecimalFormat("#,###").format(Runtime.getRuntime().maxMemory()));
-            for (String argument : ManagementFactory.getRuntimeMXBean().getInputArguments())
+            System.out.println(SystemInfo.INSTANCE.getMaxRam());
+            for (String argument : SystemInfo.INSTANCE.getRuntimeMXBeanArguments())
                 System.out.println(argument);
         }
 
@@ -290,6 +290,11 @@ public class Controller extends HttpServlet
                         viewJsp = AdminHandler.showCacheInfo(request, response);
                     if (action.equals("clearCache"))
                         AdminHandler.clearCache(request, response);
+                }
+                if (tab2.equals("system"))
+                {
+                    if (action.equals("form"))
+                        viewJsp = AdminHandler.showSystemInfo(request, response);
                 }
                 if (tab2.equals("users"))
                 {

@@ -32,6 +32,9 @@
             <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=cache&action=form">Cache Info</a>
         </div>
         <div>
+            <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=system&action=form">System Info</a>
+        </div>
+        <div>
             <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=email&action=form">Manage Email</a>
         </div>
     </div>
