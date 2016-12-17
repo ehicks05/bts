@@ -1,139 +1,140 @@
 package com.hicks;
 
 import javax.servlet.ServletContext;
-import java.net.URL;
 import java.util.Properties;
 
-public class SystemInfo
+public enum SystemInfo
 {
-    private static Properties properties;
-    private static ServletContext servletContext;
-    private static int debugLevel;
-    private static long systemStart;
+    INSTANCE;
 
-    private static long databaseCacheInKBs;
+    private Properties properties;
+    private ServletContext servletContext;
+    private int debugLevel;
+    private long systemStart;
 
-    private static String emailHost = "";
-    private static int emailPort;
-    private static String emailUser = "";
-    private static String emailPassword = "";
-    private static String emailFromAddress = "";
-    private static String emailFromName = "";
+    private long databaseCacheInKBs;
 
-    public static long getFreeRamMb()
+    private String emailHost = "";
+    private int emailPort;
+    private String emailUser = "";
+    private String emailPassword = "";
+    private String emailFromAddress = "";
+    private String emailFromName = "";
+
+    public long getFreeRamMb()
     {
         long maxMemory = Runtime.getRuntime().maxMemory() ;
         long allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
         return (maxMemory - allocatedMemory);
     }
 
-    public static Properties getProperties()
+    public Properties getProperties()
     {
         return properties;
     }
 
-    public static void setProperties(Properties properties)
+    public void setProperties(Properties properties)
     {
-        SystemInfo.properties = properties;
+        this.properties = properties;
     }
 
-    public static ServletContext getServletContext()
+    public ServletContext getServletContext()
     {
         return servletContext;
     }
 
-    public static void setServletContext(ServletContext servletContext)
+    public void setServletContext(ServletContext servletContext)
     {
-        SystemInfo.servletContext = servletContext;
+        this.servletContext = servletContext;
     }
 
-    public static int getDebugLevel()
+    public int getDebugLevel()
     {
         return debugLevel;
     }
 
-    public static void setDebugLevel(int debugLevel)
+    public void setDebugLevel(int debugLevel)
     {
-        SystemInfo.debugLevel = debugLevel;
+        this.debugLevel = debugLevel;
     }
 
-    public static long getSystemStart()
+    public long getSystemStart()
     {
         return systemStart;
     }
 
-    public static void setSystemStart(long systemStart)
+    public void setSystemStart(long systemStart)
     {
-        SystemInfo.systemStart = systemStart;
+        this.systemStart = systemStart;
     }
 
-    public static long getDatabaseCacheInKBs()
+    public long getDatabaseCacheInKBs()
     {
         return databaseCacheInKBs;
     }
 
-    public static void setDatabaseCacheInKBs(long databaseCacheInKBs)
+    public void setDatabaseCacheInKBs(long databaseCacheInKBs)
     {
-        SystemInfo.databaseCacheInKBs = databaseCacheInKBs;
+        this.databaseCacheInKBs = databaseCacheInKBs;
     }
 
-    public static String getEmailHost()
+    public String getEmailHost()
     {
         return emailHost;
     }
 
-    public static void setEmailHost(String emailHost)
+    public void setEmailHost(String emailHost)
     {
-        SystemInfo.emailHost = emailHost;
+        this.emailHost = emailHost;
     }
 
-    public static int getEmailPort()
+    public int getEmailPort()
     {
         return emailPort;
     }
 
-    public static void setEmailPort(int emailPort)
+    public void setEmailPort(int emailPort)
     {
-        SystemInfo.emailPort = emailPort;
+        this.emailPort = emailPort;
     }
 
-    public static String getEmailUser()
+    public String getEmailUser()
     {
         return emailUser;
     }
 
-    public static void setEmailUser(String emailUser)
+    public void setEmailUser(String emailUser)
     {
-        SystemInfo.emailUser = emailUser;
+        this.emailUser = emailUser;
     }
 
-    public static String getEmailPassword()
+    public String getEmailPassword()
     {
         return emailPassword;
     }
 
-    public static void setEmailPassword(String emailPassword)
+    public void setEmailPassword(String emailPassword)
     {
-        SystemInfo.emailPassword = emailPassword;
+        this.emailPassword = emailPassword;
     }
 
-    public static String getEmailFromAddress()
+    public String getEmailFromAddress()
     {
         return emailFromAddress;
     }
 
-    public static void setEmailFromAddress(String emailFromAddress)
+    public void setEmailFromAddress(String emailFromAddress)
     {
-        SystemInfo.emailFromAddress = emailFromAddress;
+        this.emailFromAddress = emailFromAddress;
     }
 
-    public static String getEmailFromName()
+    public String getEmailFromName()
     {
         return emailFromName;
     }
 
-    public static void setEmailFromName(String emailFromName)
+    public void setEmailFromName(String emailFromName)
     {
-        SystemInfo.emailFromName = emailFromName;
+        this.emailFromName = emailFromName;
     }
 }

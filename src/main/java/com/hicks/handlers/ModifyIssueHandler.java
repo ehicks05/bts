@@ -192,7 +192,8 @@ public class ModifyIssueHandler
         emailMessage.setAction("added a comment");
         emailMessage.setActionSourceId(commentId);
         emailMessage.setDescription(content);
-        EOI.insert(emailMessage);
+        long emailId = EOI.insert(emailMessage);
+        emailMessage = EmailMessage.getById(emailId);
 
         EmailEngine.sendEmail(emailMessage);
 

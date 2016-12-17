@@ -7,6 +7,11 @@ public class UserSession
     private Long userId;
     private String logonId = "";
 
+    public SystemInfo getSystemInfo()
+    {
+        return SystemInfo.INSTANCE;
+    }
+
     public User getUser()
     {
         return User.getByUserId(userId);

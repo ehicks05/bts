@@ -1,5 +1,6 @@
 package com.hicks.handlers;
 
+import com.hicks.EmailEngine;
 import com.hicks.UserSession;
 import com.hicks.beans.*;
 import net.ehicks.common.Common;
@@ -220,5 +221,59 @@ public class AdminHandler
         }
 
         response.sendRedirect("view?tab1=admin&tab2=zones&tab3=modify&action=form&zoneId=" + zoneId);
+    }
+
+    public static String showManageEmails(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        request.setAttribute("emails", EmailMessage.getAll());
+
+        return "/WEB-INF/webroot/admin/emails.jsp";
+    }
+
+    public static void sendTestEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        String to = Common.getSafeString(request.getParameter("fldTo"));
+        EmailMessage emailMessage = new EmailMessage();
+        emailMessage.setAction("test");
+        emailMessage.setToAddress(to);
+        long emailId = EOI.insert(emailMessage);
+        emailMessage = EmailMessage.getById(emailId);
+
+        EmailEngine.sendEmail(emailMessage);
+
+        response.sendRedirect("view?tab1=admin&tab2=email&action=form");
+    }
+
+    public static void deleteEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        Long emailId = Common.stringToLong(request.getParameter("emailId"));
+        EmailMessage emailMessage = EmailMessage.getById(emailId);
+        if (emailMessage != null)
+            EOI.executeDelete(emailMessage);
+
+        response.sendRedirect("view?tab1=admin&tab2=email&action=form");
+    }
+
+    public static String showModifyEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        Long emailId = Common.stringToLong(request.getParameter("emailId"));
+        EmailMessage emailMessage = EmailMessage.getById(emailId);
+        request.setAttribute("emailMessage", emailMessage);
+
+        return "/WEB-INF/webroot/admin/modifyEmail.jsp";
+    }
+
+    public static void modifyEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        Long emailId = Common.stringToLong(request.getParameter("emailId"));
+        EmailMessage emailMessage = EmailMessage.getById(emailId);
+        if (emailMessage != null)
+        {
+            String name = Common.getSafeString(request.getParameter("name"));
+            EOI.update(emailMessage);
+        }
+
+        response.sendRedirect("view?tab1=admin&tab2=email&tab3=modify&action=form&emailId=" + emailId);
     }
 }

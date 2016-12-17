@@ -2,11 +2,13 @@ package com.hicks;
 
 import com.hicks.beans.*;
 import net.ehicks.eoi.EOI;
+import org.apache.catalina.realm.MessageDigestCredentialHandler;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -28,11 +30,31 @@ public class DefaultDataLoader
             users.put("thicks@yahoo.com", new ArrayList<>(Arrays.asList("test", "5")));
             users.put("bhicks@yahoo.com", new ArrayList<>(Arrays.asList("test", "10")));
 
+
+            MessageDigestCredentialHandler credentialHandler = null;
+            try
+            {
+                credentialHandler = new MessageDigestCredentialHandler();
+                credentialHandler.setAlgorithm("SHA-256");
+                credentialHandler.setIterations(200_000);
+                credentialHandler.setSaltLength(32);
+            }
+            catch (NoSuchAlgorithmException e)
+            {
+                System.out.println(e.getMessage());
+            }
+
             for (String key : users.keySet())
             {
                 User user = new User();
                 user.setLogonId(key);
-                user.setPassword(users.get(key).get(0));
+
+                long start = System.currentTimeMillis();
+                String rawPassword = users.get(key).get(0);
+                String password = credentialHandler.mutate(rawPassword);
+                System.out.println("1M sha-256 iterations in " + (System.currentTimeMillis() - start) + "ms");
+
+                user.setPassword(password);
                 user.setEnabled(true);
                 if (key.equals("thicks@yahoo.com"))
                     user.setEnabled(false);
@@ -337,7 +359,7 @@ public class DefaultDataLoader
         List<DBFile> dbFiles = DBFile.getAll();
         if (dbFiles.size() == 0)
         {
-            File avatarDir = Paths.get(SystemInfo.getServletContext().getRealPath("/images/avatars/png/")).toFile();
+            File avatarDir = Paths.get(SystemInfo.INSTANCE.getServletContext().getRealPath("/images/avatars/png/")).toFile();
             if (avatarDir.exists() && avatarDir.isDirectory())
             {
                 List<File> avatars = Arrays.asList(avatarDir.listFiles());

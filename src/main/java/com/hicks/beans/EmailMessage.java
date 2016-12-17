@@ -16,6 +16,9 @@ public class EmailMessage implements Serializable
     @Column(name = "id", updatable = false, nullable = false, columnDefinition = "bigint not null auto_increment primary key")
     private Long id;
 
+    @Column(name = "toAddress")
+    private String toAddress = "";
+
     @Column(name = "user_id")
     private Long userId;
 
@@ -30,6 +33,9 @@ public class EmailMessage implements Serializable
 
     @Column(name = "description", columnDefinition = "varchar2(32000 CHAR)")
     private String description = "";
+
+    @Column(name = "status")
+    private String status = "CREATED";
 
     @Column(name = "created_on")
     @Temporal(TemporalType.DATE)
@@ -77,6 +83,16 @@ public class EmailMessage implements Serializable
     public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public String getToAddress()
+    {
+        return toAddress;
+    }
+
+    public void setToAddress(String toAddress)
+    {
+        this.toAddress = toAddress;
     }
 
     public Long getUserId()
@@ -127,6 +143,16 @@ public class EmailMessage implements Serializable
     public void setDescription(String description)
     {
         this.description = description;
+    }
+
+    public String getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(String status)
+    {
+        this.status = status;
     }
 
     public Date getCreatedOn()

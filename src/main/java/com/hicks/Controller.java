@@ -31,12 +31,12 @@ public class Controller extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        SystemInfo.setSystemStart(System.currentTimeMillis());
-        SystemInfo.setServletContext(getServletContext());
-        SystemInfo.setDebugLevel(DEBUG_LEVEL);
+        SystemInfo.INSTANCE.setSystemStart(System.currentTimeMillis());
+        SystemInfo.INSTANCE.setServletContext(getServletContext());
+        SystemInfo.INSTANCE.setDebugLevel(DEBUG_LEVEL);
         loadProperties();
 
-        EOI.init("jdbc:h2:tcp://localhost/~/bts;TRACE_LEVEL_FILE=1;CACHE_SIZE=" + SystemInfo.getDatabaseCacheInKBs() + ";");
+        EOI.init("jdbc:h2:tcp://localhost/~/bts;TRACE_LEVEL_FILE=1;CACHE_SIZE=" + SystemInfo.INSTANCE.getDatabaseCacheInKBs() + ";");
 
         loadDBMaps();
 
@@ -55,7 +55,7 @@ public class Controller extends HttpServlet
                 System.out.println(argument);
         }
 
-        System.out.println("Controller.init finished in " + (System.currentTimeMillis() - SystemInfo.getSystemStart()) + " ms");
+        System.out.println("Controller.init finished in " + (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()) + " ms");
     }
 
     private void loadDBMaps()
@@ -78,13 +78,13 @@ public class Controller extends HttpServlet
             System.out.println(e.getMessage());
         }
 
-        SystemInfo.setDatabaseCacheInKBs(Common.stringToLong(properties.getProperty("databaseCacheInKBs")));
-        SystemInfo.setEmailHost(properties.getProperty("emailHost"));
-        SystemInfo.setEmailPort(Common.stringToInt(properties.getProperty("emailPort")));
-        SystemInfo.setEmailUser(properties.getProperty("emailUser"));
-        SystemInfo.setEmailPassword(properties.getProperty("emailPassword"));
-        SystemInfo.setEmailFromAddress(properties.getProperty("emailFromAddress"));
-        SystemInfo.setEmailFromName(properties.getProperty("emailFromName"));
+        SystemInfo.INSTANCE.setDatabaseCacheInKBs(Common.stringToLong(properties.getProperty("databaseCacheInKBs")));
+        SystemInfo.INSTANCE.setEmailHost(properties.getProperty("emailHost"));
+        SystemInfo.INSTANCE.setEmailPort(Common.stringToInt(properties.getProperty("emailPort")));
+        SystemInfo.INSTANCE.setEmailUser(properties.getProperty("emailUser"));
+        SystemInfo.INSTANCE.setEmailPassword(properties.getProperty("emailPassword"));
+        SystemInfo.INSTANCE.setEmailFromAddress(properties.getProperty("emailFromAddress"));
+        SystemInfo.INSTANCE.setEmailFromName(properties.getProperty("emailFromName"));
     }
 
     private void createTables()
@@ -340,6 +340,23 @@ public class Controller extends HttpServlet
                             viewJsp = AdminHandler.showModifyZone(request, response);
                         if (action.equals("modify"))
                             AdminHandler.modifyZone(request, response);
+                    }
+                }
+                if (tab2.equals("email"))
+                {
+                    if (action.equals("form"))
+                        viewJsp = AdminHandler.showManageEmails(request, response);
+                    if (action.equals("sendTest"))
+                        AdminHandler.sendTestEmail(request, response);
+                    if (action.equals("delete"))
+                        AdminHandler.deleteEmail(request, response);
+
+                    if (tab3.equals("modify"))
+                    {
+                        if (action.equals("form"))
+                            viewJsp = AdminHandler.showModifyEmail(request, response);
+                        if (action.equals("modify"))
+                            AdminHandler.modifyEmail(request, response);
                     }
                 }
             }
