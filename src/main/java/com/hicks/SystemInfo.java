@@ -4,17 +4,18 @@ import javax.servlet.ServletContext;
 import java.lang.management.ManagementFactory;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 public enum SystemInfo
 {
     INSTANCE;
 
-    private Properties properties;
-    private ServletContext servletContext;
     private int debugLevel;
-    private long systemStart;
+    private boolean dropTables;
+    private boolean createTables;
+    private boolean loadDemoData;
 
+    private ServletContext servletContext;
+    private long systemStart;
     private long databaseCacheInKBs;
 
     private String emailHost = "";
@@ -71,24 +72,34 @@ public enum SystemInfo
         return (maxMemory - allocatedMemory);
     }
 
-    public Properties getProperties()
+    public boolean isDropTables()
     {
-        return properties;
+        return dropTables;
     }
 
-    public void setProperties(Properties properties)
+    public void setDropTables(boolean dropTables)
     {
-        this.properties = properties;
+        this.dropTables = dropTables;
     }
 
-    public ServletContext getServletContext()
+    public boolean isCreateTables()
     {
-        return servletContext;
+        return createTables;
     }
 
-    public void setServletContext(ServletContext servletContext)
+    public void setCreateTables(boolean createTables)
     {
-        this.servletContext = servletContext;
+        this.createTables = createTables;
+    }
+
+    public boolean isLoadDemoData()
+    {
+        return loadDemoData;
+    }
+
+    public void setLoadDemoData(boolean loadDemoData)
+    {
+        this.loadDemoData = loadDemoData;
     }
 
     public int getDebugLevel()
@@ -99,6 +110,16 @@ public enum SystemInfo
     public void setDebugLevel(int debugLevel)
     {
         this.debugLevel = debugLevel;
+    }
+
+    public ServletContext getServletContext()
+    {
+        return servletContext;
+    }
+
+    public void setServletContext(ServletContext servletContext)
+    {
+        this.servletContext = servletContext;
     }
 
     public long getSystemStart()

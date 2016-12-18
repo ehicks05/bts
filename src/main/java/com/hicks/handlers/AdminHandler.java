@@ -47,6 +47,8 @@ public class AdminHandler
     public static String showSystemInfo(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        List<Object> dbInfo = EOI.executeQuery("SELECT NAME, VALUE FROM INFORMATION_SCHEMA.SETTINGS");
+        request.setAttribute("dbInfo", dbInfo);
 
         return "/WEB-INF/webroot/admin/systemInfo.jsp";
     }

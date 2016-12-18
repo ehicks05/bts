@@ -19,6 +19,7 @@ public class DefaultDataLoader
     static void createDemoData()
     {
         System.out.print("Seeding dummy data...");
+        int issueCount = 131_072;
 
         if (User.getAll().size() == 0)
         {
@@ -52,7 +53,7 @@ public class DefaultDataLoader
                 long start = System.currentTimeMillis();
                 String rawPassword = users.get(key).get(0);
                 String password = credentialHandler.mutate(rawPassword);
-                System.out.println("1M sha-256 iterations in " + (System.currentTimeMillis() - start) + "ms");
+                System.out.println("200k sha-256 iterations in " + (System.currentTimeMillis() - start) + "ms");
 
                 user.setPassword(password);
                 user.setEnabled(true);
@@ -207,7 +208,7 @@ public class DefaultDataLoader
         long rows = (Long) result.get(0);
         if (rows == 0)
         {
-            IntStream.range(1, 512).parallel().forEach(i ->
+            IntStream.range(0, issueCount).parallel().forEach(i ->
             {
                 Issue issue = new Issue();
                 long value = (long) r.nextInt(Project.getAll().size() + 1);
@@ -288,11 +289,10 @@ public class DefaultDataLoader
         List<Comment> comments = Comment.getAll();
         if (comments.size() == 0)
         {
-            for (Issue issue : Issue.getAll())
-            {
+            Issue.getAll().parallelStream().forEach(issue -> {
                 long issueId = issue.getId();
                 if (issueId == 2)
-                    continue;
+                    return;
 
                 long zoneId = issue.getZoneId();
                 for (int i = 0; i < r.nextInt(24); i++)
@@ -313,7 +313,7 @@ public class DefaultDataLoader
                     comment.setContent(content);
                     EOI.insert(comment);
                 }
-            }
+            });
 
             Comment comment = new Comment();
             comment.setIssueId(2L);
@@ -336,8 +336,7 @@ public class DefaultDataLoader
         if (watcherMaps.size() == 0)
         {
             List<User> users = User.getAll();
-            for (Issue issue : Issue.getAll())
-            {
+            Issue.getAll().parallelStream().forEach(issue -> {
                 List<Integer> selectedUserIndexes = new ArrayList<>();
                 for (int i = 0; i < r.nextInt(5); i++)
                 {
@@ -353,7 +352,7 @@ public class DefaultDataLoader
                     watcherMap.setIssueId(issue.getId());
                     EOI.insert(watcherMap);
                 }
-            }
+            });
         }
 
         List<DBFile> dbFiles = DBFile.getAll();

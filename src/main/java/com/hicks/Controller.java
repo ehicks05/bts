@@ -2,7 +2,6 @@ package com.hicks;
 
 import com.hicks.beans.*;
 import com.hicks.handlers.*;
-import net.ehicks.common.Common;
 import net.ehicks.eoi.DBMap;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.SQLGenerator;
@@ -15,54 +14,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.management.ManagementFactory;
 import java.security.Principal;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Properties;
 
 @WebServlet(value = "/view", loadOnStartup = 1)
 public class Controller extends HttpServlet
 {
-    private static final int DEBUG_LEVEL = 1;
-    private static final boolean DROP_TABLES = true;
-    private static final boolean CREATE_TABLES = true;
-
     @Override
     public void init() throws ServletException
     {
-        SystemInfo.INSTANCE.setSystemStart(System.currentTimeMillis());
-        SystemInfo.INSTANCE.setServletContext(getServletContext());
-        SystemInfo.INSTANCE.setDebugLevel(DEBUG_LEVEL);
         loadProperties();
 
-        EOI.init("jdbc:h2:tcp://localhost/~/bts;TRACE_LEVEL_FILE=1;CACHE_SIZE=" + SystemInfo.INSTANCE.getDatabaseCacheInKBs() + ";");
+        EOI.init("jdbc:h2:tcp://localhost/~/bts;TRACE_LEVEL_FILE=1;DB_CLOSE_ON_EXIT=FALSE;COMPRESS=TRUE;CACHE_SIZE=" + SystemInfo.INSTANCE.getDatabaseCacheInKBs() + ";");
 
         loadDBMaps();
 
-        if (DROP_TABLES)
+        if (SystemInfo.INSTANCE.isDropTables())
             dropTables();
 
-        if (CREATE_TABLES)
+        if (SystemInfo.INSTANCE.isCreateTables())
             createTables();
 
-        DefaultDataLoader.createDemoData();
-
-        if (DEBUG_LEVEL > 1)
-        {
-            System.out.println(SystemInfo.INSTANCE.getMaxRam());
-            for (String argument : SystemInfo.INSTANCE.getRuntimeMXBeanArguments())
-                System.out.println(argument);
-        }
+        if (SystemInfo.INSTANCE.isLoadDemoData())
+            DefaultDataLoader.createDemoData();
 
         System.out.println("Controller.init finished in " + (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()) + " ms");
-    }
-
-    private void loadDBMaps()
-    {
-        long subTaskStart = System.currentTimeMillis();
-        DBMap.loadDbMaps(getServletContext().getRealPath("/WEB-INF/classes/com/hicks/beans"), "com.hicks.beans");
-        System.out.println("Loaded DBMAPS in " + (System.currentTimeMillis() - subTaskStart) + "ms");
     }
 
     private void loadProperties()
@@ -78,13 +55,29 @@ public class Controller extends HttpServlet
             System.out.println(e.getMessage());
         }
 
-        SystemInfo.INSTANCE.setDatabaseCacheInKBs(Common.stringToLong(properties.getProperty("databaseCacheInKBs")));
+        SystemInfo.INSTANCE.setSystemStart(System.currentTimeMillis());
+        SystemInfo.INSTANCE.setServletContext(getServletContext());
+
+        SystemInfo.INSTANCE.setDebugLevel(net.ehicks.common.Common.stringToInt(properties.getProperty("debugLevel")));
+        SystemInfo.INSTANCE.setDropTables(properties.getProperty("dropTables").equals("true"));
+        SystemInfo.INSTANCE.setCreateTables(properties.getProperty("createTables").equals("true"));
+        SystemInfo.INSTANCE.setLoadDemoData(properties.getProperty("loadDemoData").equals("true"));
+
+        SystemInfo.INSTANCE.setDatabaseCacheInKBs(net.ehicks.common.Common.stringToLong(properties.getProperty("databaseCacheInKBs")));
+
         SystemInfo.INSTANCE.setEmailHost(properties.getProperty("emailHost"));
-        SystemInfo.INSTANCE.setEmailPort(Common.stringToInt(properties.getProperty("emailPort")));
+        SystemInfo.INSTANCE.setEmailPort(net.ehicks.common.Common.stringToInt(properties.getProperty("emailPort")));
         SystemInfo.INSTANCE.setEmailUser(properties.getProperty("emailUser"));
         SystemInfo.INSTANCE.setEmailPassword(properties.getProperty("emailPassword"));
         SystemInfo.INSTANCE.setEmailFromAddress(properties.getProperty("emailFromAddress"));
         SystemInfo.INSTANCE.setEmailFromName(properties.getProperty("emailFromName"));
+    }
+
+    private void loadDBMaps()
+    {
+        long subTaskStart = System.currentTimeMillis();
+        DBMap.loadDbMaps(getServletContext().getRealPath("/WEB-INF/classes/com/hicks/beans"), "com.hicks.beans");
+        System.out.println("Loaded DBMAPS in " + (System.currentTimeMillis() - subTaskStart) + "ms");
     }
 
     private void createTables()
@@ -187,7 +180,7 @@ public class Controller extends HttpServlet
             dispatcher.forward(request, response);
         }
 
-        if (DEBUG_LEVEL > 1)
+        if (SystemInfo.INSTANCE.getDebugLevel() > 1)
             System.out.println((System.currentTimeMillis() - start) + " ms for last request " + request.getQueryString());
     }
 

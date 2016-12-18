@@ -27,12 +27,12 @@
 
 <div class="mdl-grid">
 
-    <div class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+    <div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>System Info</h5></div>
 
         <div class=".mdl-card__supporting-text" style="overflow: auto;">
             <div class="tableContainer">
-                <table class="mdl-data-table mdl-shadow--2dp" style="width: 100%;">
+                <table class="mdl-data-table mdl-shadow--2dp">
                     <thead>
                     <tr>
                         <th class="mdl-data-table__cell--non-numeric">Property</th>
@@ -67,12 +67,38 @@
 
         <%--</div>--%>
     </div>
+
+    <div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+        <div class="mdl-card__title"><h5>DB Info</h5></div>
+
+        <div class=".mdl-card__supporting-text" style="overflow: auto;">
+            <div class="tableContainer">
+                <table class="mdl-data-table mdl-shadow--2dp">
+                    <thead>
+                    <tr>
+                        <th class="mdl-data-table__cell--non-numeric">Property</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+                    <c:forEach var="info" items="${dbInfo}">
+                        <c:if test="${fn:startsWith(info[0], 'info')}">
+                            <tr>
+                                <td class="mdl-data-table__cell--non-numeric">${info[0]}</td>
+                                <td>${info[1]}</td>
+                            </tr>
+                        </c:if>
+                    </c:forEach>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>Runtime MXBean Arguments</h5></div>
 
         <div class=".mdl-card__supporting-text" style="overflow: auto;">
             <div class="tableContainer">
-                <table class="mdl-data-table mdl-shadow--2dp" style="width: 100%;">
+                <table class="mdl-data-table mdl-shadow--2dp">
                     <thead>
                     <tr>
                         <th class="mdl-data-table__cell--non-numeric">Argument</th>

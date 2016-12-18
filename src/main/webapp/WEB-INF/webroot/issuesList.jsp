@@ -55,19 +55,14 @@
                 </div>
 
                 <br>
-                <%--<label for="projectIds">Projects: </label><br>--%>
                 <t:multiSelect id="projectIds" selectedValues="${issueForm.projectIdsAsList}" items="${projects}" placeHolder="Projects:"/>
                 <br>
-                <%--<label for="zoneIds">Zones: </label><br>--%>
                 <t:multiSelect id="zoneIds" selectedValues="${issueForm.zoneIdsAsList}" items="${zones}" placeHolder="Zones:"/>
                 <br>
-                <%--<label for="severityIds">Severities: </label><br>--%>
                 <t:multiSelect id="severityIds" selectedValues="${issueForm.severityIdsAsList}" items="${severities}" placeHolder="Severities:"/>
                 <br>
-                <%--<label for="statusIds">Statuses: </label><br>--%>
                 <t:multiSelect id="statusIds" selectedValues="${issueForm.statusIdsAsList}" items="${statuses}" placeHolder="Statuses:"/>
                 <br>
-                <%--<label for="assigneeIds">Assignees: </label><br>--%>
                 <t:multiSelect id="assigneeIds" selectedValues="${issueForm.assigneeUserIdsAsList}" items="${users}" placeHolder="Assignees:"/>
             </div>
             <div class="mdl-card__actions">

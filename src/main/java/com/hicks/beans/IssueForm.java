@@ -222,6 +222,7 @@ public class IssueForm implements Serializable
         if (issueForm.getSortColumn().length() > 0)
         {
             orderByClause += " order by " + issueForm.getSortColumn() + " " + issueForm.getSortDirection() + ", id nulls last " ;
+            // todo note: the ',id nulls last' can prevent index use...
         }
 
         String offset = String.valueOf((Integer.valueOf(issueForm.getPage()) - 1) * resultsPerPage);
