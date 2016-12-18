@@ -18,6 +18,10 @@
 <link rel="stylesheet" href="../../js/sumoselect/sumoselect.css" />
 <%-- SumoSelect --%>
 
+<%-- spin.js --%>
+<script src="../../js/spin.min.js"></script>
+<%-- spin.js --%>
+
 <%-- MDL --%>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-blue.min.css">

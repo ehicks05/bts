@@ -6,10 +6,6 @@
 <%@attribute name="selectedValues" fragment="false" %>
 <%@attribute name="placeHolder" fragment="false" %>
 
-<c:if test="${empty placeHolder}">
-    <c:set var="placeHolder" value="Any"/>
-</c:if>
-
 <c:set var="multiSelectCounter" value="${requestScope.multiSelectCounter + 1}" scope="request"/>
 <c:if test="${multiSelectCounter == 1}">
 
@@ -19,7 +15,7 @@
     $(document).ready(function ()
     {
         $('#${id}').select2({
-            placeholder: "Any"
+            placeholder: "${placeHolder} (Any)"
         });
         $('#${id}').on('select2:open', function (e) {
             var container = $(this).select('select2-container');

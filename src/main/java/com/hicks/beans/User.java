@@ -58,7 +58,7 @@ public class User implements Serializable, ISelectTagSupport
 
     public String toString()
     {
-        return logonId;
+        return this.getClass().getSimpleName() + ":" + id;
     }
 
     @Override
