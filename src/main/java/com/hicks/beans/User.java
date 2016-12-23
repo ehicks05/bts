@@ -28,6 +28,12 @@ public class User implements Serializable, ISelectTagSupport
     @Column(name = "password", nullable = false)
     private String password = "";
 
+    @Column(name = "first_name")
+    private String firstName = "";
+
+    @Column(name = "last_name")
+    private String lastName = "";
+
     @Column(name = "enabled")
     private Boolean enabled;
 
@@ -70,7 +76,7 @@ public class User implements Serializable, ISelectTagSupport
     @Override
     public String getText()
     {
-        return logonId;
+        return getName();
     }
 
     // --------
@@ -168,6 +174,11 @@ public class User implements Serializable, ISelectTagSupport
     {
         return !(isAdmin() || isSupport());
     }
+
+    public String getName()
+    {
+        return firstName + " " + lastName;
+    }
     // -------- Getters / Setters ----------
 
     public Long getVersion()
@@ -208,6 +219,26 @@ public class User implements Serializable, ISelectTagSupport
     public void setPassword(String password)
     {
         this.password = password;
+    }
+
+    public String getFirstName()
+    {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName)
+    {
+        this.firstName = firstName;
+    }
+
+    public String getLastName()
+    {
+        return lastName;
+    }
+
+    public void setLastName(String lastName)
+    {
+        this.lastName = lastName;
     }
 
     public Boolean getEnabled()

@@ -54,6 +54,14 @@
                     <input class="mdl-textfield__input" id="logonId" name="logonId" type="text" value="${user.logonId}"/>
                     <label class="mdl-textfield__label" for="logonId">Logon Id:</label>
                 </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" id="firstName" name="firstName" type="text" value="${user.firstName}"/>
+                    <label class="mdl-textfield__label" for="firstName">First Name:</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" id="lastName" name="lastName" type="text" value="${user.lastName}"/>
+                    <label class="mdl-textfield__label" for="lastName">Last Name:</label>
+                </div>
                 <br>
                 <div>
                     <label class="" for="avatarId">Avatar:</label>

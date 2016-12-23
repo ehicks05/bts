@@ -39,6 +39,7 @@
                         </th>
                         <th>Object Id</th>
                         <th class="mdl-data-table__cell--non-numeric">Logon Id</th>
+                        <th class="mdl-data-table__cell--non-numeric">Name</th>
                         <th>Enabled</th>
                         <th></th>
                     </tr>
@@ -52,6 +53,7 @@
                         </td>
                         <td><a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${user.id}">${user.id}</a></td>
                         <td class="mdl-data-table__cell--non-numeric"><a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&tab3=modify&action=form&userId=${user.id}">${user.logonId}</a></td>
+                        <td class="mdl-data-table__cell--non-numeric">${user.name}</td>
                         <td class="mdl-data-table__cell--non-numeric">
                             <c:if test="${user.enabled}"><i class="material-icons" style="color: green;">check</i></c:if>
                             <c:if test="${!user.enabled}"><i class="material-icons" style="color: red;">clear</i></c:if>

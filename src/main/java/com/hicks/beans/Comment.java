@@ -98,7 +98,7 @@ public class Comment implements Serializable
         return User.getByUserId(createdByUserId);
     }
 
-    public String getCreatedByLogonId ()
+    public String getCreatedByLogonId()
     {
         return User.getByUserId(createdByUserId).getLogonId();
     }

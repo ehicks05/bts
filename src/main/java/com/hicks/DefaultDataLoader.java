@@ -19,17 +19,18 @@ public class DefaultDataLoader
     static void createDemoData()
     {
         System.out.print("Seeding dummy data...");
-        int issueCount = 131_072;
+//        int issueCount = 131_072;
+        int issueCount = 1024;
 
         if (User.getAll().size() == 0)
         {
             Map<String, List<String>> users = new HashMap<>();
-            users.put("***REMOVED***", new ArrayList<>(Arrays.asList("eric", "2")));
-            users.put("***REMOVED***", new ArrayList<>(Arrays.asList("val", "3")));
-            users.put("khicks@yahoo.com", new ArrayList<>(Arrays.asList("khicks", "8")));
-            users.put("***REMOVED***", new ArrayList<>(Arrays.asList("steve", "15")));
-            users.put("thicks@yahoo.com", new ArrayList<>(Arrays.asList("test", "5")));
-            users.put("bhicks@yahoo.com", new ArrayList<>(Arrays.asList("test", "10")));
+            users.put("***REMOVED***", new ArrayList<>(Arrays.asList("eric", "2", "Eric", ***REMOVED***)));
+            users.put("***REMOVED***", new ArrayList<>(Arrays.asList("val", "3", "Diva", "Val")));
+            users.put("khicks@yahoo.com", new ArrayList<>(Arrays.asList("khicks", "8", "Kara", ***REMOVED***)));
+            users.put("***REMOVED***", new ArrayList<>(Arrays.asList("steve", "15", "Steve", ***REMOVED***)));
+            users.put("thicks@yahoo.com", new ArrayList<>(Arrays.asList("test", "5", "Tom", ***REMOVED***)));
+            users.put("bhicks@yahoo.com", new ArrayList<>(Arrays.asList("test", "10", "Bev", ***REMOVED***)));
 
 
             MessageDigestCredentialHandler credentialHandler = null;
@@ -60,6 +61,8 @@ public class DefaultDataLoader
                 if (key.equals("thicks@yahoo.com"))
                     user.setEnabled(false);
                 user.setAvatarId(Long.valueOf(users.get(key).get(1)));
+                user.setFirstName(users.get(key).get(2));
+                user.setLastName(users.get(key).get(3));
                 user.setCreatedOn(new Date());
                 user.setUpdatedOn(new Date());
                 long userId = EOI.insert(user);
@@ -318,7 +321,7 @@ public class DefaultDataLoader
             Comment comment = new Comment();
             comment.setIssueId(2L);
             comment.setZoneId(2L);
-            comment.setCreatedByUserId(1L);
+            comment.setCreatedByUserId(2L);
             comment.setCreatedOn(new Date());
             comment.setContent("I think we can do that.");
             EOI.insert(comment);
@@ -326,7 +329,7 @@ public class DefaultDataLoader
             comment = new Comment();
             comment.setIssueId(2L);
             comment.setZoneId(2L);
-            comment.setCreatedByUserId(2L);
+            comment.setCreatedByUserId(3L);
             comment.setCreatedOn(new Date());
             comment.setContent("OK that will be great :).");
             EOI.insert(comment);

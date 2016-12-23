@@ -32,6 +32,18 @@
                     hide: 'unfocus'
                 });
             });
+
+            // Grab all elements with the class "hasTooltip"
+            $('.hasTooltip').each(function() { // Notice the .each() loop, discussed below
+                $(this).qtip({
+                    content: {
+                        text: $(this).next('div') // Use the "div" element next to this for the content
+                    },
+                    style: {
+                        classes: 'qtip-bootstrap'
+                    }
+                });
+            });
         }
 
         function update(fieldName, fieldValue, url)
@@ -155,7 +167,22 @@
 
                     <div style="padding: 0 8px;">
                         <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${comment.createdByUserId}">
-                            <img src="${!empty comment.createdBy.avatar.base64 ? comment.createdBy.avatar.base64 : comment.defaultAvatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;">${comment.createdByLogonId}</a>
+                            <img src="${!empty comment.createdBy.avatar.base64 ? comment.createdBy.avatar.base64 : comment.defaultAvatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;">
+                            <span class="hasTooltip">${comment.createdBy.name}</span>
+                            <div style="display: none;">
+                                <table>
+                                    <tr>
+                                        <td rowspan="2">
+                                            <img src="${!empty comment.createdBy.avatar.base64 ? comment.createdBy.avatar.base64 : comment.defaultAvatar.base64}" style="height:36px;margin-right: 4px;border-radius: 3px;">
+                                        </td>
+                                        <td><b>${comment.createdBy.name}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>${comment.createdBy.logonId}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </a>
 
                         commented on
                         <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy h:mm a"/>
@@ -247,7 +274,7 @@
                             <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${issue.assigneeUserId}">
                                 <img src="${issue.assignee.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
 
-                            <t:textToSelect id="fldAssigneeId" value="${issue.assigneeUserId}" text="${issue.assignee.logonId}" items="${potentialAssignees}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                            <t:textToSelect id="fldAssigneeId" value="${issue.assigneeUserId}" text="${issue.assignee.name}" items="${potentialAssignees}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                         </c:if>
                     </td>
                 </tr>
@@ -257,7 +284,7 @@
                         <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${issue.reporterUserId}">
                             <img src="${issue.reporter.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
 
-                        <t:textToSelect id="fldReporterId" value="${issue.reporterUserId}" text="${issue.reporter.logonId}" items="${potentialReporters}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                        <t:textToSelect id="fldReporterId" value="${issue.reporterUserId}" text="${issue.reporter.name}" items="${potentialReporters}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                     </td>
                 </tr>
             </table>
@@ -278,7 +305,8 @@
                                         <tr>
                                             <td>
                                                 <a style="" href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${watcherMap.watcher.id}">
-                                                ${watcherMap.watcher.logonId}</a>
+                                                    <img src="${watcherMap.watcher.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;">${watcherMap.watcher.name}
+                                                </a>
                                             </td>
                                             <td>
                                                 <a style="vertical-align: sub" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=removeWatcher&issueId=${issue.id}&watcherMapId=${watcherMap.id}"><i style="color:gray;" class="material-icons">delete</i></a>
@@ -295,7 +323,7 @@
 
                             <select id="fldWatcher" style="z-index: 100" class="js-example-basic-single">
                                 <c:forEach var="potentialWatchers" items="${potentialWatchers}">
-                                    <option value="${potentialWatchers.id}">${potentialWatchers.logonId}</option>
+                                    <option value="${potentialWatchers.id}">${potentialWatchers.name}</option>
                                 </c:forEach>
                             </select>
 

@@ -6,6 +6,7 @@
 <%@attribute name="text" fragment="false" %>
 <%@attribute name="items" fragment="false" type="java.util.List<com.hicks.ISelectTagSupport>" %>
 <%@attribute name="submitAction" fragment="false" %>
+<%@attribute name="myClass" fragment="false" %>
 
 <c:set var="textToSelectCounter" value="${requestScope.textToSelectCounter + 1}" scope="request"/>
 <c:if test="${textToSelectCounter == 1}">
@@ -47,9 +48,9 @@
     </script>
 </c:if>
 
-<span class="editable" id="${id}Text" onclick="select2Enable(this.id, $('#${id}').attr('id'))">${text}</span>
 <select id="${id}" class="js-example-basic-single" style="display: none;">
     <c:forEach var="item" items="${items}">
         <option value="${item.value}">${item.text}</option>
     </c:forEach>
 </select>
+<span class="editable ${myClass}" id="${id}Text" onclick="select2Enable(this.id, $('#${id}').attr('id'))">${text}</span>

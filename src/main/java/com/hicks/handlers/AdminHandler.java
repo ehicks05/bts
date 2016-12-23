@@ -99,8 +99,12 @@ public class AdminHandler
         {
             String logonId = Common.getSafeString(request.getParameter("logonId"));
             Long avatarId = Common.stringToLong(request.getParameter("avatarId"));
+            String firstName = Common.getSafeString(request.getParameter("firstName"));
+            String lastName = Common.getSafeString(request.getParameter("lastName"));
             user.setLogonId(logonId);
             user.setAvatarId(avatarId);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
             EOI.update(user);
 
             List<Long> selectedGroupIds = Arrays.stream(request.getParameterValues("groups")).map(Long::valueOf).collect(Collectors.toList());

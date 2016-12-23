@@ -28,7 +28,7 @@
             <h5>
                 <div class="mdl-card__title-text">
                     <img src="${user.avatar.base64}" style="padding-right: 8px; height: 48px;"/>
-                    ${user.logonId}
+                    ${user.name}
                 </div>
             </h5>
         </div>
@@ -39,6 +39,12 @@
         <form name="frmSave" id="frmSave" method="post" action="${pageContext.request.contextPath}/view?tab1=modify&action=save">
             <div class="mdl-card__supporting-text">
                 <table>
+                    <tr>
+                        <td style="padding: 0 8px;">Logon Id:</td>
+                        <td style="padding: 0 8px;">${user.logonId}</td>
+                        <td style="padding: 0 8px;"></td>
+                        <td style="padding: 0 8px;"></td>
+                    </tr>
                     <tr>
                         <td style="padding: 0 8px;">Created:</td>
                         <td style="padding: 0 8px;"><fmt:formatDate value="${user.createdOn}" pattern="dd/MMM/yy h:mm a"/></td>
@@ -84,7 +90,7 @@
             <c:forEach var="comment" items="${user.allComments}" end="10">
                 <div style="padding: 0 8px;">
                     <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${user.id}">
-                        <img src="${user.avatar.base64}" style="padding-right: 4px; height: 24px;"/>${user.logonId}
+                        <img src="${user.avatar.base64}" style="padding-right: 4px; height: 24px;"/>${user.name}
                     </a>
                     commented on
                     <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=form&issueId=${comment.issue.id}">
