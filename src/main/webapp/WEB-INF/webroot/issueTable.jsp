@@ -3,8 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<jsp:useBean id="issueForm" type="com.hicks.beans.IssueForm" scope="request"/>
-<jsp:useBean id="searchResult" type="com.hicks.SearchResult" scope="request"/>
+<jsp:useBean id="issueForm" type="net.ehicks.bts.beans.IssueForm" scope="request"/>
+<jsp:useBean id="searchResult" type="net.ehicks.bts.SearchResult" scope="request"/>
 
 <table id="filmTable" style="width:100%;margin: 0 auto" class="list">
     <thead>

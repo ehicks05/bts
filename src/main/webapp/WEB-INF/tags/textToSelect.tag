@@ -4,7 +4,7 @@
 <%@attribute name="id" fragment="false" %>
 <%@attribute name="value" fragment="false" %>
 <%@attribute name="text" fragment="false" %>
-<%@attribute name="items" fragment="false" type="java.util.List<com.hicks.ISelectTagSupport>" %>
+<%@attribute name="items" fragment="false" type="java.util.List<net.ehicks.bts.ISelectTagSupport>" %>
 <%@attribute name="submitAction" fragment="false" %>
 <%@attribute name="myClass" fragment="false" %>
 

@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
-<jsp:useBean id="issueForms" type="java.util.List<com.hicks.beans.IssueForm>" scope="request"/>
+<jsp:useBean id="issueForms" type="java.util.List<net.ehicks.bts.beans.IssueForm>" scope="request"/>
 
 <!DOCTYPE html>
 <html>

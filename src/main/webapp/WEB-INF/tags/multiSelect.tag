@@ -2,7 +2,7 @@
 
 <%@tag description="Multi Select Tag" pageEncoding="UTF-8" %>
 <%@attribute name="id" fragment="false" %>
-<%@attribute name="items" fragment="false" type="java.util.List<com.hicks.ISelectTagSupport>" %>
+<%@attribute name="items" fragment="false" type="java.util.List<net.ehicks.bts.ISelectTagSupport>" %>
 <%@attribute name="selectedValues" fragment="false" %>
 <%@attribute name="placeHolder" fragment="false" %>
 

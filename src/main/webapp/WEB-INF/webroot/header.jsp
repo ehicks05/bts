@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:if test="${!empty userSession}">
-    <jsp:useBean id="userSession" type="com.hicks.UserSession" scope="session"/>
+    <jsp:useBean id="userSession" type="net.ehicks.bts.UserSession" scope="session"/>
 </c:if>
 
 <script>

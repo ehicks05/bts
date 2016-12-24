@@ -9,7 +9,7 @@
 
     <function>
         <name>stringToISelectTag</name>
-        <function-class>com.hicks.tags.TagUtils</function-class>
+        <function-class>net.ehicks.bts.tags.TagUtils</function-class>
         <function-signature>java.util.List stringToISelectTag(java.lang.String)</function-signature>
     </function>
 

@@ -2,11 +2,11 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<jsp:useBean id="issue" type="com.hicks.beans.Issue" scope="request"/>
-<jsp:useBean id="comments" type="java.util.List<com.hicks.beans.Comment>" scope="request"/>
-<jsp:useBean id="watcherMaps" type="java.util.List<com.hicks.beans.WatcherMap>" scope="request"/>
-<jsp:useBean id="zones" type="java.util.List<com.hicks.beans.Zone>" scope="request"/>
-<jsp:useBean id="potentialWatchers" type="java.util.List<com.hicks.beans.User>" scope="request"/>
+<jsp:useBean id="issue" type="net.ehicks.bts.beans.Issue" scope="request"/>
+<jsp:useBean id="comments" type="java.util.List<net.ehicks.bts.beans.Comment>" scope="request"/>
+<jsp:useBean id="watcherMaps" type="java.util.List<net.ehicks.bts.beans.WatcherMap>" scope="request"/>
+<jsp:useBean id="zones" type="java.util.List<net.ehicks.bts.beans.Zone>" scope="request"/>
+<jsp:useBean id="potentialWatchers" type="java.util.List<net.ehicks.bts.beans.User>" scope="request"/>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>

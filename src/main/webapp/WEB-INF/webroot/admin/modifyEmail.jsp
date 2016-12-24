@@ -5,7 +5,7 @@
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<jsp:useBean id="userSession" type="com.hicks.UserSession" scope="session"/>
+<jsp:useBean id="userSession" type="net.ehicks.bts.UserSession" scope="session"/>
 
 <!DOCTYPE html>
 <html>

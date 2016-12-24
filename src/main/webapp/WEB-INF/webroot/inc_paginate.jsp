@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<jsp:useBean id="searchResult" type="com.hicks.SearchResult" scope="request"/>
-<jsp:useBean id="issueForm" type="com.hicks.beans.IssueForm" scope="request"/>
+<jsp:useBean id="searchResult" type="net.ehicks.bts.SearchResult" scope="request"/>
+<jsp:useBean id="issueForm" type="net.ehicks.bts.beans.IssueForm" scope="request"/>
 <tr>
     <td colspan="100" style="text-align: center;">
         <c:if test="${searchResult.hasPrevious}">

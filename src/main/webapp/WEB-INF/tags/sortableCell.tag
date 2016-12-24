@@ -5,7 +5,7 @@
 <%@attribute name="label" fragment="false" %>
 <%@attribute name="style" fragment="false" %>
 <%@attribute name="cssClass" fragment="false" %>
-<%@attribute name="issueForm" fragment="false" type="com.hicks.beans.IssueForm" %>
+<%@attribute name="issueForm" fragment="false" type="net.ehicks.bts.beans.IssueForm" %>
 
 <c:set var="sortableCellCounter" value="${requestScope.sortableCellCounter + 1}" scope="request"/>
 <c:if test="${sortableCellCounter == 1}">

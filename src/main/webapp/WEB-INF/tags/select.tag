@@ -3,7 +3,7 @@
 <%@tag description="Text To Select Tag" pageEncoding="UTF-8" %>
 <%@attribute name="id" fragment="false" %>
 <%@attribute name="value" fragment="false" %>
-<%@attribute name="items" fragment="false" type="java.util.List<com.hicks.ISelectTagSupport>" %>
+<%@attribute name="items" fragment="false" type="java.util.List<net.ehicks.bts.ISelectTagSupport>" %>
 <%@attribute name="formatFunction" fragment="false" %>
 
 <c:set var="selectCounter" value="${requestScope.selectCounter + 1}" scope="request"/>

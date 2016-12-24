@@ -5,7 +5,7 @@
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<jsp:useBean id="project" type="com.hicks.beans.Project" scope="request"/>
+<jsp:useBean id="project" type="net.ehicks.bts.beans.Project" scope="request"/>
 
 <!DOCTYPE html>
 <html>
