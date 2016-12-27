@@ -40,7 +40,6 @@
         <c:set var="formName" value="${fn:length(issueForm.formName) == 0 ? 'New Filter' : issueForm.formName}"/>
         <div class="mdl-card__title"><h5>Issue Filter: ${formName}</h5></div>
         <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=search">
-            <input type="hidden" id="fldRating" name="fldRating">
             <input type="hidden" name="sortColumn" id="sortColumn" value="${issueForm.sortColumn}"/>
             <input type="hidden" name="sortDirection" id="sortDirection" value="${issueForm.sortDirection}"/>
             <input type="hidden" name="page" id="page" value="${issueForm.page}"/>
