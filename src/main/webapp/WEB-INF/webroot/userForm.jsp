@@ -87,7 +87,7 @@
         <div class="mdl-card__title"><h5>Activity</h5></div>
 
         <div class="mdl-card__supporting-text">
-            <c:forEach var="comment" items="${user.allComments}" end="10">
+            <c:forEach var="comment" items="${user.recentComments}">
                 <div style="padding: 0 8px;">
                     <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${user.id}">
                         <img src="${user.avatar.base64}" style="padding-right: 4px; height: 24px;"/>${user.name}

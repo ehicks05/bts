@@ -116,9 +116,9 @@ public class User implements Serializable, ISelectTagSupport
         return EOI.executeQueryOneResult("select * from bts_users where id=?;", new ArrayList<>(Arrays.asList(userId)));
     }
 
-    public List<Comment> getAllComments()
+    public List<Comment> getRecentComments()
     {
-        return Comment.getByCreatedByUserId(id);
+        return Comment.getRecentCreatedByUserId(id, 10);
     }
 
     public List<Role> getAllRoles()

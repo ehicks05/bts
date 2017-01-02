@@ -1,6 +1,8 @@
 package net.ehicks.bts.beans;
 
 import net.ehicks.eoi.EOI;
+import net.ehicks.eoi.Index;
+import net.ehicks.eoi.Indexes;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,16 +12,12 @@ import java.util.List;
 
 @Entity
 @Table(name = "comments")
+@Indexes({
+        @Index(sql = "CREATE INDEX INDEX_COMMENT_CREATED_ON ON COMMENTS(created_on desc);")
+})
 public class Comment implements Serializable
 {
-//    @Version
-//    @Column(name = "version")
-//    private Long version;
-
-    // create sequence eric.role_seq start with 1 increment by 1;
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ROLE_SEQ")
-    @SequenceGenerator(name="ROLE_SEQ", sequenceName="ROLE_SEQ", allocationSize=1)
     @Column(name = "id", updatable = false, nullable = false, columnDefinition = "bigint not null auto_increment primary key")
     private Long id;
 
@@ -86,6 +84,11 @@ public class Comment implements Serializable
     public static List<Comment> getByCreatedByUserId(Long createdByUserId)
     {
         return EOI.executeQuery("select * from comments where created_by_user_id=?", Arrays.asList(createdByUserId));
+    }
+
+    public static List<Comment> getRecentCreatedByUserId(Long createdByUserId, int lastN)
+    {
+        return EOI.executeQuery("select * from comments where created_by_user_id=? order by created_on desc limit ? offset 0", Arrays.asList(createdByUserId, lastN));
     }
 
     public Issue getIssue()
