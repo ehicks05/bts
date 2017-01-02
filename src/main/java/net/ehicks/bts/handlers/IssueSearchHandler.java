@@ -2,7 +2,6 @@ package net.ehicks.bts.handlers;
 
 import net.ehicks.bts.SearchResult;
 import net.ehicks.bts.UserSession;
-import net.ehicks.bts.beans.Issue;
 import net.ehicks.bts.beans.IssueForm;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
@@ -179,12 +178,12 @@ public class IssueSearchHandler
         if (issueForm.getSortDirection().length() == 0) issueForm.setSortDirection("asc");
         if (issueForm.getPage().length() == 0) issueForm.setPage("1");
 
-        PSIngredients filmQuery = IssueForm.buildFilmSQLQuery(issueForm, resultsPerPage);
+        PSIngredients filmQuery = IssueForm.buildSQLQuery(issueForm, resultsPerPage);
         String countVersionOfQuery = SQLGenerator.getCountVersionOfQuery(filmQuery.query);
 
         List countResult = EOI.executeQueryOneResult(countVersionOfQuery, filmQuery.args);
         long resultSize = (Long) countResult.get(0);
-        List<Issue> filteredIssues = EOI.executeQuery(filmQuery.query, filmQuery.args);
+        List<Object> filteredIssues = EOI.executeQuery(filmQuery.query, filmQuery.args);
 
         return new SearchResult(issueForm.getPage(), filteredIssues, resultSize, resultsPerPage);
     }

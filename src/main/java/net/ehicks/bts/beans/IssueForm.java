@@ -1,6 +1,7 @@
 package net.ehicks.bts.beans;
 
 
+import net.ehicks.bts.SearchForm;
 import net.ehicks.bts.handlers.IssueSearchHandler;
 import net.ehicks.bts.SearchResult;
 import net.ehicks.eoi.EOI;
@@ -14,7 +15,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "issue_forms")
-public class IssueForm implements Serializable
+public class IssueForm extends SearchForm implements Serializable
 {
 //    @Version
 //    @Column(name = "version")
@@ -89,6 +90,11 @@ public class IssueForm implements Serializable
         this.page = "1";
     }
 
+    public String getEndpoint()
+    {
+        return "/view?tab1=main&tab2=search&action=ajaxGetPageOfResults";
+    }
+
     public void updateFields(String filterName, Long userId, String containsText, String title, String description, String statusIds,
                      String severityIds, String projectIds, String zoneIds, String assigneeUserIds, Date createdOn, Date lastUpdatedOn)
     {
@@ -106,7 +112,7 @@ public class IssueForm implements Serializable
         this.lastUpdatedOn = lastUpdatedOn;
     }
 
-    public static PSIngredients buildFilmSQLQuery(IssueForm issueForm, long resultsPerPage)
+    public static PSIngredients buildSQLQuery(IssueForm issueForm, long resultsPerPage)
     {
         List<Object> args = new ArrayList<>();
         String selectClause = "select * from issues where ";

@@ -2,14 +2,16 @@
  * Ajax to get new search results.
  * @param {string} callingElementId - Where the results will be placed.
  * @param {string} context - Context path.
+ * @param {string} endpoint - query portion of the url.
  * @param {string} issueFormId - The issue form to get results from.
  * @param {string} newPage - The page to get from the search result.
  * @param {string} newSortColumn - Sort column.
  * @param {string} newSortDirection - Sort direction.
  */
-function ajaxItems(callingElementId, context, issueFormId, newPage, newSortColumn, newSortDirection)
+function ajaxItems(callingElementId, context, endpoint, issueFormId, newPage, newSortColumn, newSortDirection)
 {
-    var myUrl = context + '/view?tab1=main&tab2=search&action=ajaxGetPageOfResults';
+    // var myUrl = context + '/view?tab1=main&tab2=search&action=ajaxGetPageOfResults';
+    var myUrl = context + endpoint;
     var params = {};
     if (issueFormId) params.issueFormId = issueFormId;
     if (newPage) params.page = newPage;

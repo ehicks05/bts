@@ -9,10 +9,10 @@
 <table id="filmTable" style="width:100%;margin: 0 auto" class="list">
     <thead>
         <tr class="listheading">
-            <t:sortableCell code="id" label="ID" style="text-align:right;" issueForm="${issueForm}" />
-            <t:sortableCell code="title" label="Title" issueForm="${issueForm}"/>
-            <t:sortableCell code="created_on" label="Created" style="text-align:right;" cssClass="hideOnSmall" issueForm="${issueForm}" />
-            <t:sortableCell code="last_updated_on" label="Updated" style="text-align:right;" issueForm="${issueForm}" />
+            <t:sortableCell code="id" label="ID" style="text-align:right;" searchForm="${issueForm}" />
+            <t:sortableCell code="title" label="Title" searchForm="${issueForm}"/>
+            <t:sortableCell code="created_on" label="Created" style="text-align:right;" cssClass="hideOnSmall" searchForm="${issueForm}" />
+            <t:sortableCell code="last_updated_on" label="Updated" style="text-align:right;" searchForm="${issueForm}" />
         </tr>
     </thead>
 
@@ -34,5 +34,5 @@
     <c:if test="${empty searchResult.searchResults}">
         <tr><td colspan="100">No Results</td></tr>
     </c:if>
-    <jsp:include page="inc_paginate.jsp"/>
+    <t:paginator searchForm="${issueForm}" searchResult="${searchResult}"/>
 </table>

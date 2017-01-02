@@ -77,7 +77,6 @@ public class Controller extends HttpServlet
     {
         long subTaskStart = System.currentTimeMillis();
         DBMap.loadDbMaps(getServletContext().getRealPath("/WEB-INF/classes/net/ehicks/bts/beans"), "net.ehicks.bts.beans");
-        DBMap.loadDbMaps(getServletContext().getRealPath("/WEB-INF/classes/net/ehicks/eoi/beans"), "net.ehicks.eoi.beans");
         System.out.println("Loaded DBMAPS in " + (System.currentTimeMillis() - subTaskStart) + "ms");
     }
 
@@ -91,6 +90,9 @@ public class Controller extends HttpServlet
                 String createTableStatement = SQLGenerator.getCreateTableStatement(dbMap);
                 EOI.executeUpdate(createTableStatement);
                 tablesCreated++;
+
+                for (String indexDefinition : dbMap.indexDefinitions)
+                    EOI.executeUpdate(indexDefinition);
             }
         System.out.println("Autocreated " + tablesCreated + " tables in " + (System.currentTimeMillis() - subTaskStart) + "ms");
     }
@@ -289,6 +291,16 @@ public class Controller extends HttpServlet
                 {
                     if (action.equals("form"))
                         viewJsp = AdminHandler.showSystemInfo(request, response);
+                }
+
+                if (tab2.equals("audit"))
+                {
+                    if (action.equals("form"))
+                        viewJsp = AuditHandler.showAuditRecords(request, response);
+                    if (action.equals("search"))
+                        AuditHandler.search(request, response);
+                    if (action.equals("ajaxGetPageOfResults"))
+                        AuditHandler.ajaxGetPageOfResults(request, response);
                 }
                 if (tab2.equals("users"))
                 {

@@ -5,20 +5,20 @@
 <%@attribute name="label" fragment="false" %>
 <%@attribute name="style" fragment="false" %>
 <%@attribute name="cssClass" fragment="false" %>
-<%@attribute name="issueForm" fragment="false" type="net.ehicks.bts.beans.IssueForm" %>
+<%@attribute name="searchForm" fragment="false" type="net.ehicks.bts.SearchForm" %>
 
 <c:set var="sortableCellCounter" value="${requestScope.sortableCellCounter + 1}" scope="request"/>
 <c:if test="${sortableCellCounter == 1}">
 
 </c:if>
 
-<c:if test="${code == issueForm.sortColumn}">
-    <c:if test="${issueForm.sortDirection == 'asc'}"><c:set var="sortIcon" value="&#9650;"/></c:if>
-    <c:if test="${issueForm.sortDirection == 'desc'}"><c:set var="sortIcon" value="&#9660;"/></c:if>
+<c:if test="${code == searchForm.sortColumn}">
+    <c:if test="${searchForm.sortDirection == 'asc'}"><c:set var="sortIcon" value="&#9650;"/></c:if>
+    <c:if test="${searchForm.sortDirection == 'desc'}"><c:set var="sortIcon" value="&#9660;"/></c:if>
 </c:if>
 
-<td id="${code}${issueForm.id}" class="sortableHeader ${cssClass}" style="${style}"
-    onclick="ajaxItems(this.id, '${pageContext.servletConfig.servletContext.contextPath}', '${issueForm.id}', 0, '${code}', '${issueForm.sortDirection}');">
+<td id="${code}${searchForm.id}" class="sortableHeader ${cssClass}" style="${style}"
+    onclick="ajaxItems(this.id, '${pageContext.servletConfig.servletContext.contextPath}', '${searchForm.endpoint}', '${searchForm.id}', 0, '${code}', '${searchForm.sortDirection}');">
     ${label}
     <span>${sortIcon}</span>
 </td>

@@ -1,19 +1,17 @@
 package net.ehicks.bts;
 
-import net.ehicks.bts.beans.Issue;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class SearchResult
 {
-    private List<Issue> searchResults;
+    private List<Object> searchResults;
     private long size;
     private long resultsPerPage;
     private String page;
 
-    public SearchResult(String pageParam, List<Issue> searchResults, long size, long resultsPerPage)
+    public SearchResult(String pageParam, List<Object> searchResults, long size, long resultsPerPage)
     {
         this.page = pageParam;
         this.searchResults = searchResults;
@@ -75,12 +73,12 @@ public class SearchResult
 
 
     // -------- Getter / Setter --------
-    public List<Issue> getSearchResults()
+    public List<Object> getSearchResults()
     {
         return searchResults;
     }
 
-    public void setSearchResults(List<Issue> searchResults)
+    public void setSearchResults(List<Object> searchResults)
     {
         this.searchResults = searchResults;
     }

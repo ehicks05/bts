@@ -1,4 +1,4 @@
-package net.ehicks.eoi.beans;
+package net.ehicks.bts.beans;
 
 import net.ehicks.eoi.EOI;
 
@@ -57,6 +57,11 @@ public class Audit implements Serializable
     public static List<Audit> getAll()
     {
         return EOI.executeQuery("select * from audits");
+    }
+
+    public static List<Audit> getAllUpdates()
+    {
+        return EOI.executeQuery("select * from audits where event_type='UPDATE'");
     }
 
     public static Audit getById(Long id)

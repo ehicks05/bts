@@ -51,7 +51,7 @@ public class DebugHandler
                 SearchResult searchResult = (SearchResult) attrValue;
 
                 int i = 1;
-                for (Issue issue : searchResult.getSearchResults())
+                for (Object issue : searchResult.getSearchResults())
                 {
                     info += "\r\n" + i++ + ":" + issue.toString();
                 }
