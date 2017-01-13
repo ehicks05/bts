@@ -13,24 +13,6 @@
 <head>
     <title>BTS</title>
     <jsp:include page="${pageContext.request.contextPath}/WEB-INF/webroot/inc_header.jsp"/>
-
-    <script>
-        $("#fromEventTime").datepicker({
-            showOn: 'button',
-            buttonImage: '../../../images/calendar.gif',
-            buttonImageOnly: true,
-            changeYear: true,
-            yearRange: '2014:2016'
-        });
-
-        $("#toEventTime").datepicker({
-            showOn: 'button',
-            buttonImage: '../../../images/calendar.gif',
-            buttonImageOnly: true,
-            changeYear: true,
-            yearRange: '2014:2016'
-        });
-    </script>
 </head>
 <body>
 
@@ -57,16 +39,20 @@
                     <label class="mdl-textfield__label" for="fieldName">Field Name:</label>
                 </div>
                 <br>
-                <label for="fromEventTime">From Event Time:</label>
-                <input type="text" size="6" maxlength="10" id="fromEventTime" name="fromEventTime" value="${auditForm.fromEventTime}">
-                 <br>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="datetime-local" size="20" maxlength="32" id="toEventTime" name="toEventTime" value="${auditForm.toEventTime}">
-                    <label class="mdl-textfield__label" for="toEventTime"></label>
+                    <label for="fromEventTime">From Event Time:</label>
+                    <fmt:formatDate var="fromEvent" value="${auditForm.fromEventTime}" pattern="MM/dd/yyyy"/>
+                    <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="fromEventTime" name="fromEventTime" value="${fromEvent}">
+                </div>
+                <br>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <label for="toEventTime">To Event Time:</label>
+                    <fmt:formatDate var="toEvent" value="${auditForm.toEventTime}" pattern="MM/dd/yyyy"/>
+                    <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="toEventTime" name="toEventTime" value="${toEvent}">
                 </div>
 
                 <br>
-                <t:multiSelect id="eventType" selectedValues="" items="${ct:stringToISelectTag('INSERT,UPDATE,DELETE')}" placeHolder="Event Type:"/>
+                <t:multiSelect id="eventType" selectedValues="${auditForm.eventType}" items="${ct:stringToISelectTag('INSERT,UPDATE,DELETE')}" placeHolder="Event Type:"/>
                 <br>
             </div>
             <div class="mdl-card__actions">
