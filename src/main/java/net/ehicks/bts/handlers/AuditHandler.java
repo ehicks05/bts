@@ -19,7 +19,7 @@ public class AuditHandler
 {
     public static String showAuditRecords(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
-        AuditForm auditForm = (AuditForm) request.getSession().getAttribute("AuditForm");
+        AuditForm auditForm = (AuditForm) request.getSession().getAttribute("auditForm");
         if (auditForm == null)
         {
             auditForm = new AuditForm();
@@ -94,7 +94,7 @@ public class AuditHandler
         String fieldName    = Common.getSafeString(request.getParameter("fieldName"));
         Date fromEventTime  = Common.stringToDate(request.getParameter("fromEventTime"));
         Date toEventTime    = Common.stringToDate(request.getParameter("toEventTime"));
-        String eventType    = Common.getSafeString(request.getParameter("eventType"));
+        String eventType    = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("eventType")));
 
         // parse sorting fields
         String sortColumn = request.getParameter("sortColumn");
@@ -123,7 +123,7 @@ public class AuditHandler
 
     public static SearchResult performSearch(AuditForm auditForm) throws ParseException, IOException
     {
-        long resultsPerPage = 10;
+        long resultsPerPage = 20;
 
         if (auditForm.getSortColumn().length() == 0) auditForm.setSortColumn("id");
         if (auditForm.getSortDirection().length() == 0) auditForm.setSortDirection("asc");
@@ -134,7 +134,6 @@ public class AuditHandler
 
         List countResult = EOI.executeQueryOneResult(countVersionOfQuery, auditQuery.args);
         long resultSize = (Long) countResult.get(0);
-//        List<Audit> filteredAudits = EOI.executeQuery(auditQuery.query, auditQuery.args);
         List<Object> filteredAudits = EOI.executeQuery(auditQuery.query, auditQuery.args);
 
         return new SearchResult(auditForm.getPage(), filteredAudits, resultSize, resultsPerPage);

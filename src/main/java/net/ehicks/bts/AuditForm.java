@@ -70,11 +70,18 @@ public class AuditForm extends SearchForm
             args.add(auditForm.getToEventTime());
         }
 
-        if (auditForm.getEventType().length() > 0)
+        if (auditForm.getEventType() != null && auditForm.getEventType().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
-            whereClause += " lower(event_type) like ? ";
-            args.add(auditForm.getEventType());
+            String questionMarks = "";
+            for (String id : auditForm.getEventType().split(","))
+            {
+                if (questionMarks.length() > 0)
+                    questionMarks += ",";
+                questionMarks += "?";
+                args.add(id);
+            }
+            whereClause += " event_type in (" + questionMarks +") ";
         }
 
         if (args.size() == 0) selectClause = selectClause.replace("where", "");
