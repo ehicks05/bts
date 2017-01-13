@@ -26,7 +26,7 @@ public class Controller extends HttpServlet
     {
         loadProperties();
 
-        EOI.init("jdbc:h2:tcp://localhost/~/bts;TRACE_LEVEL_FILE=1;DB_CLOSE_ON_EXIT=FALSE;COMPRESS=TRUE;CACHE_SIZE=" + SystemInfo.INSTANCE.getDatabaseCacheInKBs() + ";");
+        EOI.init("jdbc:h2:tcp://localhost/~/bts/bts;TRACE_LEVEL_FILE=1;DB_CLOSE_ON_EXIT=FALSE;COMPRESS=TRUE;CACHE_SIZE=" + SystemInfo.INSTANCE.getDatabaseCacheInKBs() + ";");
 
         loadDBMaps();
 
@@ -37,7 +37,10 @@ public class Controller extends HttpServlet
             createTables();
 
         if (SystemInfo.INSTANCE.isLoadDemoData())
-            DefaultDataLoader.createDemoData();
+        {
+            Thread thread = new Thread(DefaultDataLoader::createDemoData);
+            thread.start();
+        }
 
         System.out.println("Controller.init finished in " + (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()) + " ms");
     }
