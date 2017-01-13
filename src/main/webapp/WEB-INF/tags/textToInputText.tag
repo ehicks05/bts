@@ -13,6 +13,7 @@
 
 <c:set var="textToInputTextCounter" value="${requestScope.textToInputTextCounter + 1}" scope="request"/>
 <c:if test="${textToInputTextCounter == 1}">
+    <script src="../../ckeditor/ckeditor.js"></script>
     <script>
         CKEDITOR.disableAutoInline = true;
         CKEDITOR.config.extraAllowedContent = 'div(*)';
