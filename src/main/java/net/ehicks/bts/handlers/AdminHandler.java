@@ -48,7 +48,9 @@ public class AdminHandler
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         List<Object> dbInfo = EOI.executeQuery("SELECT NAME, VALUE FROM INFORMATION_SCHEMA.SETTINGS");
+        List<String> cpInfo = EOI.getCPInfo();
         request.setAttribute("dbInfo", dbInfo);
+        request.setAttribute("cpInfo", cpInfo);
 
         return "/WEB-INF/webroot/admin/systemInfo.jsp";
     }

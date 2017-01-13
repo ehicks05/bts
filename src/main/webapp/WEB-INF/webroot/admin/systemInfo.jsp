@@ -59,6 +59,12 @@
                         <td class="mdl-data-table__cell--non-numeric">Max RAM</td>
                         <td>${userSession.systemInfo.maxRam}</td>
                     </tr>
+
+                    <c:forEach var="cpInfoItem" items="${cpInfo}">
+                        <tr>
+                            <td colspan="2">${cpInfoItem}</td>
+                        </tr>
+                    </c:forEach>
                 </table>
             </div>
         </div>
