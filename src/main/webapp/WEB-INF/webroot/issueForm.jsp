@@ -83,6 +83,12 @@
             var userId = $('#' + elementId).val();
             location.href = "${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=addWatcher&issueId=${issue.id}&userId=" + userId;
         }
+
+        function deleteAttachment(attachmentId)
+        {
+            if (confirm('Are you sure?'))
+                location.href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=deleteAttachment&issueId=${issue.id}&attachmentId=" + attachmentId;
+        }
     </script>
 
 </head>
@@ -138,6 +144,71 @@
                 </table>
             </div>
         </form>
+    </div>
+
+    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+        <div class="mdl-card__title"><h5>Attachments</h5></div>
+
+        <form name="frmSave" id="frmSaveAttachments" method="post" action="${pageContext.request.contextPath}/view?tab1=modify&action=save">
+            <div class="mdl-card__supporting-text">
+                <table>
+                    <tr>
+                        <c:forEach var="attachment" items="${issue.attachments}">
+                            <c:if test="${attachment.thumbnailDbFileId > 0}">
+                                <td style="padding: 0 8px;border:solid 1px lightgray;">
+                                    <div align="center">
+                                        <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=retrieveAttachment&attachmentId=${attachment.id}">
+                                            <img src="${attachment.thumbnailDbFile.base64}"/>
+                                        </a>
+                                    </div>
+                                    <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=retrieveAttachment&attachmentId=${attachment.id}">
+                                        ${attachment.dbFile.name}
+                                    </a>
+                                    <a style="padding-left: 40px;" onclick="deleteAttachment('${attachment.id}');" class="clickable material-icons">delete</a>
+                                    <br>
+                                    <span>${attachment.dbFile.lengthPretty}</span>
+                                    <span style="padding-left: 40px;"><fmt:formatDate value="${attachment.createdOn}" pattern="dd/MMM/yy h:mm a"/></span>
+                                </td>
+                            </c:if>
+                        </c:forEach>
+                    </tr>
+                </table>
+                <table>
+                    <c:forEach var="attachment" items="${issue.attachments}">
+                        <c:if test="${attachment.thumbnailDbFileId == 0}">
+                            <tr>
+                                <td style="padding: 0 8px;border:solid 1px lightgray;">
+                                    <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=retrieveAttachment&attachmentId=${attachment.id}">
+                                        <c:set var="defaultImageName" value="calendar.gif"/>
+                                        <c:if test="${fn:endsWith(attachment.dbFile.name, 'pdf')}">
+                                            <c:set var="defaultImageName" value="Adobe_PDF_32x32.png"/>
+                                        </c:if>
+                                        <c:if test="${fn:endsWith(attachment.dbFile.name, 'docx')}">
+                                            <c:set var="defaultImageName" value="Word.png"/>
+                                        </c:if>
+                                        <c:if test="${fn:endsWith(attachment.dbFile.name, 'xlsx')}">
+                                            <c:set var="defaultImageName" value="Excel.png"/>
+                                        </c:if>
+                                        <c:if test="${fn:endsWith(attachment.dbFile.name, 'pptx')}">
+                                            <c:set var="defaultImageName" value="PowerPoint.png"/>
+                                        </c:if>
+                                        <img style="width: 32px;" src="../../images/${defaultImageName}"/>
+                                        ${attachment.dbFile.name}
+                                    </a>
+                                    <span style="padding-left: 40px;">${attachment.dbFile.lengthPretty}</span>
+                                    <span><fmt:formatDate value="${attachment.createdOn}" pattern="dd/MMM/yy h:mm a"/></span>
+                                    <a onclick="deleteAttachment('${attachment.id}');" class="clickable material-icons">delete</a>
+                                </td>
+                            </tr>
+                        </c:if>
+                    </c:forEach>
+                </table>
+            </div>
+        </form>
+
+        <div id="attachmentActions" class="mdl-card__actions">
+            <input type="button" value="Add Attachment" id="showAddAttachment" class="mdl-button mdl-js-button mdl-button--raised" onclick="showAddAttachment();" />
+        </div>
     </div>
 
     <div class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
@@ -342,6 +413,46 @@
     <div class="mdl-snackbar__text"></div>
     <button type="button" class="mdl-snackbar__action"></button>
 </div>
+
+<dialog id="addAttachmentDialog" class="mdl-dialog" style="width: 500px;">
+    <h4 class="mdl-dialog__title">Add Attachment</h4>
+    <div class="mdl-dialog__content">
+        <form id="frmAddAttachment" name="frmAddAttachment" enctype="multipart/form-data" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab1=main&tab2=issue&action=addAttachment&issueId=${issue.id}">
+            <table>
+                <tr>
+                    <td>File:</td>
+                    <td>
+                        <input type="file" name="fldFile" value="" required/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button add">Add</button>
+        <button type="button" class="mdl-button close">Cancel</button>
+    </div>
+</dialog>
+<script>
+    var addAttachmentDialog = document.querySelector('#addAttachmentDialog');
+    var showDialogButton = document.querySelector('#showAddAttachment');
+    if (!addAttachmentDialog.showModal)
+    {
+        dialogPolyfill.registerDialog(addAttachmentDialog);
+    }
+    showDialogButton.addEventListener('click', function ()
+    {
+        addAttachmentDialog.showModal();
+    });
+    document.querySelector('#addAttachmentDialog .add').addEventListener('click', function ()
+    {
+        $('#frmAddAttachment').submit()
+    });
+    addAttachmentDialog.querySelector('#addAttachmentDialog .close').addEventListener('click', function ()
+    {
+        addAttachmentDialog.close();
+    });
+</script>
 
 <jsp:include page="footer.jsp"/>
 </body>

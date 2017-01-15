@@ -123,6 +123,11 @@ public class Issue implements Serializable
         return User.getByUserId(reporterUserId);
     }
 
+    public List<Attachment> getAttachments()
+    {
+        return Attachment.getByIssueId(id);
+    }
+
     // -------- Getters / Setters ----------
 
 

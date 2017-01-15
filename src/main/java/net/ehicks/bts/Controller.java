@@ -234,6 +234,12 @@ public class Controller extends HttpServlet
                         ModifyIssueHandler.addWatcher(request, response);
                     if (action.equals("removeWatcher"))
                         ModifyIssueHandler.removeWatcher(request, response);
+                    if (action.equals("addAttachment"))
+                        AttachmentHandler.addAttachment(request, response);
+                    if (action.equals("retrieveAttachment"))
+                        AttachmentHandler.retrieveAttachment(request, response);
+                    if (action.equals("deleteAttachment"))
+                        AttachmentHandler.deleteAttachment(request, response);
                 }
                 if (tab2.equals("issueForm"))
                 {

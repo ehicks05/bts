@@ -13,21 +13,18 @@ import java.util.List;
 @Table(name = "db_files")
 public class DBFile implements Serializable, ISelectTagSupport
 {
-//    @Version
-//    @Column(name = "version")
-//    private Long version;
-
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ROLE_SEQ")
-    @SequenceGenerator(name="ROLE_SEQ", sequenceName="ROLE_SEQ", allocationSize=1)
     @Column(name = "id", updatable = false, nullable = false, columnDefinition = "bigint not null auto_increment primary key")
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     private String name = "";
 
-    @Column(name = "content", nullable = false, unique = true)
+    @Column(name = "content", nullable = false)
     private byte[] content;
+
+    @Column(name = "length", nullable = false)
+    private Long length;
 
     @Override
     public boolean equals(Object obj)
@@ -80,6 +77,11 @@ public class DBFile implements Serializable, ISelectTagSupport
         return "data:image/png;base64," + Common.byteArrayToBase64(content);
     }
 
+    public String getLengthPretty()
+    {
+        return Common.toMetric(length);
+    }
+
     // -------- Getters / Setters ----------
 
     public Long getId()
@@ -110,5 +112,15 @@ public class DBFile implements Serializable, ISelectTagSupport
     public void setContent(byte[] content)
     {
         this.content = content;
+    }
+
+    public Long getLength()
+    {
+        return length;
+    }
+
+    public void setLength(Long length)
+    {
+        this.length = length;
     }
 }

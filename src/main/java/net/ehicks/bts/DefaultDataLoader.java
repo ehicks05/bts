@@ -68,6 +68,9 @@ public class DefaultDataLoader
         createIssues();
         timer.printDuration("createIssues");
 
+        createAttachments();
+        timer.printDuration("createAttachments");
+
         createIssueForms();
         timer.printDuration("createIssueForms");
 
@@ -120,6 +123,7 @@ public class DefaultDataLoader
                     DBFile dbFile = new DBFile();
                     dbFile.setName(avatar.getName());
                     dbFile.setContent(content);
+                    dbFile.setLength((long) content.length);
                     EOI.insert(dbFile);
                 }
             }
@@ -231,6 +235,44 @@ public class DefaultDataLoader
             zoneMap.setUserId(user.getId());
             zoneMap.setZoneId(zoneId);
             EOI.insert(zoneMap);
+        }
+    }
+
+    private static void createAttachments()
+    {
+        File imgDir = Paths.get(SystemInfo.INSTANCE.getServletContext().getRealPath("/images/")).toFile();
+        if (imgDir.exists() && imgDir.isDirectory())
+        {
+            List<File> images = Arrays.asList(imgDir.listFiles());
+            Collections.sort(images);
+            for (File img : images)
+            {
+                if (img.exists() && img.isFile() && img.getName().contains("Adobe_PDF"))
+                {
+                    byte[] content = null;
+                    try
+                    {
+                        content = Files.readAllBytes(img.toPath());
+                    }
+                    catch (IOException e)
+                    {
+                        System.out.println(e.getMessage());
+                    }
+
+                    DBFile dbFile = new DBFile();
+                    dbFile.setName(img.getName());
+                    dbFile.setContent(content);
+                    dbFile.setLength((long) content.length);
+                    long dbFileId = EOI.insert(dbFile);
+
+                    Attachment attachment = new Attachment();
+                    attachment.setIssueId(2L);
+                    attachment.setCreatedByUserId(2L);
+                    attachment.setCreatedOn(new Date());
+                    attachment.setDbFileId(dbFileId);
+                    EOI.insert(attachment);
+                }
+            }
         }
     }
 
