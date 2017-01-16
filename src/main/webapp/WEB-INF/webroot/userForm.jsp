@@ -61,15 +61,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding: 0 8px;vertical-align: top">Zones:</td>
-                        <td style="padding: 0 8px;">
-                            <c:forEach var="zone" items="${user.allZones}">
-                                ${zone.name}
-                                <br>
-                            </c:forEach>
-                        </td>
-                    </tr>
-                    <tr>
                         <td style="padding: 0 8px;vertical-align: top">Projects:</td>
                         <td style="padding: 0 8px;">
                             <c:forEach var="project" items="${user.allProjects}">

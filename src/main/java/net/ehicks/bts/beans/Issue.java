@@ -13,10 +13,6 @@ import java.util.List;
 @Table(name = "issues")
 public class Issue implements Serializable
 {
-//    @Version
-//    @Column(name = "version")
-//    private Long version;
-
     @Id
     @Column(name = "id", updatable = false, nullable = false, columnDefinition = "bigint not null auto_increment primary key")
     private Long id;
@@ -26,10 +22,8 @@ public class Issue implements Serializable
     @Column(name = "description", columnDefinition = "varchar2(32000 CHAR)")
     private String description = "";
 
-    @Column(name = "bucket_id")
-    private Long bucketId;
-    @Column(name = "zone_id")
-    private Long zoneId;
+    @Column(name = "group_id")
+    private Long groupId;
     @Column(name = "issue_type_id")
     private Long issueTypeId;
     @Column(name = "project_id")
@@ -93,9 +87,9 @@ public class Issue implements Serializable
         return Project.getById(projectId);
     }
 
-    public Zone getZone()
+    public Group getGroup()
     {
-        return Zone.getById(zoneId);
+        return Group.getById(groupId);
     }
 
     public IssueType getIssueType()
@@ -161,24 +155,14 @@ public class Issue implements Serializable
         this.description = description;
     }
 
-    public Long getBucketId()
+    public Long getGroupId()
     {
-        return bucketId;
+        return groupId;
     }
 
-    public void setBucketId(Long bucketId)
+    public void setGroupId(Long groupId)
     {
-        this.bucketId = bucketId;
-    }
-
-    public Long getZoneId()
-    {
-        return zoneId;
-    }
-
-    public void setZoneId(Long zoneId)
-    {
-        this.zoneId = zoneId;
+        this.groupId = groupId;
     }
 
     public Long getIssueTypeId()

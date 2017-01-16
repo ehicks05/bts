@@ -93,17 +93,17 @@ public class User implements Serializable, ISelectTagSupport
             return User.getAll();
         else
         {
-            List<Zone> zones = Zone.getAllForUser(userId);
+            List<Group> groups = Group.getByUserId(userId);
             Set<User> users = new HashSet<>();
-            for (Zone zone : zones)
-                users.addAll(getAllUsersInZone(zone.getId()));
+            for (Group group : groups)
+                users.addAll(getAllUsersInGroup(group.getId()));
             return new ArrayList<>(users);
         }
     }
 
-    public static List<User> getAllUsersInZone(Long zoneId)
+    public static List<User> getAllUsersInGroup(Long groupId)
     {
-        return EOI.executeQuery("select * from bts_users where id in (select user_id from zone_maps where zone_id=?)", new ArrayList<>(Arrays.asList(zoneId)));
+        return EOI.executeQuery("select * from bts_users where id in (select user_id from group_maps where group_id=?)", new ArrayList<>(Arrays.asList(groupId)));
     }
 
     public static User getByLogonId(String logonid)
@@ -136,11 +136,6 @@ public class User implements Serializable, ISelectTagSupport
         return Group.getByUserId(id).stream().map(Group::getId).collect(Collectors.toList());
     }
 
-    public List<Zone> getAllZones()
-    {
-        return Zone.getAllForUser(id);
-    }
-
     public List<Project> getAllProjects()
     {
         return Project.getAllForUser(id);
@@ -167,7 +162,7 @@ public class User implements Serializable, ISelectTagSupport
 
     public boolean isSupport()
     {
-        return GroupMap.getByUserId(id).stream().map(groupMap -> Group.getById(groupMap.getId())).anyMatch(Group::getSupport);
+        return GroupMap.getByUserId(id).stream().map(groupMap -> Group.getById(groupMap.getGroupId())).anyMatch(Group::getSupport);
     }
 
     public boolean isCustomer()

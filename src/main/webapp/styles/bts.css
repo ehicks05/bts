@@ -33,7 +33,7 @@ div.ui-datepicker{
 
 .js-example-basic-single {padding-right: 24px; width: 96%}
 
-.clickable {cursor: pointer;}
+.clickable {cursor: pointer; text-decoration: none;}
 .clickable:hover {text-decoration: underline}
 
 /* Material */

@@ -5,7 +5,7 @@
 <jsp:useBean id="issue" type="net.ehicks.bts.beans.Issue" scope="request"/>
 <jsp:useBean id="comments" type="java.util.List<net.ehicks.bts.beans.Comment>" scope="request"/>
 <jsp:useBean id="watcherMaps" type="java.util.List<net.ehicks.bts.beans.WatcherMap>" scope="request"/>
-<jsp:useBean id="zones" type="java.util.List<net.ehicks.bts.beans.Zone>" scope="request"/>
+<jsp:useBean id="groups" type="java.util.List<net.ehicks.bts.beans.Group>" scope="request"/>
 <jsp:useBean id="potentialWatchers" type="java.util.List<net.ehicks.bts.beans.User>" scope="request"/>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -105,7 +105,7 @@
                 </div>
                 <div class="mdl-card__subtitle-text">
                     <t:textToSelect id="fldProject" value="${issue.projectId}" text="${issue.project.name}" items="${projects}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
-                    ${issue.project.prefix}-${issue.id}
+                    &nbsp;${issue.project.prefix}-${issue.id}
                 </div>
             </h5>
         </div>
@@ -136,9 +136,9 @@
                         <td style="padding: 0 8px;">
                             <t:textToSelect id="fldSeverity" value="${issue.severity.id}" text="${issue.severity.name}" items="${severities}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                         </td>
-                        <td style="padding: 0 8px;">Zone:</td>
+                        <td style="padding: 0 8px;">Group:</td>
                         <td style="padding: 0 8px;">
-                            <t:textToSelect id="fldZone" value="${issue.zone.id}" text="${issue.zone.name}" items="${zones}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                            <t:textToSelect id="fldGroup" value="${issue.group.id}" text="${issue.group.name}" items="${groups}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                         </td>
                     </tr>
                 </table>
@@ -179,7 +179,7 @@
                             <tr>
                                 <td style="padding: 0 8px;border:solid 1px lightgray;">
                                     <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=retrieveAttachment&attachmentId=${attachment.id}">
-                                        <c:set var="defaultImageName" value="calendar.gif"/>
+                                        <c:set var="defaultImageName" value=""/>
                                         <c:if test="${fn:endsWith(attachment.dbFile.name, 'pdf')}">
                                             <c:set var="defaultImageName" value="Adobe_PDF_32x32.png"/>
                                         </c:if>
@@ -192,7 +192,13 @@
                                         <c:if test="${fn:endsWith(attachment.dbFile.name, 'pptx')}">
                                             <c:set var="defaultImageName" value="PowerPoint.png"/>
                                         </c:if>
-                                        <img style="width: 32px;" src="../../images/${defaultImageName}"/>
+
+                                        <c:if test="${!empty defaultImageName}">
+                                            <img style="width: 32px;" src="../../images/${defaultImageName}"/>
+                                        </c:if>
+                                        <c:if test="${empty defaultImageName}">
+                                            <i class="material-icons" style="font-size: 32px">attachment</i>
+                                        </c:if>
                                         ${attachment.dbFile.name}
                                     </a>
                                     <span style="padding-left: 40px;">${attachment.dbFile.lengthPretty}</span>

@@ -30,6 +30,8 @@ public class IssueSearchHandler
         if (issueForm == null)
         {
             issueForm = new IssueForm();
+            UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+            issueForm.setUserId(userSession.getUserId());
             issueForm = updateIssueFormFromRequest(issueForm, request);
         }
 
@@ -119,7 +121,7 @@ public class IssueSearchHandler
         String statusIds        = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("statusIds")));
         String severityIds      = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("severityIds")));
         String projectIds       = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("projectIds")));
-        String zoneIds          = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("zoneIds")));
+        String groupIds         = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("groupIds")));
         String assigneeIds      = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("assigneeIds")));
         Date createdOn          = Common.stringToDate(request.getParameter("createdOn"));
         Date lastUpdatedOn      = Common.stringToDate(request.getParameter("lastUpdatedOn"));
@@ -142,7 +144,7 @@ public class IssueSearchHandler
         if (page == null || page.length() == 0)
             page = "1";
 
-        issueForm.updateFields(filterName, userSession.getUserId(), containsText, title, description, statusIds, severityIds, projectIds, zoneIds, assigneeIds, createdOn, lastUpdatedOn);
+        issueForm.updateFields(filterName, userSession.getUserId(), containsText, title, description, statusIds, severityIds, projectIds, groupIds, assigneeIds, createdOn, lastUpdatedOn);
 
         issueForm.setSortColumn(sortColumn);
         issueForm.setSortDirection(sortDirection);

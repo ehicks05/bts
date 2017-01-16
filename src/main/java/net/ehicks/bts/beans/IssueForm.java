@@ -17,10 +17,6 @@ import java.util.*;
 @Table(name = "issue_forms")
 public class IssueForm extends SearchForm implements Serializable
 {
-//    @Version
-//    @Column(name = "version")
-//    private Long version;
-
     @Id
     @Column(name = "id", updatable = false, nullable = false, columnDefinition = "bigint not null auto_increment primary key")
     private Long id;
@@ -45,8 +41,8 @@ public class IssueForm extends SearchForm implements Serializable
     @Column(name = "issue_id")
     private Long issueId;
 
-    @Column(name = "zone_ids")
-    private String zoneIds;
+    @Column(name = "group_ids")
+    private String groupIds;
     @Column(name = "issue_type_ids")
     private String issueTypeIds;
     @Column(name = "project_ids")
@@ -96,7 +92,7 @@ public class IssueForm extends SearchForm implements Serializable
     }
 
     public void updateFields(String filterName, Long userId, String containsText, String title, String description, String statusIds,
-                     String severityIds, String projectIds, String zoneIds, String assigneeUserIds, Date createdOn, Date lastUpdatedOn)
+                     String severityIds, String projectIds, String groupIds, String assigneeUserIds, Date createdOn, Date lastUpdatedOn)
     {
         this.setFormName(filterName);
         this.userId = userId;
@@ -106,7 +102,7 @@ public class IssueForm extends SearchForm implements Serializable
         this.statusIds = statusIds;
         this.severityIds = severityIds;
         this.projectIds = projectIds;
-        this.zoneIds = zoneIds;
+        this.groupIds = groupIds;
         this.assigneeUserIds = assigneeUserIds;
         this.createdOn = createdOn;
         this.lastUpdatedOn = lastUpdatedOn;
@@ -117,6 +113,35 @@ public class IssueForm extends SearchForm implements Serializable
         List<Object> args = new ArrayList<>();
         String selectClause = "select * from issues where ";
         String whereClause = "";
+
+        /*
+        * Security - Limit results to issues in the user's groups.
+        */
+        if (whereClause.length() > 0) whereClause += " and ";
+        String questionMarks = "";
+        User user = User.getByUserId(issueForm.getUserId());
+        for (Group group : Group.getAllForUser(user.getId()))
+        {
+            if (questionMarks.length() > 0)
+                questionMarks += ",";
+            questionMarks += "?";
+            args.add(group.getId());
+        }
+        whereClause += " group_id in (" + questionMarks +") ";
+
+        if (whereClause.length() > 0) whereClause += " and ";
+        questionMarks = "";
+        for (Project project : Project.getAllForUser(user.getId()))
+        {
+            if (questionMarks.length() > 0)
+                questionMarks += ",";
+            questionMarks += "?";
+            args.add(project.getId());
+        }
+        whereClause += " project_id in (" + questionMarks +") ";
+        /*
+        * Security
+        */
 
         if (issueForm.getIssueId() != null && issueForm.getIssueId() != 0)
         {
@@ -155,7 +180,7 @@ public class IssueForm extends SearchForm implements Serializable
         if (issueForm.getProjectIds() != null && issueForm.getProjectIds().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
-            String questionMarks = "";
+            questionMarks = "";
             for (String id : issueForm.getProjectIds().split(","))
             {
                 if (questionMarks.length() > 0)
@@ -166,24 +191,24 @@ public class IssueForm extends SearchForm implements Serializable
             whereClause += " project_id in (" + questionMarks +") ";
         }
 
-        if (issueForm.getZoneIds() != null && issueForm.getZoneIds().length() > 0)
+        if (issueForm.getGroupIds() != null && issueForm.getGroupIds().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
-            String questionMarks = "";
-            for (String id : issueForm.getZoneIds().split(","))
+            questionMarks = "";
+            for (String id : issueForm.getGroupIds().split(","))
             {
                 if (questionMarks.length() > 0)
                     questionMarks += ",";
                 questionMarks += "?";
                 args.add(id);
             }
-            whereClause += " zone_id in (" + questionMarks +") ";
+            whereClause += " group_id in (" + questionMarks +") ";
         }
 
         if (issueForm.getSeverityIds() != null && issueForm.getSeverityIds().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
-            String questionMarks = "";
+            questionMarks = "";
             for (String id : issueForm.getSeverityIds().split(","))
             {
                 if (questionMarks.length() > 0)
@@ -197,7 +222,7 @@ public class IssueForm extends SearchForm implements Serializable
         if (issueForm.getStatusIds() != null && issueForm.getStatusIds().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
-            String questionMarks = "";
+            questionMarks = "";
             for (String id : issueForm.getStatusIds().split(","))
             {
                 if (questionMarks.length() > 0)
@@ -211,7 +236,7 @@ public class IssueForm extends SearchForm implements Serializable
         if (issueForm.getAssigneeUserIds() != null && issueForm.getAssigneeUserIds().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
-            String questionMarks = "";
+            questionMarks = "";
             for (String id : issueForm.getAssigneeUserIds().split(","))
             {
                 if (questionMarks.length() > 0)
@@ -287,11 +312,11 @@ public class IssueForm extends SearchForm implements Serializable
         return new ArrayList<>(Arrays.asList(projectIds.split(",")));
     }
 
-    public List<String> getZoneIdsAsList()
+    public List<String> getGroupIdsAsList()
     {
-        if (zoneIds == null)
+        if (groupIds == null)
             return Collections.EMPTY_LIST;
-        return new ArrayList<>(Arrays.asList(zoneIds.split(",")));
+        return new ArrayList<>(Arrays.asList(groupIds.split(",")));
     }
 
     public List<String> getSeverityIdsAsList()
@@ -398,14 +423,14 @@ public class IssueForm extends SearchForm implements Serializable
         this.description = description;
     }
 
-    public String getZoneIds()
+    public String getGroupIds()
     {
-        return zoneIds;
+        return groupIds;
     }
 
-    public void setZoneIds(String zoneIds)
+    public void setGroupIds(String groupIds)
     {
-        this.zoneIds = zoneIds;
+        this.groupIds = groupIds;
     }
 
     public String getIssueTypeIds()

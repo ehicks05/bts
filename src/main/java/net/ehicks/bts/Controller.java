@@ -164,12 +164,11 @@ public class Controller extends HttpServlet
         request.setAttribute("issueTypes", IssueType.getAll());
         request.setAttribute("severities", Severity.getAll());
         request.setAttribute("statuses", Status.getAll());
-        request.setAttribute("groups", Group.getAll());
 
         // the following collections have restricted access
-        request.setAttribute("zones", Zone.getAllForUser(userSession.getUserId()));
         request.setAttribute("projects", Project.getAllForUser(userSession.getUserId()));
         request.setAttribute("users", User.getAllForUser(userSession.getUserId()));
+        request.setAttribute("groups", Group.getAllForUser(userSession.getUserId()));
         request.setAttribute("issueForms", IssueForm.getByUserId(userSession.getUserId()));
 
         if (request.getParameter("tab1") == null)
@@ -345,21 +344,21 @@ public class Controller extends HttpServlet
                             AdminHandler.modifyProject(request, response);
                     }
                 }
-                if (tab2.equals("zones"))
+                if (tab2.equals("groups"))
                 {
                     if (action.equals("form"))
-                        viewJsp = AdminHandler.showManageZones(request, response);
+                        viewJsp = AdminHandler.showManageGroups(request, response);
                     if (action.equals("create"))
-                        AdminHandler.createZone(request, response);
+                        AdminHandler.createGroup(request, response);
                     if (action.equals("delete"))
-                        AdminHandler.deleteZone(request, response);
+                        AdminHandler.deleteGroup(request, response);
 
                     if (tab3.equals("modify"))
                     {
                         if (action.equals("form"))
-                            viewJsp = AdminHandler.showModifyZone(request, response);
+                            viewJsp = AdminHandler.showModifyGroup(request, response);
                         if (action.equals("modify"))
-                            AdminHandler.modifyZone(request, response);
+                            AdminHandler.modifyGroup(request, response);
                     }
                 }
                 if (tab2.equals("email"))

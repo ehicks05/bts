@@ -50,14 +50,8 @@ public class DefaultDataLoader
         createSeverities();
         timer.printDuration("createSeverities");
 
-        createZones();
-        timer.printDuration("createZones");
-
         createIssueTypes();
         timer.printDuration("createIssueTypes");
-
-        createZoneMaps();
-        timer.printDuration("createZoneMaps");
 
         createProjectMaps();
         timer.printDuration("createProjectMaps");
@@ -170,12 +164,10 @@ public class DefaultDataLoader
             if (issueId == 2)
                 return;
 
-            long zoneId = issue.getZoneId();
             for (int i = 0; i < r.nextInt(8); i++)
             {
                 Comment comment = new Comment();
                 comment.setIssueId(issueId);
-                comment.setZoneId(zoneId);
                 comment.setCreatedByUserId((long) r.nextInt(users) + 1);
                 comment.setCreatedOn(new Date());
 
@@ -195,7 +187,6 @@ public class DefaultDataLoader
 
         Comment comment = new Comment();
         comment.setIssueId(2L);
-        comment.setZoneId(2L);
         comment.setCreatedByUserId(2L);
         comment.setCreatedOn(new Date());
         comment.setContent("I think we can do that.");
@@ -203,7 +194,6 @@ public class DefaultDataLoader
 
         comment = new Comment();
         comment.setIssueId(2L);
-        comment.setZoneId(2L);
         comment.setCreatedByUserId(3L);
         comment.setCreatedOn(new Date());
         comment.setContent("OK that will be great :).");
@@ -215,26 +205,12 @@ public class DefaultDataLoader
         Random r = new Random();
         for (User user : User.getAll())
         {
-            long projectId = r.nextInt(Project.getAll().size() + 1);
+            long projectId = r.nextInt(Project.getAll().size()) + 1;
 
             ProjectMap projectMap = new ProjectMap();
             projectMap.setUserId(user.getId());
             projectMap.setProjectId(projectId);
             EOI.insert(projectMap);
-        }
-    }
-
-    private static void createZoneMaps()
-    {
-        Random r = new Random();
-        for (User user : User.getAll())
-        {
-            long zoneId = r.nextInt(Zone.getAll().size() + 1);
-
-            ZoneMap zoneMap = new ZoneMap();
-            zoneMap.setUserId(user.getId());
-            zoneMap.setZoneId(zoneId);
-            EOI.insert(zoneMap);
         }
     }
 
@@ -288,7 +264,7 @@ public class DefaultDataLoader
                 "Help with", "Problem regarding");
 
         int projects = Project.getAll().size() + 1;
-        int zones = Zone.getAll().size() + 1;
+        int groups = Group.getAll().size() + 1;
         int assigneeUserIds = User.getAll().size() + 1;
         int reporterUserIds = User.getAll().size() + 1;
         int issueTypes = IssueType.getAll().size() + 1;
@@ -305,8 +281,8 @@ public class DefaultDataLoader
             Issue issue = new Issue();
             long value = (long) r.nextInt(projects);
             issue.setProjectId(value > 0 ? value : 1);
-            value = (long) r.nextInt(zones);
-            issue.setZoneId(value > 0 ? value : 1);
+            value = (long) r.nextInt(groups);
+            issue.setGroupId(value > 0 ? value : 1);
             value = (long) r.nextInt(assigneeUserIds);
             issue.setAssigneeUserId(value > 0 ? value : 1);
             value = (long) r.nextInt(reporterUserIds);
@@ -366,19 +342,6 @@ public class DefaultDataLoader
         EOI.insert(issueType);
     }
 
-    private static void createZones()
-    {
-        Zone zone = new Zone();
-        zone.setName("Readington");
-        EOI.insert(zone);
-        zone.setName("Bridgewater");
-        EOI.insert(zone);
-        zone.setName("Califon");
-        EOI.insert(zone);
-        zone.setName("Flemington");
-        EOI.insert(zone);
-    }
-
     private static void createSeverities()
     {
         Severity severity = new Severity();
@@ -417,8 +380,15 @@ public class DefaultDataLoader
 
     private static void createGroupMaps()
     {
-        Group customer = Group.getByName("Customer");
+        Group support = Group.getByName("Support");
         Group admin = Group.getByName("Admin");
+
+        List<Group> customerGroups = new ArrayList<>();
+        for (Group group : Group.getAll())
+            if (!group.getAdmin() && !group.getSupport())
+                customerGroups.add(group);
+
+        Random r = new Random();
 
         for (User user : User.getAll())
         {
@@ -426,8 +396,14 @@ public class DefaultDataLoader
             groupMap.setUserId(user.getId());
             if (user.getLogonId().equals("***REMOVED***"))
                 groupMap.setGroupId(admin.getId());
+            else if (user.getLogonId().equals("***REMOVED***"))
+                groupMap.setGroupId(support.getId());
             else
-                groupMap.setGroupId(customer.getId());
+            {
+                // pick a random element in customerGroups
+                long groupId = customerGroups.get(r.nextInt(customerGroups.size())).getId();
+                groupMap.setGroupId(groupId);
+            }
             EOI.insert(groupMap);
         }
     }
@@ -435,11 +411,20 @@ public class DefaultDataLoader
     private static void createGroups()
     {
         Group group = new Group();
-        group.setName("Customer");
+
+        group.setName("Readington");
         EOI.insert(group);
+        group.setName("Bridgewater");
+        EOI.insert(group);
+        group.setName("Califon");
+        EOI.insert(group);
+        group.setName("Flemington");
+        EOI.insert(group);
+
         group.setName("Support");
         group.setSupport(true);
         EOI.insert(group);
+
         group.setName("Admin");
         group.setSupport(false);
         group.setAdmin(true);

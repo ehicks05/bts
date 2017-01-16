@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
-<jsp:useBean id="zones" type="java.util.List<net.ehicks.bts.beans.Zone>" scope="request"/>
+<jsp:useBean id="groups" type="java.util.List<net.ehicks.bts.beans.Group>" scope="request"/>
 
 <!DOCTYPE html>
 <html>
@@ -12,10 +12,10 @@
     <jsp:include page="${pageContext.request.contextPath}/WEB-INF/webroot/inc_header.jsp"/>
 
     <script>
-        function deleteZone(zoneId)
+        function deleteGroup(groupId)
         {
             if (confirm('Are you sure?'))
-                location.href="${pageContext.request.contextPath}/view?tab1=admin&tab2=zones&action=delete&zoneId=" + zoneId;
+                location.href="${pageContext.request.contextPath}/view?tab1=admin&tab2=groups&action=delete&groupId=" + groupId;
         }
     </script>
 </head>
@@ -26,7 +26,7 @@
 <div class="mdl-grid">
 
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Manage Zones</h5></div>
+        <div class="mdl-card__title"><h5>Manage Groups</h5></div>
 
         <div class="tableContainer">
             <table class="mdl-data-table mdl-shadow--2dp">
@@ -42,31 +42,31 @@
                     <th></th>
                 </tr>
                 </thead>
-                <c:forEach var="zone" items="${zones}" varStatus="loop">
+                <c:forEach var="group" items="${groups}" varStatus="loop">
                     <tr>
                         <td>
                             <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="row[${loop.count}]">
                                 <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
                             </label>
                         </td>
-                        <td>${zone.id}</td>
-                        <td class="mdl-data-table__cell--non-numeric"><a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=zones&tab3=modify&action=form&zoneId=${zone.id}">${zone.name}</a></td>
-                        <td><a onclick="deleteZone('${zone.id}');" class="clickable material-icons">delete</a></td>
+                        <td>${group.id}</td>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=groups&tab3=modify&action=form&groupId=${group.id}">${group.name}</a></td>
+                        <td><a onclick="deleteGroup('${group.id}');" class="clickable material-icons">delete</a></td>
                     </tr>
                 </c:forEach>
             </table>
         </div>
 
         <div class="mdl-card__actions">
-            <input id="addZoneButton" type="button" value="Add Zone" class="mdl-button mdl-js-button mdl-button--raised" />
+            <input id="addGroupButton" type="button" value="Add Group" class="mdl-button mdl-js-button mdl-button--raised" />
         </div>
     </div>
 </div>
 
-<dialog id="addZoneDialog" class="mdl-dialog">
-    <h4 class="mdl-dialog__title">Add Zone</h4>
+<dialog id="addGroupDialog" class="mdl-dialog">
+    <h4 class="mdl-dialog__title">Add Group</h4>
     <div class="mdl-dialog__content">
-        <form id="frmCreateZone" name="frmCreateZone" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=zones&action=create">
+        <form id="frmCreateGroup" name="frmCreateGroup" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=groups&action=create">
             <table>
                 <tr>
                     <td>Name:</td>
@@ -83,26 +83,26 @@
     </div>
 </dialog>
 <script>
-    var addZoneDialog = document.querySelector('#addZoneDialog');
-    var addZoneButton = document.querySelector('#addZoneButton');
-    if (!addZoneDialog.showModal)
+    var addGroupDialog = document.querySelector('#addGroupDialog');
+    var addGroupButton = document.querySelector('#addGroupButton');
+    if (!addGroupDialog.showModal)
     {
-        dialogPolyfill.registerDialog(addZoneDialog);
+        dialogPolyfill.registerDialog(addGroupDialog);
     }
-    addZoneButton.addEventListener('click', function ()
+    addGroupButton.addEventListener('click', function ()
     {
-        addZoneDialog.showModal();
+        addGroupDialog.showModal();
     });
-    document.querySelector('#addZoneDialog .create').addEventListener('click', function ()
+    document.querySelector('#addGroupDialog .create').addEventListener('click', function ()
     {
         if (!document.querySelector('#fldName').value)
-            alert('Please enter a zone name.');
+            alert('Please enter a group name.');
         else
-            $('#frmCreateZone').submit();
+            $('#frmCreateGroup').submit();
     });
-    addZoneDialog.querySelector('#addZoneDialog .close').addEventListener('click', function ()
+    addGroupDialog.querySelector('#addGroupDialog .close').addEventListener('click', function ()
     {
-        addZoneDialog.close();
+        addGroupDialog.close();
     });
 </script>
 

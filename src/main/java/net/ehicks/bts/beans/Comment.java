@@ -24,9 +24,6 @@ public class Comment implements Serializable
     @Column(name = "issue_id", nullable = false)
     private Long issueId;
 
-    @Column(name = "zone_id", nullable = false)
-    private Long zoneId;
-
     @Column(name = "content", columnDefinition = "varchar2(32000 CHAR)")
     private String content = "";
 
@@ -140,16 +137,6 @@ public class Comment implements Serializable
     public void setIssueId(Long issueId)
     {
         this.issueId = issueId;
-    }
-
-    public Long getZoneId()
-    {
-        return zoneId;
-    }
-
-    public void setZoneId(Long zoneId)
-    {
-        this.zoneId = zoneId;
     }
 
     public String getContent()

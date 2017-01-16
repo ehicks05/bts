@@ -23,11 +23,11 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Zone:</td>
+                    <td>Group:</td>
                     <td>
-                        <select name="fldZone" required>
-                            <c:forEach var="zone" items="${zones}">
-                                <option name="${zone.name}" value="${zone.id}">${zone.name}</option>
+                        <select name="fldGroup" required>
+                            <c:forEach var="group" items="${groups}">
+                                <option name="${group.name}" value="${group.id}">${group.name}</option>
                             </c:forEach>
                         </select>
                     </td>

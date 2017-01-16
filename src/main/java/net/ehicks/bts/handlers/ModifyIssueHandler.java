@@ -65,7 +65,7 @@ public class ModifyIssueHandler
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
 
         Long projectId      = Common.stringToLong(request.getParameter("fldProject"));
-        Long zoneId         = Common.stringToLong(request.getParameter("fldZone"));
+        Long groupId        = Common.stringToLong(request.getParameter("fldGroup"));
         Long issueTypeId    = Common.stringToLong(request.getParameter("fldIssueType"));
         Long severityId     = Common.stringToLong(request.getParameter("fldSeverity"));
         Long statusId       = Common.stringToLong(request.getParameter("fldStatus"));
@@ -76,7 +76,7 @@ public class ModifyIssueHandler
         issue.setReporterUserId(userSession.getUserId());
         issue.setAssigneeUserId(userSession.getUserId());
         issue.setProjectId(projectId);
-        issue.setZoneId(zoneId);
+        issue.setGroupId(groupId);
         issue.setIssueTypeId(issueTypeId);
         issue.setSeverityId(severityId);
         issue.setStatusId(statusId);
@@ -103,7 +103,7 @@ public class ModifyIssueHandler
         Long issueTypeId    = !fieldName.equals("fldIssueType") ? 0 : Common.stringToLong(fieldValue);
         Long statusId       = !fieldName.equals("fldStatus") ? 0 : Common.stringToLong(fieldValue);
         Long severityId     = !fieldName.equals("fldSeverity") ? 0 : Common.stringToLong(fieldValue);
-        Long zoneId         = !fieldName.equals("fldZone") ? 0 : Common.stringToLong(fieldValue);
+        Long groupId        = !fieldName.equals("fldGroup") ? 0 : Common.stringToLong(fieldValue);
         String title        = !fieldName.equals("fldTitle") ? "" : Common.getSafeString(fieldValue);
         String description  = !fieldName.equals("fldDescription") ? "" : Common.getSafeString(fieldValue);
         Long assigneeId     = !fieldName.equals("fldAssigneeId") ? 0 : Common.stringToLong(fieldValue);
@@ -131,10 +131,10 @@ public class ModifyIssueHandler
             issue.setSeverityId(severityId);
             updateLog += "Severity to " + Severity.getById(severityId).getName();
         }
-        if (zoneId != 0)
+        if (groupId != 0)
         {
-            issue.setZoneId(zoneId);
-            updateLog += "Zone to " + Zone.getById(zoneId).getName();
+            issue.setGroupId(groupId);
+            updateLog += "Group to " + Group.getById(groupId).getName();
         }
         if (title.length() != 0)
         {
@@ -173,13 +173,11 @@ public class ModifyIssueHandler
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
 
         Long issueId    = Common.stringToLong(request.getParameter("issueId"));
-        Long zoneId     = Common.stringToLong(request.getParameter("fldZone"));
         String content  = Common.getSafeString(request.getParameter("fldContent"));
         Long visibility = Common.stringToLong(request.getParameter("fldVisibility"));
 
         Comment comment = new Comment();
         comment.setIssueId(issueId);
-        comment.setZoneId(zoneId);
         comment.setCreatedByUserId(userSession.getUserId());
         comment.setCreatedOn(new Date());
         comment.setContent(content);

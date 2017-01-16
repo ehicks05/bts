@@ -56,7 +56,7 @@
                 <br>
                 <t:multiSelect id="projectIds" selectedValues="${issueForm.projectIdsAsList}" items="${projects}" placeHolder="Projects:"/>
                 <br>
-                <t:multiSelect id="zoneIds" selectedValues="${issueForm.zoneIdsAsList}" items="${zones}" placeHolder="Zones:"/>
+                <t:multiSelect id="groupIds" selectedValues="${issueForm.groupIdsAsList}" items="${groups}" placeHolder="Groups:"/>
                 <br>
                 <t:multiSelect id="severityIds" selectedValues="${issueForm.severityIdsAsList}" items="${severities}" placeHolder="Severities:"/>
                 <br>

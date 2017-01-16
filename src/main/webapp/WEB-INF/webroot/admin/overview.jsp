@@ -34,8 +34,8 @@
                     <i class="material-icons">folder</i>Manage Projects</a>
             </div>
             <div>
-                <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=zones&action=form">
-                    <i class="material-icons">security</i>Manage Zones</a>
+                <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=groups&action=form">
+                    <i class="material-icons">security</i>Manage Groups</a>
             </div>
             <div>
                 <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=cache&action=form">

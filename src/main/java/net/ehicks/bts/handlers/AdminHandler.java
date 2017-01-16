@@ -187,55 +187,55 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=projects&tab3=modify&action=form&projectId=" + projectId);
     }
 
-    public static String showManageZones(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    public static String showManageGroups(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        request.setAttribute("zones", Zone.getAll());
+        request.setAttribute("groups", Group.getAll());
 
-        return "/WEB-INF/webroot/admin/zones.jsp";
+        return "/WEB-INF/webroot/admin/groups.jsp";
     }
 
-    public static void createZone(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    public static void createGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         String name = Common.getSafeString(request.getParameter("fldName"));
-        Zone zone = new Zone();
-        zone.setName(name);
-        long zoneId = EOI.insert(zone);
+        Group group = new Group();
+        group.setName(name);
+        long groupId = EOI.insert(group);
 
-        response.sendRedirect("view?tab1=admin&tab2=zones&action=form");
+        response.sendRedirect("view?tab1=admin&tab2=groups&action=form");
     }
 
-    public static void deleteZone(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    public static void deleteGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
-        Long zoneId = Common.stringToLong(request.getParameter("zoneId"));
-        Zone zone = Zone.getById(zoneId);
-        if (zone != null)
-            EOI.executeDelete(zone);
+        Long groupId = Common.stringToLong(request.getParameter("groupId"));
+        Group group = Group.getById(groupId);
+        if (group != null)
+            EOI.executeDelete(group);
 
-        response.sendRedirect("view?tab1=admin&tab2=zones&action=form");
+        response.sendRedirect("view?tab1=admin&tab2=groups&action=form");
     }
 
-    public static String showModifyZone(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    public static String showModifyGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
-        Long zoneId = Common.stringToLong(request.getParameter("zoneId"));
-        Zone zone = Zone.getById(zoneId);
-        request.setAttribute("zone", zone);
+        Long groupId = Common.stringToLong(request.getParameter("groupId"));
+        Group group = Group.getById(groupId);
+        request.setAttribute("group", group);
 
-        return "/WEB-INF/webroot/admin/modifyZone.jsp";
+        return "/WEB-INF/webroot/admin/modifyGroup.jsp";
     }
 
-    public static void modifyZone(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    public static void modifyGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
-        Long zoneId = Common.stringToLong(request.getParameter("zoneId"));
-        Zone zone = Zone.getById(zoneId);
-        if (zone != null)
+        Long groupId = Common.stringToLong(request.getParameter("groupId"));
+        Group group = Group.getById(groupId);
+        if (group != null)
         {
             String name = Common.getSafeString(request.getParameter("name"));
-            zone.setName(name);
-            EOI.update(zone);
+            group.setName(name);
+            EOI.update(group);
         }
 
-        response.sendRedirect("view?tab1=admin&tab2=zones&tab3=modify&action=form&zoneId=" + zoneId);
+        response.sendRedirect("view?tab1=admin&tab2=groups&tab3=modify&action=form&groupId=" + groupId);
     }
 
     public static String showManageEmails(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException

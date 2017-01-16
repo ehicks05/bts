@@ -5,7 +5,7 @@
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<jsp:useBean id="zone" type="net.ehicks.bts.beans.Zone" scope="request"/>
+<jsp:useBean id="group" type="net.ehicks.bts.beans.Group" scope="request"/>
 
 <!DOCTYPE html>
 <html>
@@ -24,22 +24,22 @@
 <div class="mdl-grid">
 
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Modify Zone ${zone.name}</h5></div>
+        <div class="mdl-card__title"><h5>Modify Group ${group.name}</h5></div>
 
-        <form id="frmZone" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=zones&tab3=modify&action=modify&zoneId=${zone.id}">
+        <form id="frmGroup" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=groups&tab3=modify&action=modify&groupId=${group.id}">
             <div style="padding: 10px;">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="zoneId" name="zoneId" type="text" value="${zone.id}" readonly/>
-                    <label class="mdl-textfield__label" for="zoneId">Zone Id:</label>
+                    <input class="mdl-textfield__input" id="groupId" name="groupId" type="text" value="${group.id}" readonly/>
+                    <label class="mdl-textfield__label" for="groupId">Group Id:</label>
                 </div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="name" name="name" type="text" value="${zone.name}"/>
+                    <input class="mdl-textfield__input" id="name" name="name" type="text" value="${group.name}"/>
                     <label class="mdl-textfield__label" for="name">Name:</label>
                 </div>
             </div>
 
             <div class="mdl-card__actions">
-                <input id="saveZoneButton" type="submit" value="Save" class="mdl-button mdl-js-button mdl-button--raised" />
+                <input id="saveGroupButton" type="submit" value="Save" class="mdl-button mdl-js-button mdl-button--raised" />
             </div>
         </form>
     </div>

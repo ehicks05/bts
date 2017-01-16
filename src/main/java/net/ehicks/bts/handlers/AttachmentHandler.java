@@ -3,7 +3,7 @@ package net.ehicks.bts.handlers;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.Attachment;
 import net.ehicks.bts.beans.DBFile;
-import net.ehicks.bts.beans.Zone;
+import net.ehicks.bts.beans.Group;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 import org.apache.commons.fileupload.FileItem;
@@ -39,8 +39,8 @@ public class AttachmentHandler
         Attachment attachment = Attachment.getById(attachmentId);
         if (attachment != null)
         {
-            Zone issueZone = attachment.getIssue().getZone();
-            if (!userSession.getUser().getAllZones().contains(issueZone))
+            Group issueGroup = attachment.getIssue().getGroup();
+            if (!Group.getAllForUser(userSession.getUserId()).contains(issueGroup))
                 return;
 
             DBFile dbFile = attachment.getDbFile();
@@ -151,8 +151,8 @@ public class AttachmentHandler
         if (attachment == null)
             return;
 
-        Zone issueZone = attachment.getIssue().getZone();
-        if (!userSession.getUser().getAllZones().contains(issueZone))
+        Group issueGroup = attachment.getIssue().getGroup();
+        if (!userSession.getUser().getAllGroups().contains(issueGroup))
             return;
 
         EOI.executeDelete(attachment);
