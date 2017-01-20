@@ -2,7 +2,7 @@
 <meta charset="utf-8" />
 
 <%-- JQuery --%>
-<script src="../../js/jquery-2.1.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery-2.1.1.min.js"></script>
 <%-- JQuery --%>
 
 <%-- Select2 --%>
@@ -11,7 +11,7 @@
 <%-- Select2 --%>
 
 <%-- spin.js --%>
-<script src="../../js/spin.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/spin.min.js"></script>
 <%-- spin.js --%>
 
 <%-- MDL --%>
@@ -29,8 +29,8 @@
 <%--<script src="../../ckeditor/ckeditor.js"></script>--%>
 <%-- CKEditor --%>
 
-<link rel="shortcut icon" href="../../images/bug_16.png">
+<link rel="shortcut icon" href="${pageContext.request.contextPath}/images/bug_16.png">
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 <%--<link href="https://fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet">--%>
-<link rel="stylesheet" type="text/css" href="../../styles/bts.css" media="screen" />
-<script src="../../js/ajaxUtil.js"></script>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/bts.css" media="screen" />
+<script src="${pageContext.request.contextPath}/js/ajaxUtil.js"></script>

@@ -9,7 +9,7 @@
 <html>
 <head>
     <title>BTS</title>
-    <jsp:include page="${pageContext.request.contextPath}/WEB-INF/webroot/inc_header.jsp"/>
+    <jsp:include page="../inc_header.jsp"/>
 
     <script>
         $('document').ready(function ()
@@ -23,7 +23,7 @@
 </head>
 <body>
 
-<jsp:include page="${pageContext.request.contextPath}/WEB-INF/webroot/header.jsp"/>
+<jsp:include page="../header.jsp"/>
 
 <div class="mdl-grid">
 
@@ -63,6 +63,6 @@
     </div>
 </div>
 
-<jsp:include page="${pageContext.request.contextPath}/WEB-INF/webroot/footer.jsp"/>
+<jsp:include page="../footer.jsp"/>
 </body>
 </html>

@@ -4,12 +4,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <jsp:useBean id="userSession" type="net.ehicks.bts.UserSession" scope="session"/>
+<jsp:useBean id="sessions" type="java.util.Map<java.lang.String, net.ehicks.bts.UserSession>" scope="request"/>
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>BTS</title>
-    <jsp:include page="${pageContext.request.contextPath}/WEB-INF/webroot/inc_header.jsp"/>
+    <jsp:include page="../inc_header.jsp"/>
 
     <script>
         $('document').ready(function ()
@@ -23,9 +24,34 @@
 </head>
 <body>
 
-<jsp:include page="${pageContext.request.contextPath}/WEB-INF/webroot/header.jsp"/>
+<jsp:include page="../header.jsp"/>
 
 <div class="mdl-grid">
+
+    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+        <div class="mdl-card__title"><h5>Sessions</h5></div>
+
+        <div class=".mdl-card__supporting-text" style="overflow: auto;">
+            <div class="tableContainer">
+                <table class="mdl-data-table mdl-shadow--2dp">
+                    <thead>
+                    <tr>
+                        <th class="mdl-data-table__cell--non-numeric">Session Id</th>
+                        <th class="mdl-data-table__cell--non-numeric">Logon Id</th>
+                        <th class="mdl-data-table__cell--non-numeric">Last Accessed Time</th>
+                    </tr>
+                    </thead>
+                    <c:forEach var="sessionId" items="${sessionIds}">
+                        <tr>
+                            <td class="mdl-data-table__cell--non-numeric">${sessionId}</td>
+                            <td class="mdl-data-table__cell--non-numeric">${sessions[sessionId].logonId}</td>
+                            <td class="mdl-data-table__cell--non-numeric">${sessions[sessionId].lastActivity}</td>
+                        </tr>
+                    </c:forEach>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>System Info</h5></div>
@@ -121,6 +147,6 @@
     </div>
 </div>
 
-<jsp:include page="${pageContext.request.contextPath}/WEB-INF/webroot/footer.jsp"/>
+<jsp:include page="../footer.jsp"/>
 </body>
 </html>

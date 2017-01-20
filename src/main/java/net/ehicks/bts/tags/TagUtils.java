@@ -2,35 +2,15 @@ package net.ehicks.bts.tags;
 
 import net.ehicks.bts.ISelectTagSupport;
 
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.TagSupport;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TagUtils
 {
-    public static int updateCount(TagSupport tag, PageContext pageContext)
+    public static Date longToDate(long input)
     {
-        String className = tag.getClass().getSimpleName();
-        Object textToSelectTags = pageContext.getAttribute(className);
-        int count = 0;
-        if (textToSelectTags == null)
-        {
-            count++;
-            pageContext.setAttribute(className, count);
-        }
-        else
-        {
-            count = ((Integer) textToSelectTags) + 1;
-            pageContext.setAttribute(className, count);
-        }
-
-        return count;
-    }
-
-    public static int getCount(TagSupport tag, PageContext pageContext)
-    {
-        return (int) pageContext.getAttribute(tag.getClass().getSimpleName());
+        return new Date(input);
     }
 
     public static List<ISelectTagSupport> stringToISelectTag(String input)
@@ -55,7 +35,7 @@ public class TagUtils
         return selectTagObjects;
     }
 
-    static class SelectTagObject implements ISelectTagSupport
+    private static class SelectTagObject implements ISelectTagSupport
     {
         String value = "";
         String text = "";

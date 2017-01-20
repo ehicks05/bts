@@ -39,8 +39,7 @@ public class SecurityFilter implements Filter
             {
                 if (!servletPath.startsWith("/view"))
                 {
-                    String newURL = request.getScheme() + "://" + request.getServerName()  + ":" + request.getServerPort() + "/" + request.getContextPath();
-                    response.sendRedirect(newURL + "view?action=form");
+                    response.sendRedirect("view?action=form");
                     return;
                 }
 

@@ -1,6 +1,7 @@
 package net.ehicks.bts.handlers;
 
 import net.ehicks.bts.EmailEngine;
+import net.ehicks.bts.SessionListener;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.*;
 import net.ehicks.common.Common;
@@ -51,6 +52,10 @@ public class AdminHandler
         List<String> cpInfo = EOI.getCPInfo();
         request.setAttribute("dbInfo", dbInfo);
         request.setAttribute("cpInfo", cpInfo);
+        request.setAttribute("sessionIds", SessionListener.getSessionIds());
+        request.setAttribute("sessions", SessionListener.getSessions());
+
+
 
         return "/WEB-INF/webroot/admin/systemInfo.jsp";
     }

@@ -2,9 +2,7 @@ package net.ehicks.bts;
 
 import net.ehicks.bts.beans.*;
 import net.ehicks.bts.handlers.*;
-import net.ehicks.eoi.DBMap;
 import net.ehicks.eoi.EOI;
-import net.ehicks.eoi.SQLGenerator;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,11 +10,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.Principal;
 import java.text.ParseException;
-import java.util.Properties;
+import java.util.Date;
 
 @WebServlet(value = "/view", loadOnStartup = 1)
 public class Controller extends HttpServlet
@@ -24,17 +22,17 @@ public class Controller extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        loadProperties();
+        Startup.loadProperties(getServletContext());
 
         EOI.init("jdbc:h2:tcp://localhost/~/bts/bts;TRACE_LEVEL_FILE=1;DB_CLOSE_ON_EXIT=FALSE;COMPRESS=TRUE;CACHE_SIZE=" + SystemInfo.INSTANCE.getDatabaseCacheInKBs() + ";");
 
-        loadDBMaps();
+        Startup.loadDBMaps(getServletContext());
 
         if (SystemInfo.INSTANCE.isDropTables())
-            dropTables();
+            Startup.dropTables();
 
         if (SystemInfo.INSTANCE.isCreateTables())
-            createTables();
+            Startup.createTables();
 
         if (SystemInfo.INSTANCE.isLoadDemoData())
         {
@@ -43,79 +41,6 @@ public class Controller extends HttpServlet
         }
 
         System.out.println("Controller.init finished in " + (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()) + " ms");
-    }
-
-    private void loadProperties()
-    {
-        Properties properties = new Properties();
-
-        try (InputStream input = getServletContext().getResourceAsStream("/WEB-INF/bts.properties");)
-        {
-            properties.load(input);
-        }
-        catch (IOException e)
-        {
-            System.out.println(e.getMessage());
-        }
-
-        SystemInfo.INSTANCE.setSystemStart(System.currentTimeMillis());
-        SystemInfo.INSTANCE.setServletContext(getServletContext());
-
-        SystemInfo.INSTANCE.setDebugLevel(net.ehicks.common.Common.stringToInt(properties.getProperty("debugLevel")));
-        SystemInfo.INSTANCE.setDropTables(properties.getProperty("dropTables").equals("true"));
-        SystemInfo.INSTANCE.setCreateTables(properties.getProperty("createTables").equals("true"));
-        SystemInfo.INSTANCE.setLoadDemoData(properties.getProperty("loadDemoData").equals("true"));
-
-        SystemInfo.INSTANCE.setDatabaseCacheInKBs(net.ehicks.common.Common.stringToLong(properties.getProperty("databaseCacheInKBs")));
-
-        SystemInfo.INSTANCE.setEmailHost(properties.getProperty("emailHost"));
-        SystemInfo.INSTANCE.setEmailPort(net.ehicks.common.Common.stringToInt(properties.getProperty("emailPort")));
-        SystemInfo.INSTANCE.setEmailUser(properties.getProperty("emailUser"));
-        SystemInfo.INSTANCE.setEmailPassword(properties.getProperty("emailPassword"));
-        SystemInfo.INSTANCE.setEmailFromAddress(properties.getProperty("emailFromAddress"));
-        SystemInfo.INSTANCE.setEmailFromName(properties.getProperty("emailFromName"));
-    }
-
-    private void loadDBMaps()
-    {
-        long subTaskStart = System.currentTimeMillis();
-        DBMap.loadDbMaps(getServletContext().getRealPath("/WEB-INF/classes/net/ehicks/bts/beans"), "net.ehicks.bts.beans");
-        System.out.println("Loaded DBMAPS in " + (System.currentTimeMillis() - subTaskStart) + "ms");
-    }
-
-    private void createTables()
-    {
-        long subTaskStart = System.currentTimeMillis();
-        int tablesCreated = 0;
-        for (DBMap dbMap : DBMap.dbMaps)
-            if (!EOI.isTableExists(dbMap))
-            {
-                String createTableStatement = SQLGenerator.getCreateTableStatement(dbMap);
-                EOI.executeUpdate(createTableStatement);
-                tablesCreated++;
-
-                for (String indexDefinition : dbMap.indexDefinitions)
-                    EOI.executeUpdate(indexDefinition);
-            }
-        System.out.println("Autocreated " + tablesCreated + " tables in " + (System.currentTimeMillis() - subTaskStart) + "ms");
-    }
-
-    private void dropTables()
-    {
-        long subTaskStart;
-        subTaskStart = System.currentTimeMillis();
-        for (DBMap dbMap : DBMap.dbMaps)
-        {
-            try
-            {
-                EOI.executeUpdate("drop table " + dbMap.tableName);
-            }
-            catch (Exception e)
-            {
-                System.out.println("didnt drop " + dbMap.tableName);
-            }
-        }
-        System.out.println("Dropped existing tables in " + (System.currentTimeMillis() - subTaskStart) + "ms");
     }
 
     @Override
@@ -135,7 +60,7 @@ public class Controller extends HttpServlet
     {
         long start = System.currentTimeMillis();
 
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        UserSession userSession = (UserSession) request.getSession(false).getAttribute("userSession");
         if (userSession == null)
         {
             userSession = createSession(request);
@@ -148,6 +73,7 @@ public class Controller extends HttpServlet
                 return;
             }
         }
+        userSession.setLastActivity(new Date());
 
         if (!User.getByUserId(userSession.getUserId()).getEnabled())
         {
@@ -396,6 +322,8 @@ public class Controller extends HttpServlet
         UserSession userSession = new UserSession();
         userSession.setUserId(user.getId());
         userSession.setLogonId(user.getLogonId());
+        userSession.setSessionId(request.getSession().getId());
+        userSession.setLastActivity(new Date());
         request.getSession().setAttribute("userSession", userSession);
 
         return userSession;
@@ -403,7 +331,10 @@ public class Controller extends HttpServlet
 
     private String logout(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        request.getSession().invalidate();
+        HttpSession session = request.getSession(false);
+        if (session != null)
+            session.invalidate();
+
         return "/WEB-INF/webroot/logged-out.jsp";
     }
 }

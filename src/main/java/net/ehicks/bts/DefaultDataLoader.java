@@ -18,7 +18,8 @@ import java.util.stream.IntStream;
 public class DefaultDataLoader
 {
 //    private static int issueCount = 131_072;
-    private static int issueCount = 16_384;
+//    private static int issueCount = 16_384;
+    private static int issueCount = 1_024;
     private static int cryptoIterations = 200_000;
 
     private static List<String> latin = Arrays.asList("annus", "ante meridiem", "aqua", "bene", "canis", "caput", "circus", "cogito",
