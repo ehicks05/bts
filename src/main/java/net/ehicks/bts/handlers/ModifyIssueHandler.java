@@ -19,9 +19,14 @@ public class ModifyIssueHandler
 {
     public static String showModifyIssue(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         Long issueId = Common.stringToLong(request.getParameter("issueId"));
 
         if (Issue.getById(issueId) == null)
+            return "/WEB-INF/webroot/error.jsp";
+        
+        // security
+        if (!userSession.getUser().hasAccess(Issue.getById(issueId)))
             return "/WEB-INF/webroot/error.jsp";
 
         List<Comment> comments = Comment.getByIssueId(issueId);

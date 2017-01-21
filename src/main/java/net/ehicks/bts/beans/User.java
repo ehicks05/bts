@@ -165,9 +165,10 @@ public class User implements Serializable, ISelectTagSupport
         return GroupMap.getByUserId(id).stream().map(groupMap -> Group.getById(groupMap.getGroupId())).anyMatch(Group::getSupport);
     }
 
-    public boolean isCustomer()
+    public boolean hasAccess(Issue issue)
     {
-        return !(isAdmin() || isSupport());
+        if (isAdmin()) return true;
+        return getAllGroupIds().contains(issue.getGroupId()) && getAllProjects().contains(issue.getProject());
     }
 
     public String getName()
