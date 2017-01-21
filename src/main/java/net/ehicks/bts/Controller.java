@@ -331,6 +331,7 @@ public class Controller extends HttpServlet
 
     private String logout(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
+        request.removeAttribute("userSession");
         HttpSession session = request.getSession(false);
         if (session != null)
             session.invalidate();

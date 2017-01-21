@@ -51,6 +51,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
 
     public void attributeRemoved(HttpSessionBindingEvent event)
     {
+        HttpSession session = event.getSession();
         if (event.getName().equals("userSession"))
         {
             Object temp = event.getValue();
@@ -59,6 +60,8 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
                 UserSession userSession = (UserSession) event.getValue();
 //                SessionManager.audit(session.getId(), userSession.getLogonId(), userSession.getUserObjectid(), null, new java.util.Date(),
 //                        userSession.getRemoteIP(), userSession.getRemoteHost(), "", 0, "", "Logged off.", userSession.getUserAgent());
+                sessions.remove(session.getId());
+                System.out.println("removed " + session.getId() + " from session");
             }
         }
     }
