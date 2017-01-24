@@ -2,6 +2,7 @@ package net.ehicks.bts;
 
 import javax.servlet.ServletContext;
 import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,9 +11,7 @@ public enum SystemInfo
     INSTANCE;
 
     private int debugLevel;
-    private boolean dropTables;
-    private boolean createTables;
-    private boolean loadDemoData;
+    private boolean dropCreateLoad;
 
     private ServletContext servletContext;
     private long systemStart;
@@ -72,34 +71,14 @@ public enum SystemInfo
         return (maxMemory - allocatedMemory);
     }
 
-    public boolean isDropTables()
+    public boolean isDropCreateLoad()
     {
-        return dropTables;
+        return dropCreateLoad;
     }
 
-    public void setDropTables(boolean dropTables)
+    public void setDropCreateLoad(boolean dropCreateLoad)
     {
-        this.dropTables = dropTables;
-    }
-
-    public boolean isCreateTables()
-    {
-        return createTables;
-    }
-
-    public void setCreateTables(boolean createTables)
-    {
-        this.createTables = createTables;
-    }
-
-    public boolean isLoadDemoData()
-    {
-        return loadDemoData;
-    }
-
-    public void setLoadDemoData(boolean loadDemoData)
-    {
-        this.loadDemoData = loadDemoData;
+        this.dropCreateLoad = dropCreateLoad;
     }
 
     public int getDebugLevel()

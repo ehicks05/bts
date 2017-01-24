@@ -28,9 +28,7 @@ public class Startup
         SystemInfo.INSTANCE.setServletContext(servletContext);
 
         SystemInfo.INSTANCE.setDebugLevel(net.ehicks.common.Common.stringToInt(properties.getProperty("debugLevel")));
-        SystemInfo.INSTANCE.setDropTables(properties.getProperty("dropTables").equals("true"));
-        SystemInfo.INSTANCE.setCreateTables(properties.getProperty("createTables").equals("true"));
-        SystemInfo.INSTANCE.setLoadDemoData(properties.getProperty("loadDemoData").equals("true"));
+        SystemInfo.INSTANCE.setDropCreateLoad(properties.getProperty("dropCreateLoad").equals("true"));
 
         SystemInfo.INSTANCE.setDatabaseCacheInKBs(net.ehicks.common.Common.stringToLong(properties.getProperty("databaseCacheInKBs")));
 

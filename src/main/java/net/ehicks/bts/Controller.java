@@ -28,16 +28,11 @@ public class Controller extends HttpServlet
 
         Startup.loadDBMaps(getServletContext());
 
-        if (SystemInfo.INSTANCE.isDropTables())
-            Startup.dropTables();
-
-        if (SystemInfo.INSTANCE.isCreateTables())
-            Startup.createTables();
-
-        if (SystemInfo.INSTANCE.isLoadDemoData())
+        if (SystemInfo.INSTANCE.isDropCreateLoad())
         {
-            Thread thread = new Thread(DefaultDataLoader::createDemoData);
-            thread.start();
+            Startup.dropTables();
+            Startup.createTables();
+            new Thread(DefaultDataLoader::createDemoData).start();
         }
 
         System.out.println("Controller.init finished in " + (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()) + " ms");
@@ -78,9 +73,8 @@ public class Controller extends HttpServlet
         if (!User.getByUserId(userSession.getUserId()).getEnabled())
         {
             request.setAttribute("clientMessage", "Your account is disabled...");
-            String viewJsp = logout(request, response);
-            RequestDispatcher dispatcher = request.getRequestDispatcher(viewJsp);
-            dispatcher.forward(request, response);
+            logout(request, response);
+            response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
             return;
         }
 
@@ -200,7 +194,10 @@ public class Controller extends HttpServlet
                 if (action.equals("debug"))
                     DebugHandler.getDebugInfo(request, response);
                 if (action.equals("logout"))
-                    viewJsp = logout(request, response);
+                {
+                    logout(request, response);
+                    return "";
+                }
             }
             if (tab1.equals("admin"))
             {
@@ -329,13 +326,13 @@ public class Controller extends HttpServlet
         return userSession;
     }
 
-    private String logout(HttpServletRequest request, HttpServletResponse response) throws IOException
+    private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         request.removeAttribute("userSession");
         HttpSession session = request.getSession(false);
         if (session != null)
             session.invalidate();
 
-        return "/WEB-INF/webroot/logged-out.jsp";
+        response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
     }
 }
