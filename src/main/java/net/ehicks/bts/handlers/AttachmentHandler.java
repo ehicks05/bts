@@ -63,7 +63,7 @@ public class AttachmentHandler
     public static void addAttachment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-
+        String responseMessage = "";
         Long issueId = Common.stringToLong(request.getParameter("issueId"));
         long dbFileId = 0;
         long thumbnailId = 0;
@@ -87,8 +87,13 @@ public class AttachmentHandler
                 List<FileItem> items = upload.parseRequest(request);
                 for (FileItem fileItem : items)
                 {
+                    if (fileItem.getSize() > 10 * 1024 * 1024) // up to 10MB
+                    {
+                        responseMessage = "File size too large.";
+                        continue;
+                    }
+                    
                     byte[] fileContents = fileItem.get();
-
                     String fileName = fileItem.getName();
                     if (fileName != null)
                         fileName = FilenameUtils.getName(fileName);
@@ -119,6 +124,8 @@ public class AttachmentHandler
                     dbFile.setContent(fileContents);
                     dbFile.setLength(fileItem.getSize());
                     dbFileId = EOI.insert(dbFile);
+
+                    responseMessage = "Attachment added.";
                 }
             }
             catch (FileUploadException e)
@@ -138,6 +145,7 @@ public class AttachmentHandler
             EOI.insert(attachment);
         }
 
+        request.getSession().setAttribute("responseMessage", responseMessage);
         response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + issueId);
     }
 

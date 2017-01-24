@@ -6,7 +6,8 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="user" type="net.ehicks.bts.beans.User" scope="request"/>
-<jsp:useBean id="avatars" type="java.util.List<net.ehicks.bts.beans.DBFile>" scope="request"/>
+<jsp:useBean id="avatars" type="java.util.List<net.ehicks.bts.beans.Avatar>" scope="request"/>
+<jsp:useBean id="groups" type="java.util.List<net.ehicks.bts.beans.Group>" scope="request"/>
 
 <!DOCTYPE html>
 <html>
@@ -33,7 +34,7 @@
 
 <div style="display: none;">
     <c:forEach var="avatar" items="${avatars}">
-        <img id="avatar${avatar.id}" src="${avatar.base64}"/>
+        <img id="avatar${avatar.id}" src="${avatar.dbFile.base64}"/>
     </c:forEach>
 </div>
 

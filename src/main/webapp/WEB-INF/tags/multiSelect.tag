@@ -8,22 +8,25 @@
 
 <c:set var="multiSelectCounter" value="${requestScope.multiSelectCounter + 1}" scope="request"/>
 <c:if test="${multiSelectCounter == 1}">
-
+<script>
+    function onOpenSelect2(e)
+    {
+        var container = $(this).select('select2-container');
+        var position = container.offset().top;
+        var availableHeight = $(window).height() - position - container.outerHeight();
+        var bottomPadding = 50; // Set as needed
+        $('ul.select2-results__options').css('max-height', (availableHeight - bottomPadding) + 'px');
+    }
+</script>
 </c:if>
 
 <script>
-    $(document).ready(function ()
+    $(function ()
     {
         $('#${id}').select2({
             placeholder: "${placeHolder} (Any)"
         });
-        $('#${id}').on('select2:open', function (e) {
-            var container = $(this).select('select2-container');
-            var position = container.offset().top;
-            var availableHeight = $(window).height() - position - container.outerHeight();
-            var bottomPadding = 50; // Set as needed
-            $('ul.select2-results__options').css('max-height', (availableHeight - bottomPadding) + 'px');
-        });
+        $('#${id}').on('select2:open', onOpenSelect2);
     });
 </script>
 <select id="${id}" name="${id}" class="js-example-basic-single" multiple>

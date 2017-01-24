@@ -2,7 +2,15 @@
 <meta charset="utf-8" />
 
 <%-- JQuery --%>
-<script src="${pageContext.request.contextPath}/js/jquery-2.1.1.min.js"></script>
+<%--<script src="${pageContext.request.contextPath}/js/jquery-2.1.1.min.js"></script>--%>
+<script
+        src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+<%--<script--%>
+        <%--src="https://code.jquery.com/jquery-3.1.1.min.js"--%>
+        <%--integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="--%>
+        <%--crossorigin="anonymous"></script>--%>
 <%-- JQuery --%>
 
 <%-- Select2 --%>

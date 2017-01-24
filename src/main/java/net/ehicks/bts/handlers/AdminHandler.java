@@ -93,7 +93,7 @@ public class AdminHandler
         Long userId = Common.stringToLong(request.getParameter("userId"));
         User user = User.getByUserId(userId);
         request.setAttribute("user", user);
-        request.setAttribute("avatars", DBFile.getAll());
+        request.setAttribute("avatars", Avatar.getAll());
 
         return "/WEB-INF/webroot/admin/modifyUser.jsp";
     }

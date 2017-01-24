@@ -19,6 +19,17 @@
         if (tab3) tabs += '&tab3=' + tab3;
         location.href = '${pageContext.request.contextPath}/view?' + tabs + '&action=form';
     }
+
+    function showResponseMessage()
+    {
+        var message = '${sessionScope.responseMessage}';
+        if (message)
+        {
+            alert(message);
+        }
+    }
+
+
 </script>
 
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
@@ -109,3 +120,5 @@
             </nav>
         </div>
     </c:if>
+
+    <c:remove var="responseMessage" scope="session" />

@@ -75,7 +75,7 @@ public class DefaultDataLoader
         createComments();
         timer.printDuration("createComments");
 
-        System.out.println("done");
+        timer.printDuration("done");
     }
 
     private static void createIssueForms()
@@ -101,14 +101,14 @@ public class DefaultDataLoader
         {
             List<File> avatars = Arrays.asList(avatarDir.listFiles());
             Collections.sort(avatars);
-            for (File avatar : avatars)
+            for (File avatarFile : avatars)
             {
-                if (avatar.exists() && avatar.isFile())
+                if (avatarFile.exists() && avatarFile.isFile())
                 {
                     byte[] content = null;
                     try
                     {
-                        content = Files.readAllBytes(avatar.toPath());
+                        content = Files.readAllBytes(avatarFile.toPath());
                     }
                     catch (IOException e)
                     {
@@ -116,10 +116,15 @@ public class DefaultDataLoader
                     }
 
                     DBFile dbFile = new DBFile();
-                    dbFile.setName(avatar.getName());
+                    dbFile.setName(avatarFile.getName());
                     dbFile.setContent(content);
                     dbFile.setLength((long) content.length);
-                    EOI.insert(dbFile);
+                    long dbFileId = EOI.insert(dbFile);
+
+                    Avatar avatar = new Avatar();
+                    avatar.setDbFileId(dbFileId);
+                    avatar.setCreatedOn(new Date());
+                    EOI.insert(avatar);
                 }
             }
         }

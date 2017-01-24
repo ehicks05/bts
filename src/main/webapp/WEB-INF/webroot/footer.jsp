@@ -96,3 +96,7 @@
         createIssueDialog.close();
     });
 </script>
+
+<script>
+    $(document).ready(showResponseMessage);
+</script>
