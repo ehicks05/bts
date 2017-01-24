@@ -1,0 +1,191 @@
+package net.ehicks.bts;
+
+import be.quodlibet.boxable.BaseTable;
+import be.quodlibet.boxable.Cell;
+import be.quodlibet.boxable.Row;
+import net.ehicks.bts.beans.Issue;
+import net.ehicks.common.Timer;
+import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.PDPageTree;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+public class PdfCreator
+{
+    private static PDFont HELVETICA = PDType1Font.HELVETICA;
+
+    public static void demo()
+    {
+        Timer overall = new Timer();
+        Timer timer = new Timer();
+
+        List<List> data = new ArrayList<>();
+        List row = Arrays.asList("Id", "Created On", "Title", "Assignee Name");
+        data.add(row);
+        for (Issue issue : Issue.getAll())
+        {
+            row = Arrays.asList(issue.getId().toString(), issue.getCreatedOn().toString(), issue.getTitle(), issue.getAssignee().getName());
+            data.add(row);
+        }
+        timer.printDuration("loaded data");
+        PdfCreator.createPdf("User Report", "Copyright 2017 - Eric Hicks", data);
+        overall.printDuration("PDF overall PDFPDFPDFPDF");
+
+    }
+
+    public static File createPdf(String header, String footer, List<List> data)
+    {
+        try
+        {
+            PDDocument document = new PDDocument(MemoryUsageSetting.setupMixed(1*1024*1024));
+            PDPage page = new PDPage();
+            document.addPage(page);
+
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            Timer timer = new Timer();
+            addTable(document, page, "User Report", data);
+            timer.printDuration("created table");
+
+            contentStream.close();
+
+            addHeader(document, header);
+            addFooter(document, footer);
+            timer.printDuration("added header/footer");
+
+            // Save the results and ensure that the document is properly closed:
+            document.save("c:/k/Hello World.pdf");
+            timer.printDuration("saved document");
+            document.close();
+
+            return new File("c:/k/Hello World.pdf");
+        }
+        catch (IOException e)
+        {
+            System.out.println(e.getMessage());
+        }
+
+        return null;
+    }
+
+    private static void addTable(PDDocument document, PDPage page, String title, List<List> data) throws IOException
+    {
+        float height = page.getMediaBox().getHeight() - 60;
+        BaseTable table = new BaseTable(height, height, 40, page.getMediaBox().getWidth() - 80, 40, document, page, true, true);
+
+        // Create Header row
+        Row<PDPage> headerRow = table.createRow(15f);
+        Cell<PDPage> cell = headerRow.createCell(100, title);
+        cell.setFont(PDType1Font.HELVETICA_BOLD);
+        cell.setFillColor(Color.LIGHT_GRAY);
+        table.addHeaderRow(headerRow);
+        for (List dataRow : data)
+        {
+            Row<PDPage> row = table.createRow(10f);
+
+            for (Object dataCell : dataRow)
+            {
+                String value = "";
+                if (dataCell instanceof String) value = (String) dataCell;
+                if (dataCell instanceof Date) value = ((Date)dataCell).toString();
+                if (dataCell instanceof Long) value = ((Long)dataCell).toString();
+                cell = row.createCell((100 / dataRow.size()), value);
+            }
+        }
+        table.draw();
+    }
+
+    private static void addHeader(PDDocument document, String text) throws IOException
+    {
+        PDPageTree pages = document.getDocumentCatalog().getPages();
+
+        for (int i = 0; i < pages.getCount(); i++)
+        {
+            PDPage page = pages.get(i);
+
+            int fontSize = 12;
+            float titleWidth = HELVETICA.getStringWidth(text) / 1000 * fontSize;
+            float titleHeight = HELVETICA.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontSize;
+
+            float x = getCenter(page.getMediaBox().getWidth(), titleWidth);
+            float y = page.getMediaBox().getHeight() - 20;
+
+            PDPageContentStream contentStream = new PDPageContentStream(document, page, PDPageContentStream.AppendMode.APPEND, true);
+
+            printText(contentStream, text, x, y, fontSize);
+
+            contentStream.setStrokingColor(Color.LIGHT_GRAY);
+            contentStream.moveTo(40, y - titleHeight);
+            contentStream.lineTo(page.getMediaBox().getWidth() - 40, y - titleHeight);
+            contentStream.stroke();
+
+            contentStream.close();
+        }
+    }
+
+    private static void addFooter(PDDocument document, String content) throws IOException
+    {
+        PDPageTree pages = document.getDocumentCatalog().getPages();
+
+        String date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
+
+        for (int i = 0; i < pages.getCount(); i++)
+        {
+            PDPage page = pages.get(i);
+
+            int fontSize = 12;
+
+            float x = 40;
+            float y = 20;
+
+            PDPageContentStream contentStream = new PDPageContentStream(document, page, PDPageContentStream.AppendMode.APPEND, true);
+
+            contentStream.setStrokingColor(Color.LIGHT_GRAY);
+            contentStream.moveTo(40, 40);
+            contentStream.lineTo(page.getMediaBox().getWidth() - 40, 40);
+            contentStream.stroke();
+
+            printText(contentStream, date, x, y, fontSize);
+
+            float textWidth = HELVETICA.getStringWidth(content) / 1000 * fontSize;
+            x = getCenter(page.getMediaBox().getWidth(), textWidth);
+            y = 20;
+
+            printText(contentStream, content, x, y, fontSize);
+
+            String pageNumber = "Page " + (i+1) + " of " + pages.getCount();
+            textWidth = HELVETICA.getStringWidth(pageNumber) / 1000 * fontSize;
+
+            x = (page.getMediaBox().getWidth() - 40) - textWidth;
+            y = 20;
+
+            printText(contentStream, pageNumber, x, y, fontSize);
+            contentStream.close();
+        }
+    }
+
+    private static void printText(PDPageContentStream contentStream, String content, float x, float y, float fontSize) throws IOException
+    {
+        contentStream.beginText();
+        contentStream.setFont(HELVETICA, fontSize);
+        contentStream.newLineAtOffset(x, y);
+        contentStream.showText(content);
+        contentStream.endText();
+    }
+
+    private static float getCenter(float containerWidth, float itemWidth)
+    {
+        return (containerWidth / 2) - (itemWidth / 2);
+    }
+}
