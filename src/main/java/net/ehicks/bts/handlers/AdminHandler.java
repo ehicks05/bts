@@ -55,8 +55,6 @@ public class AdminHandler
         request.setAttribute("sessionIds", SessionListener.getSessionIds());
         request.setAttribute("sessions", SessionListener.getSessions());
 
-
-
         return "/WEB-INF/webroot/admin/systemInfo.jsp";
     }
 

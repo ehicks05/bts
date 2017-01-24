@@ -4,8 +4,7 @@ import net.ehicks.common.Common;
 
 import javax.servlet.ServletContext;
 import java.lang.management.ManagementFactory;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public enum SystemInfo
 {
@@ -33,6 +32,18 @@ public enum SystemInfo
     public List<String> getRuntimeMXBeanArguments()
     {
         return ManagementFactory.getRuntimeMXBean().getInputArguments();
+    }
+
+    public Map<String, String> getStats()
+    {
+        Map<String, String> stats = new LinkedHashMap<>(); // LinkedHashMap to keep insertion order
+        stats.put("Start Time", getSystemStartTime().toString());
+        stats.put("DB Cache", getDatabaseCache());
+        stats.put("Used RAM", getUsedRam());
+        stats.put("Free RAM", getFreeRam());
+        stats.put("Max RAM", getMaxRam());
+
+        return stats;
     }
 
     public String getDatabaseCache()

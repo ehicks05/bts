@@ -44,7 +44,6 @@
         <div class="mdl-card__title"><h5>Sessions</h5></div>
 
         <table class="list">
-            <%--<thead>--%>
             <tr class="listheading">
                 <th colspan="3">Sessions</th>
             </tr>
@@ -53,12 +52,10 @@
                 <th class="">Logon Id</th>
                 <th class="">Last Active</th>
             </tr>
-            <%--</thead>--%>
             <c:forEach var="sessionId" items="${sessionIds}">
                 <tr>
-                    <td class="">${fn:substring(sessionId, 0, 4)}...</td>
+                    <td class="" title="${sessionId}">${fn:substring(sessionId, 0, 4)}...</td>
                     <td class="">${sessions[sessionId].logonId}</td>
-                    <%--<td class="">${sessions[sessionId].lastActivity}</td>--%>
                     <td class=""><fmt:formatDate value="${sessions[sessionId].lastActivity}" pattern="h:mm:ss a"/></td>
                 </tr>
             </c:forEach>
@@ -75,26 +72,13 @@
                 <th>Value</th>
             </tr>
             </thead>
-            <tr>
-                <td class="mdl-data-table__cell--non-numeric">Start Time</td>
-                <td>${userSession.systemInfo.systemStartTime}</td>
-            </tr>
-            <tr>
-                <td class="mdl-data-table__cell--non-numeric">DB Cache</td>
-                <td>${userSession.systemInfo.databaseCache}</td>
-            </tr>
-            <tr>
-                <td class="mdl-data-table__cell--non-numeric">Used RAM</td>
-                <td>${userSession.systemInfo.usedRam}</td>
-            </tr>
-            <tr>
-                <td class="mdl-data-table__cell--non-numeric">Free RAM</td>
-                <td>${userSession.systemInfo.freeRam}</td>
-            </tr>
-            <tr>
-                <td class="mdl-data-table__cell--non-numeric">Max RAM</td>
-                <td>${userSession.systemInfo.maxRam}</td>
-            </tr>
+
+            <c:forEach var="entry" items="${userSession.systemInfo.stats}">
+                <tr>
+                    <td class="mdl-data-table__cell--non-numeric">${entry.key}</td>
+                    <td>${entry.value}</td>
+                </tr>
+            </c:forEach>
 
             <c:forEach var="cpInfoItem" items="${cpInfo}">
                 <tr>
