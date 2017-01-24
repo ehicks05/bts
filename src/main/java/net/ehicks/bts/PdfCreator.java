@@ -3,7 +3,6 @@ package net.ehicks.bts;
 import be.quodlibet.boxable.BaseTable;
 import be.quodlibet.boxable.Cell;
 import be.quodlibet.boxable.Row;
-import net.ehicks.bts.beans.Issue;
 import net.ehicks.common.Timer;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -17,8 +16,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -26,30 +24,16 @@ public class PdfCreator
 {
     private static PDFont HELVETICA = PDType1Font.HELVETICA;
 
-    public static void demo()
-    {
-        Timer overall = new Timer();
-        Timer timer = new Timer();
-
-        List<List> data = new ArrayList<>();
-        List row = Arrays.asList("Id", "Created On", "Title", "Assignee Name");
-        data.add(row);
-        for (Issue issue : Issue.getAll())
-        {
-            row = Arrays.asList(issue.getId().toString(), issue.getCreatedOn().toString(), issue.getTitle(), issue.getAssignee().getName());
-            data.add(row);
-        }
-        timer.printDuration("loaded data");
-        PdfCreator.createPdf("User Report", "Copyright 2017 - Eric Hicks", data);
-        overall.printDuration("PDF overall PDFPDFPDFPDF");
-
-    }
-
-    public static File createPdf(String header, String footer, List<List> data)
+    public static File createPdf(String author, String header, String footer, List<List> data)
     {
         try
         {
             PDDocument document = new PDDocument(MemoryUsageSetting.setupMixed(1*1024*1024));
+            document.getDocumentInformation().setAuthor(author);
+            document.getDocumentInformation().setCreationDate(Calendar.getInstance());
+            document.getDocumentInformation().setTitle(header);
+            document.getDocumentInformation().setSubject("Report");
+            
             PDPage page = new PDPage();
             document.addPage(page);
 
@@ -66,11 +50,12 @@ public class PdfCreator
             timer.printDuration("added header/footer");
 
             // Save the results and ensure that the document is properly closed:
-            document.save("c:/k/Hello World.pdf");
+            File tempFile = File.createTempFile("userReport", "");
+            document.save(tempFile);
             timer.printDuration("saved document");
             document.close();
 
-            return new File("c:/k/Hello World.pdf");
+            return tempFile;
         }
         catch (IOException e)
         {

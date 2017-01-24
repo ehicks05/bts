@@ -94,7 +94,7 @@ public class AdminHandler
         userData.add(Arrays.asList("Object Id", "Logon Id", "Last", "First", "Created On"));
         for (User user : User.getAll())
             userData.add(Arrays.asList(user.getId(), user.getLogonId(), user.getLastName(), user.getFirstName(), user.getCreatedOn()));
-        File file = PdfCreator.createPdf("Users Report", "", userData);
+        File file = PdfCreator.createPdf("Me", "Users Report", "", userData);
 
         CommonIO.sendFileInResponse(response, file);
     }
