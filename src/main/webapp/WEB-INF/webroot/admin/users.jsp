@@ -17,6 +17,14 @@
             if (confirm('Are you sure?'))
                 location.href="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&action=delete&userId=" + userId;
         }
+
+        function printUsers()
+        {
+            window.open(
+                '${pageContext.request.contextPath}/view?tab1=admin&tab2=users&action=print',
+                '_blank' // <- This is what makes it open in a new window.
+            );
+        }
     </script>
 </head>
 <body>
@@ -66,6 +74,7 @@
 
         <div class="mdl-card__actions">
             <input id="addUserButton" type="button" value="Add User" class="mdl-button mdl-js-button mdl-button--raised" />
+            <input id="printUserButton" type="button" value="Print Users" onclick="printUsers();" class="mdl-button mdl-js-button mdl-button--raised" style="padding-left:40px;background-image: url('../../../images/Adobe_PDF_32x32.png'); background-position: left; background-repeat: no-repeat;"/>
         </div>
     </div>
 </div>

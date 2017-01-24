@@ -1,5 +1,6 @@
 package net.ehicks.bts.handlers;
 
+import net.ehicks.bts.CommonIO;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.Attachment;
 import net.ehicks.bts.beans.DBFile;
@@ -11,7 +12,6 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
@@ -19,7 +19,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -45,18 +44,7 @@ public class AttachmentHandler
 
             DBFile dbFile = attachment.getDbFile();
 
-            String mimeType = URLConnection.guessContentTypeFromName(dbFile.getName());
-            String contentDisposition = String.format("inline; filename=%s", dbFile.getName());
-            int fileSize = Long.valueOf(dbFile.getContent().length).intValue();
-
-            response.setContentType(mimeType);
-            response.setHeader("Content-Disposition", contentDisposition);
-            response.setContentLength(fileSize);
-
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(dbFile.getContent());
-            IOUtils.copy(byteArrayInputStream, response.getOutputStream());
-            IOUtils.closeQuietly(byteArrayInputStream);
-            IOUtils.closeQuietly(response.getOutputStream());
+            CommonIO.sendFileInResponse(response, dbFile);
         }
     }
 

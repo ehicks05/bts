@@ -21,129 +21,125 @@
             });
         });
     </script>
+    <style>
+        .flexContainer {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+        .flexItem {
+            overflow-x: auto;
+            margin: 10px;
+        }
+    </style>
 </head>
 <body>
 
 <jsp:include page="../header.jsp"/>
 
-<div class="mdl-grid">
+<div class="flexContainer">
 
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+    <div class="flexItem">
         <div class="mdl-card__title"><h5>Sessions</h5></div>
 
-        <div class=".mdl-card__supporting-text" style="overflow: auto;">
-            <div class="tableContainer">
-                <table class="mdl-data-table mdl-shadow--2dp">
-                    <thead>
-                    <tr>
-                        <th class="mdl-data-table__cell--non-numeric">Session Id</th>
-                        <th class="mdl-data-table__cell--non-numeric">Logon Id</th>
-                        <th class="mdl-data-table__cell--non-numeric">Last Accessed Time</th>
-                    </tr>
-                    </thead>
-                    <c:forEach var="sessionId" items="${sessionIds}">
-                        <tr>
-                            <td class="mdl-data-table__cell--non-numeric">${sessionId}</td>
-                            <td class="mdl-data-table__cell--non-numeric">${sessions[sessionId].logonId}</td>
-                            <td class="mdl-data-table__cell--non-numeric">${sessions[sessionId].lastActivity}</td>
-                        </tr>
-                    </c:forEach>
-                </table>
-            </div>
-        </div>
+        <table class="list">
+            <%--<thead>--%>
+            <tr class="listheading">
+                <th colspan="3">Sessions</th>
+            </tr>
+            <tr class="listheading">
+                <th class="">Session Id</th>
+                <th class="">Logon Id</th>
+                <th class="">Last Active</th>
+            </tr>
+            <%--</thead>--%>
+            <c:forEach var="sessionId" items="${sessionIds}">
+                <tr>
+                    <td class="">${fn:substring(sessionId, 0, 4)}...</td>
+                    <td class="">${sessions[sessionId].logonId}</td>
+                    <%--<td class="">${sessions[sessionId].lastActivity}</td>--%>
+                    <td class=""><fmt:formatDate value="${sessions[sessionId].lastActivity}" pattern="h:mm:ss a"/></td>
+                </tr>
+            </c:forEach>
+        </table>
     </div>
 
-    <div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+    <div class="flexItem">
         <div class="mdl-card__title"><h5>System Info</h5></div>
 
-        <div class=".mdl-card__supporting-text" style="overflow: auto;">
-            <div class="tableContainer">
-                <table class="mdl-data-table mdl-shadow--2dp">
-                    <thead>
-                    <tr>
-                        <th class="mdl-data-table__cell--non-numeric">Property</th>
-                        <th>Value</th>
-                    </tr>
-                    </thead>
-                    <tr>
-                        <td class="mdl-data-table__cell--non-numeric">Start Time</td>
-                        <td>${userSession.systemInfo.systemStartTime}</td>
-                    </tr>
-                    <tr>
-                        <td class="mdl-data-table__cell--non-numeric">DB Cache</td>
-                        <td>${userSession.systemInfo.databaseCache}</td>
-                    </tr>
-                    <tr>
-                        <td class="mdl-data-table__cell--non-numeric">Used RAM</td>
-                        <td>${userSession.systemInfo.usedRam}</td>
-                    </tr>
-                    <tr>
-                        <td class="mdl-data-table__cell--non-numeric">Free RAM</td>
-                        <td>${userSession.systemInfo.freeRam}</td>
-                    </tr>
-                    <tr>
-                        <td class="mdl-data-table__cell--non-numeric">Max RAM</td>
-                        <td>${userSession.systemInfo.maxRam}</td>
-                    </tr>
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric">Property</th>
+                <th>Value</th>
+            </tr>
+            </thead>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Start Time</td>
+                <td>${userSession.systemInfo.systemStartTime}</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">DB Cache</td>
+                <td>${userSession.systemInfo.databaseCache}</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Used RAM</td>
+                <td>${userSession.systemInfo.usedRam}</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Free RAM</td>
+                <td>${userSession.systemInfo.freeRam}</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Max RAM</td>
+                <td>${userSession.systemInfo.maxRam}</td>
+            </tr>
 
-                    <c:forEach var="cpInfoItem" items="${cpInfo}">
-                        <tr>
-                            <td colspan="2">${cpInfoItem}</td>
-                        </tr>
-                    </c:forEach>
-                </table>
-            </div>
-        </div>
-
-        <%--<div class="mdl-card__actions">--%>
-
-        <%--</div>--%>
+            <c:forEach var="cpInfoItem" items="${cpInfo}">
+                <tr>
+                    <td colspan="2">${cpInfoItem}</td>
+                </tr>
+            </c:forEach>
+        </table>
     </div>
 
-    <div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+    <div class="flexItem">
         <div class="mdl-card__title"><h5>DB Info</h5></div>
 
-        <div class=".mdl-card__supporting-text" style="overflow: auto;">
-            <div class="tableContainer">
-                <table class="mdl-data-table mdl-shadow--2dp">
-                    <thead>
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric">Property</th>
+                <th class="alignright">Value</th>
+            </tr>
+            </thead>
+            <c:forEach var="info" items="${dbInfo}">
+                <c:if test="${fn:startsWith(info[0], 'info')}">
                     <tr>
-                        <th class="mdl-data-table__cell--non-numeric">Property</th>
-                        <th>Value</th>
+                        <td class="mdl-data-table__cell--non-numeric">${info[0]}</td>
+                        <td class="alignright">${info[1]}</td>
                     </tr>
-                    </thead>
-                    <c:forEach var="info" items="${dbInfo}">
-                        <c:if test="${fn:startsWith(info[0], 'info')}">
-                            <tr>
-                                <td class="mdl-data-table__cell--non-numeric">${info[0]}</td>
-                                <td>${info[1]}</td>
-                            </tr>
-                        </c:if>
-                    </c:forEach>
-                </table>
-            </div>
-        </div>
+                </c:if>
+            </c:forEach>
+        </table>
     </div>
 
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+    <div class="flexItem">
         <div class="mdl-card__title"><h5>Runtime MXBean Arguments</h5></div>
 
-        <div class=".mdl-card__supporting-text" style="overflow: auto;">
-            <div class="tableContainer">
-                <table class="mdl-data-table mdl-shadow--2dp">
-                    <thead>
-                    <tr>
-                        <th class="mdl-data-table__cell--non-numeric">Argument</th>
-                    </tr>
-                    </thead>
-                    <c:forEach var="argument" items="${userSession.systemInfo.runtimeMXBeanArguments}">
-                        <tr>
-                            <td class="mdl-data-table__cell--non-numeric">${argument}</td>
-                        </tr>
-                    </c:forEach>
-                </table>
-            </div>
-        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric">Argument</th>
+            </tr>
+            </thead>
+            <c:forEach var="argument" items="${userSession.systemInfo.runtimeMXBeanArguments}">
+                <tr>
+                    <td class="mdl-data-table__cell--non-numeric" style="break-inside: auto;">${argument}</td>
+                </tr>
+            </c:forEach>
+        </table>
     </div>
 </div>
 

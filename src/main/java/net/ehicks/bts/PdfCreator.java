@@ -60,8 +60,9 @@ public class PdfCreator
 
             contentStream.close();
 
-            addHeader(document, header);
-            addFooter(document, footer);
+            int fontSize = 10;
+            addHeader(document, header, fontSize);
+            addFooter(document, footer, fontSize);
             timer.printDuration("added header/footer");
 
             // Save the results and ensure that the document is properly closed:
@@ -101,12 +102,18 @@ public class PdfCreator
                 if (dataCell instanceof Date) value = ((Date)dataCell).toString();
                 if (dataCell instanceof Long) value = ((Long)dataCell).toString();
                 cell = row.createCell((100 / dataRow.size()), value);
+
+                if (data.indexOf(dataRow) == 0)
+                {
+                    cell.setFont(PDType1Font.HELVETICA_BOLD);
+                    cell.setFillColor(Color.LIGHT_GRAY);
+                }
             }
         }
         table.draw();
     }
 
-    private static void addHeader(PDDocument document, String text) throws IOException
+    private static void addHeader(PDDocument document, String text, int fontSize) throws IOException
     {
         PDPageTree pages = document.getDocumentCatalog().getPages();
 
@@ -114,7 +121,6 @@ public class PdfCreator
         {
             PDPage page = pages.get(i);
 
-            int fontSize = 12;
             float titleWidth = HELVETICA.getStringWidth(text) / 1000 * fontSize;
             float titleHeight = HELVETICA.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontSize;
 
@@ -134,7 +140,7 @@ public class PdfCreator
         }
     }
 
-    private static void addFooter(PDDocument document, String content) throws IOException
+    private static void addFooter(PDDocument document, String content, int fontSize) throws IOException
     {
         PDPageTree pages = document.getDocumentCatalog().getPages();
 
@@ -143,8 +149,6 @@ public class PdfCreator
         for (int i = 0; i < pages.getCount(); i++)
         {
             PDPage page = pages.get(i);
-
-            int fontSize = 12;
 
             float x = 40;
             float y = 20;

@@ -1,8 +1,6 @@
 package net.ehicks.bts.handlers;
 
-import net.ehicks.bts.EmailEngine;
-import net.ehicks.bts.SessionListener;
-import net.ehicks.bts.UserSession;
+import net.ehicks.bts.*;
 import net.ehicks.bts.beans.*;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
@@ -10,8 +8,10 @@ import net.ehicks.eoi.EOICache;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -86,6 +86,17 @@ public class AdminHandler
             EOI.executeDelete(user);
 
         response.sendRedirect("view?tab1=admin&tab2=users&action=form");
+    }
+
+    public static void printUsers(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        List<List> userData = new ArrayList<>();
+        userData.add(Arrays.asList("Object Id", "Logon Id", "Last", "First", "Created On"));
+        for (User user : User.getAll())
+            userData.add(Arrays.asList(user.getId(), user.getLogonId(), user.getLastName(), user.getFirstName(), user.getCreatedOn()));
+        File file = PdfCreator.createPdf("Users Report", "", userData);
+
+        CommonIO.sendFileInResponse(response, file);
     }
 
     public static String showModifyUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException

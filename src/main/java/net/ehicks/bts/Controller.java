@@ -241,6 +241,8 @@ public class Controller extends HttpServlet
                         AdminHandler.createUser(request, response);
                     if (action.equals("delete"))
                         AdminHandler.deleteUser(request, response);
+                    if (action.equals("print"))
+                        AdminHandler.printUsers(request, response);
 
                     if (tab3.equals("modify"))
                     {
