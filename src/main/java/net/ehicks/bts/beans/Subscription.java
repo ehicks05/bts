@@ -24,19 +24,19 @@ public class Subscription implements Serializable
     private Long userId;
 
     @Column(name = "group_ids")
-    private String groupIds;
+    private String groupIds = "";
     @Column(name = "issue_type_ids")
-    private String issueTypeIds;
+    private String issueTypeIds = "";
     @Column(name = "project_ids")
-    private String projectIds;
+    private String projectIds = "";
     @Column(name = "assignee_user_ids")
-    private String assigneeUserIds;
+    private String assigneeUserIds = "";
     @Column(name = "reporter_user_ids")
-    private String reporterUserIds;
+    private String reporterUserIds = "";
     @Column(name = "severity_ids")
-    private String severityIds;
+    private String severityIds = "";
     @Column(name = "status_ids")
-    private String statusIds;
+    private String statusIds = "";
 
     public void updateFields(Long userId, String statusIds, String severityIds, String projectIds, String groupIds, String assigneeUserIds)
     {
@@ -118,6 +118,13 @@ public class Subscription implements Serializable
         if (assigneeUserIds == null)
             return Collections.EMPTY_LIST;
         return new ArrayList<>(Arrays.asList(assigneeUserIds.split(",")));
+    }
+
+    public List<String> getReporterUserIdsAsList()
+    {
+        if (assigneeUserIds == null)
+            return Collections.EMPTY_LIST;
+        return new ArrayList<>(Arrays.asList(reporterUserIds.split(",")));
     }
 
     // -------- Getters / Setters ----------

@@ -77,7 +77,6 @@
         </div>
 
         <div class="mdl-card__actions">
-            <input id="addSubscriptionButton" type="button" value="Add Subscription" class="mdl-button mdl-js-button mdl-button--raised" />
             <input id="printSubscriptionButton" type="button" value="Print Subscriptions" onclick="printSubscriptions();" class="mdl-button mdl-js-button mdl-button--raised" style="padding-left:40px;background-image: url('../../images/Adobe_PDF_32x32.png'); background-position: left; background-repeat: no-repeat;"/>
         </div>
     </div>
@@ -85,7 +84,7 @@
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>Add Subscription</h5></div>
 
-        <form id="frmCreateSubscription" name="frmCreateSubscription" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=subscriptions&action=add">
+        <form id="frmCreateSubscription" name="frmCreateSubscription" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=subscriptions&tab3=list&action=add">
             <div style="padding: 10px;max-width: 300px;">
                 <t:multiSelect id="projectIds" selectedValues="" items="${projects}" placeHolder="Projects:"/>
                 <br>

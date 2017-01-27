@@ -1,8 +1,6 @@
 package net.ehicks.bts;
 
-import net.ehicks.bts.beans.Comment;
-import net.ehicks.bts.beans.EmailMessage;
-import net.ehicks.bts.beans.WatcherMap;
+import net.ehicks.bts.beans.*;
 import net.ehicks.eoi.EOI;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailException;
@@ -11,33 +9,16 @@ import org.apache.commons.mail.resolver.DataSourceUrlResolver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class EmailEngine
 {
     public static void sendEmail(EmailMessage emailMessage)
     {
         // determine recipients
-        List<String> recipients = new ArrayList<>();
-        if (emailMessage.getActionId() == EmailAction.ADD_COMMENT.getId())
-        {
-            Comment comment = Comment.getById(emailMessage.getCommentId());
-            List<WatcherMap> watchers = WatcherMap.getByIssueId(comment.getIssueId());
-            for (WatcherMap watcher : watchers)
-                recipients.add(watcher.getWatcher().getLogonId());
-        }
-        if (emailMessage.getActionId() == EmailAction.EDIT_COMMENT.getId())
-        {
-            Comment comment = Comment.getById(emailMessage.getCommentId());
-            List<WatcherMap> watchers = WatcherMap.getByIssueId(comment.getIssueId());
-            for (WatcherMap watcher : watchers)
-                recipients.add(watcher.getWatcher().getLogonId());
-        }
-        if (emailMessage.getActionId() == EmailAction.TEST.getId())
-        {
-            recipients.add(emailMessage.getToAddress());
-        }
+        Set<String> recipients = determineRecipients(emailMessage);
 
         emailMessage.setStatus("WAITING");
         EOI.update(emailMessage);
@@ -46,7 +27,62 @@ public class EmailEngine
         new Thread(() -> sendHtmlEmail(emailMessage, recipients)).start();
     }
 
-    private static void sendHtmlEmail(EmailMessage emailMessage, List<String> recipients)
+    private static Set<String> determineRecipients(EmailMessage emailMessage)
+    {
+        Set<String> recipients = new HashSet<>();
+
+        if (emailMessage.getIssueId() > 0 || emailMessage.getCommentId() > 0)
+        {
+            Issue issue = null;
+            if (emailMessage.getIssueId() > 0)
+            {
+                issue = Issue.getById(emailMessage.getIssueId());
+            }
+            if (emailMessage.getCommentId() > 0)
+            {
+                Comment comment = Comment.getById(emailMessage.getCommentId());
+                issue = Issue.getById(comment.getIssueId());
+            }
+
+            User reporter = issue.getReporter();
+            User assignee = issue.getAssignee();
+            recipients.add(reporter.getLogonId());
+            recipients.add(assignee.getLogonId());
+            List<WatcherMap> watchers = WatcherMap.getByIssueId(issue.getId());
+            for (WatcherMap watcher : watchers)
+                recipients.add(watcher.getWatcher().getLogonId());
+
+            List<Subscription> subscriptions = Subscription.getAll();
+            for (Subscription subscription : subscriptions)
+            {
+                // todo streamline this
+                boolean addIt = false;
+                if (subscription.getReporterUserIdsAsList().size() > 0 && subscription.getReporterUserIdsAsList().contains(reporter.getId().toString()))
+                    addIt = true;
+                if (subscription.getAssigneeUserIdsAsList().size() > 0 && subscription.getAssigneeUserIdsAsList().contains(assignee.getId().toString()))
+                    addIt = true;
+                if (subscription.getGroupIdsAsList().size() > 0 && subscription.getGroupIdsAsList().contains(issue.getGroupId().toString()))
+                    addIt = true;
+                if (subscription.getProjectIdsAsList().size() > 0 && subscription.getProjectIdsAsList().contains(issue.getProjectId().toString()))
+                    addIt = true;
+                if (subscription.getSeverityIdsAsList().size() > 0 && subscription.getSeverityIdsAsList().contains(issue.getSeverityId().toString()))
+                    addIt = true;
+                if (subscription.getStatusIdsAsList().size() > 0 && subscription.getStatusIdsAsList().contains(issue.getStatusId().toString()))
+                    addIt = true;
+
+                if (addIt)
+                    recipients.add(User.getByUserId(subscription.getUserId()).getLogonId());
+            }
+        }
+
+        if (emailMessage.getActionId() == EmailAction.TEST.getId())
+        {
+            recipients.add(emailMessage.getToAddress());
+        }
+        return recipients;
+    }
+
+    private static void sendHtmlEmail(EmailMessage emailMessage, Set<String> recipients)
     {
         try
         {

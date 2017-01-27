@@ -167,7 +167,7 @@ public class User implements Serializable, ISelectTagSupport
 
     public boolean hasAccess(Issue issue)
     {
-        if (isAdmin()) return true;
+        if (isAdmin() || isSupport()) return true;
         return getAllGroupIds().contains(issue.getGroupId()) && getAllProjects().contains(issue.getProject());
     }
 

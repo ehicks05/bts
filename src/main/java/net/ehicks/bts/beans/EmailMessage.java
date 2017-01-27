@@ -90,7 +90,7 @@ public class EmailMessage implements Serializable
         {
             User user = User.getByUserId(userId);
             Issue issue = Issue.getById(issueId);
-            return user.getLogonId() + " edited comment on" + issue.getProject().getPrefix() + "-" + issue.getId() + " " + issue.getTitle();
+            return user.getLogonId() + " edited a comment on " + issue.getProject().getPrefix() + "-" + issue.getId() + " " + issue.getTitle();
         }
         if (actionId == EmailAction.TEST.getId())
             return "Test Email";
