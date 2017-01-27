@@ -87,44 +87,191 @@ public class Subscription implements Serializable
 
     public List<String> getProjectIdsAsList()
     {
-        if (projectIds == null)
+        if (projectIds == null || projectIds.length() == 0)
             return Collections.EMPTY_LIST;
         return new ArrayList<>(Arrays.asList(projectIds.split(",")));
     }
 
     public List<String> getGroupIdsAsList()
     {
-        if (groupIds == null)
+        if (groupIds == null || groupIds.length() == 0)
             return Collections.EMPTY_LIST;
         return new ArrayList<>(Arrays.asList(groupIds.split(",")));
     }
 
     public List<String> getSeverityIdsAsList()
     {
-        if (severityIds == null)
+        if (severityIds == null || severityIds.length() == 0)
             return Collections.EMPTY_LIST;
         return new ArrayList<>(Arrays.asList(severityIds.split(",")));
     }
 
     public List<String> getStatusIdsAsList()
     {
-        if (statusIds == null)
+        if (statusIds == null || statusIds.length() == 0)
             return Collections.EMPTY_LIST;
         return new ArrayList<>(Arrays.asList(statusIds.split(",")));
     }
 
     public List<String> getAssigneeUserIdsAsList()
     {
-        if (assigneeUserIds == null)
+        if (assigneeUserIds == null || assigneeUserIds.length() == 0)
             return Collections.EMPTY_LIST;
         return new ArrayList<>(Arrays.asList(assigneeUserIds.split(",")));
     }
 
     public List<String> getReporterUserIdsAsList()
     {
-        if (assigneeUserIds == null)
+        if (reporterUserIds == null || reporterUserIds.length() == 0)
             return Collections.EMPTY_LIST;
         return new ArrayList<>(Arrays.asList(reporterUserIds.split(",")));
+    }
+
+    // todo: generisize
+    public String getDescription()
+    {
+        String description = "";
+
+        if (getReporterUserIdsAsList().size() > 0)
+        {
+            if (description.length() > 0)
+                description += " AND ";
+            description += " were reported by ";
+            String clause = "";
+            for (String id : getReporterUserIdsAsList())
+            {
+                if (clause.length() > 0)
+                {
+                    if (getReporterUserIdsAsList().indexOf(id) == getReporterUserIdsAsList().size() - 1)
+                    {
+                        if (getReporterUserIdsAsList().indexOf(id) > 1)
+                            clause += ",";
+                        clause += " or ";
+                    }
+                    else
+                        clause += ", ";
+                }
+                clause += User.getByUserId(Long.valueOf(id)).getName();
+            }
+            description += clause;
+        }
+        if (getAssigneeUserIdsAsList().size() > 0)
+        {
+            if (description.length() > 0)
+                description += " AND ";
+            description += " are assigned to ";
+            String clause = "";
+            for (String id : getAssigneeUserIdsAsList())
+            {
+                if (clause.length() > 0)
+                {
+                    if (getAssigneeUserIdsAsList().indexOf(id) == getAssigneeUserIdsAsList().size() - 1)
+                    {
+                        if (getAssigneeUserIdsAsList().indexOf(id) > 1)
+                            clause += ",";
+                        clause += " or ";
+                    }
+                    else
+                        clause += ", ";
+                }
+                clause += User.getByUserId(Long.valueOf(id)).getName();
+            }
+            description += clause;
+        }
+        if (getGroupIdsAsList().size() > 0)
+        {
+            if (description.length() > 0)
+                description += " AND ";
+            description += " are in group ";
+            String clause = "";
+            for (String id : getGroupIdsAsList())
+            {
+                if (clause.length() > 0)
+                {
+                    if (getGroupIdsAsList().indexOf(id) == getGroupIdsAsList().size() - 1)
+                    {
+                        if (getGroupIdsAsList().indexOf(id) > 1)
+                            clause += ",";
+                        clause += " or ";
+                    }
+                    else
+                        clause += ", ";
+                }
+                clause += Group.getById(Long.valueOf(id)).getName();
+            }
+            description += clause;
+        }
+        if (getProjectIdsAsList().size() > 0)
+        {
+            if (description.length() > 0)
+                description += " AND ";
+            description += " are in project ";
+            String clause = "";
+            for (String id : getProjectIdsAsList())
+            {
+                if (clause.length() > 0)
+                {
+                    if (getProjectIdsAsList().indexOf(id) == getProjectIdsAsList().size() - 1)
+                    {
+                        if (getProjectIdsAsList().indexOf(id) > 1)
+                            clause += ",";
+                        clause += " or ";
+                    }
+                    else
+                        clause += ", ";
+                }
+                clause += Project.getById(Long.valueOf(id)).getName();
+            }
+            description += clause;
+        }
+        if (getSeverityIdsAsList().size() > 0)
+        {
+            if (description.length() > 0)
+                description += " AND ";
+            description += " have a severity of ";
+            String clause = "";
+            for (String id : getSeverityIdsAsList())
+            {
+                if (clause.length() > 0)
+                {
+                    if (getSeverityIdsAsList().indexOf(id) == getSeverityIdsAsList().size() - 1)
+                    {
+                        if (getSeverityIdsAsList().indexOf(id) > 1)
+                            clause += ",";
+                        clause += " or ";
+                    }
+                    else
+                        clause += ", ";
+                }
+                clause += Severity.getById(Long.valueOf(id)).getName();
+            }
+            description += clause;
+        }
+        if (getStatusIdsAsList().size() > 0)
+        {
+            if (description.length() > 0)
+                description += " AND ";
+            description += " have a status of ";
+            String clause = "";
+            for (String id : getStatusIdsAsList())
+            {
+                if (clause.length() > 0)
+                {
+                    if (getStatusIdsAsList().indexOf(id) == getStatusIdsAsList().size() - 1)
+                    {
+                        if (getStatusIdsAsList().indexOf(id) > 1)
+                            clause += ",";
+                        clause += " or ";
+                    }
+                    else
+                        clause += ", ";
+                }
+                clause += Status.getById(Long.valueOf(id)).getName();
+            }
+            description += clause;
+        }
+
+        return "Subscribe to issues that " + description + ".";
     }
 
     // -------- Getters / Setters ----------

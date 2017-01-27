@@ -64,7 +64,7 @@
                             </label>
                         </td>
                         <td><a href="${pageContext.request.contextPath}/view?tab1=main&tab2=subscriptions&action=form&subscriptionId=${subscription.id}">${subscription.id}</a></td>
-                        <td class="mdl-data-table__cell--non-numeric">${subscription.id} put description here?</td>
+                        <td class="mdl-data-table__cell--non-numeric">${subscription.description}</td>
                         <td><a onclick="deleteSubscription('${subscription.id}');" class="clickable material-icons">delete</a></td>
                     </tr>
                 </c:forEach>
