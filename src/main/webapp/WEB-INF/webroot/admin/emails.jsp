@@ -46,7 +46,8 @@
                     <th class="mdl-data-table__cell--non-numeric">Status</th>
                     <th class="mdl-data-table__cell--non-numeric">User</th>
                     <th class="mdl-data-table__cell--non-numeric">action</th>
-                    <th class="mdl-data-table__cell--non-numeric">actionSourceId</th>
+                    <th class="mdl-data-table__cell--non-numeric">issueId</th>
+                    <th class="mdl-data-table__cell--non-numeric">commentId</th>
                     <th class="mdl-data-table__cell--non-numeric">description</th>
                     <th></th>
                 </tr>
@@ -74,8 +75,9 @@
                             </c:if>
                         </td>
                         <td class="mdl-data-table__cell--non-numeric">${email.userId}</td>
-                        <td class="mdl-data-table__cell--non-numeric">${email.action}</td>
-                        <td class="mdl-data-table__cell--non-numeric">${email.actionSourceId}</td>
+                        <td class="mdl-data-table__cell--non-numeric">${email.emailAction.verb}</td>
+                        <td class="mdl-data-table__cell--non-numeric">${email.issueId}</td>
+                        <td class="mdl-data-table__cell--non-numeric">${email.commentId}</td>
                         <td class="mdl-data-table__cell--non-numeric">${email.description}</td>
                         <td><a onclick="deleteEmail('${email.id}');" class="clickable material-icons">delete</a></td>
                     </tr>

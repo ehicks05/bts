@@ -1,5 +1,7 @@
 package net.ehicks.bts.handlers;
 
+import com.sksamuel.diffpatch.DiffMatchPatch;
+import net.ehicks.bts.EmailAction;
 import net.ehicks.bts.EmailEngine;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.*;
@@ -12,6 +14,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -192,8 +195,8 @@ public class ModifyIssueHandler
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setUserId(userSession.getUserId());
         emailMessage.setIssueId(issueId);
-        emailMessage.setAction("added a comment");
-        emailMessage.setActionSourceId(commentId);
+        emailMessage.setActionId(EmailAction.ADD_COMMENT.getId());
+        emailMessage.setCommentId(commentId);
         emailMessage.setDescription(content);
         long emailId = EOI.insert(emailMessage);
         emailMessage = EmailMessage.getById(emailId);
@@ -205,6 +208,8 @@ public class ModifyIssueHandler
 
     public static void updateComment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+
         Long commentId        = Common.stringToLong(request.getParameter("commentId"));
         String fieldName    = Common.getSafeString(request.getParameter("fldFieldName"));
         String fieldValue   = Common.getSafeString(request.getParameter("fldFieldValue"));
@@ -213,6 +218,7 @@ public class ModifyIssueHandler
 
         String updateLog = "";
         Comment comment = Comment.getById(commentId);
+        String previousContent = comment.getContent();
         if (content.length() != 0)
         {
             comment.setContent(content);
@@ -228,6 +234,26 @@ public class ModifyIssueHandler
 
         String toastMessage = "Updated " + updateLog;
         response.getWriter().println(toastMessage);
+
+        DiffMatchPatch myDiff = new DiffMatchPatch();
+        LinkedList<DiffMatchPatch.Diff> diffs = myDiff.diff_main(previousContent, content);
+        myDiff.diff_cleanupSemantic(diffs);
+        String prettyDiff = myDiff.diff_prettyHtml(diffs);
+
+        // todo this is for yahoo mail
+        prettyDiff = prettyDiff.replaceAll("<ins style=\"background:#e6ffe6;\">", "<u style=\"background:#e6ffe6;\">");
+        prettyDiff = prettyDiff.replaceAll("</ins>", "</u>");
+
+        EmailMessage emailMessage = new EmailMessage();
+        emailMessage.setUserId(userSession.getUserId());
+        emailMessage.setIssueId(comment.getIssueId());
+        emailMessage.setActionId(EmailAction.EDIT_COMMENT.getId());
+        emailMessage.setCommentId(commentId);
+        emailMessage.setDescription(prettyDiff);
+        long emailId = EOI.insert(emailMessage);
+        emailMessage = EmailMessage.getById(emailId);
+
+        EmailEngine.sendEmail(emailMessage);
     }
 
     public static void addWatcher(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException

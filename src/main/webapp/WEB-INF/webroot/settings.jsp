@@ -9,6 +9,11 @@
 <head>
     <title>BTS</title>
     <jsp:include page="inc_header.jsp"/>
+
+    <style>
+        #options {padding:5px;}
+        #options i {vertical-align:middle!important; font-size: 3em!important;}
+    </style>
 </head>
 <body>
 
@@ -18,8 +23,16 @@
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>Settings</h5></div>
 
-        <div class="mdl-card__supporting-text">
-            <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=issueForm&action=form">View Filters</a>
+        <div id="options">
+            <div>
+                <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=issueForm&action=form">
+                    <i class="material-icons">search</i>View Filters</a>
+            </div>
+
+            <div>
+                <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=subscriptions&tab3=list&action=form">
+                    <i class="material-icons">email</i>Subscriptions</a>
+            </div>
         </div>
     </div>
 </div>

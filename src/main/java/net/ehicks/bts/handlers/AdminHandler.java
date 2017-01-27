@@ -264,7 +264,7 @@ public class AdminHandler
     {
         String to = Common.getSafeString(request.getParameter("fldTo"));
         EmailMessage emailMessage = new EmailMessage();
-        emailMessage.setAction("test");
+        emailMessage.setActionId(EmailAction.TEST.getId());
         emailMessage.setToAddress(to);
         long emailId = EOI.insert(emailMessage);
         emailMessage = EmailMessage.getById(emailId);

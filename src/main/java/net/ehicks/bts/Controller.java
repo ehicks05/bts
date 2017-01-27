@@ -190,6 +190,16 @@ public class Controller extends HttpServlet
                     if (action.equals("create"))
                         ProfileHandler.createUser(request, response);
                 }
+                if (tab2.equals("subscriptions"))
+                {
+                    if (tab3.equals("list"))
+                    {
+                        if (action.equals("form"))
+                            viewJsp = SubscriptionHandler.showSubscriptions(request, response);
+                        if (action.equals("add"))
+                            SubscriptionHandler.addSubscription(request, response);
+                    }
+                }
 
                 if (action.equals("debug"))
                     DebugHandler.getDebugInfo(request, response);

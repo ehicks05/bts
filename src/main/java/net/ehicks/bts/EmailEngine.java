@@ -20,14 +20,21 @@ public class EmailEngine
     {
         // determine recipients
         List<String> recipients = new ArrayList<>();
-        if (emailMessage.getAction().equals("added a comment"))
+        if (emailMessage.getActionId() == EmailAction.ADD_COMMENT.getId())
         {
-            Comment actionSource = Comment.getById(emailMessage.getActionSourceId());
-            List<WatcherMap> watchers = WatcherMap.getByIssueId(actionSource.getIssueId());
+            Comment comment = Comment.getById(emailMessage.getCommentId());
+            List<WatcherMap> watchers = WatcherMap.getByIssueId(comment.getIssueId());
             for (WatcherMap watcher : watchers)
                 recipients.add(watcher.getWatcher().getLogonId());
         }
-        if (emailMessage.getAction().equals("test"))
+        if (emailMessage.getActionId() == EmailAction.EDIT_COMMENT.getId())
+        {
+            Comment comment = Comment.getById(emailMessage.getCommentId());
+            List<WatcherMap> watchers = WatcherMap.getByIssueId(comment.getIssueId());
+            for (WatcherMap watcher : watchers)
+                recipients.add(watcher.getWatcher().getLogonId());
+        }
+        if (emailMessage.getActionId() == EmailAction.TEST.getId())
         {
             recipients.add(emailMessage.getToAddress());
         }

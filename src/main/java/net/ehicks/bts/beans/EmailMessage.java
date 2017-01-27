@@ -1,5 +1,6 @@
 package net.ehicks.bts.beans;
 
+import net.ehicks.bts.EmailAction;
 import net.ehicks.eoi.EOI;
 
 import javax.persistence.*;
@@ -25,11 +26,11 @@ public class EmailMessage implements Serializable
     @Column(name = "issue_id")
     private Long issueId;
 
-    @Column(name = "action")
-    private String action = "";
+    @Column(name = "action_id")
+    private Long actionId;
 
-    @Column(name = "action_source_id")
-    private Long actionSourceId;
+    @Column(name = "comment_id")
+    private Long commentId;
 
     @Column(name = "description", columnDefinition = "varchar2(32000 CHAR)")
     private String description = "";
@@ -72,15 +73,26 @@ public class EmailMessage implements Serializable
         return EOI.executeQueryOneResult("select * from email_messages where id=?", Arrays.asList(id));
     }
 
+    public EmailAction getEmailAction()
+    {
+        return EmailAction.getById(actionId);
+    }
+
     public String getSubject()
     {
-        if (action.equals("added a comment"))
+        if (actionId == EmailAction.ADD_COMMENT.getId())
         {
             User user = User.getByUserId(userId);
             Issue issue = Issue.getById(issueId);
-            return user.getLogonId() + " " + action + " to " + issue.getProject().getPrefix() + "-" + issue.getId() + " " + issue.getTitle();
+            return user.getLogonId() + " added a comment to " + issue.getProject().getPrefix() + "-" + issue.getId() + " " + issue.getTitle();
         }
-        if (action.equals("test"))
+        if (actionId == EmailAction.EDIT_COMMENT.getId())
+        {
+            User user = User.getByUserId(userId);
+            Issue issue = Issue.getById(issueId);
+            return user.getLogonId() + " edited comment on" + issue.getProject().getPrefix() + "-" + issue.getId() + " " + issue.getTitle();
+        }
+        if (actionId == EmailAction.TEST.getId())
             return "Test Email";
 
         return null;
@@ -88,7 +100,7 @@ public class EmailMessage implements Serializable
 
     public String getBody()
     {
-        if (action.equals("added a comment"))
+        if (actionId == EmailAction.ADD_COMMENT.getId())
         {
             User user = User.getByUserId(userId);
             Issue issue = Issue.getById(issueId);
@@ -110,7 +122,7 @@ public class EmailMessage implements Serializable
                     "                <td style=\"padding: 10px;\">\n" +
                     "                    <h3>\n" +
                     "                        <img style=\"width: 32px;\" src=\"http://192.168.1.100:8080/images/avatars/png/avatar-" + avatarId + ".png\" />\n" +
-                    "                        " + user.getLogonId() + " " + action + ".\n" +
+                    "                        " + user.getLogonId() + " " + EmailAction.getById(actionId).getVerb() + ".\n" +
                     "                    </h3>\n" +
                     "                    <p>" + description + "</p>\n" +
                     "                </td>\n" +
@@ -121,7 +133,40 @@ public class EmailMessage implements Serializable
                     "</body>\n" +
                     "</html>";
         }
-        if (action.equals("test"))
+        if (actionId == EmailAction.EDIT_COMMENT.getId())
+        {
+            User user = User.getByUserId(userId);
+            Issue issue = Issue.getById(issueId);
+            String avatarId = String.valueOf(user.getAvatarId());
+            if (avatarId.length() == 1)
+                avatarId = "0" + avatarId;
+
+            return "<!DOCTYPE html>\n" +
+                    "<html lang=\"en\">\n" +
+                    "<body>\n" +
+                    "<table style=\"width: 100%;background-color: #eee;\">\n" +
+                    "    <tr><td>\n" +
+                    "        <table style=\"width: 500px;margin:auto;background-color: white\">\n" +
+                    "            <tr>\n" +
+                    "                <td style=\"padding: 10px;\"><h1><a href=\"http://192.168.1.100:8080/view?tab1=main&tab2=issue&action=form&issueId=" + issueId + "\">\n" +
+                    "                    " + issue.getProject().getPrefix() + "-" + issue.getId() + " " + issue.getTitle() + "</a></h1></td>\n" +
+                    "            </tr>\n" +
+                    "            <tr>\n" +
+                    "                <td style=\"padding: 10px;\">\n" +
+                    "                    <h3>\n" +
+                    "                        <img style=\"width: 32px;\" src=\"http://192.168.1.100:8080/images/avatars/png/avatar-" + avatarId + ".png\" />\n" +
+                    "                        " + user.getLogonId() + " " + EmailAction.getById(actionId).getVerb() + ".\n" +
+                    "                    </h3>\n" +
+                    "                    <blockquote>" + description + "</blockquote>\n" +
+                    "                </td>\n" +
+                    "            </tr>\n" +
+                    "        </table>\n" +
+                    "    </td></tr>\n" +
+                    "</table>\n" +
+                    "</body>\n" +
+                    "</html>";
+        }
+        if (actionId == EmailAction.TEST.getId())
         {
             return "<!DOCTYPE html>\n" +
                     "<html lang=\"en\">\n" +
@@ -193,24 +238,24 @@ public class EmailMessage implements Serializable
         this.issueId = issueId;
     }
 
-    public String getAction()
+    public Long getActionId()
     {
-        return action;
+        return actionId;
     }
 
-    public void setAction(String action)
+    public void setActionId(Long actionId)
     {
-        this.action = action;
+        this.actionId = actionId;
     }
 
-    public Long getActionSourceId()
+    public Long getCommentId()
     {
-        return actionSourceId;
+        return commentId;
     }
 
-    public void setActionSourceId(Long actionSourceId)
+    public void setCommentId(Long commentId)
     {
-        this.actionSourceId = actionSourceId;
+        this.commentId = commentId;
     }
 
     public String getDescription()
