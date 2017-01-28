@@ -198,6 +198,10 @@ public class Controller extends HttpServlet
                             viewJsp = SubscriptionHandler.showSubscriptions(request, response);
                         if (action.equals("add"))
                             SubscriptionHandler.addSubscription(request, response);
+                        if (action.equals("delete"))
+                            SubscriptionHandler.deleteSubscription(request, response);
+                        if (action.equals("print"))
+                            SubscriptionHandler.printSubscriptions(request, response);
                     }
                 }
 

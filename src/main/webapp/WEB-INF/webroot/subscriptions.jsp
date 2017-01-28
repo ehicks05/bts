@@ -21,13 +21,13 @@
         function deleteSubscription(subscriptionId)
         {
             if (confirm('Are you sure?'))
-                location.href="${pageContext.request.contextPath}/view?tab1=main&tab2=subscriptions&action=delete&subscriptionId=" + subscriptionId;
+                location.href="${pageContext.request.contextPath}/view?tab1=main&tab2=subscriptions&tab3=list&action=delete&subscriptionId=" + subscriptionId;
         }
 
         function printSubscriptions()
         {
             window.open(
-                '${pageContext.request.contextPath}/view?tab1=main&tab2=subscriptions&action=print',
+                '${pageContext.request.contextPath}/view?tab1=main&tab2=subscriptions&tab3=list&action=print',
                 '_blank' // <- This is what makes it open in a new window.
             );
         }
