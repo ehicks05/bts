@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Server port="8005" shutdown="SHUTDOWN">
+  <!-- <Listener className="org.apache.catalina.startup.VersionLoggerListener" /> -->
+  <Service name="Catalina">
+		<Connector port="8080" protocol="HTTP/1.1"
+				  connectionTimeout="20000"
+                  redirectPort="8443"
+				  compression="force"
+				  useSendfile="false"/>
+
+		<Engine name="Catalina" defaultHost="localhost"> 
+			<Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="true"/> 
+			<Realm
+				className="org.apache.catalina.realm.JDBCRealm"
+				driverName="org.h2.Driver"
+				connectionURL="jdbc:h2:~/bts;TRACE_LEVEL_FILE=1"
+				connectionName=""
+				connectionPassword=""
+				userTable="bts_users" 
+				userNameCol="logon_id" 
+				userCredCol="password"
+				userRoleTable="bts_roles" 
+				roleNameCol="role_name">
+
+				<CredentialHandler
+					className="org.apache.catalina.realm.MessageDigestCredentialHandler"
+					algorithm="sha-256"
+					iterations="1"
+					saltLength="3">
+				
+				</CredentialHandler>
+				
+			</Realm>
+		</Engine> 
+  </Service>
+</Server>
