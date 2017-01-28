@@ -181,7 +181,7 @@
                                     <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=retrieveAttachment&attachmentId=${attachment.id}">
                                         <c:set var="defaultImageName" value=""/>
                                         <c:if test="${fn:endsWith(attachment.dbFile.name, 'pdf')}">
-                                            <c:set var="defaultImageName" value="Adobe_PDF_32x32.png"/>
+                                            <c:set var="defaultImageName" value="Adobe.png"/>
                                         </c:if>
                                         <c:if test="${fn:endsWith(attachment.dbFile.name, 'docx')}">
                                             <c:set var="defaultImageName" value="Word.png"/>
@@ -194,7 +194,7 @@
                                         </c:if>
 
                                         <c:if test="${!empty defaultImageName}">
-                                            <img style="width: 32px;" src="../../images/${defaultImageName}"/>
+                                            <img style="width: 32px;" src="../../images/mimetypes/${defaultImageName}"/>
                                         </c:if>
                                         <c:if test="${empty defaultImageName}">
                                             <i class="material-icons" style="font-size: 32px">attachment</i>
