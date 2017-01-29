@@ -3,6 +3,8 @@ package net.ehicks.bts;
 import net.ehicks.eoi.DBMap;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.SQLGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
 import java.io.IOException;
@@ -11,6 +13,8 @@ import java.util.Properties;
 
 public class Startup
 {
+    private static final Logger log = LoggerFactory.getLogger(Startup.class);
+
     static void loadProperties(ServletContext servletContext)
     {
         Properties properties = new Properties();
@@ -21,7 +25,7 @@ public class Startup
         }
         catch (IOException e)
         {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage(), e);
         }
 
         SystemInfo.INSTANCE.setSystemStart(System.currentTimeMillis());
@@ -44,7 +48,7 @@ public class Startup
     {
         long subTaskStart = System.currentTimeMillis();
         DBMap.loadDbMaps(servletContext.getRealPath("/WEB-INF/classes/net/ehicks/bts/beans"), "net.ehicks.bts.beans");
-        System.out.println("Loaded DBMAPS in " + (System.currentTimeMillis() - subTaskStart) + "ms");
+        log.info("Loaded DBMAPS in {} ms", (System.currentTimeMillis() - subTaskStart));
     }
 
     static void createTables()
@@ -61,7 +65,7 @@ public class Startup
                 for (String indexDefinition : dbMap.indexDefinitions)
                     EOI.executeUpdate(indexDefinition);
             }
-        System.out.println("Autocreated " + tablesCreated + " tables in " + (System.currentTimeMillis() - subTaskStart) + "ms");
+        log.info("Autocreated {} tables in {} ms", tablesCreated, (System.currentTimeMillis() - subTaskStart));
     }
 
     static void dropTables()
@@ -76,9 +80,9 @@ public class Startup
             }
             catch (Exception e)
             {
-                System.out.println("didnt drop " + dbMap.tableName);
+                log.error("didnt drop {}", dbMap.tableName);
             }
         }
-        System.out.println("Dropped existing tables in " + (System.currentTimeMillis() - subTaskStart) + "ms");
+        log.info("Dropped existing tables in {} ms", (System.currentTimeMillis() - subTaskStart));
     }
 }

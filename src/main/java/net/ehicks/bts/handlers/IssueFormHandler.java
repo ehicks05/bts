@@ -4,6 +4,8 @@ import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.IssueForm;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +15,8 @@ import java.util.List;
 
 public class IssueFormHandler
 {
+    private static final Logger log = LoggerFactory.getLogger(IssueFormHandler.class);
+
     public static String showIssueForms(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -29,7 +33,7 @@ public class IssueFormHandler
         if (issueForm != null)
         {
             int result = EOI.executeDelete(issueForm);
-            System.out.println(result);
+            log.info(String.valueOf(result));
         }
 
         response.sendRedirect("view?tab1=main&tab2=issueForm&action=form");

@@ -4,6 +4,8 @@ import net.ehicks.bts.beans.*;
 import net.ehicks.common.Timer;
 import net.ehicks.eoi.EOI;
 import org.apache.catalina.realm.MessageDigestCredentialHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,8 +19,8 @@ import java.util.stream.IntStream;
 
 public class DefaultDataLoader
 {
-//    private static int issueCount = 131_072;
-//    private static int issueCount = 16_384;
+    private static final Logger log = LoggerFactory.getLogger(DefaultDataLoader.class);
+
     private static int issueCount = 1_024;
     private static int cryptoIterations = 200_000;
 
@@ -30,52 +32,52 @@ public class DefaultDataLoader
 
     static void createDemoData()
     {
-        System.out.println("Seeding dummy data");
+        log.info("Seeding dummy data");
         Timer timer = new Timer();
 
         createUsers();
-        timer.printDuration("createUsers");
+        log.debug(timer.printDuration("createUsers"));
 
         createGroups();
-        timer.printDuration("createGroups");
+        log.debug(timer.printDuration("createGroups"));
 
         createGroupMaps();
-        timer.printDuration("createGroupMaps");
+        log.debug(timer.printDuration("createGroupMaps"));
 
         createProjects();
-        timer.printDuration("createProjects");
+        log.debug(timer.printDuration("createProjects"));
 
         createStatuses();
-        timer.printDuration("createStatuses");
+        log.debug(timer.printDuration("createStatuses"));
 
         createSeverities();
-        timer.printDuration("createSeverities");
+        log.debug(timer.printDuration("createSeverities"));
 
         createIssueTypes();
-        timer.printDuration("createIssueTypes");
+        log.debug(timer.printDuration("createIssueTypes"));
 
         createProjectMaps();
-        timer.printDuration("createProjectMaps");
+        log.debug(timer.printDuration("createProjectMaps"));
 
         createDBFiles();
-        timer.printDuration("createDBFiles");
+        log.debug(timer.printDuration("createDBFiles"));
 
         createIssues();
-        timer.printDuration("createIssues");
+        log.debug(timer.printDuration("createIssues"));
 
         createAttachments();
-        timer.printDuration("createAttachments");
+        log.debug(timer.printDuration("createAttachments"));
 
         createIssueForms();
-        timer.printDuration("createIssueForms");
+        log.debug(timer.printDuration("createIssueForms"));
 
         createWatcherMaps();
-        timer.printDuration("createWatcherMaps");
+        log.debug(timer.printDuration("createWatcherMaps"));
 
         createComments();
-        timer.printDuration("createComments");
+        log.debug(timer.printDuration("createComments"));
 
-        timer.printDuration("done");
+        log.info(timer.printDuration("Done seeding dummy data"));
     }
 
     private static void createIssueForms()
@@ -112,7 +114,7 @@ public class DefaultDataLoader
                     }
                     catch (IOException e)
                     {
-                        System.out.println(e.getMessage());
+                        log.error(e.getMessage(), e);
                     }
 
                     DBFile dbFile = new DBFile();
@@ -238,7 +240,7 @@ public class DefaultDataLoader
                     }
                     catch (IOException e)
                     {
-                        System.out.println(e.getMessage());
+                        log.error(e.getMessage(), e);
                     }
 
                     DBFile dbFile = new DBFile();
@@ -457,7 +459,7 @@ public class DefaultDataLoader
         }
         catch (NoSuchAlgorithmException e)
         {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage(), e);
         }
 
         for (String key : users.keySet())
@@ -468,7 +470,7 @@ public class DefaultDataLoader
             long start = System.currentTimeMillis();
             String rawPassword = users.get(key).get(0);
             String password = credentialHandler.mutate(rawPassword);
-//            System.out.println(cryptoIterations + " sha-256 iterations in " + (System.currentTimeMillis() - start) + "ms");
+            log.debug("{} sha-256 iterations in {} ms", cryptoIterations, (System.currentTimeMillis() - start));
 
             user.setPassword(password);
             user.setEnabled(true);

@@ -3,6 +3,8 @@ package net.ehicks.bts;
 import net.ehicks.bts.beans.*;
 import net.ehicks.bts.handlers.*;
 import net.ehicks.eoi.EOI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -19,6 +21,8 @@ import java.util.Date;
 @WebServlet(value = "/view", loadOnStartup = 1)
 public class Controller extends HttpServlet
 {
+    private static final Logger log = LoggerFactory.getLogger(Controller.class);
+
     @Override
     public void init() throws ServletException
     {
@@ -35,7 +39,7 @@ public class Controller extends HttpServlet
             new Thread(DefaultDataLoader::createDemoData).start();
         }
 
-        System.out.println("Controller.init finished in " + (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()) + " ms");
+        log.info("Controller.init finished in {} ms", (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()));
     }
 
     @Override
@@ -106,7 +110,7 @@ public class Controller extends HttpServlet
         }
 
         if (SystemInfo.INSTANCE.getDebugLevel() > 1)
-            System.out.println((System.currentTimeMillis() - start) + " ms for last request " + request.getQueryString());
+            log.debug("{} ms for last request {}", (System.currentTimeMillis() - start), request.getQueryString());
     }
 
     private String processRequest(HttpServletRequest request, HttpServletResponse response, UserSession userSession) throws IOException, ServletException
@@ -322,7 +326,7 @@ public class Controller extends HttpServlet
         }
         catch (ParseException e)
         {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage(), e);
         }
         return viewJsp;
     }

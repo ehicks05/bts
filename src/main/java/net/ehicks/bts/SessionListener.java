@@ -1,5 +1,8 @@
 package net.ehicks.bts;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.*;
@@ -11,6 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @WebListener
 public class SessionListener implements HttpSessionListener, HttpSessionAttributeListener
 {
+    private static final Logger log = LoggerFactory.getLogger(Controller.class);
+
     private static ConcurrentHashMap<String, UserSession> sessions = new ConcurrentHashMap<>();
 
     @Override
@@ -29,7 +34,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
         activeUsers.remove(session.getId());
         sessions.remove(session.getId());
 
-        System.out.println("session destroyed: " + se.getSession().getId());
+        log.debug("session destroyed: {}", se.getSession().getId());
     }
 
     public void attributeAdded(HttpSessionBindingEvent event)
@@ -44,7 +49,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
 //                SessionManager.audit(session.getId(), userSession.getLogonId(), userSession.getUserObjectid(), null, new java.util.Date(),
 //                        userSession.getRemoteIP(), userSession.getRemoteHost() , "",0,"","Logged on.", userSession.getUserAgent());
                 sessions.put(session.getId(), userSession);
-                System.out.println("put " + session.getId() + " in session");
+                log.debug("put {} in session", session.getId());
             }
         }
     }
@@ -61,7 +66,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
 //                SessionManager.audit(session.getId(), userSession.getLogonId(), userSession.getUserObjectid(), null, new java.util.Date(),
 //                        userSession.getRemoteIP(), userSession.getRemoteHost(), "", 0, "", "Logged off.", userSession.getUserAgent());
                 sessions.remove(session.getId());
-                System.out.println("removed " + session.getId() + " from session");
+                log.debug("removed {} from session", session.getId());
             }
         }
     }

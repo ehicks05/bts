@@ -13,6 +13,8 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
@@ -30,6 +32,8 @@ import java.util.List;
 
 public class AttachmentHandler
 {
+    private static final Logger log = LoggerFactory.getLogger(AttachmentHandler.class);
+
     public static void retrieveAttachment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -118,7 +122,7 @@ public class AttachmentHandler
             }
             catch (FileUploadException e)
             {
-                System.out.println(e.getMessage());
+                log.error(e.getMessage(), e);
             }
         }
 

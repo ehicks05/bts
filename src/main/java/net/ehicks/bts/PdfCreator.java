@@ -11,6 +11,8 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
@@ -22,6 +24,7 @@ import java.util.List;
 
 public class PdfCreator
 {
+    private static final Logger log = LoggerFactory.getLogger(PdfCreator.class);
     private static PDFont HELVETICA = PDType1Font.HELVETICA;
 
     public static File createPdf(String author, String header, String footer, List<List> data)
@@ -59,7 +62,7 @@ public class PdfCreator
         }
         catch (IOException e)
         {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage(), e);
         }
 
         return null;
