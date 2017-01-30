@@ -50,7 +50,7 @@ public class Startup
     {
         long subTaskStart = System.currentTimeMillis();
         DBMap.loadDbMaps(servletContext.getRealPath("/WEB-INF/classes/net/ehicks/bts/beans"), "net.ehicks.bts.beans");
-        log.info("Loaded DBMAPS in {} ms", (System.currentTimeMillis() - subTaskStart));
+        log.debug("Loaded DBMAPS in {} ms", (System.currentTimeMillis() - subTaskStart));
     }
 
     static void createTables()
@@ -67,7 +67,7 @@ public class Startup
                 for (String indexDefinition : dbMap.indexDefinitions)
                     EOI.executeUpdate(indexDefinition);
             }
-        log.info("Autocreated {} tables in {} ms", tablesCreated, (System.currentTimeMillis() - subTaskStart));
+        log.debug("Autocreated {} tables in {} ms", tablesCreated, (System.currentTimeMillis() - subTaskStart));
     }
 
     static void dropTables()
@@ -85,6 +85,6 @@ public class Startup
                 log.error("didnt drop {}", dbMap.tableName);
             }
         }
-        log.info("Dropped existing tables in {} ms", (System.currentTimeMillis() - subTaskStart));
+        log.debug("Dropped existing tables in {} ms", (System.currentTimeMillis() - subTaskStart));
     }
 }

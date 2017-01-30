@@ -26,6 +26,7 @@ public class Controller extends HttpServlet
     @Override
     public void init() throws ServletException
     {
+        log.info("BTS starting...");
         Startup.loadProperties(getServletContext());
 
         EOI.init("jdbc:h2:tcp://localhost/~/bts/bts;TRACE_LEVEL_FILE=1;DB_CLOSE_ON_EXIT=FALSE;COMPRESS=TRUE;CACHE_SIZE=" + SystemInfo.INSTANCE.getDatabaseCacheInKBs() + ";");
@@ -39,12 +40,13 @@ public class Controller extends HttpServlet
             new Thread(DefaultDataLoader::createDemoData).start();
         }
 
-        log.info("Controller.init finished in {} ms", (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()));
+        log.info("BTS loaded in {} ms", (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()));
     }
 
     @Override
     public void destroy()
     {
+        log.info("BTS shutting down...");
         EOI.destroy();
     }
 
