@@ -42,6 +42,8 @@ public class Startup
         SystemInfo.INSTANCE.setEmailPassword(properties.getProperty("emailPassword"));
         SystemInfo.INSTANCE.setEmailFromAddress(properties.getProperty("emailFromAddress"));
         SystemInfo.INSTANCE.setEmailFromName(properties.getProperty("emailFromName"));
+
+        SystemInfo.INSTANCE.setLogDirectory(properties.getProperty("logDirectory"));
     }
 
     static void loadDBMaps(ServletContext servletContext)

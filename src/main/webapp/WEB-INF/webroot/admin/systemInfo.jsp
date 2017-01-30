@@ -76,13 +76,13 @@
             <c:forEach var="entry" items="${userSession.systemInfo.stats}">
                 <tr>
                     <td class="mdl-data-table__cell--non-numeric">${entry.key}</td>
-                    <td>${entry.value}</td>
+                    <td align="right">${entry.value}</td>
                 </tr>
             </c:forEach>
 
             <c:forEach var="cpInfoItem" items="${cpInfo}">
                 <tr>
-                    <td colspan="2">${cpInfoItem}</td>
+                    <td colspan="2" align="right">${cpInfoItem}</td>
                 </tr>
             </c:forEach>
         </table>

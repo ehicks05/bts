@@ -321,6 +321,15 @@ public class Controller extends HttpServlet
                             AdminHandler.modifyEmail(request, response);
                     }
                 }
+                if (tab2.equals("logs"))
+                {
+                    if (action.equals("form"))
+                        viewJsp = LogHandler.showLogs(request, response);
+                    if (action.equals("viewLog"))
+                        LogHandler.viewLog(request, response);
+                    if (action.equals("delete"))
+                        LogHandler.deleteLog(request, response);
+                }
             }
 
         }

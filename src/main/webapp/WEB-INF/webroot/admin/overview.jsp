@@ -53,6 +53,10 @@
                 <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=email&action=form">
                     <i class="material-icons">email</i>Manage Email</a>
             </div>
+            <div>
+                <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=logs&action=form">
+                    <i class="material-icons">assignment</i>Logs</a>
+            </div>
         </div>
     </div>
 </div>

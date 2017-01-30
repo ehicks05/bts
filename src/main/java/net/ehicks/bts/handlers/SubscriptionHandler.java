@@ -3,9 +3,7 @@ package net.ehicks.bts.handlers;
 import net.ehicks.bts.CommonIO;
 import net.ehicks.bts.PdfCreator;
 import net.ehicks.bts.UserSession;
-import net.ehicks.bts.beans.EmailMessage;
 import net.ehicks.bts.beans.Subscription;
-import net.ehicks.bts.beans.User;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 

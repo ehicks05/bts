@@ -3,7 +3,9 @@ package net.ehicks.bts;
 import net.ehicks.common.Common;
 
 import javax.servlet.ServletContext;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.nio.file.Paths;
 import java.util.*;
 
 public enum SystemInfo
@@ -24,6 +26,8 @@ public enum SystemInfo
     private String emailFromAddress = "";
     private String emailFromName = "";
 
+    private String logDirectory = "";
+
     public Date getSystemStartTime()
     {
         return new Date(systemStart);
@@ -34,7 +38,7 @@ public enum SystemInfo
         return ManagementFactory.getRuntimeMXBean().getInputArguments();
     }
 
-    public Map<String, String> getStats()
+    public Map<String, String> getStats() throws IOException
     {
         Map<String, String> stats = new LinkedHashMap<>(); // LinkedHashMap to keep insertion order
         stats.put("Start Time", getSystemStartTime().toString());
@@ -42,6 +46,7 @@ public enum SystemInfo
         stats.put("Used RAM", getUsedRam());
         stats.put("Free RAM", getFreeRam());
         stats.put("Max RAM", getMaxRam());
+        stats.put("Log Directory", Paths.get(getLogDirectory()).toFile().getCanonicalPath());
 
         return stats;
     }
@@ -191,5 +196,15 @@ public enum SystemInfo
     public void setEmailFromName(String emailFromName)
     {
         this.emailFromName = emailFromName;
+    }
+
+    public String getLogDirectory()
+    {
+        return logDirectory;
+    }
+
+    public void setLogDirectory(String logDirectory)
+    {
+        this.logDirectory = logDirectory;
     }
 }
