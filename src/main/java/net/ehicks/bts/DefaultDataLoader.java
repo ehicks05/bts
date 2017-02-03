@@ -402,7 +402,7 @@ public class DefaultDataLoader
         {
             GroupMap groupMap = new GroupMap();
             groupMap.setUserId(user.getId());
-            if (user.getLogonId().equals("***REMOVED***"))
+            if (user.getLogonId().equals("***REMOVED***") || user.getLogonId().equals("***REMOVED***"))
                 groupMap.setGroupId(admin.getId());
             else if (user.getLogonId().equals("***REMOVED***"))
                 groupMap.setGroupId(support.getId());
