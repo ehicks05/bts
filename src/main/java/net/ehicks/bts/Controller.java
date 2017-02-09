@@ -28,8 +28,11 @@ public class Controller extends HttpServlet
     {
         log.info("BTS starting...");
         Startup.loadProperties(getServletContext());
+        String h2ConnectionString = "jdbc:h2:tcp://localhost/~/bts/bts;TRACE_LEVEL_FILE=1;DB_CLOSE_ON_EXIT=FALSE;COMPRESS=TRUE;CACHE_SIZE=" + SystemInfo.INSTANCE.getDatabaseCacheInKBs() + ";";
+        String mssqlConnectionString = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;user=erictest;***REMOVED***";
+        SystemInfo.INSTANCE.setDbConnectionString(mssqlConnectionString);
 
-        EOI.init("jdbc:h2:tcp://localhost/~/bts/bts;TRACE_LEVEL_FILE=1;DB_CLOSE_ON_EXIT=FALSE;COMPRESS=TRUE;CACHE_SIZE=" + SystemInfo.INSTANCE.getDatabaseCacheInKBs() + ";");
+        EOI.init(SystemInfo.INSTANCE.getDbConnectionString());
 
         Startup.loadDBMaps(getServletContext());
 
@@ -329,6 +332,8 @@ public class Controller extends HttpServlet
                         viewJsp = LogHandler.showLogs(request, response);
                     if (action.equals("viewLog"))
                         LogHandler.viewLog(request, response);
+                    if (action.equals("viewLogPretty"))
+                        viewJsp = LogHandler.viewLogPretty(request, response);
                     if (action.equals("delete"))
                         LogHandler.deleteLog(request, response);
                 }

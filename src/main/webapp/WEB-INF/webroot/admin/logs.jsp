@@ -40,6 +40,7 @@
                     <th></th>
                     <th class="mdl-data-table__cell--non-numeric">Name</th>
                     <th></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <c:forEach var="log" items="${logs}" varStatus="loop">
@@ -51,7 +52,15 @@
                         </td>
                         <td>${loop.count}</td>
                         <td class="mdl-data-table__cell--non-numeric">
-                            <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=logs&action=viewLog&logName=${log.name}">${log.name}</a>
+                            ${log.name}
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                            <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=logs&action=viewLog&logName=${log.name}">
+                                <i class="material-icons">assignment</i>Raw</a>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                            <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=logs&action=viewLogPretty&logName=${log.name}">
+                                <i class="material-icons">grid_on</i>Pretty</a>
                         </td>
                         <td><a onclick="deleteLog('${log.name}');" class="clickable material-icons">delete</a></td>
                     </tr>

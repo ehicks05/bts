@@ -1,5 +1,6 @@
 package net.ehicks.bts;
 
+import net.ehicks.common.Common;
 import net.ehicks.eoi.DBMap;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.SQLGenerator;
@@ -31,13 +32,14 @@ public class Startup
         SystemInfo.INSTANCE.setSystemStart(System.currentTimeMillis());
         SystemInfo.INSTANCE.setServletContext(servletContext);
 
-        SystemInfo.INSTANCE.setDebugLevel(net.ehicks.common.Common.stringToInt(properties.getProperty("debugLevel")));
+        SystemInfo.INSTANCE.setDebugLevel(Common.stringToInt(properties.getProperty("debugLevel")));
         SystemInfo.INSTANCE.setDropCreateLoad(properties.getProperty("dropCreateLoad").equals("true"));
 
-        SystemInfo.INSTANCE.setDatabaseCacheInKBs(net.ehicks.common.Common.stringToLong(properties.getProperty("databaseCacheInKBs")));
+        SystemInfo.INSTANCE.setDbConnectionString(Common.getSafeString(properties.getProperty("dbConnectionString")));
+        SystemInfo.INSTANCE.setDatabaseCacheInKBs(Common.stringToLong(properties.getProperty("databaseCacheInKBs")));
 
         SystemInfo.INSTANCE.setEmailHost(properties.getProperty("emailHost"));
-        SystemInfo.INSTANCE.setEmailPort(net.ehicks.common.Common.stringToInt(properties.getProperty("emailPort")));
+        SystemInfo.INSTANCE.setEmailPort(Common.stringToInt(properties.getProperty("emailPort")));
         SystemInfo.INSTANCE.setEmailUser(properties.getProperty("emailUser"));
         SystemInfo.INSTANCE.setEmailPassword(properties.getProperty("emailPassword"));
         SystemInfo.INSTANCE.setEmailFromAddress(properties.getProperty("emailFromAddress"));
