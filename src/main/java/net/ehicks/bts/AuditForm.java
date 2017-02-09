@@ -2,6 +2,7 @@ package net.ehicks.bts;
 
 import net.ehicks.bts.handlers.AuditHandler;
 import net.ehicks.eoi.PSIngredients;
+import net.ehicks.eoi.SQLGenerator;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -90,8 +91,8 @@ public class AuditForm extends SearchForm
         if (auditForm.getSortColumn().length() > 0)
             orderByClause += " order by " + auditForm.getSortColumn() + " " + auditForm.getSortDirection();
 
-        String offset = String.valueOf((Integer.valueOf(auditForm.getPage()) - 1) * resultsPerPage);
-        String paginationClause = " limit " + resultsPerPage + " offset " + offset;
+        long offset = (Integer.valueOf(auditForm.getPage()) - 1) * resultsPerPage;
+        String paginationClause = SQLGenerator.getLimitClause(resultsPerPage, offset);
 
         String completeQuery = selectClause + whereClause + orderByClause + paginationClause;
         return new PSIngredients(completeQuery, args);

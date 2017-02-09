@@ -404,7 +404,7 @@ public class DefaultDataLoader
             groupMap.setUserId(user.getId());
             if (user.getLogonId().equals("***REMOVED***") || user.getLogonId().equals("***REMOVED***"))
                 groupMap.setGroupId(admin.getId());
-            else if (user.getLogonId().equals("***REMOVED***"))
+            else if (user.getLogonId().equals("tupac@yahoo.com"))
                 groupMap.setGroupId(support.getId());
             else
             {
@@ -443,11 +443,11 @@ public class DefaultDataLoader
     {
         Map<String, List<String>> users = new HashMap<>();
         users.put("***REMOVED***", new ArrayList<>(Arrays.asList("eric", "2", "Eric", ***REMOVED***)));
-        users.put("***REMOVED***", new ArrayList<>(Arrays.asList("val", "3", "Diva", "Val")));
-        users.put("khicks@yahoo.com", new ArrayList<>(Arrays.asList("khicks", "8", "Kara", ***REMOVED***)));
         users.put("***REMOVED***", new ArrayList<>(Arrays.asList("steve", "15", "Steve", ***REMOVED***)));
-        users.put("thicks@yahoo.com", new ArrayList<>(Arrays.asList("test", "5", "Tom", ***REMOVED***)));
-        users.put("bhicks@yahoo.com", new ArrayList<>(Arrays.asList("test", "10", "Bev", ***REMOVED***)));
+        users.put("tupac@test.com", new ArrayList<>(Arrays.asList("test", "3", "2", "Pac")));
+        users.put("bill@test.com", new ArrayList<>(Arrays.asList("test", "8", "Bill", "Smith")));
+        users.put("john@test.com", new ArrayList<>(Arrays.asList("test", "5", "John", "Doe")));
+        users.put("jane@test.com", new ArrayList<>(Arrays.asList("test", "10", "Jane", "Doe")));
 
         MessageDigestCredentialHandler credentialHandler = null;
         try

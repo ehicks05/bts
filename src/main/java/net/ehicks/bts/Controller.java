@@ -30,7 +30,7 @@ public class Controller extends HttpServlet
         Startup.loadProperties(getServletContext());
         String h2ConnectionString = "jdbc:h2:tcp://localhost/~/bts/bts;TRACE_LEVEL_FILE=1;DB_CLOSE_ON_EXIT=FALSE;COMPRESS=TRUE;CACHE_SIZE=" + SystemInfo.INSTANCE.getDatabaseCacheInKBs() + ";";
         String mssqlConnectionString = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;user=erictest;***REMOVED***";
-        SystemInfo.INSTANCE.setDbConnectionString(mssqlConnectionString);
+        SystemInfo.INSTANCE.setDbConnectionString(h2ConnectionString);
 
         EOI.init(SystemInfo.INSTANCE.getDbConnectionString());
 

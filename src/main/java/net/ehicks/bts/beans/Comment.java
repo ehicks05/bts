@@ -3,6 +3,7 @@ package net.ehicks.bts.beans;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.Index;
 import net.ehicks.eoi.Indexes;
+import net.ehicks.eoi.SQLGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -85,7 +86,7 @@ public class Comment implements Serializable
 
     public static List<Comment> getRecentCreatedByUserId(Long createdByUserId, int lastN)
     {
-        return EOI.executeQuery("select * from comments where created_by_user_id=? order by created_on desc limit ? offset 0", Arrays.asList(createdByUserId, lastN));
+        return EOI.executeQuery("select * from comments where created_by_user_id=? order by created_on desc" + SQLGenerator.getLimitClause("?", "0"), Arrays.asList(createdByUserId, lastN));
     }
 
     public Issue getIssue()

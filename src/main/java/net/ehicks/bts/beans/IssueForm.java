@@ -6,6 +6,7 @@ import net.ehicks.bts.handlers.IssueSearchHandler;
 import net.ehicks.bts.SearchResult;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.PSIngredients;
+import net.ehicks.eoi.SQLGenerator;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -252,12 +253,13 @@ public class IssueForm extends SearchForm implements Serializable
         String orderByClause = "";
         if (issueForm.getSortColumn().length() > 0)
         {
-            orderByClause += " order by " + issueForm.getSortColumn() + " " + issueForm.getSortDirection() + ", id nulls last " ;
+//            orderByClause += " order by " + issueForm.getSortColumn() + " " + issueForm.getSortDirection() + ", id nulls last " ;
+            orderByClause += " order by " + issueForm.getSortColumn() + " " + issueForm.getSortDirection() + " " ;
             // todo note: the ',id nulls last' can prevent index use...
         }
 
-        String offset = String.valueOf((Integer.valueOf(issueForm.getPage()) - 1) * resultsPerPage);
-        String paginationClause = " limit " + resultsPerPage + " offset " + offset;
+        long offset = (Integer.valueOf(issueForm.getPage()) - 1) * resultsPerPage;
+        String paginationClause = SQLGenerator.getLimitClause(resultsPerPage, offset);
 
         String completeQuery = selectClause + whereClause + orderByClause + paginationClause;
         return new PSIngredients(completeQuery, args);
