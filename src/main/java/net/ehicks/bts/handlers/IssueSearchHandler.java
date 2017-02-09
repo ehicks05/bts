@@ -33,6 +33,8 @@ public class IssueSearchHandler
             UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
             issueForm.setUserId(userSession.getUserId());
             issueForm = updateIssueFormFromRequest(issueForm, request);
+
+            request.getSession().setAttribute("issueForm", issueForm);
         }
 
         SearchResult searchResult = issueForm.getSearchResult();
