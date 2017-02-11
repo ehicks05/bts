@@ -16,11 +16,17 @@ a:hover, a:focus, a:active {text-decoration: underline;}
 .table {border-collapse: collapse; background-color: #ffffff}
 .table td {padding: 2px 6px}
 .list {border-collapse: collapse; border: 1px solid lightgray; background-color: #ffffff}
+.list tr {
+    transition-duration: .28s;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    transition-property: background-color;
+}
+.list tr:hover {background-color: #eee;}
 .list td {border: 1px solid #e5e5e5; padding: 2px 6px}
 .listheading {background-color: lightgray; font-weight: bold}
 .listheading td {white-space: nowrap}
 .listrowodd { background-color: white}
-.listroweven {background-color: lavender}
+.listroweven {background-color: #efefff}
 
 /* JQuery */
 .ui-datepicker {z-index: 4 !important;}

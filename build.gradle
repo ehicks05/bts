@@ -7,15 +7,23 @@ apply plugin: 'idea'
 
 repositories {
     mavenCentral()
+    maven
+    {
+        url '***REMOVED***/libs-snapshot-local'
+        credentials{
+            username = 'admin'
+            ***REMOVED***
+        }
+    }
 }
 
 dependencies {
-    compile files('C:/javalib/hicks-common.jar')
-    compile files('C:/javalib/hicks-eoi.jar')
+    compile 'net.ehicks:EOI:1.0-SNAPSHOT'
+    compile 'net.ehicks:common:1.0-SNAPSHOT'
 
-    compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.0-api', version: '1.0.1.Final'
+    compile 'org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1.Final'
     compile 'javax.servlet:jstl:1.2'
-    compile group: 'org.apache.commons', name: 'commons-email', version: '1.4'
+    compile 'org.apache.commons:commons-email:1.4'
     compile 'org.apache.commons:commons-lang3:3.5'
     compile 'commons-fileupload:commons-fileupload:1.3.2'
     compile 'org.imgscalr:imgscalr-lib:4.2'
@@ -26,11 +34,9 @@ dependencies {
     compile 'org.slf4j:slf4j-log4j12:1.7.22'
     compile 'log4j:apache-log4j-extras:1.2.17'
     
-    providedRuntime group: 'com.h2database', name: 'h2', version: '1.4.192'
-
     providedCompile 'org.apache.tomcat:tomcat-catalina:8.0.39'
-    providedCompile group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.3.1'
-    providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+    providedCompile 'javax.servlet.jsp:javax.servlet.jsp-api:2.3.1'
+    providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
 
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
@@ -42,5 +48,11 @@ idea{
     module {
         downloadJavadoc = true // defaults to false
         downloadSources = true
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        cacheChangingModulesFor 0, 'seconds'
     }
 }

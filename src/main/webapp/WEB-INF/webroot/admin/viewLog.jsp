@@ -22,23 +22,23 @@
         <div class="mdl-card__title"><h5>Log ${logName}</h5></div>
 
         <div class="tableContainer">
-            <table class="mdl-data-table mdl-shadow--2dp">
+            <table class="list">
                 <thead>
-                <tr>
-                    <th class="mdl-data-table__cell--non-numeric">Time</th>
-                    <th class="mdl-data-table__cell--non-numeric">Thread</th>
-                    <th class="mdl-data-table__cell--non-numeric">Level</th>
-                    <th class="mdl-data-table__cell--non-numeric">Class</th>
-                    <th class="mdl-data-table__cell--non-numeric">Message</th>
+                <tr class="listheading">
+                    <td>Time</td>
+                    <td>Thread</td>
+                    <td>Level</td>
+                    <td>Class</td>
+                    <td>Message</td>
                 </tr>
                 </thead>
                 <c:forEach var="line" items="${lines}" varStatus="loop">
-                    <tr>
-                        <td class="mdl-data-table__cell--non-numeric">${line[0]}</td>
-                        <td class="mdl-data-table__cell--non-numeric">${line[1]}</td>
-                        <td class="mdl-data-table__cell--non-numeric">${line[2]}</td>
-                        <td class="mdl-data-table__cell--non-numeric">${line[3]}</td>
-                        <td class="mdl-data-table__cell--non-numeric">${line[4]}</td>
+                    <tr class="listrowodd">
+                        <td>${line[0]}</td>
+                        <td>${line[1]}</td>
+                        <td>${line[2]}</td>
+                        <td>${line[3]}</td>
+                        <td>${line[4]}</td>
                     </tr>
                 </c:forEach>
             </table>
