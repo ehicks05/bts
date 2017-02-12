@@ -28,7 +28,7 @@ public class EmailEngine
         EOI.update(emailMessage);
 
         // create email
-        new Thread(() -> sendHtmlEmail(emailMessage, recipients)).start();
+        EmailThreadPool.getPool().submit(() -> sendHtmlEmail(emailMessage, recipients));
     }
 
     private static Set<String> determineRecipients(EmailMessage emailMessage)
