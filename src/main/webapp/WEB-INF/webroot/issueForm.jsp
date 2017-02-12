@@ -220,7 +220,7 @@
         </form>
 
         <div id="attachmentActions" class="mdl-card__actions">
-            <input type="button" value="Add Attachment" id="showAddAttachment" class="mdl-button mdl-js-button mdl-button--raised" onclick="showAddAttachment();" />
+            <input type="button" value="Add Attachment" id="showAddAttachment" class="mdl-button mdl-js-button mdl-button--raised"/>
         </div>
     </div>
 
