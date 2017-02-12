@@ -74,7 +74,7 @@ public class Controller extends HttpServlet
 
             // this will hit if they 1. log out, 2. hit F5, and 3. attempt to log back in.
             // without this check, they will log in and immediately be logged out again.
-            if (request.getParameter("action").equals("logout"))
+            if (request.getParameter("action") != null && request.getParameter("action").equals("logout"))
             {
                 response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
                 return;

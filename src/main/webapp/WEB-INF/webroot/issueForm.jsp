@@ -195,10 +195,10 @@
                                         </c:if>
 
                                         <c:if test="${!empty defaultImageName}">
-                                            <img style="width: 32px;" src="../../images/mimetypes/${defaultImageName}"/>
+                                            <img style="width: 24px;" src="../../images/mimetypes/${defaultImageName}"/>
                                         </c:if>
                                         <c:if test="${empty defaultImageName}">
-                                            <i class="material-icons" style="font-size: 32px">attachment</i>
+                                            <i class="material-icons" style="font-size: 24px;vertical-align: text-bottom">attachment</i>
                                         </c:if>
                                         ${attachment.dbFile.name}
                                     </a>
