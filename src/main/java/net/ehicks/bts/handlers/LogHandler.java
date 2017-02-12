@@ -87,17 +87,19 @@ public class LogHandler
             closeIndex++;
         }
         String thread = line.substring(0, closeIndex + 1);
+        String threadWithoutBrackets = thread.substring(1, thread.length() - 2);
 
         line = line.substring(closeIndex + 1);
         String level = line.substring(0, line.indexOf(" "));
 
         line = line.substring(line.indexOf(" ") + 2);
         String myClass = line.substring(0, line.indexOf(" "));
+        String classWithoutPackage = myClass.substring(myClass.lastIndexOf(".") + 1);
 
         line = line.substring(line.indexOf(" ") + 4);
         String message = line;
 
-        lines.add(Arrays.asList(date, thread, level, myClass, message));
+        lines.add(Arrays.asList(date, threadWithoutBrackets, level, classWithoutPackage, message));
     }
 
     private static void parseLineRaw(List<List<String>> lines, String line)

@@ -22,7 +22,7 @@
         <div class="mdl-card__title"><h5>Log ${logName}</h5></div>
 
         <div class="tableContainer">
-            <table class="list">
+            <table class="list" style="font-size: 0.8em">
                 <thead>
                 <tr class="listheading">
                     <td>Time</td>
