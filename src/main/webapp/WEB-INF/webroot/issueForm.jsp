@@ -151,7 +151,7 @@
 
         <form name="frmSave" id="frmSaveAttachments" method="post" action="${pageContext.request.contextPath}/view?tab1=modify&action=save">
             <div class="mdl-card__supporting-text">
-                <table>
+                <table class="table">
                     <tr>
                         <c:forEach var="attachment" items="${issue.attachments}">
                             <c:if test="${attachment.thumbnailDbFileId > 0}">
@@ -173,7 +173,8 @@
                         </c:forEach>
                     </tr>
                 </table>
-                <table>
+                <br>
+                <table class="table">
                     <c:forEach var="attachment" items="${issue.attachments}">
                         <c:if test="${attachment.thumbnailDbFileId == 0}">
                             <tr>
@@ -201,8 +202,14 @@
                                         </c:if>
                                         ${attachment.dbFile.name}
                                     </a>
-                                    <span style="padding-left: 40px;">${attachment.dbFile.lengthPretty}</span>
+                                </td>
+                                <td class="alignright" style="padding: 0 8px;border:solid 1px lightgray;">
+                                    <span>${attachment.dbFile.lengthPretty}</span>
+                                </td>
+                                <td style="padding: 0 8px;border:solid 1px lightgray;">
                                     <span><fmt:formatDate value="${attachment.createdOn}" pattern="dd/MMM/yy h:mm a"/></span>
+                                </td>
+                                <td style="padding: 0 8px;border:solid 1px lightgray;">
                                     <a onclick="deleteAttachment('${attachment.id}');" class="clickable material-icons">delete</a>
                                 </td>
                             </tr>

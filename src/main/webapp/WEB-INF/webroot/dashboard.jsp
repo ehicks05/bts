@@ -25,8 +25,8 @@
                 ${issueForm.formName}: ${searchResult.size} Issues
                 <div class="mdl-layout-spacer" style="float: right;"></div>
                 <div style="float: right;">
-                    <a class="material-icons" href="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=form&issueFormId=${issueForm.id}">mode_edit</a>
-                    <a class="material-icons" href="${pageContext.request.contextPath}/view?tab1=main&tab2=dashboard&action=remove&issueFormId=${issueForm.id}">clear</a>
+                    <a class="material-icons nounderline" href="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=form&issueFormId=${issueForm.id}">mode_edit</a>
+                    <a class="material-icons nounderline" href="${pageContext.request.contextPath}/view?tab1=main&tab2=dashboard&action=remove&issueFormId=${issueForm.id}">clear</a>
                 </div>
             </div>
 
