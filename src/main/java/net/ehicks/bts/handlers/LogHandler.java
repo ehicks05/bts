@@ -56,35 +56,52 @@ public class LogHandler
         List<List<String>> lines = new ArrayList<>();
         for (String line : Files.readAllLines(file.toPath(), Charset.defaultCharset()))
         {
-            String date = line.substring(0, 12);
-            line = line.substring(13);
-
-            int openCount = 1;
-            int closeIndex = 1;
-            while (openCount > 0)
+            try
             {
-                if (line.charAt(closeIndex) == ']')
-                    openCount--;
-                if (line.charAt(closeIndex) == '[')
-                    openCount++;
-                closeIndex++;
+                parseLine(lines, line);
             }
-            String thread = line.substring(0, closeIndex + 1);
-
-            line = line.substring(closeIndex + 1);
-            String level = line.substring(0, line.indexOf(" "));
-
-            line = line.substring(line.indexOf(" ") + 2);
-            String myClass = line.substring(0, line.indexOf(" "));
-
-            line = line.substring(line.indexOf(" ") + 4);
-            String message = line;
-
-            lines.add(Arrays.asList(date, thread, level, myClass, message));
+            catch (Exception e)
+            {
+                parseLineRaw(lines, line);
+            }
         }
 
         request.setAttribute("lines", lines);
         request.setAttribute("logName", logName);
         return "/WEB-INF/webroot/admin/viewLog.jsp";
+    }
+
+    private static void parseLine(List<List<String>> lines, String line)
+    {
+        String date = line.substring(0, 12);
+        line = line.substring(13);
+
+        int openCount = 1;
+        int closeIndex = 1;
+        while (openCount > 0)
+        {
+            if (line.charAt(closeIndex) == ']')
+                openCount--;
+            if (line.charAt(closeIndex) == '[')
+                openCount++;
+            closeIndex++;
+        }
+        String thread = line.substring(0, closeIndex + 1);
+
+        line = line.substring(closeIndex + 1);
+        String level = line.substring(0, line.indexOf(" "));
+
+        line = line.substring(line.indexOf(" ") + 2);
+        String myClass = line.substring(0, line.indexOf(" "));
+
+        line = line.substring(line.indexOf(" ") + 4);
+        String message = line;
+
+        lines.add(Arrays.asList(date, thread, level, myClass, message));
+    }
+
+    private static void parseLineRaw(List<List<String>> lines, String line)
+    {
+        lines.add(Arrays.asList("", "", "", "", line));
     }
 }
