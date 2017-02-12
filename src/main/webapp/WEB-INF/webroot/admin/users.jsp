@@ -74,7 +74,7 @@
 
         <div class="mdl-card__actions">
             <input id="addUserButton" type="button" value="Add User" class="mdl-button mdl-js-button mdl-button--raised" />
-            <input id="printUserButton" type="button" value="Print Users" onclick="printUsers();" class="mdl-button mdl-js-button mdl-button--raised" style="padding-left:40px;background-image: url('../../../images/mimetypes/Adobe.png'); background-position: left; background-repeat: no-repeat;"/>
+            <input id="printUserButton" type="button" value="Print Users" onclick="printUsers();" class="mdl-button mdl-js-button mdl-button--raised" style="padding-left:40px;background-image: url('${pageContext.request.contextPath}/images/mimetypes/Adobe.png'); background-position: left; background-repeat: no-repeat;"/>
         </div>
     </div>
 </div>
