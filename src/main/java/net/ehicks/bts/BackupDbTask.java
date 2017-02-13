@@ -31,7 +31,7 @@ public class BackupDbTask
     public static String getBackupPath() throws IOException
     {
         String today = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
-        String filename = "bts_" + today + ".sql";
+        String filename = "bts_" + today + EOIBackup.getBackupExtension();
         File backupFile = new File(SystemInfo.INSTANCE.getBackupDirectory() + filename);
         return backupFile.getCanonicalPath();
     }
@@ -58,10 +58,13 @@ public class BackupDbTask
         {
             log.info("Starting BackupDbTask");
             String backupPath = getBackupPath();
+            String zippedBackupPath = backupPath.substring(0, backupPath.lastIndexOf(".")) + ".zip";
+            new File(zippedBackupPath).delete();
+            
             EOIBackup.backup(backupPath);
 
             try (InputStream inputStream = new BufferedInputStream(new FileInputStream(backupPath));
-                 ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(backupPath.replace(".sql", ".zip")));)
+                 ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(zippedBackupPath));)
             {
                 ZipEntry zipEntry = new ZipEntry(new File(backupPath).getName());
                 outputStream.putNextEntry(zipEntry);

@@ -12,7 +12,7 @@ public class CommonScheduling
 
     public static void shutDown(ExecutorService service)
     {
-        log.info("Attempting to shut down email threadpool");
+        log.info("Attempting to shut down executorService");
         service.shutdown(); // Disable new tasks from being submitted
         try
         {
@@ -22,7 +22,7 @@ public class CommonScheduling
                 service.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
                 if (!service.awaitTermination(60, TimeUnit.SECONDS))
-                    log.error("Pool did not terminate");
+                    log.error("executorService did not terminate");
             }
         }
         catch (InterruptedException ie)
