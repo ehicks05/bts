@@ -46,6 +46,7 @@ public class BackupDbTask
         if(zonedNow.compareTo(zonedNext2Hours) > 0)
             zonedNext2Hours = zonedNext2Hours.plusDays(1);
 
+        log.info("BackupDbTask scheduled for " + zonedNext2Hours);
         Duration duration = Duration.between(zonedNow, zonedNext2Hours);
         long initialDelay = duration.getSeconds();
 

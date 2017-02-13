@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <jsp:useBean id="lines" type="java.util.List<java.util.List<java.lang.String>>" scope="request"/>
+<jsp:useBean id="threadToColorMap" type="java.util.Map<java.lang.String, java.lang.String>" scope="request"/>
 
 <!DOCTYPE html>
 <html>
@@ -33,7 +34,7 @@
                 </tr>
                 </thead>
                 <c:forEach var="line" items="${lines}" varStatus="loop">
-                    <tr class="listrowodd">
+                    <tr class="listrowodd" style="background-color: ${threadToColorMap[line[1]]}">
                         <td>${line[0]}</td>
                         <td>${line[1]}</td>
                         <td>${line[2]}</td>
