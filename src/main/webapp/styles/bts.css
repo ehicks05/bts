@@ -45,7 +45,7 @@ div.ui-datepicker{
 /* Material */
 .mdl-grid {padding: 0;}
 .mdl-layout__drawer .mdl-navigation {padding-top: 8px;}
-.mdl-card__title {padding: 8px; background-color: #cedff9;}
+.mdl-card__title {padding: 8px; background-color: #cedff9; min-height: 56px;}
 .mdl-card__supporting-text {padding: 8px;}
 .mdl-card {
     overflow: visible;

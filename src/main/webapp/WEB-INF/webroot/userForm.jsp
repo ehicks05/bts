@@ -28,7 +28,7 @@
             <h5>
                 <div class="mdl-card__title-text">
                     <img src="${user.avatar.base64}" style="padding-right: 8px; height: 48px;"/>
-                    ${user.name}
+                    <span style="padding-top: 8px;">${user.name}</span>
                 </div>
             </h5>
         </div>
