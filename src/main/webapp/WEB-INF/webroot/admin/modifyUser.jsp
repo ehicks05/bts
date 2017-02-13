@@ -50,18 +50,24 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" id="userId" name="userId" type="text" value="${user.id}" readonly/>
                     <label class="mdl-textfield__label" for="userId">User Id:</label>
-                </div>
+                </div><br>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" id="logonId" name="logonId" type="text" value="${user.logonId}"/>
                     <label class="mdl-textfield__label" for="logonId">Logon Id:</label>
-                </div>
+                </div><br>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" id="firstName" name="firstName" type="text" value="${user.firstName}"/>
                     <label class="mdl-textfield__label" for="firstName">First Name:</label>
-                </div>
+                </div><br>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" id="lastName" name="lastName" type="text" value="${user.lastName}"/>
                     <label class="mdl-textfield__label" for="lastName">Last Name:</label>
+                </div><br>
+                <div>
+                    <label class="mdl-checkbox mdl-js-checkbox" for="enabled">
+                        <input type="checkbox" id="enabled" name="enabled" class="mdl-checkbox__input" <c:if test="${user.enabled}">checked</c:if> />
+                        <span class="mdl-checkbox__label">Enabled</span>
+                    </label>
                 </div>
                 <br>
                 <div>
@@ -77,10 +83,54 @@
 
             <div class="mdl-card__actions">
                 <input id="saveUserButton" type="submit" value="Save" class="mdl-button mdl-js-button mdl-button--raised" />
+                <input id="changePassword" type="button" value="Change Password" class="mdl-button mdl-js-button mdl-button--raised" />
             </div>
         </form>
     </div>
 </div>
+
+<dialog id="changePasswordDialog" class="mdl-dialog">
+    <h4 class="mdl-dialog__title">Change Password</h4>
+    <div class="mdl-dialog__content">
+        <form id="frmChangePassword" name="frmChangePassword" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&action=changePassword&userId=${user.id}">
+            <table>
+                <tr>
+                    <td>New Password:</td>
+                    <td>
+                        <input type="text" id="password" name="password" size="20" maxlength="256" value="" required/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button change">Change</button>
+        <button type="button" class="mdl-button close">Cancel</button>
+    </div>
+</dialog>
+<script>
+    var changePasswordDialog = document.querySelector('#changePasswordDialog');
+    var changePasswordButton = document.querySelector('#changePassword');
+    if (!changePasswordDialog.showModal)
+    {
+        dialogPolyfill.registerDialog(changePasswordDialog);
+    }
+    changePasswordButton.addEventListener('click', function ()
+    {
+        changePasswordDialog.showModal();
+    });
+    document.querySelector('#changePasswordDialog .change').addEventListener('click', function ()
+    {
+        if (!document.querySelector('#password').value)
+            alert('Please enter a password.');
+        else
+            $('#frmChangePassword').submit();
+    });
+    changePasswordDialog.querySelector('#changePasswordDialog .close').addEventListener('click', function ()
+    {
+        changePasswordDialog.close();
+    });
+</script>
 
 <jsp:include page="../footer.jsp"/>
 </body>

@@ -1,9 +1,9 @@
 package net.ehicks.bts;
 
 import net.ehicks.bts.beans.*;
+import net.ehicks.bts.util.PasswordUtil;
 import net.ehicks.common.Timer;
 import net.ehicks.eoi.EOI;
-import org.apache.catalina.realm.MessageDigestCredentialHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -22,7 +21,6 @@ public class DefaultDataLoader
     private static final Logger log = LoggerFactory.getLogger(DefaultDataLoader.class);
 
     private static int issueCount = 1_024;
-    private static int cryptoIterations = 200_000;
 
     private static List<String> latin = Arrays.asList("annus", "ante meridiem", "aqua", "bene", "canis", "caput", "circus", "cogito",
             "corpus", "de facto", "deus", "ego", "equus", "ergo", "est", "hortus", "id", "in", "index", "iris", "latex",
@@ -449,28 +447,13 @@ public class DefaultDataLoader
         users.put("john@test.com", new ArrayList<>(Arrays.asList("test", "5", "John", "Doe")));
         users.put("jane@test.com", new ArrayList<>(Arrays.asList("test", "10", "Jane", "Doe")));
 
-        MessageDigestCredentialHandler credentialHandler = null;
-        try
-        {
-            credentialHandler = new MessageDigestCredentialHandler();
-            credentialHandler.setAlgorithm("SHA-256");
-            credentialHandler.setIterations(cryptoIterations);
-            credentialHandler.setSaltLength(32);
-        }
-        catch (NoSuchAlgorithmException e)
-        {
-            log.error(e.getMessage(), e);
-        }
-
         for (String key : users.keySet())
         {
             User user = new User();
             user.setLogonId(key);
 
-            long start = System.currentTimeMillis();
             String rawPassword = users.get(key).get(0);
-            String password = credentialHandler.mutate(rawPassword);
-            log.debug("{} sha-256 iterations in {} ms", cryptoIterations, (System.currentTimeMillis() - start));
+            String password = PasswordUtil.digestPassword(rawPassword);
 
             user.setPassword(password);
             user.setEnabled(true);

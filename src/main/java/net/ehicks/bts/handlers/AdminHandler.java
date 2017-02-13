@@ -2,6 +2,7 @@ package net.ehicks.bts.handlers;
 
 import net.ehicks.bts.*;
 import net.ehicks.bts.beans.*;
+import net.ehicks.bts.util.PasswordUtil;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.EOICache;
@@ -117,10 +118,12 @@ public class AdminHandler
             Long avatarId = Common.stringToLong(request.getParameter("avatarId"));
             String firstName = Common.getSafeString(request.getParameter("firstName"));
             String lastName = Common.getSafeString(request.getParameter("lastName"));
+            boolean enabled = request.getParameter("enabled") != null;
             user.setLogonId(logonId);
             user.setAvatarId(avatarId);
             user.setFirstName(firstName);
             user.setLastName(lastName);
+            user.setEnabled(enabled);
             EOI.update(user);
 
             List<Long> selectedGroupIds = Arrays.stream(request.getParameterValues("groups")).map(Long::valueOf).collect(Collectors.toList());
@@ -140,6 +143,23 @@ public class AdminHandler
                     groupMap.setGroupId(groupId);
                     EOI.insert(groupMap);
                 }
+            }
+        }
+
+        response.sendRedirect("view?tab1=admin&tab2=users&tab3=modify&action=form&userId=" + userId);
+    }
+
+    public static void changePassword(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        Long userId = Common.stringToLong(request.getParameter("userId"));
+        User user = User.getByUserId(userId);
+        if (user != null)
+        {
+            String password = Common.getSafeString(request.getParameter("password"));
+            if (password.length() > 0)
+            {
+                user.setPassword(PasswordUtil.digestPassword(password));
+                EOI.update(user);
             }
         }
 
