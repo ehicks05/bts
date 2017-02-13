@@ -45,6 +45,8 @@ public class Controller extends HttpServlet
             new Thread(DefaultDataLoader::createDemoData).start();
         }
 
+        BackupDbTask.scheduleTask();
+
         log.info("BTS loaded in {} ms", (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()));
     }
 
@@ -52,7 +54,8 @@ public class Controller extends HttpServlet
     public void destroy()
     {
         log.info("BTS shutting down...");
-        EmailThreadPool.shutDown();
+        CommonScheduling.shutDown(EmailThreadPool.getPool());
+        CommonScheduling.shutDown(BackupDbTask.getScheduler());
         EOI.destroy();
     }
 
@@ -339,6 +342,17 @@ public class Controller extends HttpServlet
                         viewJsp = LogHandler.viewLogPretty(request, response);
                     if (action.equals("delete"))
                         LogHandler.deleteLog(request, response);
+                }
+                if (tab2.equals("backups"))
+                {
+                    if (action.equals("form"))
+                        viewJsp = BackupHandler.showBackups(request, response);
+                    if (action.equals("create"))
+                        BackupHandler.createBackup(request, response);
+                    if (action.equals("viewBackup"))
+                        BackupHandler.viewBackup(request, response);
+                    if (action.equals("delete"))
+                        BackupHandler.deleteBackup(request, response);
                 }
             }
 

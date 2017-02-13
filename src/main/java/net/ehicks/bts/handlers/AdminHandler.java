@@ -94,7 +94,7 @@ public class AdminHandler
             userData.add(Arrays.asList(user.getId(), user.getLogonId(), user.getLastName(), user.getFirstName(), user.getCreatedOn()));
         File file = PdfCreator.createPdf("Me", "Users Report", "", userData);
 
-        CommonIO.sendFileInResponse(response, file);
+        CommonIO.sendFileInResponse(response, file, true);
     }
 
     public static String showModifyUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException

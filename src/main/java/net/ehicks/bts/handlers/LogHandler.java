@@ -45,7 +45,7 @@ public class LogHandler
         String logName = Common.getSafeString(request.getParameter("logName"));
         File file = new File(SystemInfo.INSTANCE.getLogDirectory() + logName);
 
-        CommonIO.sendFileInResponse(response, file);
+        CommonIO.sendFileInResponse(response, file, true);
     }
 
     public static String viewLogPretty(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException

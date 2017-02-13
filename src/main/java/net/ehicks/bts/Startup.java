@@ -46,6 +46,7 @@ public class Startup
         SystemInfo.INSTANCE.setEmailFromName(properties.getProperty("emailFromName"));
 
         SystemInfo.INSTANCE.setLogDirectory(properties.getProperty("logDirectory"));
+        SystemInfo.INSTANCE.setBackupDirectory(properties.getProperty("backupDirectory"));
     }
 
     static void loadDBMaps(ServletContext servletContext)

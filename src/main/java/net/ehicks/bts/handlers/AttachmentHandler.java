@@ -48,7 +48,7 @@ public class AttachmentHandler
 
             DBFile dbFile = attachment.getDbFile();
 
-            CommonIO.sendFileInResponse(response, dbFile);
+            CommonIO.sendFileInResponse(response, dbFile, true);
         }
     }
 

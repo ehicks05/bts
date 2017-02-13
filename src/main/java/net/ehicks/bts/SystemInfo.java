@@ -28,6 +28,7 @@ public enum SystemInfo
     private String emailFromName = "";
 
     private String logDirectory = "";
+    private String backupDirectory = "";
 
     public Date getSystemStartTime()
     {
@@ -217,5 +218,15 @@ public enum SystemInfo
     public void setLogDirectory(String logDirectory)
     {
         this.logDirectory = logDirectory;
+    }
+
+    public String getBackupDirectory()
+    {
+        return backupDirectory;
+    }
+
+    public void setBackupDirectory(String backupDirectory)
+    {
+        this.backupDirectory = backupDirectory;
     }
 }

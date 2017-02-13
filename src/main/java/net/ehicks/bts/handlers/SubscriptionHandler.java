@@ -59,7 +59,7 @@ public class SubscriptionHandler
             subscriptionData.add(Arrays.asList(subscription.getId(), subscription.getUserId(), subscription.getDescription()));
         File file = PdfCreator.createPdf("Me", "Subscription Report", "", subscriptionData);
 
-        CommonIO.sendFileInResponse(response, file);
+        CommonIO.sendFileInResponse(response, file, true);
     }
 
     private static Subscription updateSubscriptionFromRequest(Subscription subscription, HttpServletRequest request)

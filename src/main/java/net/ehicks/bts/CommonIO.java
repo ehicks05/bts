@@ -9,10 +9,11 @@ import java.net.URLConnection;
 
 public class CommonIO
 {
-    public static void sendFileInResponse(HttpServletResponse response, File file) throws IOException
+    public static void sendFileInResponse(HttpServletResponse response, File file, boolean inline) throws IOException
     {
         response.setContentType(URLConnection.guessContentTypeFromName(file.getName()));
-        response.setHeader("Content-Disposition", String.format("inline; filename=%s", file.getName()));
+        String contentDisposition = inline ? "inline" : "attachment";
+        response.setHeader("Content-Disposition", String.format(contentDisposition + "; filename=%s", file.getName()));
         response.setContentLength(Long.valueOf(file.length()).intValue());
 
         InputStream inputStream = new FileInputStream(file);
@@ -21,10 +22,11 @@ public class CommonIO
         IOUtils.closeQuietly(response.getOutputStream());
     }
 
-    public static void sendFileInResponse(HttpServletResponse response, DBFile dbFile) throws IOException
+    public static void sendFileInResponse(HttpServletResponse response, DBFile dbFile, boolean inline) throws IOException
     {
         response.setContentType(URLConnection.guessContentTypeFromName(dbFile.getName()));
-        response.setHeader("Content-Disposition", String.format("inline; filename=%s", dbFile.getName()));
+        String contentDisposition = inline ? "inline" : "attachment";
+        response.setHeader("Content-Disposition", String.format(contentDisposition + "; filename=%s", dbFile.getName()));
         response.setContentLength(Long.valueOf(dbFile.getContent().length).intValue());
 
         InputStream inputStream = new ByteArrayInputStream(dbFile.getContent());
