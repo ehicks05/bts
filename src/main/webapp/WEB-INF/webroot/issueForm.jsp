@@ -148,7 +148,7 @@
 
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>Attachments</h5></div>
-
+        <div style="height:100%;"></div>
         <form name="frmSave" id="frmSaveAttachments" method="post" action="${pageContext.request.contextPath}/view?tab1=modify&action=save">
             <div class="mdl-card__supporting-text">
                 <table class="table">

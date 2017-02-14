@@ -72,12 +72,13 @@ public class PdfCreator
     {
         float height = page.getMediaBox().getHeight() - 60;
         BaseTable table = new BaseTable(height, height, 40, page.getMediaBox().getWidth() - 80, 40, document, page, true, true);
+        Color headerColor = new Color(221, 221, 221);
 
         // Create Header row
         Row<PDPage> headerRow = table.createRow(15f);
         Cell<PDPage> cell = headerRow.createCell(100, title);
         cell.setFont(PDType1Font.HELVETICA_BOLD);
-        cell.setFillColor(Color.LIGHT_GRAY);
+        cell.setFillColor(headerColor);
         table.addHeaderRow(headerRow);
         for (List dataRow : data)
         {
@@ -95,7 +96,7 @@ public class PdfCreator
                 if (data.indexOf(dataRow) == 0)
                 {
                     cell.setFont(PDType1Font.HELVETICA_BOLD);
-                    cell.setFillColor(Color.LIGHT_GRAY);
+                    cell.setFillColor(headerColor);
                 }
             }
         }

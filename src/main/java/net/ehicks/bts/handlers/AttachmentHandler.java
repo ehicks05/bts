@@ -152,7 +152,7 @@ public class AttachmentHandler
             return;
 
         Group issueGroup = attachment.getIssue().getGroup();
-        if (!userSession.getUser().getAllGroups().contains(issueGroup))
+        if (!userSession.getUser().getAllGroups().contains(Group.getByName("Admin")) && !userSession.getUser().getAllGroups().contains(issueGroup))
             return;
 
         EOI.executeDelete(attachment);
