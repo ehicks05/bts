@@ -155,19 +155,32 @@
                     <tr>
                         <c:forEach var="attachment" items="${issue.attachments}">
                             <c:if test="${attachment.thumbnailDbFileId > 0}">
-                                <td style="padding: 0 8px;border:solid 1px lightgray;">
+                                <td style="padding: 0;border:solid 1px lightgray;">
                                     <div align="center">
                                         <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=retrieveAttachment&attachmentId=${attachment.id}">
                                             <img src="${attachment.thumbnailDbFile.base64}"/>
                                         </a>
                                     </div>
-                                    <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=retrieveAttachment&attachmentId=${attachment.id}">
-                                        ${attachment.dbFile.name}
-                                    </a>
-                                    <a style="padding-left: 40px;" onclick="deleteAttachment('${attachment.id}');" class="clickable material-icons">delete</a>
-                                    <br>
-                                    <span>${attachment.dbFile.lengthPretty}</span>
-                                    <span style="padding-left: 40px;"><fmt:formatDate value="${attachment.createdOn}" pattern="dd/MMM/yy h:mm a"/></span>
+                                    <table class="table">
+                                        <tr>
+                                            <td>
+                                                <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=retrieveAttachment&attachmentId=${attachment.id}">
+                                                        ${attachment.dbFile.name}
+                                                </a>
+                                            </td>
+                                            <td class="alignright">
+                                                <a onclick="deleteAttachment('${attachment.id}');" class="clickable material-icons">delete</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span>${attachment.dbFile.lengthPretty}</span>
+                                            </td>
+                                            <td>
+                                                <span><fmt:formatDate value="${attachment.createdOn}" pattern="dd/MMM/yy h:mm a"/></span>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </td>
                             </c:if>
                         </c:forEach>

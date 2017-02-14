@@ -89,7 +89,8 @@ public class PdfCreator
                 if (dataCell instanceof String) value = (String) dataCell;
                 if (dataCell instanceof Date) value = ((Date)dataCell).toString();
                 if (dataCell instanceof Long) value = ((Long)dataCell).toString();
-                cell = row.createCell((100 / dataRow.size()), value);
+                float width = (float)100 / dataRow.size();
+                cell = row.createCell(width, value);
 
                 if (data.indexOf(dataRow) == 0)
                 {
