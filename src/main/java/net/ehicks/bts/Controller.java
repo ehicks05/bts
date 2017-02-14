@@ -87,9 +87,13 @@ public class Controller extends HttpServlet
 
         if (!User.getByUserId(userSession.getUserId()).getEnabled())
         {
-            request.setAttribute("clientMessage", "Your account is disabled...");
-            logout(request, response);
-            response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
+            invalidateSession(request);
+
+            request.setAttribute("responseMessage", "Your account is disabled...");
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/webroot/login-failed.jsp");
+            dispatcher.forward(request, response);
+
             return;
         }
 
@@ -383,11 +387,17 @@ public class Controller extends HttpServlet
 
     private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
+        invalidateSession(request);
+
+        response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
+    }
+
+
+    private void invalidateSession(HttpServletRequest request)
+    {
         request.removeAttribute("userSession");
         HttpSession session = request.getSession(false);
         if (session != null)
             session.invalidate();
-
-        response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
     }
 }

@@ -39,6 +39,7 @@
                     </th>
                     <th></th>
                     <th class="mdl-data-table__cell--non-numeric">Name</th>
+                    <th>Size</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -54,6 +55,8 @@
                         <td class="mdl-data-table__cell--non-numeric">
                             ${log.name}
                         </td>
+                        <td>${ct:fileSize(log.length())}</td>
+
                         <td class="mdl-data-table__cell--non-numeric">
                             <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=logs&action=viewLog&logName=${log.name}">
                                 <i class="material-icons">assignment</i>Raw</a>

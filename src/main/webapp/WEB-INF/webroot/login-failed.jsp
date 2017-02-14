@@ -11,6 +11,13 @@
 <head>
     <title>BTS</title>
     <jsp:include page="inc_header.jsp"/>
+
+    <script>
+        $(document).ready(function ()
+        {
+          $('#backButton').focus();
+        });
+    </script>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
@@ -21,10 +28,13 @@
         <div class="mdl-card__title"><h5>Sorry, login failed!</h5></div>
 
         <div class="mdl-card__actions">
-            <input type="submit" value="Back" class="mdl-button mdl-js-button mdl-button--raised" onclick="location.href='${pageContext.request.contextPath}/view?tab1=main&action=form';"/>
+            <input type="submit" id="backButton" value="Back" class="mdl-button mdl-js-button mdl-button--raised" onclick="location.href='${pageContext.request.contextPath}/view?tab1=main&action=form';"/>
         </div>
     </div>
 </div>
 
+<script>
+    $(document).ready(showResponseMessage);
+</script>
 </body>
 </html>

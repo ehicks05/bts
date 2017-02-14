@@ -457,7 +457,7 @@ public class DefaultDataLoader
 
             user.setPassword(password);
             user.setEnabled(true);
-            if (key.equals("thicks@yahoo.com"))
+            if (key.equals("bill@test.com"))
                 user.setEnabled(false);
             user.setAvatarId(Long.valueOf(users.get(key).get(1)));
             user.setFirstName(users.get(key).get(2));

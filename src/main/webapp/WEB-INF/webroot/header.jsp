@@ -22,7 +22,13 @@
 
     function showResponseMessage()
     {
-        var message = '${sessionScope.responseMessage}';
+        var message;
+        <c:if test="${!empty sessionScope.responseMessage}">
+            message = '${sessionScope.responseMessage}';
+        </c:if>
+        <c:if test="${!empty requestScope.responseMessage}">
+            message = '${requestScope.responseMessage}';
+        </c:if>
         if (message)
         {
             alert(message);
