@@ -1,17 +1,3 @@
-things i remember having to do on steve's laptop:
-
-1. make sure you have intellij, java, tomcat, gradle
-2. do a svn checkout of the project
-3. get a copy of server.xml with the security realm
-4. get a copy of hicks-eoi.jar and hicks-common.jar
-5. get a copy of the user avatar images
-6. get a copy of the bts.properties file
-
-
-new streamlined steps:
-
-1. make sure you have intellij, java, tomcat, gradle
+1. install intellij, java, tomcat
 2. do a svn checkout of the project
 3. refer to server-sample.xml to configure your server.xml (maybe it can just be copied over?)
-4. from dropbox shared folder, get a copy of hicks-eoi.jar and hicks-common.jar. Put in c:/javalib/
-5. rename bts-sample.properties to bts.properties. It is intentionally missing the password so emails won't work.
