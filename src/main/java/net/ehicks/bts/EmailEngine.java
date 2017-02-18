@@ -25,7 +25,7 @@ public class EmailEngine
         Set<String> recipients = determineRecipients(emailMessage);
 
         emailMessage.setStatus("WAITING");
-        EOI.update(emailMessage);
+        EOI.update(emailMessage, SystemTask.EMAIL_ENGINE);
 
         // create email
         EmailThreadPool.getPool().submit(() -> sendHtmlEmail(emailMessage, recipients));
@@ -106,12 +106,12 @@ public class EmailEngine
             email.send();
 
             emailMessage.setStatus("SENT");
-            EOI.update(emailMessage);
+            EOI.update(emailMessage, SystemTask.EMAIL_ENGINE);
         }
         catch (MalformedURLException | EmailException e)
         {
             emailMessage.setStatus("FAILED");
-            EOI.update(emailMessage);
+            EOI.update(emailMessage, SystemTask.EMAIL_ENGINE);
 
             log.error(e.getMessage(), e);
         }

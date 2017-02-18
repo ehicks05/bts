@@ -1,17 +1,24 @@
 package net.ehicks.bts;
 
 import net.ehicks.bts.beans.User;
+import net.ehicks.eoi.AuditUser;
 
 import java.util.Date;
 
-public class UserSession
+public class UserSession implements AuditUser
 {
     private Long userId;
     private String logonId = "";
     private String sessionId = "";
+    private String ipAddress = "";
     private Date lastActivity;
 
+    public String getId()
+    {
+        return String.valueOf(userId);
+    }
 
+    // ----
 
     public SystemInfo getSystemInfo()
     {
@@ -51,6 +58,16 @@ public class UserSession
     public void setSessionId(String sessionId)
     {
         this.sessionId = sessionId;
+    }
+
+    public String getIpAddress()
+    {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress)
+    {
+        this.ipAddress = ipAddress;
     }
 
     public Date getLastActivity()

@@ -379,6 +379,7 @@ public class Controller extends HttpServlet
         userSession.setUserId(user.getId());
         userSession.setLogonId(user.getLogonId());
         userSession.setSessionId(request.getSession().getId());
+        userSession.setIpAddress(request.getRemoteAddr());
         userSession.setLastActivity(new Date());
         request.getSession().setAttribute("userSession", userSession);
 

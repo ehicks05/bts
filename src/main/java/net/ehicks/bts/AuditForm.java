@@ -18,8 +18,8 @@ public class AuditForm extends SearchForm
 
     public AuditForm()
     {
-        setSortColumn("id");
-        setSortDirection("asc");
+        setSortColumn("event_time");
+        setSortDirection("desc");
         setPage("1");
     }
 

@@ -27,12 +27,13 @@ public class DashboardHandler
 
     public static void removeIssueForm(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         long id = Common.stringToLong(request.getParameter("issueFormId"));
         IssueForm issueForm = IssueForm.getById(id);
         if (issueForm != null)
         {
             issueForm.setOnDash(false);
-            EOI.update(issueForm);
+            EOI.update(issueForm, userSession);
         }
 
         response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");

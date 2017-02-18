@@ -1,7 +1,6 @@
 package net.ehicks.bts.handlers;
 
 import net.ehicks.bts.SearchResult;
-import net.ehicks.bts.beans.Issue;
 import net.ehicks.bts.beans.IssueForm;
 import net.ehicks.eoi.EOICache;
 
@@ -59,6 +58,13 @@ public class DebugHandler
 
             info += "\r\n" + attrValue.toString();
         }
+
+        info += "\r\nHttpServletRequest.getLocalAddr() :" + request.getLocalAddr()   ;
+        info += "\r\nHttpServletRequest.getLocalName() :" + request.getLocalName()   ;
+        info += "\r\nHttpServletRequest.getServerName():" + request.getServerName()  ;
+        info += "\r\nHtppServletRequest.getLocalPort() :" + request.getLocalPort()   ;
+        info += "\r\nHttpServletRequest.getServerPort():" + request.getServerPort()  ;
+        info += "\r\nHttpServletRequest.getContextPath():" + request.getContextPath();
 
         ServletOutputStream outputStream = response.getOutputStream();
         outputStream.print(info);

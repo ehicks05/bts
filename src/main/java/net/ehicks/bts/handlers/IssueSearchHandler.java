@@ -47,6 +47,7 @@ public class IssueSearchHandler
 
     public static void ajaxGetPageOfResults(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, ServletException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         Long issueFormId = Common.stringToLong(request.getParameter("issueFormId"));
         IssueForm issueForm = IssueForm.getById(issueFormId);
 
@@ -77,7 +78,7 @@ public class IssueSearchHandler
 
             // we want to persist sorting preferences
             if (issueFormId > 0)
-                EOI.update(issueForm);
+                EOI.update(issueForm, userSession);
         }
 
         String page = request.getParameter("page");
@@ -157,18 +158,19 @@ public class IssueSearchHandler
 
     public static void saveIssueForm(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         Long issueFormId = Common.stringToLong(request.getParameter("filterId"));
         IssueForm issueForm = IssueForm.getById(issueFormId);
         if (issueForm == null)
         {
             issueForm = new IssueForm();
             issueForm = updateIssueFormFromRequest(issueForm, request);
-            issueFormId = EOI.insert(issueForm);
+            issueFormId = EOI.insert(issueForm, userSession);
         }
         else
         {
             issueForm = updateIssueFormFromRequest(issueForm, request);
-            EOI.update(issueForm);
+            EOI.update(issueForm, userSession);
         }
 
         response.sendRedirect("view?tab1=main&tab2=search&action=form&issueFormId=" + issueFormId);

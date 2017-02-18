@@ -91,18 +91,19 @@ public class ModifyIssueHandler
         issue.setTitle(title);
         issue.setDescription(description);
         issue.setCreatedOn(new Date());
-        Long newIssueId = EOI.insert(issue);
+        Long newIssueId = EOI.insert(issue, userSession);
 
         WatcherMap watcherMap = new WatcherMap();
         watcherMap.setIssueId(newIssueId);
         watcherMap.setUserId(userSession.getUserId());
-        EOI.insert(watcherMap);
+        EOI.insert(watcherMap, userSession);
 
         response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + newIssueId);
     }
 
     public static void updateIssue(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         Long issueId        = Common.stringToLong(request.getParameter("issueId"));
         String fieldName    = Common.getSafeString(request.getParameter("fldFieldName"));
         String fieldValue   = Common.getSafeString(request.getParameter("fldFieldValue"));
@@ -170,7 +171,7 @@ public class ModifyIssueHandler
             issue.setLastUpdatedOn(new Date());
         }
 
-        EOI.update(issue);
+        EOI.update(issue, userSession);
 
         String toastMessage = "Updated " + updateLog;
         response.getWriter().println(toastMessage);
@@ -190,7 +191,7 @@ public class ModifyIssueHandler
         comment.setCreatedOn(new Date());
         comment.setContent(content);
         comment.setVisibleToGroupId(visibility);
-        long commentId = EOI.insert(comment);
+        long commentId = EOI.insert(comment, userSession);
 
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setUserId(userSession.getUserId());
@@ -198,7 +199,7 @@ public class ModifyIssueHandler
         emailMessage.setActionId(EmailAction.ADD_COMMENT.getId());
         emailMessage.setCommentId(commentId);
         emailMessage.setDescription(content);
-        long emailId = EOI.insert(emailMessage);
+        long emailId = EOI.insert(emailMessage, userSession);
         emailMessage = EmailMessage.getById(emailId);
 
         EmailEngine.sendEmail(emailMessage);
@@ -230,7 +231,7 @@ public class ModifyIssueHandler
             comment.setLastUpdatedOn(new Date());
         }
 
-        EOI.update(comment);
+        EOI.update(comment, userSession);
 
         String toastMessage = "Updated " + updateLog;
         response.getWriter().println(toastMessage);
@@ -250,7 +251,7 @@ public class ModifyIssueHandler
         emailMessage.setActionId(EmailAction.EDIT_COMMENT.getId());
         emailMessage.setCommentId(commentId);
         emailMessage.setDescription(prettyDiff);
-        long emailId = EOI.insert(emailMessage);
+        long emailId = EOI.insert(emailMessage, userSession);
         emailMessage = EmailMessage.getById(emailId);
 
         EmailEngine.sendEmail(emailMessage);
@@ -266,7 +267,7 @@ public class ModifyIssueHandler
         WatcherMap watcherMap = new WatcherMap();
         watcherMap.setIssueId(issueId);
         watcherMap.setUserId(userId);
-        EOI.insert(watcherMap);
+        EOI.insert(watcherMap, userSession);
 
         response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + issueId);
     }
@@ -279,7 +280,7 @@ public class ModifyIssueHandler
         Long watcherMapId    = Common.stringToLong(request.getParameter("watcherMapId"));
 
         WatcherMap watcherMap = WatcherMap.getById(watcherMapId);
-        EOI.executeDelete(watcherMap);
+        EOI.executeDelete(watcherMap, userSession);
 
         response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + issueId);
     }

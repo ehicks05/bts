@@ -72,7 +72,7 @@
         </form>
     </div>
     <div class="mdl-dialog__actions">
-        <button type="button" class="mdl-button create">Create</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored create">Create</button>
         <button type="button" class="mdl-button close">Cancel</button>
     </div>
 </dialog>

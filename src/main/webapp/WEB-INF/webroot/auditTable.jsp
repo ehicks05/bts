@@ -10,6 +10,8 @@
     <thead>
     <tr class="listheading">
         <t:sortableCell code="id" label="Audit ID" style="text-align:right;" searchForm="${auditForm}" />
+        <t:sortableCell code="user_id" label="User ID" searchForm="${auditForm}"/>
+        <t:sortableCell code="user_ip" label="User IP" searchForm="${auditForm}"/>
         <t:sortableCell code="event_time" label="Event Time" searchForm="${auditForm}"/>
         <t:sortableCell code="event_type" label="Event Type" searchForm="${auditForm}"/>
         <t:sortableCell code="object_key" label="Object Key" searchForm="${auditForm}"/>
@@ -23,7 +25,9 @@
     <c:forEach var="audit" items="${searchResult.searchResults}" varStatus="loop">
         <tr class="${loop.index % 2 == 0 ? 'listrowodd' : 'listroweven'}">
             <td class="alignright">${audit.id}</td>
-            <td class="alignright"><fmt:formatDate value="${audit.eventTime}" pattern="dd/MMM/yy hh:mm:ss.SSS a" /></td>
+            <td class="mdl-data-table__cell--non-numeric">${audit.userId} ${audit.userName}</td>
+            <td class="mdl-data-table__cell--non-numeric">${audit.userIp}</td>
+            <td class="alignright"><fmt:formatDate value="${audit.eventTime}" pattern="dd/MMM/yy hh:mm:ss a" /></td>
             <td class="mdl-data-table__cell--non-numeric">${audit.eventType}</td>
             <td class="mdl-data-table__cell--non-numeric">${audit.objectKey}</td>
             <td class="mdl-data-table__cell--non-numeric">${audit.fieldName}</td>

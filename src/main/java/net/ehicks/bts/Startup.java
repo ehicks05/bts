@@ -44,6 +44,7 @@ public class Startup
         SystemInfo.INSTANCE.setEmailPassword(properties.getProperty("emailPassword"));
         SystemInfo.INSTANCE.setEmailFromAddress(properties.getProperty("emailFromAddress"));
         SystemInfo.INSTANCE.setEmailFromName(properties.getProperty("emailFromName"));
+        SystemInfo.INSTANCE.setEmailContext(properties.getProperty("emailContext"));
 
         SystemInfo.INSTANCE.setLogDirectory(properties.getProperty("logDirectory"));
         SystemInfo.INSTANCE.setBackupDirectory(properties.getProperty("backupDirectory"));

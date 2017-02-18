@@ -1,6 +1,7 @@
 package net.ehicks.bts.beans;
 
 import net.ehicks.bts.EmailAction;
+import net.ehicks.bts.SystemInfo;
 import net.ehicks.eoi.EOI;
 
 import javax.persistence.*;
@@ -100,6 +101,7 @@ public class EmailMessage implements Serializable
 
     public String getBody()
     {
+        String emailContext = SystemInfo.INSTANCE.getEmailContext();
         if (actionId == EmailAction.ADD_COMMENT.getId())
         {
             User user = User.getByUserId(userId);
@@ -115,13 +117,13 @@ public class EmailMessage implements Serializable
                     "    <tr><td>\n" +
                     "        <table style=\"width: 500px;margin:auto;background-color: white\">\n" +
                     "            <tr>\n" +
-                    "                <td style=\"padding: 10px;\"><h1><a href=\"http://192.168.1.100:8080/view?tab1=main&tab2=issue&action=form&issueId=" + issueId + "\">\n" +
+                    "                <td style=\"padding: 10px;\"><h1><a href=\"" + emailContext + "/view?tab1=main&tab2=issue&action=form&issueId=" + issueId + "\">\n" +
                     "                    " + issue.getProject().getPrefix() + "-" + issue.getId() + " " + issue.getTitle() + "</a></h1></td>\n" +
                     "            </tr>\n" +
                     "            <tr>\n" +
                     "                <td style=\"padding: 10px;\">\n" +
                     "                    <h3>\n" +
-                    "                        <img style=\"width: 32px;\" src=\"http://192.168.1.100:8080/images/avatars/png/avatar-" + avatarId + ".png\" />\n" +
+                    "                        <img style=\"width: 32px;\" src=\"" + emailContext + "/images/avatars/png/avatar-" + avatarId + ".png\" />\n" +
                     "                        " + user.getLogonId() + " " + EmailAction.getById(actionId).getVerb() + ".\n" +
                     "                    </h3>\n" +
                     "                    <p>" + description + "</p>\n" +
@@ -148,13 +150,13 @@ public class EmailMessage implements Serializable
                     "    <tr><td>\n" +
                     "        <table style=\"width: 500px;margin:auto;background-color: white\">\n" +
                     "            <tr>\n" +
-                    "                <td style=\"padding: 10px;\"><h1><a href=\"http://192.168.1.100:8080/view?tab1=main&tab2=issue&action=form&issueId=" + issueId + "\">\n" +
+                    "                <td style=\"padding: 10px;\"><h1><a href=\"" + emailContext + "/view?tab1=main&tab2=issue&action=form&issueId=" + issueId + "\">\n" +
                     "                    " + issue.getProject().getPrefix() + "-" + issue.getId() + " " + issue.getTitle() + "</a></h1></td>\n" +
                     "            </tr>\n" +
                     "            <tr>\n" +
                     "                <td style=\"padding: 10px;\">\n" +
                     "                    <h3>\n" +
-                    "                        <img style=\"width: 32px;\" src=\"http://192.168.1.100:8080/images/avatars/png/avatar-" + avatarId + ".png\" />\n" +
+                    "                        <img style=\"width: 32px;\" src=\"" + emailContext + "/images/avatars/png/avatar-" + avatarId + ".png\" />\n" +
                     "                        " + user.getLogonId() + " " + EmailAction.getById(actionId).getVerb() + ".\n" +
                     "                    </h3>\n" +
                     "                    <blockquote>" + description + "</blockquote>\n" +
@@ -175,7 +177,7 @@ public class EmailMessage implements Serializable
                     "    <tr><td>\n" +
                     "        <table style=\"width: 500px;margin:auto;background-color: white\">\n" +
                     "            <tr>\n" +
-                    "                <td style=\"padding: 10px;\"><h1><a href=\"http://192.168.1.100:8080/view?tab1=main&tab2=dashboard&action=form \">\n" +
+                    "                <td style=\"padding: 10px;\"><h1><a href=\"" + emailContext + "/view?tab1=main&tab2=dashboard&action=form \">\n" +
                     "                    " + "Test Email" + "</a></h1></td>\n" +
                     "            </tr>\n" +
                     "            <tr>\n" +

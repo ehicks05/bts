@@ -86,11 +86,11 @@ public class DefaultDataLoader
             issueForm.setFormName("All Issues");
             issueForm.setOnDash(true);
             issueForm.setUserId(user.getId());
-            EOI.insert(issueForm);
+            EOI.insert(issueForm, SystemTask.DEFAULT_DATA_LOADER);
 
             issueForm.setFormName("Assigned To Me");
             issueForm.setAssigneeUserIds(String.valueOf(user.getId()));
-            EOI.insert(issueForm);
+            EOI.insert(issueForm, SystemTask.DEFAULT_DATA_LOADER);
         }
     }
 
@@ -119,12 +119,12 @@ public class DefaultDataLoader
                     dbFile.setName(avatarFile.getName());
                     dbFile.setContent(content);
                     dbFile.setLength((long) content.length);
-                    long dbFileId = EOI.insert(dbFile);
+                    long dbFileId = EOI.insert(dbFile, SystemTask.DEFAULT_DATA_LOADER);
 
                     Avatar avatar = new Avatar();
                     avatar.setDbFileId(dbFileId);
                     avatar.setCreatedOn(new Date());
-                    EOI.insert(avatar);
+                    EOI.insert(avatar, SystemTask.DEFAULT_DATA_LOADER);
                 }
             }
         }
@@ -196,14 +196,14 @@ public class DefaultDataLoader
         comment.setCreatedByUserId(2L);
         comment.setCreatedOn(new Date());
         comment.setContent("I think we can do that.");
-        EOI.insert(comment);
+        EOI.insert(comment, SystemTask.DEFAULT_DATA_LOADER);
 
         comment = new Comment();
         comment.setIssueId(2L);
         comment.setCreatedByUserId(3L);
         comment.setCreatedOn(new Date());
         comment.setContent("OK that will be great :).");
-        EOI.insert(comment);
+        EOI.insert(comment, SystemTask.DEFAULT_DATA_LOADER);
     }
 
     private static void createProjectMaps()
@@ -216,7 +216,7 @@ public class DefaultDataLoader
             ProjectMap projectMap = new ProjectMap();
             projectMap.setUserId(user.getId());
             projectMap.setProjectId(projectId);
-            EOI.insert(projectMap);
+            EOI.insert(projectMap, SystemTask.DEFAULT_DATA_LOADER);
         }
     }
 
@@ -245,14 +245,14 @@ public class DefaultDataLoader
                     dbFile.setName(img.getName());
                     dbFile.setContent(content);
                     dbFile.setLength((long) content.length);
-                    long dbFileId = EOI.insert(dbFile);
+                    long dbFileId = EOI.insert(dbFile, SystemTask.DEFAULT_DATA_LOADER);
 
                     Attachment attachment = new Attachment();
                     attachment.setIssueId(2L);
                     attachment.setCreatedByUserId(2L);
                     attachment.setCreatedOn(new Date());
                     attachment.setDbFileId(dbFileId);
-                    EOI.insert(attachment);
+                    EOI.insert(attachment, SystemTask.DEFAULT_DATA_LOADER);
                 }
             }
         }
@@ -339,35 +339,35 @@ public class DefaultDataLoader
     {
         IssueType issueType = new IssueType();
         issueType.setName("Bug");
-        EOI.insert(issueType);
+        EOI.insert(issueType, SystemTask.DEFAULT_DATA_LOADER);
         issueType.setName("New Feature");
-        EOI.insert(issueType);
+        EOI.insert(issueType, SystemTask.DEFAULT_DATA_LOADER);
         issueType.setName("Question");
-        EOI.insert(issueType);
+        EOI.insert(issueType, SystemTask.DEFAULT_DATA_LOADER);
         issueType.setName("Data Issue");
-        EOI.insert(issueType);
+        EOI.insert(issueType, SystemTask.DEFAULT_DATA_LOADER);
     }
 
     private static void createSeverities()
     {
         Severity severity = new Severity();
         severity.setName("High");
-        EOI.insert(severity);
+        EOI.insert(severity, SystemTask.DEFAULT_DATA_LOADER);
         severity.setName("Low");
-        EOI.insert(severity);
+        EOI.insert(severity, SystemTask.DEFAULT_DATA_LOADER);
         severity.setName("Blocker");
-        EOI.insert(severity);
+        EOI.insert(severity, SystemTask.DEFAULT_DATA_LOADER);
     }
 
     private static void createStatuses()
     {
         Status status = new Status();
         status.setName("Open");
-        EOI.insert(status);
+        EOI.insert(status, SystemTask.DEFAULT_DATA_LOADER);
         status.setName("Closed");
-        EOI.insert(status);
+        EOI.insert(status, SystemTask.DEFAULT_DATA_LOADER);
         status.setName("Re-opened");
-        EOI.insert(status);
+        EOI.insert(status, SystemTask.DEFAULT_DATA_LOADER);
     }
 
     private static void createProjects()
@@ -375,13 +375,13 @@ public class DefaultDataLoader
         Project project = new Project();
         project.setName("Genesis");
         project.setPrefix("GS");
-        EOI.insert(project);
+        EOI.insert(project, SystemTask.DEFAULT_DATA_LOADER);
         project.setName("SchoolFI");
         project.setPrefix("SF");
-        EOI.insert(project);
+        EOI.insert(project, SystemTask.DEFAULT_DATA_LOADER);
         project.setName("Cinemang");
         project.setPrefix("CM");
-        EOI.insert(project);
+        EOI.insert(project, SystemTask.DEFAULT_DATA_LOADER);
     }
 
     private static void createGroupMaps()
@@ -410,7 +410,7 @@ public class DefaultDataLoader
                 long groupId = customerGroups.get(r.nextInt(customerGroups.size())).getId();
                 groupMap.setGroupId(groupId);
             }
-            EOI.insert(groupMap);
+            EOI.insert(groupMap, SystemTask.DEFAULT_DATA_LOADER);
         }
     }
 
@@ -419,22 +419,22 @@ public class DefaultDataLoader
         Group group = new Group();
 
         group.setName("Readington");
-        EOI.insert(group);
+        EOI.insert(group, SystemTask.DEFAULT_DATA_LOADER);
         group.setName("Bridgewater");
-        EOI.insert(group);
+        EOI.insert(group, SystemTask.DEFAULT_DATA_LOADER);
         group.setName("Califon");
-        EOI.insert(group);
+        EOI.insert(group, SystemTask.DEFAULT_DATA_LOADER);
         group.setName("Flemington");
-        EOI.insert(group);
+        EOI.insert(group, SystemTask.DEFAULT_DATA_LOADER);
 
         group.setName("Support");
         group.setSupport(true);
-        EOI.insert(group);
+        EOI.insert(group, SystemTask.DEFAULT_DATA_LOADER);
 
         group.setName("Admin");
         group.setSupport(false);
         group.setAdmin(true);
-        EOI.insert(group);
+        EOI.insert(group, SystemTask.DEFAULT_DATA_LOADER);
     }
 
     private static void createUsers()
@@ -464,18 +464,18 @@ public class DefaultDataLoader
             user.setLastName(users.get(key).get(3));
             user.setCreatedOn(new Date());
             user.setUpdatedOn(new Date());
-            long userId = EOI.insert(user);
+            long userId = EOI.insert(user, SystemTask.DEFAULT_DATA_LOADER);
 
             Role role = new Role();
             role.setLogonId(user.getLogonId());
             role.setUserId(userId);
             role.setRoleName("user");
-            EOI.insert(role);
+            EOI.insert(role, SystemTask.DEFAULT_DATA_LOADER);
 
             if (user.getLogonId().equals("***REMOVED***"))
             {
                 role.setRoleName("admin");
-                EOI.insert(role);
+                EOI.insert(role, SystemTask.DEFAULT_DATA_LOADER);
             }
         }
     }

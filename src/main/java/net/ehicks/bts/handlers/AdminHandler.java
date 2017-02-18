@@ -69,20 +69,22 @@ public class AdminHandler
 
     public static void createUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         String logonId = Common.getSafeString(request.getParameter("fldLogonId"));
         User user = new User();
         user.setLogonId(logonId);
-        long userId = EOI.insert(user);
+        long userId = EOI.insert(user, userSession);
 
         response.sendRedirect("view?tab1=admin&tab2=users&action=form");
     }
 
     public static void deleteUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         Long userId = Common.stringToLong(request.getParameter("userId"));
         User user = User.getByUserId(userId);
         if (user != null)
-            EOI.executeDelete(user);
+            EOI.executeDelete(user, userSession);
 
         response.sendRedirect("view?tab1=admin&tab2=users&action=form");
     }
@@ -110,6 +112,7 @@ public class AdminHandler
 
     public static void modifyUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         Long userId = Common.stringToLong(request.getParameter("userId"));
         User user = User.getByUserId(userId);
         if (user != null)
@@ -124,14 +127,14 @@ public class AdminHandler
             user.setFirstName(firstName);
             user.setLastName(lastName);
             user.setEnabled(enabled);
-            EOI.update(user);
+            EOI.update(user, userSession);
 
             List<Long> selectedGroupIds = Arrays.stream(request.getParameterValues("groups")).map(Long::valueOf).collect(Collectors.toList());
 
             // remove existing roles that weren't selected
             for (GroupMap groupMap : GroupMap.getByUserId(userId))
                 if (!selectedGroupIds.contains(groupMap.getGroupId()))
-                    EOI.executeDelete(groupMap);
+                    EOI.executeDelete(groupMap, userSession);
             // add new roles that were selected but didn't already exist
             for (Long groupId : selectedGroupIds)
             {
@@ -141,7 +144,7 @@ public class AdminHandler
                     groupMap = new GroupMap();
                     groupMap.setUserId(user.getId());
                     groupMap.setGroupId(groupId);
-                    EOI.insert(groupMap);
+                    EOI.insert(groupMap, userSession);
                 }
             }
         }
@@ -151,6 +154,7 @@ public class AdminHandler
 
     public static void changePassword(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         Long userId = Common.stringToLong(request.getParameter("userId"));
         User user = User.getByUserId(userId);
         if (user != null)
@@ -159,7 +163,7 @@ public class AdminHandler
             if (password.length() > 0)
             {
                 user.setPassword(PasswordUtil.digestPassword(password));
-                EOI.update(user);
+                EOI.update(user, userSession);
             }
         }
 
@@ -176,22 +180,24 @@ public class AdminHandler
 
     public static void createProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         String name = Common.getSafeString(request.getParameter("fldName"));
         String prefix = Common.getSafeString(request.getParameter("fldPrefix"));
         Project project = new Project();
         project.setName(name);
         project.setPrefix(prefix);
-        long projectId = EOI.insert(project);
+        long projectId = EOI.insert(project, userSession);
 
         response.sendRedirect("view?tab1=admin&tab2=projects&action=form");
     }
 
     public static void deleteProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         Long projectId = Common.stringToLong(request.getParameter("projectId"));
         Project project = Project.getById(projectId);
         if (project != null)
-            EOI.executeDelete(project);
+            EOI.executeDelete(project, userSession);
 
         response.sendRedirect("view?tab1=admin&tab2=projects&action=form");
     }
@@ -207,6 +213,7 @@ public class AdminHandler
 
     public static void modifyProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         Long projectId = Common.stringToLong(request.getParameter("projectId"));
         Project project = Project.getById(projectId);
         if (project != null)
@@ -215,7 +222,7 @@ public class AdminHandler
             String prefix = Common.getSafeString(request.getParameter("prefix"));
             project.setName(name);
             project.setPrefix(prefix);
-            EOI.update(project);
+            EOI.update(project, userSession);
         }
 
         response.sendRedirect("view?tab1=admin&tab2=projects&tab3=modify&action=form&projectId=" + projectId);
@@ -231,20 +238,22 @@ public class AdminHandler
 
     public static void createGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         String name = Common.getSafeString(request.getParameter("fldName"));
         Group group = new Group();
         group.setName(name);
-        long groupId = EOI.insert(group);
+        long groupId = EOI.insert(group, userSession);
 
         response.sendRedirect("view?tab1=admin&tab2=groups&action=form");
     }
 
     public static void deleteGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         Long groupId = Common.stringToLong(request.getParameter("groupId"));
         Group group = Group.getById(groupId);
         if (group != null)
-            EOI.executeDelete(group);
+            EOI.executeDelete(group, userSession);
 
         response.sendRedirect("view?tab1=admin&tab2=groups&action=form");
     }
@@ -260,13 +269,14 @@ public class AdminHandler
 
     public static void modifyGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         Long groupId = Common.stringToLong(request.getParameter("groupId"));
         Group group = Group.getById(groupId);
         if (group != null)
         {
             String name = Common.getSafeString(request.getParameter("name"));
             group.setName(name);
-            EOI.update(group);
+            EOI.update(group, userSession);
         }
 
         response.sendRedirect("view?tab1=admin&tab2=groups&tab3=modify&action=form&groupId=" + groupId);
@@ -282,11 +292,12 @@ public class AdminHandler
 
     public static void sendTestEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         String to = Common.getSafeString(request.getParameter("fldTo"));
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setActionId(EmailAction.TEST.getId());
         emailMessage.setToAddress(to);
-        long emailId = EOI.insert(emailMessage);
+        long emailId = EOI.insert(emailMessage, userSession);
         emailMessage = EmailMessage.getById(emailId);
 
         EmailEngine.sendEmail(emailMessage);
@@ -296,10 +307,11 @@ public class AdminHandler
 
     public static void deleteEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         Long emailId = Common.stringToLong(request.getParameter("emailId"));
         EmailMessage emailMessage = EmailMessage.getById(emailId);
         if (emailMessage != null)
-            EOI.executeDelete(emailMessage);
+            EOI.executeDelete(emailMessage, userSession);
 
         response.sendRedirect("view?tab1=admin&tab2=email&action=form");
     }
@@ -315,12 +327,13 @@ public class AdminHandler
 
     public static void modifyEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         Long emailId = Common.stringToLong(request.getParameter("emailId"));
         EmailMessage emailMessage = EmailMessage.getById(emailId);
         if (emailMessage != null)
         {
             String name = Common.getSafeString(request.getParameter("name"));
-            EOI.update(emailMessage);
+            EOI.update(emailMessage, userSession);
         }
 
         response.sendRedirect("view?tab1=admin&tab2=email&tab3=modify&action=form&emailId=" + emailId);

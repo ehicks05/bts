@@ -108,14 +108,14 @@ public class AttachmentHandler
                         dbFile.setName(fileName);
                         dbFile.setContent(scaledBytes);
                         dbFile.setLength((long) scaledBytes.length);
-                        thumbnailId = EOI.insert(dbFile);
+                        thumbnailId = EOI.insert(dbFile, userSession);
                     }
 
                     DBFile dbFile = new DBFile();
                     dbFile.setName(fileName);
                     dbFile.setContent(fileContents);
                     dbFile.setLength(fileItem.getSize());
-                    dbFileId = EOI.insert(dbFile);
+                    dbFileId = EOI.insert(dbFile, userSession);
 
                     responseMessage = "Attachment added.";
                 }
@@ -134,7 +134,7 @@ public class AttachmentHandler
             attachment.setThumbnailDbFileId(thumbnailId);
             attachment.setCreatedByUserId(userSession.getUserId());
             attachment.setCreatedOn(new Date());
-            EOI.insert(attachment);
+            EOI.insert(attachment, userSession);
         }
 
         request.getSession().setAttribute("responseMessage", responseMessage);
@@ -155,7 +155,7 @@ public class AttachmentHandler
         if (!userSession.getUser().getAllGroups().contains(Group.getByName("Admin")) && !userSession.getUser().getAllGroups().contains(issueGroup))
             return;
 
-        EOI.executeDelete(attachment);
+        EOI.executeDelete(attachment, userSession);
 
         DBFile dbFile = attachment.getDbFile();
         if (dbFile == null)
@@ -166,11 +166,11 @@ public class AttachmentHandler
         if (attachments.size() > 0)
             return;
 
-        EOI.executeDelete(dbFile);
+        EOI.executeDelete(dbFile, userSession);
 
         DBFile thumbNail = attachment.getThumbnailDbFile();
         if (thumbNail != null)
-            EOI.executeDelete(thumbNail);
+            EOI.executeDelete(thumbNail, userSession);
 
         response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + issueId);
     }

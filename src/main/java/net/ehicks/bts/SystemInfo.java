@@ -26,6 +26,7 @@ public enum SystemInfo
     private String emailPassword = "";
     private String emailFromAddress = "";
     private String emailFromName = "";
+    private String emailContext = "";
 
     private String logDirectory = "";
     private String backupDirectory = "";
@@ -208,6 +209,16 @@ public enum SystemInfo
     public void setEmailFromName(String emailFromName)
     {
         this.emailFromName = emailFromName;
+    }
+
+    public String getEmailContext()
+    {
+        return emailContext;
+    }
+
+    public void setEmailContext(String emailContext)
+    {
+        this.emailContext = emailContext;
     }
 
     public String getLogDirectory()

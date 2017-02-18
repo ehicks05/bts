@@ -101,8 +101,8 @@ public class AuditHandler
         String sortDirection = request.getParameter("sortDirection");
         if (sortColumn == null)
         {
-            sortColumn = "id";
-            sortDirection = "asc";
+            sortColumn = "event_time";
+            sortDirection = "desc";
         }
 
         if (sortDirection == null)

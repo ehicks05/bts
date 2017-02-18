@@ -1,6 +1,7 @@
 package net.ehicks.bts.beans;
 
 import net.ehicks.eoi.EOI;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,6 +16,12 @@ public class Audit implements Serializable
     @Id
     @Column(name = "id", updatable = false, nullable = false, columnDefinition = "bigint not null auto_increment primary key")
     private Long id;
+
+    @Column(name = "user_id", nullable = false)
+    private String userId;
+
+    @Column(name = "user_ip", nullable = false)
+    private String userIp;
 
     @Column(name = "event_time", nullable = false)
     @Temporal(TemporalType.DATE)
@@ -69,6 +76,15 @@ public class Audit implements Serializable
         return EOI.executeQueryOneResult("select * from audits where id=?", Arrays.asList(id));
     }
 
+    public String getUserName()
+    {
+        String userName = "";
+        if (StringUtils.isNumeric(userId))
+            userName = " (" + User.getByUserId(Long.valueOf(userId)).getName() + ")";
+
+        return userName;
+    }
+
     // -------- Getters / Setters ----------
 
 
@@ -80,6 +96,26 @@ public class Audit implements Serializable
     public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public String getUserId()
+    {
+        return userId;
+    }
+
+    public void setUserId(String userId)
+    {
+        this.userId = userId;
+    }
+
+    public String getUserIp()
+    {
+        return userIp;
+    }
+
+    public void setUserIp(String userIp)
+    {
+        this.userIp = userIp;
     }
 
     public Date getEventTime()

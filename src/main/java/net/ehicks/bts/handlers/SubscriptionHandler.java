@@ -34,17 +34,19 @@ public class SubscriptionHandler
         Subscription subscription = new Subscription();
         subscription.setUserId(userSession.getUserId());
         subscription = updateSubscriptionFromRequest(subscription, request);
-        EOI.insert(subscription);
+        EOI.insert(subscription, userSession);
 
         response.sendRedirect("view?tab1=main&tab2=subscriptions&tab3=list&action=form");
     }
 
     public static void deleteSubscription(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+
         Long subscriptionId = Common.stringToLong(request.getParameter("subscriptionId"));
         Subscription subscription = Subscription.getById(subscriptionId);
         if (subscription != null)
-            EOI.executeDelete(subscription);
+            EOI.executeDelete(subscription, userSession);
 
         response.sendRedirect("view?tab1=main&tab2=subscriptions&tab3=list&action=form");
     }
