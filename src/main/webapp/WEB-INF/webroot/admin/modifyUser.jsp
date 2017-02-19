@@ -79,6 +79,11 @@
                     <label class="" for="groups">Groups:</label>
                     <t:multiSelect id="groups" items="${groups}" selectedValues="${user.allGroupIds}" placeHolder="None"/>
                 </div>
+                <br>
+                <div>
+                    <label class="" for="projects">Projects:</label>
+                    <t:multiSelect id="projects" items="${projects}" selectedValues="${user.allProjectIds}" placeHolder="None"/>
+                </div>
             </div>
 
             <div class="mdl-card__actions">

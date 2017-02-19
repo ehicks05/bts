@@ -141,6 +141,11 @@ public class User implements Serializable, ISelectTagSupport
         return Project.getAllForUser(id);
     }
 
+    public List<Long> getAllProjectIds()
+    {
+        return Project.getAllForUser(id).stream().map(Project::getId).collect(Collectors.toList());
+    }
+
     public DBFile getAvatar()
     {
         return DBFile.getById(avatarId);

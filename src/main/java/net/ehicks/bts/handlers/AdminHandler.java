@@ -131,11 +131,11 @@ public class AdminHandler
 
             List<Long> selectedGroupIds = Arrays.stream(request.getParameterValues("groups")).map(Long::valueOf).collect(Collectors.toList());
 
-            // remove existing roles that weren't selected
+            // remove existing groups that weren't selected
             for (GroupMap groupMap : GroupMap.getByUserId(userId))
                 if (!selectedGroupIds.contains(groupMap.getGroupId()))
                     EOI.executeDelete(groupMap, userSession);
-            // add new roles that were selected but didn't already exist
+            // add new groups that were selected but didn't already exist
             for (Long groupId : selectedGroupIds)
             {
                 GroupMap groupMap = GroupMap.getByUserIdAndGroupId(userId, groupId);
@@ -145,6 +145,25 @@ public class AdminHandler
                     groupMap.setUserId(user.getId());
                     groupMap.setGroupId(groupId);
                     EOI.insert(groupMap, userSession);
+                }
+            }
+
+            List<Long> selectedProjectIds = Arrays.stream(request.getParameterValues("projects")).map(Long::valueOf).collect(Collectors.toList());
+
+            // remove existing projects that weren't selected
+            for (ProjectMap projectMap : ProjectMap.getByUserId(userId))
+                if (!selectedProjectIds.contains(projectMap.getProjectId()))
+                    EOI.executeDelete(projectMap, userSession);
+            // add new projects that were selected but didn't already exist
+            for (Long projectId : selectedProjectIds)
+            {
+                ProjectMap projectMap = ProjectMap.getByUserIdAndProjectId(userId, projectId);
+                if (projectMap == null)
+                {
+                    projectMap = new ProjectMap();
+                    projectMap.setUserId(user.getId());
+                    projectMap.setProjectId(projectId);
+                    EOI.insert(projectMap, userSession);
                 }
             }
         }

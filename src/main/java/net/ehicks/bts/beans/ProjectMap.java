@@ -60,9 +60,9 @@ public class ProjectMap implements Serializable
         return EOI.executeQueryOneResult("select * from project_maps where id=?", Arrays.asList(id));
     }
 
-    public static GroupMap getByUserIdAndProjectId(Long userId, Long projectId)
+    public static ProjectMap getByUserIdAndProjectId(Long userId, Long projectId)
     {
-        return EOI.executeQueryOneResult("select * from project_maps where user_id=? and project_id", Arrays.asList(userId, projectId));
+        return EOI.executeQueryOneResult("select * from project_maps where user_id=? and project_id=?", Arrays.asList(userId, projectId));
     }
 
     // -------- Getters / Setters ----------
