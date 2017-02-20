@@ -1,6 +1,6 @@
 package net.ehicks.bts;
 
-import net.ehicks.bts.handlers.AuditHandler;
+import net.ehicks.bts.handlers.admin.AuditHandler;
 import net.ehicks.eoi.PSIngredients;
 import net.ehicks.eoi.SQLGenerator;
 

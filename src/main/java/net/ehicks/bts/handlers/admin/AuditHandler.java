@@ -1,6 +1,7 @@
-package net.ehicks.bts.handlers;
+package net.ehicks.bts.handlers.admin;
 
 import net.ehicks.bts.AuditForm;
+import net.ehicks.bts.Route;
 import net.ehicks.bts.SearchResult;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class AuditHandler
 {
+    @Route(tab1 = "admin", tab2 = "audit", tab3 = "", action = "form")
     public static String showAuditRecords(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         AuditForm auditForm = (AuditForm) request.getSession().getAttribute("auditForm");
@@ -34,6 +36,22 @@ public class AuditHandler
         return "/WEB-INF/webroot/admin/audit.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "audit", tab3 = "", action = "search")
+    public static void search(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    {
+        AuditForm auditForm = (AuditForm) request.getSession().getAttribute("auditForm");
+        if (auditForm == null)
+            auditForm = new AuditForm();
+
+        auditForm = updateAuditFormFromRequest(auditForm, request);
+
+        request.getSession().setAttribute("auditForm", auditForm);
+        request.setAttribute("auditForm", auditForm);
+
+        response.sendRedirect("view?tab1=admin&tab2=audit&action=form");
+    }
+
+    @Route(tab1 = "admin", tab2 = "audit", tab3 = "", action = "ajaxGetPageOfResults")
     public static void ajaxGetPageOfResults(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, ServletException
     {
         AuditForm auditForm = (AuditForm) request.getSession().getAttribute("auditForm");
@@ -72,20 +90,6 @@ public class AuditHandler
         request.getSession().setAttribute("searchResult", searchResult);
 
         request.getRequestDispatcher("/WEB-INF/webroot/auditTable.jsp").forward(request, response);
-    }
-
-    public static void search(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
-    {
-        AuditForm auditForm = (AuditForm) request.getSession().getAttribute("auditForm");
-        if (auditForm == null)
-            auditForm = new AuditForm();
-
-        auditForm = updateAuditFormFromRequest(auditForm, request);
-
-        request.getSession().setAttribute("auditForm", auditForm);
-        request.setAttribute("auditForm", auditForm);
-
-        response.sendRedirect("view?tab1=admin&tab2=audit&action=form");
     }
 
     private static AuditForm updateAuditFormFromRequest(AuditForm auditForm, HttpServletRequest request)

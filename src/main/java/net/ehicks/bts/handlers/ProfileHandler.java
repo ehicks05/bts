@@ -1,5 +1,6 @@
 package net.ehicks.bts.handlers;
 
+import net.ehicks.bts.Route;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.User;
 import net.ehicks.common.Common;
@@ -11,14 +12,8 @@ import java.text.ParseException;
 
 public class ProfileHandler
 {
-    public static String showUsers(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
-    {
-        request.setAttribute("users", User.getAll());
-
-        return "/WEB-INF/webroot/usersList.jsp";
-    }
-
-    public static String showModifyUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @Route(tab1 = "main", tab2 = "profile", tab3 = "", action = "form")
+    public static String showProfile(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
 
@@ -29,13 +24,6 @@ public class ProfileHandler
             return "/WEB-INF/webroot/error.jsp";
 
         request.setAttribute("user", user);
-
-        return "/WEB-INF/webroot/userForm.jsp";
-    }
-
-    public static String createUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
-    {
-        // todo
 
         return "/WEB-INF/webroot/userForm.jsp";
     }

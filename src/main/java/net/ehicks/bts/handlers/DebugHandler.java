@@ -1,8 +1,6 @@
 package net.ehicks.bts.handlers;
 
-import net.ehicks.bts.SearchResult;
-import net.ehicks.bts.beans.IssueForm;
-import net.ehicks.eoi.EOICache;
+import net.ehicks.bts.Route;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -14,24 +12,10 @@ import java.util.Enumeration;
 
 public class DebugHandler
 {
+    @Route(tab1 = "main", tab2 = "", tab3 = "", action = "debug")
     public static void getDebugInfo(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
-        long maxMemory = Runtime.getRuntime().maxMemory() ;
-        long allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
-        long presumableFreeMemory = (maxMemory - allocatedMemory);
-
-        String info = "";
-        info += String.format(    "%-20s: %4d", "Free Memory", presumableFreeMemory / 1024 / 1024);
-        info += String.format("\r\n%-20s: %4d", "Allocated Memory", allocatedMemory / 1024 / 1024);
-        info += String.format("\r\n%-20s: %4d", "Max Memory", maxMemory / 1024 / 1024);
-
-        info += "\r\n['" +
-                "cacheSize:" + EOICache.cache.keySet().size() +
-                "','" + "hit:" + EOICache.hits.toString() +
-                "','" + "miss:" + EOICache.misses.toString() +
-                "','" + "keyHitObjectMiss:" + EOICache.keyHitObjectMiss.toString() +
-                "','" + "keysWithNoValue:" + EOICache.getKeysWithNoValue() +
-                "']";
+        String info = "session:";
 
         HttpSession session = request.getSession();
         Enumeration<String> attrNames = session.getAttributeNames();
@@ -41,22 +25,7 @@ public class DebugHandler
             String attrName = attrNames.nextElement();
             Object attrValue = session.getAttribute(attrName);
 
-            if (attrValue instanceof IssueForm)
-            {
-                IssueForm issueForm = (IssueForm) attrValue;
-            }
-            if (attrValue instanceof SearchResult)
-            {
-                SearchResult searchResult = (SearchResult) attrValue;
-
-                int i = 1;
-                for (Object issue : searchResult.getSearchResults())
-                {
-                    info += "\r\n" + i++ + ":" + issue.toString();
-                }
-            }
-
-            info += "\r\n" + attrValue.toString();
+            info += "\r\n" + attrName + ": " + attrValue.toString();
         }
 
         info += "\r\nHttpServletRequest.getLocalAddr() :" + request.getLocalAddr()   ;

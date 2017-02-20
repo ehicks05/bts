@@ -1,5 +1,6 @@
 package net.ehicks.bts.handlers;
 
+import net.ehicks.bts.Route;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.IssueForm;
 import net.ehicks.common.Common;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 public class DashboardHandler
 {
+    @Route(tab1 = "main", tab2 = "dashboard", tab3 = "", action = "form")
     public static String showDashboard(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -25,6 +27,7 @@ public class DashboardHandler
         return "/WEB-INF/webroot/dashboard.jsp";
     }
 
+    @Route(tab1 = "main", tab2 = "dashboard", tab3 = "", action = "remove")
     public static void removeIssueForm(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");

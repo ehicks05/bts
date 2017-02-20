@@ -2,6 +2,7 @@ package net.ehicks.bts.handlers;
 
 import net.ehicks.bts.CommonIO;
 import net.ehicks.bts.PdfCreator;
+import net.ehicks.bts.Route;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.Subscription;
 import net.ehicks.common.Common;
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class SubscriptionHandler
 {
+    @Route(tab1 = "main", tab2 = "subscriptions", tab3 = "list", action = "form")
     public static String showSubscriptions(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -27,6 +29,7 @@ public class SubscriptionHandler
         return "/WEB-INF/webroot/subscriptions.jsp";
     }
 
+    @Route(tab1 = "main", tab2 = "subscriptions", tab3 = "list", action = "add")
     public static void addSubscription(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -39,6 +42,7 @@ public class SubscriptionHandler
         response.sendRedirect("view?tab1=main&tab2=subscriptions&tab3=list&action=form");
     }
 
+    @Route(tab1 = "main", tab2 = "subscriptions", tab3 = "list", action = "delete")
     public static void deleteSubscription(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -51,6 +55,7 @@ public class SubscriptionHandler
         response.sendRedirect("view?tab1=main&tab2=subscriptions&tab3=list&action=form");
     }
 
+    @Route(tab1 = "main", tab2 = "subscriptions", tab3 = "list", action = "print")
     public static void printSubscriptions(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");

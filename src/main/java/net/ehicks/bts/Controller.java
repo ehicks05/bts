@@ -2,6 +2,9 @@ package net.ehicks.bts;
 
 import net.ehicks.bts.beans.*;
 import net.ehicks.bts.handlers.*;
+import net.ehicks.bts.handlers.admin.AuditHandler;
+import net.ehicks.bts.handlers.admin.BackupHandler;
+import net.ehicks.bts.handlers.admin.LogHandler;
 import net.ehicks.eoi.EOI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.Date;
@@ -44,6 +48,8 @@ public class Controller extends HttpServlet
             Startup.createTables();
             new Thread(DefaultDataLoader::createDemoData).start();
         }
+
+        RouteLogic.loadRoutes();
 
         BackupDbTask.scheduleTask();
 
@@ -132,7 +138,7 @@ public class Controller extends HttpServlet
     private String processRequest(HttpServletRequest request, HttpServletResponse response, UserSession userSession) throws IOException, ServletException
     {
         String tab1   = request.getParameter("tab1") == null ? "main" : request.getParameter("tab1");
-        String tab2   = request.getParameter("tab2") == null && tab1.equals("main") ? "dashboard" : request.getParameter("tab2");
+        String tab2   = request.getParameter("tab2") == null ? "" : request.getParameter("tab2");
         String tab3   = request.getParameter("tab3") == null ? "" : request.getParameter("tab3");
         String action = request.getParameter("action") == null ? "form" : request.getParameter("action");
 
@@ -141,6 +147,25 @@ public class Controller extends HttpServlet
             return "/WEB-INF/webroot/error.jsp";
 
         String viewJsp = "";
+
+        RouteDescription routeDescription = new RouteDescription(tab1, tab2, tab3, action);
+        Method handler = RouteLogic.getRouteMap().get(routeDescription);
+        if (handler != null)
+        {
+            try
+            {
+                Object result = handler.invoke(handler.getClass(), request, response);
+                if (result != null && result instanceof String)
+                    return (String) result;
+                else
+                    return "";
+            }
+            catch (Exception e)
+            {
+                log.error(e.getMessage(), e);
+            }
+        }
+
         try
         {
             if (tab1.equals("main"))
@@ -189,180 +214,13 @@ public class Controller extends HttpServlet
                     if (action.equals("addToDashboard"))
                         IssueFormHandler.addToDashboard(request, response);
                 }
-                if (tab2.equals("settings"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = SettingsHandler.showSettings(request, response);
-                }
 
-                if (tab2.equals("dashboard"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = DashboardHandler.showDashboard(request, response);
-                    if (action.equals("remove"))
-                        DashboardHandler.removeIssueForm(request, response);
-                }
-
-                if (tab2.equals("profile"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = ProfileHandler.showModifyUser(request, response);
-                    if (action.equals("create"))
-                        ProfileHandler.createUser(request, response);
-                }
-                if (tab2.equals("subscriptions"))
-                {
-                    if (tab3.equals("list"))
-                    {
-                        if (action.equals("form"))
-                            viewJsp = SubscriptionHandler.showSubscriptions(request, response);
-                        if (action.equals("add"))
-                            SubscriptionHandler.addSubscription(request, response);
-                        if (action.equals("delete"))
-                            SubscriptionHandler.deleteSubscription(request, response);
-                        if (action.equals("print"))
-                            SubscriptionHandler.printSubscriptions(request, response);
-                    }
-                }
-
-                if (action.equals("debug"))
-                    DebugHandler.getDebugInfo(request, response);
                 if (action.equals("logout"))
                 {
                     logout(request, response);
                     return "";
                 }
             }
-            if (tab1.equals("admin"))
-            {
-                if (tab2 == null || tab2.isEmpty())
-                {
-                    response.sendRedirect("view?tab1=admin&tab2=overview&action=form");
-                    return "";
-                }
-                if (tab2.equals("overview"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = AdminHandler.showOverview(request, response);
-                }
-                if (tab2.equals("cache"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = AdminHandler.showCacheInfo(request, response);
-                    if (action.equals("clearCache"))
-                        AdminHandler.clearCache(request, response);
-                }
-                if (tab2.equals("system"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = AdminHandler.showSystemInfo(request, response);
-                }
-
-                if (tab2.equals("audit"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = AuditHandler.showAuditRecords(request, response);
-                    if (action.equals("search"))
-                        AuditHandler.search(request, response);
-                    if (action.equals("ajaxGetPageOfResults"))
-                        AuditHandler.ajaxGetPageOfResults(request, response);
-                }
-                if (tab2.equals("users"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = AdminHandler.showManageUsers(request, response);
-                    if (action.equals("create"))
-                        AdminHandler.createUser(request, response);
-                    if (action.equals("delete"))
-                        AdminHandler.deleteUser(request, response);
-                    if (action.equals("changePassword"))
-                        AdminHandler.changePassword(request, response);
-                    if (action.equals("print"))
-                        AdminHandler.printUsers(request, response);
-
-                    if (tab3.equals("modify"))
-                    {
-                        if (action.equals("form"))
-                            viewJsp = AdminHandler.showModifyUser(request, response);
-                        if (action.equals("modify"))
-                            AdminHandler.modifyUser(request, response);
-                    }
-                }
-                if (tab2.equals("projects"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = AdminHandler.showManageProjects(request, response);
-                    if (action.equals("create"))
-                        AdminHandler.createProject(request, response);
-                    if (action.equals("delete"))
-                        AdminHandler.deleteProject(request, response);
-
-                    if (tab3.equals("modify"))
-                    {
-                        if (action.equals("form"))
-                            viewJsp = AdminHandler.showModifyProject(request, response);
-                        if (action.equals("modify"))
-                            AdminHandler.modifyProject(request, response);
-                    }
-                }
-                if (tab2.equals("groups"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = AdminHandler.showManageGroups(request, response);
-                    if (action.equals("create"))
-                        AdminHandler.createGroup(request, response);
-                    if (action.equals("delete"))
-                        AdminHandler.deleteGroup(request, response);
-
-                    if (tab3.equals("modify"))
-                    {
-                        if (action.equals("form"))
-                            viewJsp = AdminHandler.showModifyGroup(request, response);
-                        if (action.equals("modify"))
-                            AdminHandler.modifyGroup(request, response);
-                    }
-                }
-                if (tab2.equals("email"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = AdminHandler.showManageEmails(request, response);
-                    if (action.equals("sendTest"))
-                        AdminHandler.sendTestEmail(request, response);
-                    if (action.equals("delete"))
-                        AdminHandler.deleteEmail(request, response);
-
-                    if (tab3.equals("modify"))
-                    {
-                        if (action.equals("form"))
-                            viewJsp = AdminHandler.showModifyEmail(request, response);
-                        if (action.equals("modify"))
-                            AdminHandler.modifyEmail(request, response);
-                    }
-                }
-                if (tab2.equals("logs"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = LogHandler.showLogs(request, response);
-                    if (action.equals("viewLog"))
-                        LogHandler.viewLog(request, response);
-                    if (action.equals("viewLogPretty"))
-                        viewJsp = LogHandler.viewLogPretty(request, response);
-                    if (action.equals("delete"))
-                        LogHandler.deleteLog(request, response);
-                }
-                if (tab2.equals("backups"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = BackupHandler.showBackups(request, response);
-                    if (action.equals("create"))
-                        BackupHandler.createBackup(request, response);
-                    if (action.equals("viewBackup"))
-                        BackupHandler.viewBackup(request, response);
-                    if (action.equals("delete"))
-                        BackupHandler.deleteBackup(request, response);
-                }
-            }
-
         }
         catch (ParseException e)
         {
@@ -393,7 +251,6 @@ public class Controller extends HttpServlet
 
         response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
     }
-
 
     private void invalidateSession(HttpServletRequest request)
     {

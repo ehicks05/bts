@@ -1,4 +1,4 @@
-package net.ehicks.bts.handlers;
+package net.ehicks.bts.handlers.admin;
 
 import net.ehicks.bts.*;
 import net.ehicks.bts.beans.*;
@@ -19,6 +19,14 @@ import java.util.stream.Collectors;
 
 public class AdminHandler
 {
+    @Route(tab1 = "admin", tab2 = "", tab3 = "", action = "")
+    @Route(tab1 = "admin", tab2 = "", tab3 = "", action = "form")
+    public static void redirect(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        response.sendRedirect("view?tab1=admin&tab2=overview&action=form");
+    }
+
+    @Route(tab1 = "admin", tab2 = "overview", tab3 = "", action = "form")
     public static String showOverview(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -28,6 +36,7 @@ public class AdminHandler
         return "/WEB-INF/webroot/admin/overview.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "cache", tab3 = "", action = "form")
     public static String showCacheInfo(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -39,6 +48,7 @@ public class AdminHandler
         return "/WEB-INF/webroot/admin/cacheInfo.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "cache", tab3 = "", action = "clearCache")
     public static void clearCache(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         EOICache.cache.clear();
@@ -46,6 +56,7 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=cache&action=form");
     }
 
+    @Route(tab1 = "admin", tab2 = "system", tab3 = "", action = "form")
     public static String showSystemInfo(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -59,6 +70,7 @@ public class AdminHandler
         return "/WEB-INF/webroot/admin/systemInfo.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "users", tab3 = "", action = "form")
     public static String showManageUsers(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -67,6 +79,7 @@ public class AdminHandler
         return "/WEB-INF/webroot/admin/users.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "users", tab3 = "", action = "create")
     public static void createUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -78,6 +91,7 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=users&action=form");
     }
 
+    @Route(tab1 = "admin", tab2 = "users", tab3 = "", action = "delete")
     public static void deleteUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -89,6 +103,7 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=users&action=form");
     }
 
+    @Route(tab1 = "admin", tab2 = "users", tab3 = "", action = "print")
     public static void printUsers(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         List<List> userData = new ArrayList<>();
@@ -100,6 +115,7 @@ public class AdminHandler
         CommonIO.sendFileInResponse(response, file, true);
     }
 
+    @Route(tab1 = "admin", tab2 = "users", tab3 = "modify", action = "form")
     public static String showModifyUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         Long userId = Common.stringToLong(request.getParameter("userId"));
@@ -110,6 +126,7 @@ public class AdminHandler
         return "/WEB-INF/webroot/admin/modifyUser.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "users", tab3 = "modify", action = "modify")
     public static void modifyUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -171,6 +188,7 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=users&tab3=modify&action=form&userId=" + userId);
     }
 
+    @Route(tab1 = "admin", tab2 = "users", tab3 = "", action = "changePassword")
     public static void changePassword(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -189,6 +207,7 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=users&tab3=modify&action=form&userId=" + userId);
     }
 
+    @Route(tab1 = "admin", tab2 = "projects", tab3 = "", action = "form")
     public static String showManageProjects(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -197,6 +216,7 @@ public class AdminHandler
         return "/WEB-INF/webroot/admin/projects.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "projects", tab3 = "", action = "create")
     public static void createProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -210,6 +230,7 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=projects&action=form");
     }
 
+    @Route(tab1 = "admin", tab2 = "projects", tab3 = "", action = "delete")
     public static void deleteProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -221,6 +242,7 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=projects&action=form");
     }
 
+    @Route(tab1 = "admin", tab2 = "projects", tab3 = "modify", action = "form")
     public static String showModifyProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         Long projectId = Common.stringToLong(request.getParameter("projectId"));
@@ -230,6 +252,7 @@ public class AdminHandler
         return "/WEB-INF/webroot/admin/modifyProject.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "projects", tab3 = "modify", action = "modify")
     public static void modifyProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -247,6 +270,7 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=projects&tab3=modify&action=form&projectId=" + projectId);
     }
 
+    @Route(tab1 = "admin", tab2 = "groups", tab3 = "", action = "form")
     public static String showManageGroups(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -255,6 +279,7 @@ public class AdminHandler
         return "/WEB-INF/webroot/admin/groups.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "groups", tab3 = "", action = "create")
     public static void createGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -266,6 +291,7 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=groups&action=form");
     }
 
+    @Route(tab1 = "admin", tab2 = "groups", tab3 = "", action = "delete")
     public static void deleteGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -277,6 +303,7 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=groups&action=form");
     }
 
+    @Route(tab1 = "admin", tab2 = "groups", tab3 = "modify", action = "form")
     public static String showModifyGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         Long groupId = Common.stringToLong(request.getParameter("groupId"));
@@ -286,6 +313,7 @@ public class AdminHandler
         return "/WEB-INF/webroot/admin/modifyGroup.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "groups", tab3 = "modify", action = "modify")
     public static void modifyGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -301,6 +329,7 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=groups&tab3=modify&action=form&groupId=" + groupId);
     }
 
+    @Route(tab1 = "admin", tab2 = "email", tab3 = "", action = "form")
     public static String showManageEmails(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -309,6 +338,7 @@ public class AdminHandler
         return "/WEB-INF/webroot/admin/emails.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "email", tab3 = "", action = "sendTest")
     public static void sendTestEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -324,6 +354,7 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=email&action=form");
     }
 
+    @Route(tab1 = "admin", tab2 = "email", tab3 = "", action = "delete")
     public static void deleteEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -335,6 +366,7 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=email&action=form");
     }
 
+    @Route(tab1 = "admin", tab2 = "email", tab3 = "modify", action = "form")
     public static String showModifyEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         Long emailId = Common.stringToLong(request.getParameter("emailId"));
@@ -344,6 +376,7 @@ public class AdminHandler
         return "/WEB-INF/webroot/admin/modifyEmail.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "email", tab3 = "modify", action = "modify")
     public static void modifyEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");

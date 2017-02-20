@@ -1,6 +1,7 @@
-package net.ehicks.bts.handlers;
+package net.ehicks.bts.handlers.admin;
 
 import net.ehicks.bts.CommonIO;
+import net.ehicks.bts.Route;
 import net.ehicks.bts.SystemInfo;
 import net.ehicks.bts.UserSession;
 import net.ehicks.common.Common;
@@ -17,6 +18,7 @@ import java.util.*;
 
 public class LogHandler
 {
+    @Route(tab1 = "admin", tab2 = "logs", tab3 = "", action = "form")
     public static String showLogs(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -28,6 +30,7 @@ public class LogHandler
         return "/WEB-INF/webroot/admin/logs.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "logs", tab3 = "", action = "delete")
     public static void deleteLog(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         String logName = Common.getSafeString(request.getParameter("logName"));
@@ -36,6 +39,7 @@ public class LogHandler
         response.sendRedirect("view?tab1=admin&tab2=logs&action=form");
     }
 
+    @Route(tab1 = "admin", tab2 = "logs", tab3 = "", action = "viewLog")
     public static void viewLog(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -45,6 +49,7 @@ public class LogHandler
         CommonIO.sendFileInResponse(response, file, true);
     }
 
+    @Route(tab1 = "admin", tab2 = "logs", tab3 = "", action = "viewLogPretty")
     public static String viewLogPretty(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         String logName = Common.getSafeString(request.getParameter("logName"));

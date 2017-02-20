@@ -1,9 +1,6 @@
-package net.ehicks.bts.handlers;
+package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.bts.BackupDbTask;
-import net.ehicks.bts.CommonIO;
-import net.ehicks.bts.SystemInfo;
-import net.ehicks.bts.UserSession;
+import net.ehicks.bts.*;
 import net.ehicks.common.Common;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +15,7 @@ import java.util.List;
 
 public class BackupHandler
 {
+    @Route(tab1 = "admin", tab2 = "backups", tab3 = "", action = "form")
     public static String showBackups(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -32,6 +30,7 @@ public class BackupHandler
         return "/WEB-INF/webroot/admin/backups.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "backups", tab3 = "", action = "create")
     public static void createBackup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         BackupDbTask.backupToZip();
@@ -39,6 +38,7 @@ public class BackupHandler
         response.sendRedirect("view?tab1=admin&tab2=backups&action=form");
     }
 
+    @Route(tab1 = "admin", tab2 = "backups", tab3 = "", action = "delete")
     public static void deleteBackup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         String backupName = Common.getSafeString(request.getParameter("backupName"));
@@ -47,6 +47,7 @@ public class BackupHandler
         response.sendRedirect("view?tab1=admin&tab2=backups&action=form");
     }
 
+    @Route(tab1 = "admin", tab2 = "backups", tab3 = "", action = "viewBackup")
     public static void viewBackup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
