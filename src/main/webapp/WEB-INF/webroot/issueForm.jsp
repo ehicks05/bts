@@ -456,14 +456,14 @@
                 <tr>
                     <td>File:</td>
                     <td>
-                        <input type="file" name="fldFile" value="" required/>
+                        <input type="file" id="fldFile" name="fldFile" value="" required/>
                     </td>
                 </tr>
             </table>
         </form>
     </div>
     <div class="mdl-dialog__actions">
-        <button type="button" class="mdl-button add">Add</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored add">Add</button>
         <button type="button" class="mdl-button close">Cancel</button>
     </div>
 </dialog>
@@ -480,7 +480,8 @@
     });
     document.querySelector('#addAttachmentDialog .add').addEventListener('click', function ()
     {
-        $('#frmAddAttachment').submit()
+        if ($('#fldFile').val())
+            $('#frmAddAttachment').submit()
     });
     addAttachmentDialog.querySelector('#addAttachmentDialog .close').addEventListener('click', function ()
     {

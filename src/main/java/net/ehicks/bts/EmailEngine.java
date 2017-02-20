@@ -23,12 +23,16 @@ public class EmailEngine
     {
         // determine recipients
         Set<String> recipients = determineRecipients(emailMessage);
-
-        emailMessage.setStatus("WAITING");
+        if (recipients.size() > 0)
+            emailMessage.setStatus("WAITING");
+        else
+            emailMessage.setStatus("FAILED");
         EOI.update(emailMessage, SystemTask.EMAIL_ENGINE);
 
         // create email
-        EmailThreadPool.getPool().submit(() -> sendHtmlEmail(emailMessage, recipients));
+        
+        if (recipients.size() > 0)
+            EmailThreadPool.getPool().submit(() -> sendHtmlEmail(emailMessage, recipients));
     }
 
     private static Set<String> determineRecipients(EmailMessage emailMessage)

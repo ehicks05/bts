@@ -57,6 +57,7 @@ public class Controller extends HttpServlet
         CommonScheduling.shutDown(EmailThreadPool.getPool());
         CommonScheduling.shutDown(BackupDbTask.getScheduler());
         EOI.destroy();
+        log.info("BTS finished shutting down...");
     }
 
     @Override
