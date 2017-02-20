@@ -49,7 +49,7 @@
                         <c:if test="${!issueForm.onDash}"><i class="material-icons" style="color: red;">clear</i></c:if>
                     </td>
                     <td>
-                        <a class="material-icons" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issueForm&action=delete&issueFormId=${issueForm.id}">delete</a>
+                        <a class="material-icons" href="${pageContext.request.contextPath}/view?tab1=settings&tab2=savedSearches&action=delete&issueFormId=${issueForm.id}">delete</a>
                     </td>
                 </tr>
             </c:forEach>

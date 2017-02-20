@@ -1,5 +1,6 @@
-package net.ehicks.bts.handlers;
+package net.ehicks.bts.handlers.settings;
 
+import net.ehicks.bts.Route;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.IssueForm;
 import net.ehicks.common.Common;
@@ -17,6 +18,7 @@ public class IssueFormHandler
 {
     private static final Logger log = LoggerFactory.getLogger(IssueFormHandler.class);
 
+    @Route(tab1 = "settings", tab2 = "savedSearches", tab3 = "", action = "form")
     public static String showIssueForms(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -26,6 +28,7 @@ public class IssueFormHandler
         return "/WEB-INF/webroot/manageIssueFilters.jsp";
     }
 
+    @Route(tab1 = "settings", tab2 = "savedSearches", tab3 = "", action = "delete")
     public static void deleteIssueForm(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -37,9 +40,10 @@ public class IssueFormHandler
             log.info(String.valueOf(result));
         }
 
-        response.sendRedirect("view?tab1=main&tab2=issueForm&action=form");
+        response.sendRedirect("view?tab1=settings&tab2=savedSearches&action=form");
     }
 
+    @Route(tab1 = "settings", tab2 = "savedSearches", tab3 = "", action = "addToDashboard")
     public static void addToDashboard(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -51,6 +55,6 @@ public class IssueFormHandler
             EOI.update(issueForm, userSession);
         }
 
-        response.sendRedirect("view?tab1=main&tab2=issueForm&action=form");
+        response.sendRedirect("view?tab1=settings&tab2=savedSearches&action=form");
     }
 }

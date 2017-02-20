@@ -45,11 +45,15 @@
 
             <c:if test="${!empty sessionScope.userSession}">
                 <span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}')">${param.tab1}</span>
-                <span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}')">.${param.tab2}</span>
-                <span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}','${param.tab3}')"><c:if test="${!empty param.tab3}">.</c:if>${param.tab3}</span>
+                <c:if test="${!empty param.tab2}">
+                    <i class="material-icons">navigate_next</i><span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}')">${param.tab2}</span>
+                </c:if>
+                <c:if test="${!empty param.tab3}">
+                    <i class="material-icons">navigate_next</i><span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}','${param.tab3}')">${param.tab3}</span>
+                </c:if>
 
                 <input id="goToIssue" type="text" size="1" maxlength="32" style="margin-left: 30px;font-size:18px;" onkeypress="document.getElementById('goToIssueButton').disabled = false;" onclick="document.getElementById('goToIssueButton').disabled = false;"/>
-                <button id="goToIssueButton" class="mdl-button mdl-js-button mdl-button--icon" onclick="goToIssue();" disabled>
+                <button id="goToIssueButton" class="mdl-button mdl-js-button mdl-button--icon" onclick="goToIssue();">
                     <i class="material-icons">search</i>
                 </button>
 
@@ -69,7 +73,7 @@
         </style>
 
         <div class="mdl-layout__drawer">
-            <span class="mdl-layout-title">BTS</span>
+            <span class="mdl-layout-title"><img style="height: 24px;padding-right: 10px;" src="${pageContext.request.contextPath}/images/bug_16.png"><span style="color:black;">BTS</span></span>
             <nav class="mdl-navigation">
                 <c:if test="${param.tab2 == 'dashboard'}">
                     <c:set var="statusClass" value="selectedLink"/>
@@ -89,13 +93,13 @@
                 <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=form">
                     <i class="material-icons" style="padding-right: 10px;">search</i>Search
                 </a>
-                <c:if test="${param.tab2 == 'settings'}">
+                <c:if test="${param.tab1 == 'settings'}">
                     <c:set var="statusClass" value="selectedLink"/>
                 </c:if>
-                <c:if test="${param.tab2 != 'settings'}">
+                <c:if test="${param.tab1 != 'settings'}">
                     <c:set var="statusClass" value=""/>
                 </c:if>
-                <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=main&tab2=settings&action=form">
+                <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=settings&action=form">
                     <i class="material-icons" style="padding-right: 10px;">settings</i>Settings
                 </a>
                 <c:if test="${param.tab1 == 'admin'}">

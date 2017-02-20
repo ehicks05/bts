@@ -2,9 +2,7 @@ package net.ehicks.bts;
 
 import net.ehicks.bts.beans.*;
 import net.ehicks.bts.handlers.*;
-import net.ehicks.bts.handlers.admin.AuditHandler;
-import net.ehicks.bts.handlers.admin.BackupHandler;
-import net.ehicks.bts.handlers.admin.LogHandler;
+import net.ehicks.bts.handlers.settings.IssueFormHandler;
 import net.ehicks.eoi.EOI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

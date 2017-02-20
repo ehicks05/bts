@@ -1,4 +1,4 @@
-package net.ehicks.bts.handlers;
+package net.ehicks.bts.handlers.settings;
 
 import net.ehicks.bts.CommonIO;
 import net.ehicks.bts.PdfCreator;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class SubscriptionHandler
 {
-    @Route(tab1 = "main", tab2 = "subscriptions", tab3 = "list", action = "form")
+    @Route(tab1 = "settings", tab2 = "subscriptions", tab3 = "", action = "form")
     public static String showSubscriptions(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -29,7 +29,7 @@ public class SubscriptionHandler
         return "/WEB-INF/webroot/subscriptions.jsp";
     }
 
-    @Route(tab1 = "main", tab2 = "subscriptions", tab3 = "list", action = "add")
+    @Route(tab1 = "settings", tab2 = "subscriptions", tab3 = "", action = "add")
     public static void addSubscription(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -39,10 +39,10 @@ public class SubscriptionHandler
         subscription = updateSubscriptionFromRequest(subscription, request);
         EOI.insert(subscription, userSession);
 
-        response.sendRedirect("view?tab1=main&tab2=subscriptions&tab3=list&action=form");
+        response.sendRedirect("view?tab1=settings&tab2=subscriptions&action=form");
     }
 
-    @Route(tab1 = "main", tab2 = "subscriptions", tab3 = "list", action = "delete")
+    @Route(tab1 = "settings", tab2 = "subscriptions", tab3 = "", action = "delete")
     public static void deleteSubscription(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -52,10 +52,10 @@ public class SubscriptionHandler
         if (subscription != null)
             EOI.executeDelete(subscription, userSession);
 
-        response.sendRedirect("view?tab1=main&tab2=subscriptions&tab3=list&action=form");
+        response.sendRedirect("view?tab1=settings&tab2=subscriptions&action=form");
     }
 
-    @Route(tab1 = "main", tab2 = "subscriptions", tab3 = "list", action = "print")
+    @Route(tab1 = "settings", tab2 = "subscriptions", tab3 = "", action = "print")
     public static void printSubscriptions(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");

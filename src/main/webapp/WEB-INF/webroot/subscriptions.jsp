@@ -21,13 +21,13 @@
         function deleteSubscription(subscriptionId)
         {
             if (confirm('Are you sure?'))
-                location.href="${pageContext.request.contextPath}/view?tab1=main&tab2=subscriptions&tab3=list&action=delete&subscriptionId=" + subscriptionId;
+                location.href="${pageContext.request.contextPath}/view?tab1=settings&tab2=subscriptions&action=delete&subscriptionId=" + subscriptionId;
         }
 
         function printSubscriptions()
         {
             window.open(
-                '${pageContext.request.contextPath}/view?tab1=main&tab2=subscriptions&tab3=list&action=print',
+                '${pageContext.request.contextPath}/view?tab1=settings&tab2=subscriptions&action=print',
                 '_blank' // <- This is what makes it open in a new window.
             );
         }
@@ -86,7 +86,7 @@
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>Add Subscription</h5></div>
 
-        <form id="frmCreateSubscription" name="frmCreateSubscription" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=subscriptions&tab3=list&action=add">
+        <form id="frmCreateSubscription" name="frmCreateSubscription" method="post" action="${pageContext.request.contextPath}/view?tab1=settings&tab2=subscriptions&action=add">
             <div style="padding: 10px;max-width: 300px;">
                 <t:multiSelect id="projectIds" selectedValues="" items="${projects}" placeHolder="Projects:"/>
                 <br>

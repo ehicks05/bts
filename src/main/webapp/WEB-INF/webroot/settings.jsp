@@ -25,12 +25,12 @@
 
         <div id="options">
             <div>
-                <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=issueForm&action=form">
-                    <i class="material-icons">search</i>View Filters</a>
+                <a href="${pageContext.request.contextPath}/view?tab1=settings&tab2=savedSearches&action=form">
+                    <i class="material-icons">search</i>Saved Searches</a>
             </div>
 
             <div>
-                <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=subscriptions&tab3=list&action=form">
+                <a href="${pageContext.request.contextPath}/view?tab1=settings&tab2=subscriptions&action=form">
                     <i class="material-icons">email</i>Subscriptions</a>
             </div>
         </div>
