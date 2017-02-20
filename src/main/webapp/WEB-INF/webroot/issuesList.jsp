@@ -21,12 +21,12 @@
 
         function saveIssueForm()
         {
-            $('#frmFilter').attr('action', '${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=saveIssueForm').submit();
+            $('#frmFilter').attr('action', '${pageContext.request.contextPath}/view?tab1=search&action=saveIssueForm').submit();
         }
 
         function addToDashboard(issueFormId)
         {
-            location.href = '${pageContext.request.contextPath}/view?tab1=main&tab2=issueForm&action=addToDashboard&issueFormId=' + issueFormId;
+            location.href = '${pageContext.request.contextPath}/view?tab1=search&action=addToDashboard&issueFormId=' + issueFormId;
         }
     </script>
 
@@ -39,7 +39,7 @@
     <div class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-shadow--2dp">
         <c:set var="formName" value="${fn:length(issueForm.formName) == 0 ? 'New Filter' : issueForm.formName}"/>
         <div class="mdl-card__title"><h5>Issue Filter: ${formName}</h5></div>
-        <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=search">
+        <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=search&action=search">
             <input type="hidden" name="sortColumn" id="sortColumn" value="${issueForm.sortColumn}"/>
             <input type="hidden" name="sortDirection" id="sortDirection" value="${issueForm.sortDirection}"/>
             <input type="hidden" name="page" id="page" value="${issueForm.page}"/>
@@ -68,9 +68,10 @@
                 <input type="submit" value="Search" class="mdl-button mdl-js-button mdl-button--raised" />
                 <input type="button" value="Save" class="mdl-button mdl-js-button mdl-button--raised" id="showSaveIssueFormDialog" />
 
-                <c:if test="${issueForm.id > 0 && !issueForm.onDash}">
-                    <input type="button" value="Add to Dash" class="mdl-button mdl-js-button mdl-button--raised" onclick="addToDashboard('${issueForm.id}');" />
+                <c:if test="${empty issueForm.id || issueForm.id == 0 || issueForm.onDash}">
+                    <c:set var="addToDashStatus" value="disabled"/>
                 </c:if>
+                <input type="button" value="Add to Dash" class="mdl-button mdl-js-button mdl-button--raised" onclick="addToDashboard('${issueForm.id}');" ${addToDashStatus}/>
             </div>
         </form>
     </div>
@@ -88,7 +89,7 @@
 <dialog class="mdl-dialog" id="saveFilterDialog">
     <h4 class="mdl-dialog__title">Save Issue Filter</h4>
     <div class="mdl-dialog__content">
-        <form id="frmSave" name="frmSave" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=saveIssueForm">
+        <form id="frmSave" name="frmSave" method="post" action="${pageContext.request.contextPath}/view?tab1=search&action=saveIssueForm">
             <table>
                 <tr>
                     <td>Filter Name:</td>

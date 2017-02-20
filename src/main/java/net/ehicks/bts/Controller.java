@@ -84,7 +84,7 @@ public class Controller extends HttpServlet
             // without this check, they will log in and immediately be logged out again.
             if (request.getParameter("action") != null && request.getParameter("action").equals("logout"))
             {
-                response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
+                response.sendRedirect("view?tab1=dashboard&action=form");
                 return;
             }
         }
@@ -117,7 +117,7 @@ public class Controller extends HttpServlet
 
         if (request.getParameter("tab1") == null)
         {
-            response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
+            response.sendRedirect("view?tab1=dashboard&action=form");
             return;
         }
 
@@ -135,7 +135,7 @@ public class Controller extends HttpServlet
 
     private String processRequest(HttpServletRequest request, HttpServletResponse response, UserSession userSession) throws IOException, ServletException
     {
-        String tab1   = request.getParameter("tab1") == null ? "main" : request.getParameter("tab1");
+        String tab1   = request.getParameter("tab1") == null ? "" : request.getParameter("tab1");
         String tab2   = request.getParameter("tab2") == null ? "" : request.getParameter("tab2");
         String tab3   = request.getParameter("tab3") == null ? "" : request.getParameter("tab3");
         String action = request.getParameter("action") == null ? "form" : request.getParameter("action");
@@ -168,18 +168,6 @@ public class Controller extends HttpServlet
         {
             if (tab1.equals("main"))
             {
-                if (tab2.equals("search"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = IssueSearchHandler.showIssues(request, response);
-                    if (action.equals("search"))
-                        IssueSearchHandler.search(request, response);
-                    if (action.equals("ajaxGetPageOfResults"))
-                        IssueSearchHandler.ajaxGetPageOfResults(request, response);
-                    if (action.equals("saveIssueForm"))
-                        IssueSearchHandler.saveIssueForm(request, response);
-                }
-
                 if (tab2.equals("issue"))
                 {
                     if (action.equals("form"))
@@ -202,15 +190,6 @@ public class Controller extends HttpServlet
                         AttachmentHandler.retrieveAttachment(request, response);
                     if (action.equals("deleteAttachment"))
                         AttachmentHandler.deleteAttachment(request, response);
-                }
-                if (tab2.equals("issueForm"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = IssueFormHandler.showIssueForms(request, response);
-                    if (action.equals("delete"))
-                        IssueFormHandler.deleteIssueForm(request, response);
-                    if (action.equals("addToDashboard"))
-                        IssueFormHandler.addToDashboard(request, response);
                 }
 
                 if (action.equals("logout"))
@@ -247,7 +226,7 @@ public class Controller extends HttpServlet
     {
         invalidateSession(request);
 
-        response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
+        response.sendRedirect("view?tab1=dashboard&action=form");
     }
 
     private void invalidateSession(HttpServletRequest request)

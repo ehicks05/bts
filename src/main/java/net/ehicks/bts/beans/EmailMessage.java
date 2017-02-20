@@ -177,7 +177,7 @@ public class EmailMessage implements Serializable
                     "    <tr><td>\n" +
                     "        <table style=\"width: 500px;margin:auto;background-color: white\">\n" +
                     "            <tr>\n" +
-                    "                <td style=\"padding: 10px;\"><h1><a href=\"" + emailContext + "/view?tab1=main&tab2=dashboard&action=form \">\n" +
+                    "                <td style=\"padding: 10px;\"><h1><a href=\"" + emailContext + "/view?tab1=dashboard&action=form \">\n" +
                     "                    " + "Test Email" + "</a></h1></td>\n" +
                     "            </tr>\n" +
                     "            <tr>\n" +

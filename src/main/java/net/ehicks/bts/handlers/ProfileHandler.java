@@ -12,7 +12,7 @@ import java.text.ParseException;
 
 public class ProfileHandler
 {
-    @Route(tab1 = "main", tab2 = "profile", tab3 = "", action = "form")
+    @Route(tab1 = "profile", tab2 = "", tab3 = "", action = "form")
     public static String showProfile(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");

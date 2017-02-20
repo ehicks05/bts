@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class DashboardHandler
 {
-    @Route(tab1 = "main", tab2 = "dashboard", tab3 = "", action = "form")
+    @Route(tab1 = "dashboard", tab2 = "", tab3 = "", action = "form")
     public static String showDashboard(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -27,7 +27,7 @@ public class DashboardHandler
         return "/WEB-INF/webroot/dashboard.jsp";
     }
 
-    @Route(tab1 = "main", tab2 = "dashboard", tab3 = "", action = "remove")
+    @Route(tab1 = "dashboard", tab2 = "", tab3 = "", action = "remove")
     public static void removeIssueForm(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -39,6 +39,6 @@ public class DashboardHandler
             EOI.update(issueForm, userSession);
         }
 
-        response.sendRedirect("view?tab1=main&tab2=dashboard&action=form");
+        response.sendRedirect("view?tab1=dashboard&action=form");
     }
 }

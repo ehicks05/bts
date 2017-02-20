@@ -75,22 +75,22 @@
         <div class="mdl-layout__drawer">
             <span class="mdl-layout-title"><img style="height: 24px;padding-right: 10px;" src="${pageContext.request.contextPath}/images/bug_16.png"><span style="color:black;">BTS</span></span>
             <nav class="mdl-navigation">
-                <c:if test="${param.tab2 == 'dashboard'}">
+                <c:if test="${param.tab1 == 'dashboard'}">
                     <c:set var="statusClass" value="selectedLink"/>
                 </c:if>
-                <c:if test="${param.tab2 != 'dashboard'}">
+                <c:if test="${param.tab1 != 'dashboard'}">
                     <c:set var="statusClass" value=""/>
                 </c:if>
-                <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=main&tab2=dashboard&action=form">
+                <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=dashboard&action=form">
                     <i class="material-icons" style="padding-right: 10px;">dashboard</i>Dashboard
                 </a>
-                <c:if test="${param.tab2 == 'search'}">
+                <c:if test="${param.tab1 == 'search'}">
                     <c:set var="statusClass" value="selectedLink"/>
                 </c:if>
-                <c:if test="${param.tab2 != 'search'}">
+                <c:if test="${param.tab1 != 'search'}">
                     <c:set var="statusClass" value=""/>
                 </c:if>
-                <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=form">
+                <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=search&action=form">
                     <i class="material-icons" style="padding-right: 10px;">search</i>Search
                 </a>
                 <c:if test="${param.tab1 == 'settings'}">
@@ -115,13 +115,13 @@
                     </a>
                 </c:if>
 
-                <c:if test="${param.tab2 == 'profile'}">
+                <c:if test="${param.tab1 == 'profile'}">
                     <c:set var="statusClass" value="selectedLink"/>
                 </c:if>
-                <c:if test="${param.tab2 != 'profile'}">
+                <c:if test="${param.tab1 != 'profile'}">
                     <c:set var="statusClass" value=""/>
                 </c:if>
-                <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${userSession.userId}">
+                <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${userSession.userId}">
                     <i class="material-icons" style="padding-right: 10px;">account_circle</i>Profile
                 </a>
                 <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&action=logout">

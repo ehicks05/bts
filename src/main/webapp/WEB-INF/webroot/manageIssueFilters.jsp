@@ -37,7 +37,7 @@
             <c:forEach var="issueForm" items="${issueForms}">
                 <tr>
                     <td>
-                        <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=search&action=form&issueFormId=${issueForm.id}">
+                        <a href="${pageContext.request.contextPath}/view?tab1=search&action=form&issueFormId=${issueForm.id}">
                             ${issueForm.id}
                         </a>
                     </td>

@@ -89,7 +89,7 @@ public class IssueForm extends SearchForm implements Serializable
 
     public String getEndpoint()
     {
-        return "/view?tab1=main&tab2=search&action=ajaxGetPageOfResults";
+        return "/view?tab1=search&action=ajaxGetPageOfResults";
     }
 
     public void updateFields(String filterName, Long userId, String containsText, String title, String description, String statusIds,

@@ -1,5 +1,6 @@
 package net.ehicks.bts.handlers;
 
+import net.ehicks.bts.Route;
 import net.ehicks.bts.SearchResult;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.IssueForm;
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class IssueSearchHandler
 {
+    @Route(tab1 = "search", tab2 = "", tab3 = "", action = "form")
     public static String showIssues(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         Long issueFormId = Common.stringToLong(request.getParameter("issueFormId"));
@@ -45,6 +47,7 @@ public class IssueSearchHandler
         return "/WEB-INF/webroot/issuesList.jsp";
     }
 
+    @Route(tab1 = "search", tab2 = "", tab3 = "", action = "ajaxGetPageOfResults")
     public static void ajaxGetPageOfResults(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, ServletException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -98,6 +101,7 @@ public class IssueSearchHandler
         request.getRequestDispatcher("/WEB-INF/webroot/issueTable.jsp").forward(request, response);
     }
 
+    @Route(tab1 = "search", tab2 = "", tab3 = "", action = "search")
     public static void search(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         Long issueFormId = Common.stringToLong(request.getParameter("filterId"));
@@ -112,7 +116,7 @@ public class IssueSearchHandler
         else
             request.setAttribute("issueForm", issueForm);
 
-        response.sendRedirect("view?tab1=main&tab2=search&action=form&issueFormId=" + issueFormId);
+        response.sendRedirect("view?tab1=search&action=form&issueFormId=" + issueFormId);
     }
 
     private static IssueForm updateIssueFormFromRequest(IssueForm issueForm, HttpServletRequest request)
@@ -156,6 +160,7 @@ public class IssueSearchHandler
         return issueForm;
     }
 
+    @Route(tab1 = "search", tab2 = "", tab3 = "", action = "saveIssueForm")
     public static void saveIssueForm(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -173,7 +178,22 @@ public class IssueSearchHandler
             EOI.update(issueForm, userSession);
         }
 
-        response.sendRedirect("view?tab1=main&tab2=search&action=form&issueFormId=" + issueFormId);
+        response.sendRedirect("view?tab1=search&action=form&issueFormId=" + issueFormId);
+    }
+
+    @Route(tab1 = "search", tab2 = "", tab3 = "", action = "addToDashboard")
+    public static void addToDashboard(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        long id = Common.stringToLong(request.getParameter("issueFormId"));
+        IssueForm issueForm = IssueForm.getById(id);
+        if (issueForm != null)
+        {
+            issueForm.setOnDash(true);
+            EOI.update(issueForm, userSession);
+        }
+
+        response.sendRedirect("view?tab1=search&action=form&issueFormId=" + id);
     }
 
     public static SearchResult performSearch(IssueForm issueForm) throws ParseException, IOException

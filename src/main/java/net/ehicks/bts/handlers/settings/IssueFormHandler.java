@@ -42,19 +42,4 @@ public class IssueFormHandler
 
         response.sendRedirect("view?tab1=settings&tab2=savedSearches&action=form");
     }
-
-    @Route(tab1 = "settings", tab2 = "savedSearches", tab3 = "", action = "addToDashboard")
-    public static void addToDashboard(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
-    {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        long id = Common.stringToLong(request.getParameter("issueFormId"));
-        IssueForm issueForm = IssueForm.getById(id);
-        if (issueForm != null)
-        {
-            issueForm.setOnDash(true);
-            EOI.update(issueForm, userSession);
-        }
-
-        response.sendRedirect("view?tab1=settings&tab2=savedSearches&action=form");
-    }
 }
