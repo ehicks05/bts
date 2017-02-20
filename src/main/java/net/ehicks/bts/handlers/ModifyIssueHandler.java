@@ -123,7 +123,7 @@ public class ModifyIssueHandler
         if (projectId != 0)
         {
             issue.setProjectId(projectId);
-            updateLog += "ID to " + Project.getById(projectId).getName();
+            updateLog += "Project to " + Project.getById(projectId).getName();
         }
         if (issueTypeId != 0)
         {
@@ -148,12 +148,12 @@ public class ModifyIssueHandler
         if (title.length() != 0)
         {
             issue.setTitle(title);
-            updateLog += "Title to " + Common.limit(title, 64);
+            updateLog += "Title";
         }
         if (description.length() != 0)
         {
             issue.setDescription(description);
-            updateLog += "Description to " + Common.limit(description, 64);
+            updateLog += "Description";
         }
         if (assigneeId != 0)
         {
@@ -212,29 +212,31 @@ public class ModifyIssueHandler
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
 
         Long commentId        = Common.stringToLong(request.getParameter("commentId"));
+        Comment comment = Comment.getById(commentId);
+        if (!userSession.getUserId().equals(comment.getCreatedByUserId()))
+        {
+            // url hack attempt?
+            return;
+        }
+        
         String fieldName    = Common.getSafeString(request.getParameter("fldFieldName"));
         String fieldValue   = Common.getSafeString(request.getParameter("fldFieldValue"));
 
         String content       = !fieldName.equals("fldContent" + commentId) ? "" : Common.getSafeString(fieldValue);
 
-        String updateLog = "";
-        Comment comment = Comment.getById(commentId);
         String previousContent = comment.getContent();
         if (content.length() != 0)
-        {
             comment.setContent(content);
-            updateLog += "Content to " + Common.limit(content, 64);
-        }
 
-        if (updateLog.length() > 0)
+        if (!content.equals(previousContent))
         {
+            // should we ever get here?
             comment.setLastUpdatedOn(new Date());
+            EOI.update(comment, userSession);
+
+            String toastMessage = "Comment Updated";
+            response.getWriter().println(toastMessage);
         }
-
-        EOI.update(comment, userSession);
-
-        String toastMessage = "Updated " + updateLog;
-        response.getWriter().println(toastMessage);
 
         DiffMatchPatch myDiff = new DiffMatchPatch();
         LinkedList<DiffMatchPatch.Diff> diffs = myDiff.diff_main(previousContent, content);

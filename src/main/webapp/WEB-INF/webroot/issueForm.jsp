@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<jsp:useBean id="userSession" type="net.ehicks.bts.UserSession" scope="session"/>
 <jsp:useBean id="issue" type="net.ehicks.bts.beans.Issue" scope="request"/>
 <jsp:useBean id="comments" type="java.util.List<net.ehicks.bts.beans.Comment>" scope="request"/>
 <jsp:useBean id="watcherMaps" type="java.util.List<net.ehicks.bts.beans.WatcherMap>" scope="request"/>
@@ -52,7 +53,9 @@
             var data = {fldFieldName: fieldName, fldFieldValue: fieldValue};
             $.post(url, data, function (data, textStatus)
             {
-
+                if (!data)
+                    return 'ok';
+                
                 var notification = document.querySelector('.mdl-js-snackbar');
 
                 if (textStatus === 'success')
@@ -70,7 +73,7 @@
                     notification.MaterialSnackbar.showSnackbar(
                             {
                                 message: 'Failed: ' + data,
-                                timeout: 2500
+                                timeout: 15000
                             }
                     );
                     return 'fail';
@@ -115,7 +118,7 @@
         <form name="frmSave" id="frmSave" method="post" action="${pageContext.request.contextPath}/view?tab1=modify&action=save">
             <div class="mdl-card__supporting-text">
                 <table>
-                    <tr>
+                    <tr  style="height:28px;">
                         <td style="padding: 0 8px;">Type:</td>
                         <td style="padding: 0 8px;">
                             <t:textToSelect id="fldIssueType" value="${issue.issueType.id}" text="${issue.issueType.name}" items="${issueTypes}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
@@ -125,13 +128,13 @@
                             <t:textToSelect id="fldStatus" value="${issue.status.id}" text="${issue.status.name}" items="${statuses}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
                         </td>
                     </tr>
-                    <tr>
+                    <tr style="height:28px;">
                         <td style="padding: 0 8px;">Created:</td>
                         <td style="padding: 0 8px;"><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yy h:mm a"/></td>
                         <td style="padding: 0 8px;">Updated:</td>
                         <td style="padding: 0 8px;"><fmt:formatDate value="${issue.lastUpdatedOn}" pattern="dd/MMM/yy h:mm a"/></td>
                     </tr>
-                    <tr>
+                    <tr  style="height:28px;">
                         <td style="padding: 0 8px;">Severity:</td>
                         <td style="padding: 0 8px;">
                             <t:textToSelect id="fldSeverity" value="${issue.severity.id}" text="${issue.severity.name}" items="${severities}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
@@ -281,7 +284,7 @@
                             </div>
                         </a>
 
-                        commented on
+                        &nbsp;commented on
                         <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy h:mm a"/>
                         <c:if test="${!empty comment.lastUpdatedOn && comment.createdOn != comment.lastUpdatedOn}">
                             <span title="Edited ${comment.lastUpdatedOn}">*</span>
@@ -293,7 +296,12 @@
                         </c:if>
                         <br>
                         <div class="mdl-card__supporting-text">
-                            <t:textToInputText id="fldContent${comment.id}" text="${comment.content}" submitAction="/view?tab1=main&tab2=issue&action=updateComment&commentId=${comment.id}"/>
+                            <c:if test="${comment.createdByUserId == userSession.userId}">
+                                <t:textToInputText id="fldContent${comment.id}" text="${comment.content}" submitAction="/view?tab1=main&tab2=issue&action=updateComment&commentId=${comment.id}"/>
+                            </c:if>
+                            <c:if test="${comment.createdByUserId != userSession.userId}">
+                                <c:out value="${comment.content}"/>
+                            </c:if>
                         </div>
                     </div>
                 </c:forEach>

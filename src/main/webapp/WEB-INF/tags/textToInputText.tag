@@ -40,8 +40,8 @@
                     if (data != '${t:escapeJS(text)}')
                     {
                         update('${id}', data, '${submitAction}');
-                        editor.commands.save.setState(CKEDITOR.TRISTATE_DISABLED);
                     }
+                    editor.commands.save.setState(CKEDITOR.TRISTATE_DISABLED);
                 });
             }
         }

@@ -53,9 +53,9 @@ div.ui-datepicker{
 }
 .nounderline:hover {color:blue; text-decoration: none}
 
-@media (max-width: 399px)
+@media (max-width: 479px)
 {
-    .mdl-card {margin: 0; width: 100%;}
+    .mdl-card {margin: 0; width: 100% !important;}
     .hideOnSmall {display:none;}
 }
 /* Material */
