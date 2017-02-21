@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BTS</title>
+    <jsp:include page="inc_title.jsp"/>
     <jsp:include page="inc_header.jsp"/>
 
     <style>

@@ -5,11 +5,12 @@
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <jsp:useBean id="userSession" type="net.ehicks.bts.UserSession" scope="session"/>
 <jsp:useBean id="sessions" type="java.util.Map<java.lang.String, net.ehicks.bts.UserSession>" scope="request"/>
+<jsp:useBean id="userSessions" type="java.util.List<net.ehicks.bts.UserSession>" scope="request"/>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BTS</title>
+    <jsp:include page="../inc_title.jsp"/>
     <jsp:include page="../inc_header.jsp"/>
 
     <script>
@@ -45,18 +46,18 @@
 
         <table class="list">
             <tr class="listheading">
-                <th colspan="3">Sessions</th>
+                <th colspan="3">Sessions: ${fn:length(userSessions)}</th>
             </tr>
             <tr class="listheading">
                 <th class="">Session Id</th>
                 <th class="">Logon Id</th>
                 <th class="">Last Active</th>
             </tr>
-            <c:forEach var="sessionId" items="${sessionIds}">
+            <c:forEach var="userSesh" items="${userSessions}">
                 <tr>
-                    <td class="" title="${sessionId}">${fn:substring(sessionId, 0, 4)}...</td>
-                    <td class="">${sessions[sessionId].logonId}</td>
-                    <td class=""><fmt:formatDate value="${sessions[sessionId].lastActivity}" pattern="h:mm:ss a"/></td>
+                    <td class="" title="${userSesh.sessionId}">${fn:substring(userSesh.sessionId, 0, 4)}...</td>
+                    <td class="">${userSesh.logonId}</td>
+                    <td class=""><fmt:formatDate value="${userSesh.lastActivity}" pattern="h:mm:ss a"/></td>
                 </tr>
             </c:forEach>
         </table>

@@ -32,6 +32,7 @@ public class Startup
         SystemInfo.INSTANCE.setSystemStart(System.currentTimeMillis());
         SystemInfo.INSTANCE.setServletContext(servletContext);
 
+        SystemInfo.INSTANCE.setAppName(Common.getSafeString(properties.getProperty("appName")));
         SystemInfo.INSTANCE.setDebugLevel(Common.stringToInt(properties.getProperty("debugLevel")));
         SystemInfo.INSTANCE.setDropCreateLoad(properties.getProperty("dropCreateLoad").equals("true"));
 
@@ -48,6 +49,8 @@ public class Startup
 
         SystemInfo.INSTANCE.setLogDirectory(properties.getProperty("logDirectory"));
         SystemInfo.INSTANCE.setBackupDirectory(properties.getProperty("backupDirectory"));
+
+        servletContext.setAttribute("systemInfo", SystemInfo.INSTANCE);
     }
 
     static void loadDBMaps(ServletContext servletContext)

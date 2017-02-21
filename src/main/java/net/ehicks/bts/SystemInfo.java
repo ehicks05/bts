@@ -12,6 +12,7 @@ public enum SystemInfo
 {
     INSTANCE;
 
+    private String appName;
     private int debugLevel;
     private boolean dropCreateLoad;
 
@@ -89,6 +90,16 @@ public enum SystemInfo
         long maxMemory = Runtime.getRuntime().maxMemory() ;
         long allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
         return (maxMemory - allocatedMemory);
+    }
+
+    public String getAppName()
+    {
+        return appName;
+    }
+
+    public void setAppName(String appName)
+    {
+        this.appName = appName;
     }
 
     public boolean isDropCreateLoad()

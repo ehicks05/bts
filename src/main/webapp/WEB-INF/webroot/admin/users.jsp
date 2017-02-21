@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BTS</title>
+    <jsp:include page="../inc_title.jsp"/>
     <jsp:include page="../inc_header.jsp"/>
 
     <script>
@@ -59,7 +59,7 @@
                                 <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
                             </label>
                         </td>
-                        <td><a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${user.id}">${user.id}</a></td>
+                        <td><a href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${user.id}">${user.id}</a></td>
                         <td class="mdl-data-table__cell--non-numeric"><a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&tab3=modify&action=form&userId=${user.id}">${user.logonId}</a></td>
                         <td class="mdl-data-table__cell--non-numeric">${user.name}</td>
                         <td class="mdl-data-table__cell--non-numeric">

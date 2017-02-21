@@ -11,7 +11,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BTS</title>
+    <jsp:include page="../inc_title.jsp"/>
     <jsp:include page="../inc_header.jsp"/>
 </head>
 <body>
@@ -20,7 +20,7 @@
 
 <div class="mdl-grid">
 
-    <div class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>Audit Records</h5></div>
 
         <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=audit&action=search">
@@ -40,15 +40,14 @@
                 </div>
                 <br>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <label for="fromEventTime">From Event Time:</label>
                     <fmt:formatDate var="fromEvent" value="${auditForm.fromEventTime}" pattern="MM/dd/yyyy"/>
                     <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="fromEventTime" name="fromEventTime" value="${fromEvent}">
+                    <label class="mdl-textfield__label" for="fromEventTime">From Event Time:</label>
                 </div>
-                <br>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <label for="toEventTime">To Event Time:</label>
                     <fmt:formatDate var="toEvent" value="${auditForm.toEventTime}" pattern="MM/dd/yyyy"/>
                     <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="toEventTime" name="toEventTime" value="${toEvent}">
+                    <label class="mdl-textfield__label"  for="toEventTime">To Event Time:</label>
                 </div>
 
                 <br>
@@ -62,7 +61,7 @@
     </div>
 
     <br>
-    <div class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--8-col-tablet mdl-shadow--2dp">
+    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>Found ${searchResult.size} Audit Records</h5></div>
 
         <div class="tableContainer">
