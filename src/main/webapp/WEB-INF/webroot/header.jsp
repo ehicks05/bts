@@ -8,7 +8,7 @@
     {
         var issueId = document.getElementById('goToIssue').value;
         if (issueId)
-            location.href = '${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=form&issueId=' + issueId;
+            location.href = '${pageContext.request.contextPath}/view?tab1=issue&action=form&issueId=' + issueId;
     }
 
     function followBreadcrumbs(tab1, tab2, tab3)
@@ -73,7 +73,10 @@
         </style>
 
         <div class="mdl-layout__drawer">
-            <span class="mdl-layout-title"><img style="height: 24px;padding-right: 10px;" src="${pageContext.request.contextPath}/images/bug_16.png"><span style="color:black;">BTS</span></span>
+            <span class="mdl-layout-title">
+                <img style="height: 24px;padding-right: 10px;" src="${pageContext.request.contextPath}/images/puffin.png"
+                ><span style="color:black;">${applicationScope['systemInfo'].appName}</span>
+            </span>
             <nav class="mdl-navigation">
                 <c:if test="${param.tab1 == 'dashboard'}">
                     <c:set var="statusClass" value="selectedLink"/>
@@ -124,11 +127,11 @@
                 <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${userSession.userId}">
                     <i class="material-icons" style="padding-right: 10px;">account_circle</i>Profile
                 </a>
-                <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=main&action=logout">
+                <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=logout&action=logout">
                     <i class="material-icons" style="padding-right: 10px;">power_settings_new</i>Logout
                 </a>
             </nav>
         </div>
     </c:if>
-
+    <main class="mdl-layout__content">
     <c:remove var="responseMessage" scope="session" />

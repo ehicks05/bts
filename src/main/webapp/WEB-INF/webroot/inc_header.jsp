@@ -37,7 +37,7 @@
 <%--<script src="../../ckeditor/ckeditor.js"></script>--%>
 <%-- CKEditor --%>
 
-<link rel="shortcut icon" href="${pageContext.request.contextPath}/images/bug_16.png">
+<link rel="shortcut icon" href="${pageContext.request.contextPath}/images/puffin.png">
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 <%--<link href="https://fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet">--%>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/bts.css" media="screen" />

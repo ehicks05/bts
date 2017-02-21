@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BTS</title>
+    <jsp:include page="inc_title.jsp"/>
     <jsp:include page="inc_header.jsp"/>
 
     <script>
@@ -26,10 +26,10 @@
 <jsp:include page="header.jsp"/>
 
 <div class="mdl-grid">
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-shadow--2dp">
+    <div style="margin: 8px auto" class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-shadow--2dp">
         <form method="POST" action="j_security_check">
 
-            <div class="mdl-card__title"><h5>Log in to BTS</h5></div>
+            <div class="mdl-card__title"><h5>Log in to ${applicationScope['systemInfo'].appName}</h5></div>
 
             <div class="mdl-card__supporting-text">
 
@@ -52,5 +52,6 @@
     </div>
 </div>
 
+<jsp:include page="footer.jsp"/>
 </body>
 </html>

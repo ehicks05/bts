@@ -43,7 +43,7 @@ div.ui-datepicker{
 .clickable:hover {text-decoration: underline}
 
 /* Material */
-.mdl-grid {padding: 0;}
+.mdl-grid {padding: 0;max-width: 1080px;}
 .mdl-layout__drawer .mdl-navigation {padding-top: 8px;}
 .mdl-card__title {padding: 8px; background-color: #cedff9; min-height: 56px;}
 .mdl-card__supporting-text {padding: 8px;}
