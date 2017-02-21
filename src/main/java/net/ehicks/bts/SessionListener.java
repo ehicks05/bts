@@ -6,17 +6,14 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 @WebListener
 public class SessionListener implements HttpSessionListener, HttpSessionAttributeListener
 {
     private static final Logger log = LoggerFactory.getLogger(Controller.class);
 
-    private static ConcurrentHashMap<String, UserSession> sessions = new ConcurrentHashMap<>();
+    private static List<UserSession> sessions = Collections.synchronizedList(new ArrayList<>());
 
     @Override
     public void sessionCreated(HttpSessionEvent se)
@@ -32,9 +29,9 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
         ServletContext context = session.getServletContext();
         Map activeUsers = (Map) context.getAttribute("activeUsers");
         activeUsers.remove(session.getId());
-        sessions.remove(session.getId());
+        sessions.remove(session);
 
-        log.debug("session destroyed: {}", se.getSession().getId());
+        log.info("!!!!!!!!!!! session destroyed: {}", se.getSession().getId());
     }
 
     public void attributeAdded(HttpSessionBindingEvent event)
@@ -48,7 +45,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
                 UserSession userSession = (UserSession) event.getValue();
 //                SessionManager.audit(session.getId(), userSession.getLogonId(), userSession.getUserObjectid(), null, new java.util.Date(),
 //                        userSession.getRemoteIP(), userSession.getRemoteHost() , "",0,"","Logged on.", userSession.getUserAgent());
-                sessions.put(session.getId(), userSession);
+                sessions.add(userSession);
                 log.debug("put {} in session", session.getId());
             }
         }
@@ -65,7 +62,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
                 UserSession userSession = (UserSession) event.getValue();
 //                SessionManager.audit(session.getId(), userSession.getLogonId(), userSession.getUserObjectid(), null, new java.util.Date(),
 //                        userSession.getRemoteIP(), userSession.getRemoteHost(), "", 0, "", "Logged off.", userSession.getUserAgent());
-                sessions.remove(session.getId());
+                sessions.remove(userSession);
                 log.debug("removed {} from session", session.getId());
             }
         }
@@ -77,18 +74,16 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
 
     }
 
-    public static Map<String, UserSession> getSessions()
+    public static List<UserSession> getSessions()
     {
         return sessions;
     }
 
-    public static List<String> getSessionIds()
-    {
-        return new ArrayList<>(sessions.keySet());
-    }
-
     public static UserSession getBySessionId(String sessionId)
     {
-        return sessions.get(sessionId);
+        Optional<UserSession> optional = sessions.stream()
+                .filter(userSession -> userSession.getSessionId().equals(sessionId))
+                .findFirst();
+        return optional.orElse(null);
     }
 }

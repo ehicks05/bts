@@ -12,9 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AdminHandler
@@ -64,8 +62,10 @@ public class AdminHandler
         List<String> cpInfo = EOI.getCPInfo();
         request.setAttribute("dbInfo", dbInfo);
         request.setAttribute("cpInfo", cpInfo);
-        request.setAttribute("sessionIds", SessionListener.getSessionIds());
-        request.setAttribute("sessions", SessionListener.getSessions());
+
+        List<UserSession> userSessions = SessionListener.getSessions();
+        userSessions.sort(Comparator.comparing(UserSession::getLastActivity).reversed());
+        request.setAttribute("userSessions", userSessions);
 
         return "/WEB-INF/webroot/admin/systemInfo.jsp";
     }

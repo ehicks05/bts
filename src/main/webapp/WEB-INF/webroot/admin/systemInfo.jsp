@@ -4,7 +4,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <jsp:useBean id="userSession" type="net.ehicks.bts.UserSession" scope="session"/>
-<jsp:useBean id="sessions" type="java.util.Map<java.lang.String, net.ehicks.bts.UserSession>" scope="request"/>
 <jsp:useBean id="userSessions" type="java.util.List<net.ehicks.bts.UserSession>" scope="request"/>
 
 <!DOCTYPE html>
