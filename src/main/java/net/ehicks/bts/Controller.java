@@ -1,8 +1,6 @@
 package net.ehicks.bts;
 
 import net.ehicks.bts.beans.*;
-import net.ehicks.bts.handlers.*;
-import net.ehicks.bts.handlers.settings.IssueFormHandler;
 import net.ehicks.eoi.EOI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +15,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.security.Principal;
-import java.text.ParseException;
 import java.util.Date;
 
 @WebServlet(value = "/view", loadOnStartup = 1)
@@ -47,7 +44,7 @@ public class Controller extends HttpServlet
             new Thread(DefaultDataLoader::createDemoData).start();
         }
 
-        RouteLogic.loadRoutes();
+        Router.loadRoutes();
 
         BackupDbTask.scheduleTask();
 
@@ -129,11 +126,12 @@ public class Controller extends HttpServlet
             dispatcher.forward(request, response);
         }
 
-        if (SystemInfo.INSTANCE.getDebugLevel() > 1)
-            log.debug("{} ms for last request {}", (System.currentTimeMillis() - start), request.getQueryString());
+        long duration = System.currentTimeMillis() - start;
+        if (duration > 100)
+            log.info("{} ms for last request {}", duration, request.getQueryString());
     }
 
-    private String processRequest(HttpServletRequest request, HttpServletResponse response, UserSession userSession) throws IOException, ServletException
+    private static String processRequest(HttpServletRequest request, HttpServletResponse response, UserSession userSession) throws IOException
     {
         String tab1   = request.getParameter("tab1") == null ? "" : request.getParameter("tab1");
         String tab2   = request.getParameter("tab2") == null ? "" : request.getParameter("tab2");
@@ -144,10 +142,9 @@ public class Controller extends HttpServlet
         if (tab1.equals("admin") && !userSession.getUser().isAdmin())
             return "/WEB-INF/webroot/error.jsp";
 
-        String viewJsp = "";
-
+        // routing
         RouteDescription routeDescription = new RouteDescription(tab1, tab2, tab3, action);
-        Method handler = RouteLogic.getRouteMap().get(routeDescription);
+        Method handler = Router.getRouteMap().get(routeDescription);
         if (handler != null)
         {
             try
@@ -161,52 +158,14 @@ public class Controller extends HttpServlet
             catch (Exception e)
             {
                 log.error(e.getMessage(), e);
+                response.sendRedirect("view?tab1=dashboard&action=form");
             }
         }
-
-        try
-        {
-            if (tab1.equals("main"))
-            {
-                if (tab2.equals("issue"))
-                {
-                    if (action.equals("form"))
-                        viewJsp = ModifyIssueHandler.showModifyIssue(request, response);
-                    if (action.equals("create"))
-                        ModifyIssueHandler.createIssue(request, response);
-                    if (action.equals("update"))
-                        ModifyIssueHandler.updateIssue(request, response);
-                    if (action.equals("addComment"))
-                        ModifyIssueHandler.addComment(request, response);
-                    if (action.equals("updateComment"))
-                        ModifyIssueHandler.updateComment(request, response);
-                    if (action.equals("addWatcher"))
-                        ModifyIssueHandler.addWatcher(request, response);
-                    if (action.equals("removeWatcher"))
-                        ModifyIssueHandler.removeWatcher(request, response);
-                    if (action.equals("addAttachment"))
-                        AttachmentHandler.addAttachment(request, response);
-                    if (action.equals("retrieveAttachment"))
-                        AttachmentHandler.retrieveAttachment(request, response);
-                    if (action.equals("deleteAttachment"))
-                        AttachmentHandler.deleteAttachment(request, response);
-                }
-
-                if (action.equals("logout"))
-                {
-                    logout(request, response);
-                    return "";
-                }
-            }
-        }
-        catch (ParseException e)
-        {
-            log.error(e.getMessage(), e);
-        }
-        return viewJsp;
+        
+        return "";
     }
 
-    private UserSession createSession(HttpServletRequest request)
+    private static UserSession createSession(HttpServletRequest request)
     {
         Principal principal = request.getUserPrincipal();
         User user = User.getByLogonId(principal.getName());
@@ -222,14 +181,15 @@ public class Controller extends HttpServlet
         return userSession;
     }
 
-    private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException
+    @Route(tab1 = "logout", tab2 = "", tab3 = "", action = "logout")
+    private static void logout(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         invalidateSession(request);
 
         response.sendRedirect("view?tab1=dashboard&action=form");
     }
 
-    private void invalidateSession(HttpServletRequest request)
+    private static void invalidateSession(HttpServletRequest request)
     {
         request.removeAttribute("userSession");
         HttpSession session = request.getSession(false);

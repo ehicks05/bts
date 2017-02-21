@@ -13,7 +13,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BTS</title>
+    <jsp:include page="inc_title.jsp"/>
     <jsp:include page="inc_header.jsp"/>
     <script>
         function initHeader()
@@ -84,13 +84,13 @@
         function addWatcher(elementId, issueId)
         {
             var userId = $('#' + elementId).val();
-            location.href = "${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=addWatcher&issueId=${issue.id}&userId=" + userId;
+            location.href = "${pageContext.request.contextPath}/view?tab1=issue&action=addWatcher&issueId=${issue.id}&userId=" + userId;
         }
 
         function deleteAttachment(attachmentId)
         {
             if (confirm('Are you sure?'))
-                location.href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=deleteAttachment&issueId=${issue.id}&attachmentId=" + attachmentId;
+                location.href="${pageContext.request.contextPath}/view?tab1=issue&action=deleteAttachment&issueId=${issue.id}&attachmentId=" + attachmentId;
         }
     </script>
 
@@ -104,10 +104,10 @@
         <div class="mdl-card__title">
             <h5>
                 <div class="mdl-card__title-text">
-                    <t:textToInputText tag="h5" id="fldTitle" text="${issue.title}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                    <t:textToInputText tag="h5" id="fldTitle" text="${issue.title}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
                 </div>
                 <div class="mdl-card__subtitle-text">
-                    <t:textToSelect id="fldProject" value="${issue.projectId}" text="${issue.project.name}" items="${projects}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                    <t:textToSelect id="fldProject" value="${issue.projectId}" text="${issue.project.name}" items="${projects}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
                     &nbsp;${issue.project.prefix}-${issue.id}
                 </div>
             </h5>
@@ -121,11 +121,11 @@
                     <tr  style="height:28px;">
                         <td style="padding: 0 8px;">Type:</td>
                         <td style="padding: 0 8px;">
-                            <t:textToSelect id="fldIssueType" value="${issue.issueType.id}" text="${issue.issueType.name}" items="${issueTypes}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                            <t:textToSelect id="fldIssueType" value="${issue.issueType.id}" text="${issue.issueType.name}" items="${issueTypes}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
                         </td>
                         <td style="padding: 0 8px;">Status:</td>
                         <td style="padding: 0 8px;">
-                            <t:textToSelect id="fldStatus" value="${issue.status.id}" text="${issue.status.name}" items="${statuses}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                            <t:textToSelect id="fldStatus" value="${issue.status.id}" text="${issue.status.name}" items="${statuses}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
                         </td>
                     </tr>
                     <tr style="height:28px;">
@@ -137,11 +137,11 @@
                     <tr  style="height:28px;">
                         <td style="padding: 0 8px;">Severity:</td>
                         <td style="padding: 0 8px;">
-                            <t:textToSelect id="fldSeverity" value="${issue.severity.id}" text="${issue.severity.name}" items="${severities}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                            <t:textToSelect id="fldSeverity" value="${issue.severity.id}" text="${issue.severity.name}" items="${severities}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
                         </td>
                         <td style="padding: 0 8px;">Group:</td>
                         <td style="padding: 0 8px;">
-                            <t:textToSelect id="fldGroup" value="${issue.group.id}" text="${issue.group.name}" items="${groups}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                            <t:textToSelect id="fldGroup" value="${issue.group.id}" text="${issue.group.name}" items="${groups}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
                         </td>
                     </tr>
                 </table>
@@ -160,14 +160,14 @@
                             <c:if test="${attachment.thumbnailDbFileId > 0}">
                                 <td style="padding: 0;border:solid 1px lightgray;">
                                     <div align="center">
-                                        <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=retrieveAttachment&attachmentId=${attachment.id}">
+                                        <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=issue&action=retrieveAttachment&attachmentId=${attachment.id}">
                                             <img src="${attachment.thumbnailDbFile.base64}"/>
                                         </a>
                                     </div>
                                     <table class="table">
                                         <tr>
                                             <td>
-                                                <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=retrieveAttachment&attachmentId=${attachment.id}">
+                                                <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=issue&action=retrieveAttachment&attachmentId=${attachment.id}">
                                                         ${attachment.dbFile.name}
                                                 </a>
                                             </td>
@@ -195,7 +195,7 @@
                         <c:if test="${attachment.thumbnailDbFileId == 0}">
                             <tr>
                                 <td style="padding: 0 8px;border:solid 1px lightgray;">
-                                    <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=retrieveAttachment&attachmentId=${attachment.id}">
+                                    <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=issue&action=retrieveAttachment&attachmentId=${attachment.id}">
                                         <c:set var="defaultImageName" value=""/>
                                         <c:if test="${fn:endsWith(attachment.dbFile.name, 'pdf')}">
                                             <c:set var="defaultImageName" value="Adobe.png"/>
@@ -244,7 +244,7 @@
         <div class="mdl-card__title"><h5>Description</h5></div>
 
         <div class="mdl-card__supporting-text">
-            <t:textToInputText id="fldDescription" text="${issue.description}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+            <t:textToInputText id="fldDescription" text="${issue.description}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
         </div>
 
         <div class="mdl-card__title"><h5>Activity</h5></div>
@@ -266,7 +266,7 @@
                     <c:set var="commentIndex" value="${commentIndex + 1}"/>
 
                     <div style="padding: 0 8px;">
-                        <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${comment.createdByUserId}">
+                        <a href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${comment.createdByUserId}">
                             <img src="${!empty comment.createdBy.avatar.base64 ? comment.createdBy.avatar.base64 : comment.defaultAvatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;">
                             <span class="hasTooltip">${comment.createdBy.name}</span>
                             <div style="display: none;">
@@ -297,7 +297,7 @@
                         <br>
                         <div class="mdl-card__supporting-text">
                             <c:if test="${comment.createdByUserId == userSession.userId}">
-                                <t:textToInputText id="fldContent${comment.id}" text="${comment.content}" submitAction="/view?tab1=main&tab2=issue&action=updateComment&commentId=${comment.id}"/>
+                                <t:textToInputText id="fldContent${comment.id}" text="${comment.content}" submitAction="/view?tab1=issue&action=updateComment&commentId=${comment.id}"/>
                             </c:if>
                             <c:if test="${comment.createdByUserId != userSession.userId}">
                                 <c:out value="${comment.content}"/>
@@ -344,7 +344,7 @@
 
         <div id="newCommentFormContainer" style="display: none;">
             <hr>
-            <form class="mdl-card__supporting-text" style="width: 100%" id="frmNewComment" name="frmNewComment" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=addComment&issueId=${issue.id}">
+            <form class="mdl-card__supporting-text" style="width: 100%" id="frmNewComment" name="frmNewComment" method="post" action="${pageContext.request.contextPath}/view?tab1=issue&action=addComment&issueId=${issue.id}">
                 <div class="mdl-textfield mdl-js-textfield" style="width: 98%">
                     <textarea class="mdl-textfield__input" type="text" rows="3" maxrows="6" id="fldContent" name="fldContent"></textarea>
                     <label class="mdl-textfield__label" for="fldContent">Comment:</label>
@@ -376,20 +376,20 @@
                     <td style="padding: 0 8px;">Assignee:</td>
                     <td style="padding: 0 8px;">
                         <c:if test="${!empty issue.assignee}">
-                            <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${issue.assigneeUserId}">
+                            <a href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${issue.assigneeUserId}">
                                 <img src="${issue.assignee.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
 
-                            <t:textToSelect id="fldAssigneeId" value="${issue.assigneeUserId}" text="${issue.assignee.name}" items="${potentialAssignees}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                            <t:textToSelect id="fldAssigneeId" value="${issue.assigneeUserId}" text="${issue.assignee.name}" items="${potentialAssignees}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
                         </c:if>
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 0 8px;">Reporter:</td>
                     <td style="padding: 0 8px;">
-                        <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${issue.reporterUserId}">
+                        <a href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${issue.reporterUserId}">
                             <img src="${issue.reporter.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
 
-                        <t:textToSelect id="fldReporterId" value="${issue.reporterUserId}" text="${issue.reporter.name}" items="${potentialReporters}" submitAction="/view?tab1=main&tab2=issue&action=update&issueId=${issue.id}"/>
+                        <t:textToSelect id="fldReporterId" value="${issue.reporterUserId}" text="${issue.reporter.name}" items="${potentialReporters}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
                     </td>
                 </tr>
             </table>
@@ -409,12 +409,12 @@
                                     <c:forEach var="watcherMap" items="${watcherMaps}">
                                         <tr>
                                             <td>
-                                                <a style="" href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${watcherMap.watcher.id}">
+                                                <a style="" href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${watcherMap.watcher.id}">
                                                     <img src="${watcherMap.watcher.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;">${watcherMap.watcher.name}
                                                 </a>
                                             </td>
                                             <td>
-                                                <a style="vertical-align: sub" href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=removeWatcher&issueId=${issue.id}&watcherMapId=${watcherMap.id}"><i style="color:gray;" class="material-icons">delete</i></a>
+                                                <a style="vertical-align: sub" href="${pageContext.request.contextPath}/view?tab1=issue&action=removeWatcher&issueId=${issue.id}&watcherMapId=${watcherMap.id}"><i style="color:gray;" class="material-icons">delete</i></a>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -451,7 +451,7 @@
 <dialog id="addAttachmentDialog" class="mdl-dialog" style="width: 500px;">
     <h4 class="mdl-dialog__title">Add Attachment</h4>
     <div class="mdl-dialog__content">
-        <form id="frmAddAttachment" name="frmAddAttachment" enctype="multipart/form-data" method="post" action="${pageContext.request.contextPath}/view?tab1=main&tab1=main&tab2=issue&action=addAttachment&issueId=${issue.id}">
+        <form id="frmAddAttachment" name="frmAddAttachment" enctype="multipart/form-data" method="post" action="${pageContext.request.contextPath}/view?tab1=issue&action=addAttachment&issueId=${issue.id}">
             <table>
                 <tr>
                     <td>File:</td>

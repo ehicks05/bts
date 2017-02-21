@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BTS</title>
+    <jsp:include page="inc_title.jsp"/>
     <jsp:include page="inc_header.jsp"/>
     <script>
         function initHeader()
@@ -80,11 +80,11 @@
         <div class="mdl-card__supporting-text">
             <c:forEach var="comment" items="${user.recentComments}">
                 <div style="padding: 0 8px;">
-                    <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=profile&action=form&userId=${user.id}">
+                    <a href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${user.id}">
                         <img src="${user.avatar.base64}" style="padding-right: 4px; height: 24px;"/>${user.name}
                     </a>
                     commented on
-                    <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=form&issueId=${comment.issue.id}">
+                    <a href="${pageContext.request.contextPath}/view?tab1=issue&action=form&issueId=${comment.issue.id}">
                         ${comment.issue.project.prefix}-${comment.issue.id} -  ${comment.issue.title} - <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy h:mm a"/>
                     </a>
 

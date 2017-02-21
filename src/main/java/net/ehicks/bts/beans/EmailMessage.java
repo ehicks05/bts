@@ -117,7 +117,7 @@ public class EmailMessage implements Serializable
                     "    <tr><td>\n" +
                     "        <table style=\"width: 500px;margin:auto;background-color: white\">\n" +
                     "            <tr>\n" +
-                    "                <td style=\"padding: 10px;\"><h1><a href=\"" + emailContext + "/view?tab1=main&tab2=issue&action=form&issueId=" + issueId + "\">\n" +
+                    "                <td style=\"padding: 10px;\"><h1><a href=\"" + emailContext + "/view?tab1=issue&action=form&issueId=" + issueId + "\">\n" +
                     "                    " + issue.getProject().getPrefix() + "-" + issue.getId() + " " + issue.getTitle() + "</a></h1></td>\n" +
                     "            </tr>\n" +
                     "            <tr>\n" +
@@ -150,7 +150,7 @@ public class EmailMessage implements Serializable
                     "    <tr><td>\n" +
                     "        <table style=\"width: 500px;margin:auto;background-color: white\">\n" +
                     "            <tr>\n" +
-                    "                <td style=\"padding: 10px;\"><h1><a href=\"" + emailContext + "/view?tab1=main&tab2=issue&action=form&issueId=" + issueId + "\">\n" +
+                    "                <td style=\"padding: 10px;\"><h1><a href=\"" + emailContext + "/view?tab1=issue&action=form&issueId=" + issueId + "\">\n" +
                     "                    " + issue.getProject().getPrefix() + "-" + issue.getId() + " " + issue.getTitle() + "</a></h1></td>\n" +
                     "            </tr>\n" +
                     "            <tr>\n" +

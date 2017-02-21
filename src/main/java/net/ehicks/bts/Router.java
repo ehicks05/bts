@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class RouteLogic
+public class Router
 {
-    private static final Logger log = LoggerFactory.getLogger(RouteLogic.class);
+    private static final Logger log = LoggerFactory.getLogger(Router.class);
 
     private static Map<RouteDescription, Method> routeMap = new HashMap<>();
 

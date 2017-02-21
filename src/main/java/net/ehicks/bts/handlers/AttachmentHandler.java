@@ -1,6 +1,7 @@
 package net.ehicks.bts.handlers;
 
 import net.ehicks.bts.CommonIO;
+import net.ehicks.bts.Route;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.Attachment;
 import net.ehicks.bts.beans.DBFile;
@@ -34,6 +35,7 @@ public class AttachmentHandler
 {
     private static final Logger log = LoggerFactory.getLogger(AttachmentHandler.class);
 
+    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "retrieveAttachment")
     public static void retrieveAttachment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -52,6 +54,7 @@ public class AttachmentHandler
         }
     }
 
+    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "addAttachment")
     public static void addAttachment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -138,9 +141,10 @@ public class AttachmentHandler
         }
 
         request.getSession().setAttribute("responseMessage", responseMessage);
-        response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + issueId);
+        response.sendRedirect("view?tab1=issue&action=form&issueId=" + issueId);
     }
 
+    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "deleteAttachment")
     public static void deleteAttachment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -172,6 +176,6 @@ public class AttachmentHandler
         if (thumbNail != null)
             EOI.executeDelete(thumbNail, userSession);
 
-        response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + issueId);
+        response.sendRedirect("view?tab1=issue&action=form&issueId=" + issueId);
     }
 }

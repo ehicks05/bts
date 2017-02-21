@@ -3,6 +3,7 @@ package net.ehicks.bts.handlers;
 import com.sksamuel.diffpatch.DiffMatchPatch;
 import net.ehicks.bts.EmailAction;
 import net.ehicks.bts.EmailEngine;
+import net.ehicks.bts.Route;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.*;
 import net.ehicks.common.Common;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 public class ModifyIssueHandler
 {
+    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "form")
     public static String showModifyIssue(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -68,6 +70,7 @@ public class ModifyIssueHandler
         }
     }
 
+    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "create")
     public static void createIssue(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -98,9 +101,10 @@ public class ModifyIssueHandler
         watcherMap.setUserId(userSession.getUserId());
         EOI.insert(watcherMap, userSession);
 
-        response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + newIssueId);
+        response.sendRedirect("view?tab1=issue&action=form&issueId=" + newIssueId);
     }
 
+    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "update")
     public static void updateIssue(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -177,6 +181,7 @@ public class ModifyIssueHandler
         response.getWriter().println(toastMessage);
     }
 
+    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "addComment")
     public static void addComment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -204,9 +209,10 @@ public class ModifyIssueHandler
 
         EmailEngine.sendEmail(emailMessage);
 
-        response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + issueId);
+        response.sendRedirect("view?tab1=issue&action=form&issueId=" + issueId);
     }
 
+    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "updateComment")
     public static void updateComment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -259,6 +265,7 @@ public class ModifyIssueHandler
         EmailEngine.sendEmail(emailMessage);
     }
 
+    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "addWatcher")
     public static void addWatcher(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -271,9 +278,10 @@ public class ModifyIssueHandler
         watcherMap.setUserId(userId);
         EOI.insert(watcherMap, userSession);
 
-        response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + issueId);
+        response.sendRedirect("view?tab1=issue&action=form&issueId=" + issueId);
     }
 
+    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "removeWatcher")
     public static void removeWatcher(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -284,6 +292,6 @@ public class ModifyIssueHandler
         WatcherMap watcherMap = WatcherMap.getById(watcherMapId);
         EOI.executeDelete(watcherMap, userSession);
 
-        response.sendRedirect("view?tab1=main&tab2=issue&action=form&issueId=" + issueId);
+        response.sendRedirect("view?tab1=issue&action=form&issueId=" + issueId);
     }
 }

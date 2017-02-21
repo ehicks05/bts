@@ -20,10 +20,10 @@
     <c:forEach var="issue" items="${searchResult.searchResults}" varStatus="loop">
         <tr class="${loop.index % 2 == 0 ? 'listrowodd' : 'listroweven'}">
             <td class="alignright">
-                <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=form&issueId=${issue.id}">${issue.id}</a>
+                <a href="${pageContext.request.contextPath}/view?tab1=issue&action=form&issueId=${issue.id}">${issue.id}</a>
             </td>
             <td>
-                <a href="${pageContext.request.contextPath}/view?tab1=main&tab2=issue&action=form&issueId=${issue.id}">${issue.title}</a>
+                <a href="${pageContext.request.contextPath}/view?tab1=issue&action=form&issueId=${issue.id}">${issue.title}</a>
             </td>
             <td class="alignright hideOnSmall"><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yy" /></td>
             <td class="alignright"><fmt:formatDate value="${issue.lastUpdatedOn}" pattern="dd/MMM/yy" /></td>

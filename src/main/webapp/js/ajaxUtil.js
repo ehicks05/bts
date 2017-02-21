@@ -10,7 +10,6 @@
  */
 function ajaxItems(callingElementId, context, endpoint, issueFormId, newPage, newSortColumn, newSortDirection)
 {
-    // var myUrl = context + '/view?tab1=main&tab2=search&action=ajaxGetPageOfResults';
     var myUrl = context + endpoint;
     var params = {};
     if (issueFormId) params.issueFormId = issueFormId;
