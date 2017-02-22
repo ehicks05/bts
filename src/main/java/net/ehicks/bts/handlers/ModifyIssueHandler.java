@@ -1,10 +1,7 @@
 package net.ehicks.bts.handlers;
 
 import com.sksamuel.diffpatch.DiffMatchPatch;
-import net.ehicks.bts.EmailAction;
-import net.ehicks.bts.EmailEngine;
-import net.ehicks.bts.Route;
-import net.ehicks.bts.UserSession;
+import net.ehicks.bts.*;
 import net.ehicks.bts.beans.*;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
@@ -49,6 +46,14 @@ public class ModifyIssueHandler
         request.setAttribute("potentialReporters", User.getAll());
 
         return "/WEB-INF/webroot/issueForm.jsp";
+    }
+
+    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "ajaxGetChangeLog")
+    public static void ajaxGetChangeLog(HttpServletRequest request, HttpServletResponse response) throws IOException
+    {
+        Long issueId = Common.stringToLong(request.getParameter("issueId"));
+
+        response.getWriter().println("<span>Hello! - " + issueId + "</span>");
     }
 
     private static List<Comment> retainVisibleComments(List<Comment> comments, UserSession userSession)

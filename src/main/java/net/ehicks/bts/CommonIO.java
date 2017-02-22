@@ -9,6 +9,18 @@ import java.net.URLConnection;
 
 public class CommonIO
 {
+    public static void sleep(long millis)
+    {
+        try
+        {
+            Thread.sleep(millis);
+        }
+        catch (Exception e)
+        {
+
+        }
+    }
+
     public static void sendFileInResponse(HttpServletResponse response, File file, boolean inline) throws IOException
     {
         response.setContentType(URLConnection.guessContentTypeFromName(file.getName()));

@@ -51,6 +51,7 @@ public enum SystemInfo
         stats.put("Free RAM", getFreeRam());
         stats.put("Max RAM", getMaxRam());
         stats.put("Log Directory", Paths.get(getLogDirectory()).toFile().getCanonicalPath());
+        stats.put("Backup Directory", Paths.get(getBackupDirectory()).toFile().getCanonicalPath());
 
         return stats;
     }

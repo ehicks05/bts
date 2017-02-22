@@ -18,6 +18,7 @@
     <script>
         function initHeader()
         {
+            $('#showChangeLogButton').on('click', ajaxGetChangeLog);
             $('#fldWatcher').select2();
 
             // QTIP
@@ -91,6 +92,51 @@
         {
             if (confirm('Are you sure?'))
                 location.href="${pageContext.request.contextPath}/view?tab1=issue&action=deleteAttachment&issueId=${issue.id}&attachmentId=" + attachmentId;
+        }
+
+        function ajaxGetChangeLog()
+        {
+            var target = $('#changeLog'); //put your target here!
+            target.css('opacity', '.50');
+
+            var opts = {
+                lines: 13, // The number of lines to draw
+                length: 20, // The length of each line
+                width: 10, // The line thickness
+                radius: 30, // The radius of the inner circle
+                corners: 1, // Corner roundness (0..1)
+                rotate: 0, // The rotation offset
+                direction: 1, // 1: clockwise, -1: counterclockwise
+                color: '#000', // #rgb or #rrggbb or array of colors
+                speed: 1, // Rounds per second
+                trail: 60, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinner', // The CSS class to assign to the spinner
+                zIndex: 2e9, // The z-index (defaults to 2000000000)
+                top: '50%', // Top position relative to parent
+                left: '50%' // Left position relative to parent
+            };
+            var spinner = new Spinner(opts).spin(target[0]);
+
+            var url = '${pageContext.request.contextPath}/view?tab1=issue&action=ajaxGetChangeLog&issueId=${issue.id}';
+            $.get(url, [], function (data, textStatus)
+            {
+                spinner.stop();
+                target.css('opacity', '1');
+                
+                if (!data)
+                    return 'ok';
+
+                if (textStatus === 'success')
+                {
+                    $('#changeLog').append(data);
+                    $('#showChangeLogButton').off('click'); // we only want the data loaded once.
+                    return 'success';
+                }
+                else
+                    return 'fail';
+            });
         }
     </script>
 
@@ -252,7 +298,7 @@
         <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
             <div class="mdl-tabs__tab-bar">
                 <a href="#comments-panel" class="mdl-tabs__tab is-active">Comments</a>
-                <a href="#changeLog-panel" class="mdl-tabs__tab">Change Log</a>
+                <a id="showChangeLogButton" href="#changeLog-panel" class="mdl-tabs__tab">Change Log</a>
             </div>
             <div class="mdl-tabs__panel is-active" id="comments-panel">
                 <c:set var="commentIndex" value="${0}"/>
@@ -307,15 +353,9 @@
                 </c:forEach>
             </div>
             <div class="mdl-tabs__panel" id="changeLog-panel">
-                <ul>
-                    <li>Eddard</li>
-                    <li>Catelyn</li>
-                    <li>Robb</li>
-                    <li>Sansa</li>
-                    <li>Brandon</li>
-                    <li>Arya</li>
-                    <li>Rickon</li>
-                </ul>
+                <div id="changeLog">
+
+                </div>
             </div>
         </div>
 
