@@ -79,10 +79,24 @@
                     <td align="right">${entry.value}</td>
                 </tr>
             </c:forEach>
+        </table>
+    </div>
 
-            <c:forEach var="cpInfoItem" items="${cpInfo}">
+    <div class="flexItem">
+        <div class="mdl-card__title"><h5>CP Info</h5></div>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric">Property</th>
+                <th>Value</th>
+            </tr>
+            </thead>
+
+            <c:forEach var="cpInfoEntry" items="${cpInfo}">
                 <tr>
-                    <td colspan="2" align="right">${cpInfoItem}</td>
+                    <td>${cpInfoEntry.key}</td>
+                    <td align="right">${cpInfoEntry.value}</td>
                 </tr>
             </c:forEach>
         </table>

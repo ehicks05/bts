@@ -65,7 +65,7 @@ public class Startup
         long subTaskStart = System.currentTimeMillis();
         int tablesCreated = 0;
         for (DBMap dbMap : DBMap.dbMaps)
-            if (!EOI.isTableExists(dbMap))
+            if (!EOI.isTableExists(dbMap.tableName))
             {
                 String createTableStatement = SQLGenerator.getCreateTableStatement(dbMap);
                 EOI.executeUpdate(createTableStatement);
@@ -85,7 +85,11 @@ public class Startup
         {
             try
             {
-                EOI.executeUpdate("drop table " + dbMap.tableName);
+                if (EOI.isTableExists(dbMap.tableName))
+                {
+                    log.debug("Dropping " + dbMap.tableName + "...");
+                    EOI.executeUpdate("drop table " + dbMap.tableName);
+                }
             }
             catch (Exception e)
             {

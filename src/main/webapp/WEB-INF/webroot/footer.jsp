@@ -9,7 +9,9 @@
 <footer class="mdl-mini-footer" style="padding: 8px;">
     <div class="mdl-mini-footer__left-section">
         <div class="mdl-logo">
-
+            <c:if test="${!empty sessionScope.userSession}">
+                previous request: ${sessionScope.lastRequestDuration} ms
+            </c:if>
         </div>
     </div>
     <div class="mdl-mini-footer__right-section">
@@ -25,3 +27,5 @@
 <script>
     $(document).ready(showResponseMessage);
 </script>
+
+<c:remove var="lastRequestDuration" scope="session" />

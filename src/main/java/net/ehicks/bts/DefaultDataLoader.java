@@ -20,7 +20,8 @@ public class DefaultDataLoader
 {
     private static final Logger log = LoggerFactory.getLogger(DefaultDataLoader.class);
 
-    private static int issueCount = 1_024;
+    private static int issueCount = (int) Math.pow(1_024, 2);
+    private static boolean useBatches = true;
 
     private static List<String> latin = Arrays.asList("annus", "ante meridiem", "aqua", "bene", "canis", "caput", "circus", "cogito",
             "corpus", "de facto", "deus", "ego", "equus", "ergo", "est", "hortus", "id", "in", "index", "iris", "latex",
@@ -134,10 +135,18 @@ public class DefaultDataLoader
     {
         List<User> users = User.getAll();
         Random r = new Random();
-        EOI.startTransaction();
+
+        if (useBatches)
+            EOI.startTransaction();
 
         List<WatcherMap> watcherMaps = new ArrayList<>();
-        Issue.getAll().forEach(issue -> {
+        List<Issue> issues = Issue.getAll();
+        for (int issueIndex = 0; issueIndex < issues.size(); issueIndex++)
+        {
+            Issue issue = issues.get(issueIndex);
+            if (issueIndex % (issues.size() / 100) == 0)
+                log.info("WatcherMap for issue " + issueIndex + " / " + issues.size());
+
             List<Integer> selectedUserIndexes = new ArrayList<>();
             for (int i = 0; i < r.nextInt(3) + 1; i++)
             {
@@ -151,11 +160,18 @@ public class DefaultDataLoader
                 WatcherMap watcherMap = new WatcherMap();
                 watcherMap.setUserId(users.get(userIndex).getId());
                 watcherMap.setIssueId(issue.getId());
-                watcherMaps.add(watcherMap);
+                if (useBatches)
+                    watcherMaps.add(watcherMap);
+                else
+                    EOI.insert(watcherMap, SystemTask.DEFAULT_DATA_LOADER);
             }
-        });
-        EOI.batchInsert(watcherMaps);
-        EOI.commit();
+        }
+
+        if (useBatches)
+        {
+            EOI.batchInsert(watcherMaps);
+            EOI.commit();
+        }
     }
 
     private static void createComments()
@@ -163,12 +179,19 @@ public class DefaultDataLoader
         Random r = new Random();
         int users = User.getAll().size();
 
-        EOI.startTransaction();
+        if (useBatches)
+            EOI.startTransaction();
         List<Comment> comments = new ArrayList<>();
-        Issue.getAll().forEach(issue -> {
+        List<Issue> issues = Issue.getAll();
+        for (int issueIndex = 0; issueIndex < issues.size(); issueIndex++)
+        {
+            Issue issue = issues.get(issueIndex);
             long issueId = issue.getId();
             if (issueId == 2)
-                return;
+                continue;
+
+            if (issueIndex % (issues.size() / 100) == 0)
+                log.info("Comment for issue " + issueIndex + " / " + issues.size());
 
             for (int i = 0; i < r.nextInt(8); i++)
             {
@@ -185,11 +208,17 @@ public class DefaultDataLoader
                     content += latin.get(r.nextInt(latin.size()));
                 }
                 comment.setContent(content);
-                comments.add(comment);
+                if (useBatches)
+                    comments.add(comment);
+                else
+                    EOI.insert(comment, SystemTask.DEFAULT_DATA_LOADER);
             }
-        });
-        EOI.batchInsert(comments);
-        EOI.commit();
+        };
+        if (useBatches)
+        {
+            EOI.batchInsert(comments);
+            EOI.commit();
+        }
 
         Comment comment = new Comment();
         comment.setIssueId(2L);
@@ -279,11 +308,14 @@ public class DefaultDataLoader
 
         Random r = new Random();
 
-        EOI.startTransaction();
+        if (useBatches)
+            EOI.startTransaction();
 
         List<Issue> issues = new ArrayList<>();
         IntStream.range(0, issueCount).forEach(i ->
         {
+            if (i % (issueCount / 100) == 0)
+                log.info("Issue " + i + " / " + issueCount);
             Issue issue = new Issue();
             long value = (long) r.nextInt(projects);
             issue.setProjectId(value > 0 ? value : 1);
@@ -328,11 +360,17 @@ public class DefaultDataLoader
             Date createdOn = getRandomDateTime();
             issue.setCreatedOn(createdOn);
             issue.setLastUpdatedOn(getRandomDateTimeForward(createdOn));
-            issues.add(issue);
+            if (useBatches)
+                issues.add(issue);
+            else
+                EOI.insert(issue, SystemTask.DEFAULT_DATA_LOADER);
         });
 
-        EOI.batchInsert(issues);
-        EOI.commit();
+        if (useBatches)
+        {
+            EOI.batchInsert(issues);
+            EOI.commit();
+        }
     }
 
     private static void createIssueTypes()

@@ -76,6 +76,11 @@ public class Audit implements Serializable
         return EOI.executeQueryOneResult("select * from audits where id=?", Arrays.asList(id));
     }
 
+    public static List<Audit> getByObjectKey(String objectKey)
+    {
+        return EOI.executeQuery("select * from audits where object_key=?", Arrays.asList(objectKey));
+    }
+
     public String getUserName()
     {
         String userName = "";

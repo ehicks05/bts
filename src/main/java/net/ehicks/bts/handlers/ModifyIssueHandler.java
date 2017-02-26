@@ -10,10 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ModifyIssueHandler
@@ -49,11 +46,26 @@ public class ModifyIssueHandler
     }
 
     @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "ajaxGetChangeLog")
-    public static void ajaxGetChangeLog(HttpServletRequest request, HttpServletResponse response) throws IOException
+    public static String ajaxGetChangeLog(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         Long issueId = Common.stringToLong(request.getParameter("issueId"));
+        Issue issue = Issue.getById(issueId);
 
-        response.getWriter().println("<span>Hello! - " + issueId + "</span>");
+        // get audit records from issue, comments, watcherMaps, and attachments
+        List<Audit> audits = new ArrayList<>();
+        audits.addAll(Audit.getByObjectKey(issue.toString()));
+
+        for (Comment comment : Comment.getByIssueId(issueId))
+            audits.addAll(Audit.getByObjectKey(comment.toString()));
+        for (WatcherMap watcherMap : WatcherMap.getByIssueId(issueId))
+            audits.addAll(Audit.getByObjectKey(watcherMap.toString()));
+        for (Attachment attachment : Attachment.getByIssueId(issueId))
+            audits.addAll(Audit.getByObjectKey(attachment.toString()));
+        
+        audits.sort(Comparator.comparing(Audit::getEventTime));
+        request.setAttribute("audits", audits);
+
+        return "/WEB-INF/webroot/issueChangelog.jsp";
     }
 
     private static List<Comment> retainVisibleComments(List<Comment> comments, UserSession userSession)

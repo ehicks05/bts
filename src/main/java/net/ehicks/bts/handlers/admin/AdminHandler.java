@@ -6,6 +6,7 @@ import net.ehicks.bts.util.PasswordUtil;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.EOICache;
+import net.ehicks.eoi.Metrics;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,7 +60,7 @@ public class AdminHandler
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         List<Object> dbInfo = EOI.executeQuery("SELECT NAME, VALUE FROM INFORMATION_SCHEMA.SETTINGS");
-        List<String> cpInfo = EOI.getCPInfo();
+        Map<String, String> cpInfo = Metrics.getMetrics();
         request.setAttribute("dbInfo", dbInfo);
         request.setAttribute("cpInfo", cpInfo);
 

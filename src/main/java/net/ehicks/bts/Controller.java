@@ -127,6 +127,9 @@ public class Controller extends HttpServlet
         }
 
         long duration = System.currentTimeMillis() - start;
+        Object soFar = request.getSession().getAttribute("lastRequestDuration");
+        long durationSoFar = soFar == null ? 0 : (long) soFar;
+        request.getSession().setAttribute("lastRequestDuration", durationSoFar + duration);
         if (duration > 100)
             log.info("{} ms for last request {}", duration, request.getQueryString());
     }

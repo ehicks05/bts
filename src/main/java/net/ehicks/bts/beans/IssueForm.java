@@ -118,28 +118,31 @@ public class IssueForm extends SearchForm implements Serializable
         /*
         * Security - Limit results to issues in the user's groups.
         */
-        if (whereClause.length() > 0) whereClause += " and ";
         String questionMarks = "";
         User user = User.getByUserId(issueForm.getUserId());
-        for (Group group : Group.getAllForUser(user.getId()))
+        if (!user.isAdmin())
         {
-            if (questionMarks.length() > 0)
-                questionMarks += ",";
-            questionMarks += "?";
-            args.add(group.getId());
-        }
-        whereClause += " group_id in (" + questionMarks +") ";
+            if (whereClause.length() > 0) whereClause += " and ";
+            for (Group group : Group.getAllForUser(user.getId()))
+            {
+                if (questionMarks.length() > 0)
+                    questionMarks += ",";
+                questionMarks += "?";
+                args.add(group.getId());
+            }
+            whereClause += " group_id in (" + questionMarks +") ";
 
-        if (whereClause.length() > 0) whereClause += " and ";
-        questionMarks = "";
-        for (Project project : Project.getAllForUser(user.getId()))
-        {
-            if (questionMarks.length() > 0)
-                questionMarks += ",";
-            questionMarks += "?";
-            args.add(project.getId());
+            if (whereClause.length() > 0) whereClause += " and ";
+            questionMarks = "";
+            for (Project project : Project.getAllForUser(user.getId()))
+            {
+                if (questionMarks.length() > 0)
+                    questionMarks += ",";
+                questionMarks += "?";
+                args.add(project.getId());
+            }
+            whereClause += " project_id in (" + questionMarks +") ";
         }
-        whereClause += " project_id in (" + questionMarks +") ";
         /*
         * Security
         */
