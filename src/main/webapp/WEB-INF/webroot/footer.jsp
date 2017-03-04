@@ -10,7 +10,7 @@
     <div class="mdl-mini-footer__left-section">
         <div class="mdl-logo">
             <c:if test="${!empty sessionScope.userSession}">
-                previous request: ${sessionScope.lastRequestDuration} ms
+                server processed request in ${sessionScope.lastRequestDuration} ms
             </c:if>
         </div>
     </div>

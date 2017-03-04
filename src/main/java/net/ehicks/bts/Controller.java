@@ -119,6 +119,8 @@ public class Controller extends HttpServlet
         }
 
         String viewJsp = processRequest(request, response, userSession);
+        long duration = System.currentTimeMillis() - start;
+        request.getSession().setAttribute("lastRequestDuration", duration);
 
         if (viewJsp.length() > 0)
         {
@@ -126,10 +128,6 @@ public class Controller extends HttpServlet
             dispatcher.forward(request, response);
         }
 
-        long duration = System.currentTimeMillis() - start;
-        Object soFar = request.getSession().getAttribute("lastRequestDuration");
-        long durationSoFar = soFar == null ? 0 : (long) soFar;
-        request.getSession().setAttribute("lastRequestDuration", durationSoFar + duration);
         if (duration > 100)
             log.info("{} ms for last request {}", duration, request.getQueryString());
     }
