@@ -14,7 +14,8 @@ import java.util.List;
 @Entity
 @Table(name = "comments")
 @Indexes({
-        @Index(sql = "CREATE INDEX INDEX_COMMENT_CREATED_ON ON COMMENTS(created_on desc);")
+        @Index(sql = "CREATE INDEX IDX_COMMENT_CREATED_ON ON COMMENTS(created_on desc);"),
+        @Index(sql = "CREATE INDEX IDX_COMMENT_ISSUE_ID ON COMMENTS(issue_id);")
 })
 public class Comment implements Serializable
 {

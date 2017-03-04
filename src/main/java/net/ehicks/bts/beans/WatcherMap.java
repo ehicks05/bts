@@ -1,6 +1,8 @@
 package net.ehicks.bts.beans;
 
 import net.ehicks.eoi.EOI;
+import net.ehicks.eoi.Index;
+import net.ehicks.eoi.Indexes;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,15 +12,12 @@ import java.util.List;
 
 @Entity
 @Table(name = "watcher_maps")
+@Indexes({
+        @Index(sql = "CREATE INDEX IDX_WATCHER_MAP_ISSUE_ID ON WATCHER_MAPS(issue_id);")
+})
 public class WatcherMap implements Serializable
 {
-//    @Version
-//    @Column(name = "version")
-//    private Long version;
-
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ROLE_SEQ")
-    @SequenceGenerator(name="ROLE_SEQ", sequenceName="ROLE_SEQ", allocationSize=1)
     @Column(name = "id", updatable = false, nullable = false, columnDefinition = "bigint not null auto_increment primary key")
     private Long id;
 

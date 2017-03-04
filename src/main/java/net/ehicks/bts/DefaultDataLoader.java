@@ -20,7 +20,7 @@ public class DefaultDataLoader
 {
     private static final Logger log = LoggerFactory.getLogger(DefaultDataLoader.class);
 
-    private static int issueCount = (int) Math.pow(1_024, 2);
+    private static int issueCount = (int) Math.pow(1_024, 1.5);
     private static boolean useBatches = true;
 
     private static List<String> latin = Arrays.asList("annus", "ante meridiem", "aqua", "bene", "canis", "caput", "circus", "cogito",
