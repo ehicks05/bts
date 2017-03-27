@@ -77,8 +77,9 @@ public class LogHandler
 
     private static void parseLine(List<List<String>> lines, String line, Map<String, String> threadToColorMap)
     {
-        String date = line.substring(0, 12);
-        line = line.substring(13);
+        int dateLength = 15;
+        String date = line.substring(0, dateLength);
+        line = line.substring(dateLength + 1);
 
         int openCount = 1;
         int closeIndex = 1;
