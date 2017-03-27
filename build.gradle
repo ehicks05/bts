@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    compile 'net.ehicks:EOI:1.0-SNAPSHOT'
+    compile 'net.ehicks:eoi:1.0-SNAPSHOT'
     compile 'net.ehicks:common:1.0-SNAPSHOT'
 
     compile 'org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1.Final'
