@@ -47,7 +47,7 @@ public class SqlHandler
                     printableSqlResult.setColumnLabels(printableResult.get("columnLabels"));
                     printableSqlResult.setResultRows(printableResult.get("resultRows"));
                 }
-                if (command.toUpperCase().startsWith("CREATE") || command.toUpperCase().startsWith("INSERT") || command.toUpperCase().startsWith("UPDATE") || command.toUpperCase().startsWith("DELETE"))
+                if (command.toUpperCase().startsWith("CREATE") || command.toUpperCase().startsWith("DROP") || command.toUpperCase().startsWith("INSERT") || command.toUpperCase().startsWith("UPDATE") || command.toUpperCase().startsWith("DELETE"))
                 {
                     Integer rowsUpdated = EOI.executeUpdate(command);
                     printableSqlResult.setRowsUpdated(rowsUpdated);

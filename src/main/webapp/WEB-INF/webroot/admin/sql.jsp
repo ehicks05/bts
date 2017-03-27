@@ -22,7 +22,7 @@
                 $('#frmSqlCommand').submit();
             });
 
-            $('#sqlCommand').keydown(function ()
+            $('#sqlCommand').focus().keydown(function ()
             {
                 if ((event.keyCode == 10 || event.keyCode == 13) && event.ctrlKey)
                 {
