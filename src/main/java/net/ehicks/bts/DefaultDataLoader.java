@@ -144,7 +144,7 @@ public class DefaultDataLoader
         for (int issueIndex = 0; issueIndex < issues.size(); issueIndex++)
         {
             Issue issue = issues.get(issueIndex);
-            if (issueIndex % (issues.size() / 10) == 0)
+            if (issueIndex % (issues.size() / 4) == 0)
                 log.info("WatcherMap for issue " + issueIndex + " / " + issues.size());
 
             List<Integer> selectedUserIndexes = new ArrayList<>();
@@ -190,7 +190,7 @@ public class DefaultDataLoader
             if (issueId == 2)
                 continue;
 
-            if (issueIndex % (issues.size() / 10) == 0)
+            if (issueIndex % (issues.size() / 4) == 0)
                 log.info("Comment for issue " + issueIndex + " / " + issues.size());
 
             for (int i = 0; i < r.nextInt(8); i++)
@@ -314,7 +314,7 @@ public class DefaultDataLoader
         List<Issue> issues = new ArrayList<>();
         IntStream.range(0, issueCount).forEach(i ->
         {
-            if (i % (issueCount / 10) == 0)
+            if (i % (issueCount / 4) == 0)
                 log.info("Issue " + i + " / " + issueCount);
             Issue issue = new Issue();
             long value = (long) r.nextInt(projects);

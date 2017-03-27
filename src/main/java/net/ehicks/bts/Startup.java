@@ -74,13 +74,14 @@ public class Startup
                 for (String indexDefinition : dbMap.indexDefinitions)
                     EOI.executeUpdate(indexDefinition);
             }
-        log.debug("Autocreated {} tables in {} ms", tablesCreated, (System.currentTimeMillis() - subTaskStart));
+        log.info("Autocreated {}/{} tables in {} ms", tablesCreated, DBMap.dbMaps.size(), (System.currentTimeMillis() - subTaskStart));
     }
 
     static void dropTables()
     {
         long subTaskStart;
         subTaskStart = System.currentTimeMillis();
+        int tablesDropped = 0;
         for (DBMap dbMap : DBMap.dbMaps)
         {
             String tableName = dbMap.tableName.toUpperCase();
@@ -90,6 +91,7 @@ public class Startup
                 {
                     log.debug("Dropping " + tableName + "...");
                     EOI.executeUpdate("drop table " + tableName);
+                    tablesDropped++;
                 }
             }
             catch (Exception e)
@@ -97,6 +99,6 @@ public class Startup
                 log.error("didnt drop {}", tableName);
             }
         }
-        log.debug("Dropped existing tables in {} ms", (System.currentTimeMillis() - subTaskStart));
+        log.info("Dropped {}/{} existing tables in {} ms", tablesDropped, DBMap.dbMaps.size(), (System.currentTimeMillis() - subTaskStart));
     }
 }
