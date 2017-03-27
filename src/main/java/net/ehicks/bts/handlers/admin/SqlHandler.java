@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -30,52 +31,39 @@ public class SqlHandler
     @Route(tab1 = "admin", tab2 = "sql", tab3 = "", action = "runCommand")
     public static void runSqlCommand(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
-        String sqlCommand = request.getParameter("sqlCommand");
-        List<String> commands = Arrays.asList(sqlCommand.split(";"));
+        String commandsParam = request.getParameter("sqlCommand").trim();
+        List<PrintableSqlResult> printableSqlResults = new ArrayList<>();
 
-        for (String command : commands)
+        for (String command : Arrays.asList(commandsParam.split(";")))
         {
-            if (sqlCommand.toUpperCase().startsWith("SELECT"))
-            {
-                clearSession(request);
+            command = command.trim();
+            PrintableSqlResult printableSqlResult = new PrintableSqlResult(command.trim());
 
-                try
+            try
+            {
+                if (command.toUpperCase().startsWith("SELECT"))
                 {
-                    Map<String, List<Object>> printableResults = EOI.getPrintableResults(sqlCommand);
-                    request.getSession().setAttribute("columnLabels", printableResults.get("columnLabels"));
-                    request.getSession().setAttribute("resultRows", printableResults.get("resultRows"));
+                    Map<String, List<Object>> printableResult = EOI.getPrintableResults(command);
+                    printableSqlResult.setColumnLabels(printableResult.get("columnLabels"));
+                    printableSqlResult.setResultRows(printableResult.get("resultRows"));
                 }
-                catch (Exception e)
+                if (command.toUpperCase().startsWith("INSERT") || command.toUpperCase().startsWith("UPDATE") || command.toUpperCase().startsWith("DELETE"))
                 {
-                    log.error(e.getMessage(), e);
-                    request.getSession().setAttribute("error", e.getMessage());
+                    Integer rowsUpdated = EOI.executeUpdate(command);
+                    printableSqlResult.setRowsUpdated(rowsUpdated);
                 }
             }
-            if (sqlCommand.toUpperCase().startsWith("INSERT") || sqlCommand.toUpperCase().startsWith("UPDATE") || sqlCommand.toUpperCase().startsWith("DELETE"))
+            catch (Exception e)
             {
-                clearSession(request);
-
-                try
-                {
-                    int rowsUpdated = EOI.executeUpdate(sqlCommand);
-                    request.getSession().setAttribute("rowsUpdated", rowsUpdated);
-                }
-                catch (Exception e)
-                {
-                    log.error(e.getMessage(), e);
-                    request.getSession().setAttribute("error", e.getMessage());
-                }
+                log.error(e.getMessage(), e);
+                printableSqlResult.setError(e.getMessage());
             }
+
+            printableSqlResults.add(printableSqlResult);
         }
-        request.getSession().setAttribute("sqlCommand", sqlCommand);
-        response.sendRedirect("view?tab1=admin&tab2=sql&action=form");
-    }
+        request.getSession().setAttribute("sqlCommand", commandsParam);
+        request.getSession().setAttribute("resultSets", printableSqlResults);
 
-    private static void clearSession(HttpServletRequest request)
-    {
-        request.getSession().removeAttribute("resultRows");
-        request.getSession().removeAttribute("columnLabels");
-        request.getSession().removeAttribute("rowsUpdated");
-        request.getSession().removeAttribute("error");
+        response.sendRedirect("view?tab1=admin&tab2=sql&action=form");
     }
 }
