@@ -69,7 +69,7 @@
                         <c:forEach var="resultRow" items="${resultSet.resultRows}">
                             <tr>
                                 <c:forEach var="resultCell" items="${resultRow}">
-                                    <td>${resultCell}</td>
+                                    <td><pre>${resultCell}</pre></td>
                                 </c:forEach>
                             </tr>
                         </c:forEach>

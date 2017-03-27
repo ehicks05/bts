@@ -41,13 +41,13 @@ public class SqlHandler
 
             try
             {
-                if (command.toUpperCase().startsWith("SELECT"))
+                if (command.toUpperCase().startsWith("SELECT") || command.toUpperCase().startsWith("EXPLAIN"))
                 {
                     Map<String, List<Object>> printableResult = EOI.getPrintableResults(command);
                     printableSqlResult.setColumnLabels(printableResult.get("columnLabels"));
                     printableSqlResult.setResultRows(printableResult.get("resultRows"));
                 }
-                if (command.toUpperCase().startsWith("INSERT") || command.toUpperCase().startsWith("UPDATE") || command.toUpperCase().startsWith("DELETE"))
+                if (command.toUpperCase().startsWith("CREATE") || command.toUpperCase().startsWith("INSERT") || command.toUpperCase().startsWith("UPDATE") || command.toUpperCase().startsWith("DELETE"))
                 {
                     Integer rowsUpdated = EOI.executeUpdate(command);
                     printableSqlResult.setRowsUpdated(rowsUpdated);
