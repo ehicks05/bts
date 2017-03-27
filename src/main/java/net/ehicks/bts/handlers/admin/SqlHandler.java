@@ -43,7 +43,7 @@ public class SqlHandler
             {
                 if (command.toUpperCase().startsWith("SELECT") || command.toUpperCase().startsWith("EXPLAIN"))
                 {
-                    Map<String, List<Object>> printableResult = EOI.getPrintableResults(command);
+                    Map<String, List<Object>> printableResult = EOI.getPrintableResult(command);
                     printableSqlResult.setColumnLabels(printableResult.get("columnLabels"));
                     printableSqlResult.setResultRows(printableResult.get("resultRows"));
                 }
