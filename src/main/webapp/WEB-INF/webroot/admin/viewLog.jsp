@@ -11,7 +11,7 @@
 <head>
     <jsp:include page="../inc_title.jsp"/>
     <jsp:include page="../inc_header.jsp"/>
-
+    <style>.mdl-grid {max-width: 100%;}</style>
 </head>
 <body>
 
@@ -22,7 +22,7 @@
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>Log ${logName}</h5></div>
 
-        <div class="tableContainer">
+        <div class="tableContainer" style="margin: auto">
             <table class="list" style="font-size: 0.8em">
                 <thead>
                 <tr class="listheading">
@@ -35,7 +35,7 @@
                 </thead>
                 <c:forEach var="line" items="${lines}" varStatus="loop">
                     <tr class="listrowodd" style="background-color: ${threadToColorMap[line[1]]}">
-                        <td style="white-space: nowrap;">${line[0]}</td>
+                        <td>${line[0]}</td>
                         <td>${line[1]}</td>
                         <td>${line[2]}</td>
                         <td>${line[3]}</td>
