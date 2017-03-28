@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class SqlHandler
 {
-    private static final Logger log = LoggerFactory.getLogger(DefaultDataLoader.class);
+    private static final Logger log = LoggerFactory.getLogger(SqlHandler.class);
 
     @Route(tab1 = "admin", tab2 = "sql", tab3 = "", action = "form")
     public static String showSql(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
@@ -31,7 +31,10 @@ public class SqlHandler
     @Route(tab1 = "admin", tab2 = "sql", tab3 = "", action = "runCommand")
     public static void runSqlCommand(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         String commandsParam = request.getParameter("sqlCommand").trim();
+        log.info("Received command from " + userSession.getUser() + " at ip " + userSession.getIpAddress() + ". " + commandsParam);
+
         List<PrintableSqlResult> printableSqlResults = new ArrayList<>();
 
         for (String command : Arrays.asList(commandsParam.split(";")))

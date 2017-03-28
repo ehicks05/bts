@@ -1,6 +1,7 @@
 package net.ehicks.bts;
 
 import net.ehicks.bts.beans.*;
+import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,14 @@ public class Controller extends HttpServlet
             Startup.createTables();
             new Thread(DefaultDataLoader::createDemoData).start();
         }
+
+        BtsSystem btsSystem = BtsSystem.getSystem();
+        while (btsSystem == null)
+        {
+            btsSystem = BtsSystem.getSystem();
+            Common.sleep(100);
+        }
+        getServletContext().setAttribute("btsSystem", btsSystem);
 
         Router.loadRoutes();
 

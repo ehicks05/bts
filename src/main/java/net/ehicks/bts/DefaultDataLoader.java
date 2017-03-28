@@ -34,6 +34,9 @@ public class DefaultDataLoader
         log.info("Seeding dummy data");
         Timer timer = new Timer();
 
+        createBtsSystem();
+        log.debug(timer.printDuration("createBtsSystem"));
+
         createUsers();
         log.debug(timer.printDuration("createUsers"));
 
@@ -77,6 +80,14 @@ public class DefaultDataLoader
         log.debug(timer.printDuration("createComments"));
 
         log.info(timer.printDuration("Done seeding dummy data"));
+    }
+
+    private static void createBtsSystem()
+    {
+        BtsSystem system = new BtsSystem();
+        system.setInstanceName("Valericon Industries");
+        system.setLogonMessage("Welcome to Puffin Issue Tracker.<br>Please contact Eric for a demo.");
+        EOI.insert(system, SystemTask.DEFAULT_DATA_LOADER);
     }
 
     private static void createIssueForms()

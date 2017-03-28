@@ -50,6 +50,13 @@
             </div>
         </form>
     </div>
+
+    <div style="margin: 8px auto" class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--4-col-tablet mdl-shadow--2dp">
+
+        <div class="mdl-card__title"><h5>Welcome Message</h5></div>
+        <div class="mdl-card__supporting-text">
+            ${applicationScope['btsSystem'].logonMessage}
+    </div>
 </div>
 
 <jsp:include page="footer.jsp"/>
