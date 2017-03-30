@@ -95,6 +95,7 @@ public class Controller extends HttpServlet
             }
         }
         userSession.setLastActivity(new Date());
+        userSession.setEnteredController(System.currentTimeMillis());
 
         if (!User.getByUserId(userSession.getUserId()).getEnabled())
         {

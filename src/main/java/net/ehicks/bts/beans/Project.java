@@ -71,6 +71,11 @@ public class Project implements Serializable, ISelectTagSupport
         return EOI.executeQueryOneResult("select * from projects where id=?", Arrays.asList(id));
     }
 
+    public static Project getByName(String name)
+    {
+        return EOI.executeQueryOneResult("select * from projects where name=?", Arrays.asList(name));
+    }
+
     public static List<Project> getAllForUser(Long userId)
     {
         User user = User.getByUserId(userId);

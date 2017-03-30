@@ -12,13 +12,7 @@ import java.util.List;
 @Table(name = "statuses")
 public class Status implements Serializable, ISelectTagSupport
 {
-//    @Version
-//    @Column(name = "version")
-//    private Long version;
-
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ROLE_SEQ")
-    @SequenceGenerator(name="ROLE_SEQ", sequenceName="ROLE_SEQ", allocationSize=1)
     @Column(name = "id", updatable = false, nullable = false, columnDefinition = "bigint not null auto_increment primary key")
     private Long id;
 
@@ -64,6 +58,11 @@ public class Status implements Serializable, ISelectTagSupport
     public static Status getById(Long id)
     {
         return EOI.executeQueryOneResult("select * from statuses where id=?", Arrays.asList(id));
+    }
+
+    public static Status getByName(String name)
+    {
+        return EOI.executeQueryOneResult("select * from statuses where name=?", Arrays.asList(name));
     }
 
     // -------- Getters / Setters ----------

@@ -12,6 +12,7 @@ public class UserSession implements AuditUser
     private String sessionId = "";
     private String ipAddress = "";
     private Date lastActivity;
+    private Long enteredController;
 
     public String getId()
     {
@@ -23,6 +24,11 @@ public class UserSession implements AuditUser
     public SystemInfo getSystemInfo()
     {
         return SystemInfo.INSTANCE;
+    }
+
+    public long getCurrentTimeMillis()
+    {
+        return System.currentTimeMillis();
     }
 
     public User getUser()
@@ -78,5 +84,15 @@ public class UserSession implements AuditUser
     public void setLastActivity(Date lastActivity)
     {
         this.lastActivity = lastActivity;
+    }
+
+    public Long getEnteredController()
+    {
+        return enteredController;
+    }
+
+    public void setEnteredController(Long enteredController)
+    {
+        this.enteredController = enteredController;
     }
 }

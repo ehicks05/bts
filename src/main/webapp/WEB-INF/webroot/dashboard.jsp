@@ -15,11 +15,12 @@
 
 <jsp:include page="header.jsp"/>
 
-<div class="mdl-grid">
+<div class="mdl-grid" style="max-width: 99%">
     <c:forEach var="issueForm" items="${dashBoardIssueForms}">
         <c:set var="searchResult" value="${issueForm.searchResult}"/>
         <c:if test="${fn:length(dashBoardIssueForms) < 2}"><c:set var="cols" value="12" /></c:if>
-        <c:if test="${fn:length(dashBoardIssueForms) >= 2}"><c:set var="cols" value="6" /></c:if>
+        <c:if test="${fn:length(dashBoardIssueForms) == 2}"><c:set var="cols" value="6" /></c:if>
+        <c:if test="${fn:length(dashBoardIssueForms) > 2}"><c:set var="cols" value="4" /></c:if>
         <div class="mdl-card mdl-cell mdl-cell--${cols}-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-cell--top mdl-shadow--2dp">
             <div class="mdl-card__title">
                 ${issueForm.formName}: ${searchResult.size} Issues

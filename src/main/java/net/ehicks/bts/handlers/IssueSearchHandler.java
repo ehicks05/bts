@@ -198,7 +198,7 @@ public class IssueSearchHandler
 
     public static SearchResult performSearch(IssueForm issueForm) throws ParseException, IOException
     {
-        long resultsPerPage = 10;
+        long resultsPerPage = 20;
 
         if (issueForm.getSortColumn().length() == 0) issueForm.setSortColumn("id");
         if (issueForm.getSortDirection().length() == 0) issueForm.setSortDirection("asc");

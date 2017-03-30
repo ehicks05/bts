@@ -56,6 +56,7 @@
         <div class="mdl-card__title"><h5>Welcome Message</h5></div>
         <div class="mdl-card__supporting-text">
             ${applicationScope['btsSystem'].logonMessage}
+        </div>
     </div>
 </div>
 

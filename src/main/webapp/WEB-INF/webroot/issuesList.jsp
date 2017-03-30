@@ -36,7 +36,7 @@
 <jsp:include page="header.jsp"/>
 
 <div class="mdl-grid">
-    <div class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-shadow--2dp">
+    <div class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-cell--top mdl-shadow--2dp">
         <c:set var="formName" value="${fn:length(issueForm.formName) == 0 ? 'New Filter' : issueForm.formName}"/>
         <div class="mdl-card__title"><h5>Issue Filter: ${formName}</h5></div>
         <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=search&action=search">
@@ -53,15 +53,15 @@
                     <label class="mdl-textfield__label" for="containsText">Contains Text:</label>
                 </div>
 
-                <br>
+                <br><br>
                 <t:multiSelect id="projectIds" selectedValues="${issueForm.projectIdsAsList}" items="${projects}" placeHolder="Projects:"/>
-                <br>
+                <br><br>
                 <t:multiSelect id="groupIds" selectedValues="${issueForm.groupIdsAsList}" items="${groups}" placeHolder="Groups:"/>
-                <br>
+                <br><br>
                 <t:multiSelect id="severityIds" selectedValues="${issueForm.severityIdsAsList}" items="${severities}" placeHolder="Severities:"/>
-                <br>
+                <br><br>
                 <t:multiSelect id="statusIds" selectedValues="${issueForm.statusIdsAsList}" items="${statuses}" placeHolder="Statuses:"/>
-                <br>
+                <br><br>
                 <t:multiSelect id="assigneeIds" selectedValues="${issueForm.assigneeUserIdsAsList}" items="${users}" placeHolder="Assignees:"/>
             </div>
             <div class="mdl-card__actions">
@@ -76,8 +76,7 @@
         </form>
     </div>
 
-    <br>
-    <div class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--8-col-tablet mdl-shadow--2dp">
+    <div class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--8-col-tablet mdl-cell--top mdl-shadow--2dp">
         <div class="mdl-card__title"><h5>Found ${searchResult.size} Issues</h5></div>
 
         <div class="tableContainer">

@@ -103,6 +103,29 @@ public class DefaultDataLoader
             issueForm.setFormName("Assigned To Me");
             issueForm.setAssigneeUserIds(String.valueOf(user.getId()));
             EOI.insert(issueForm, SystemTask.DEFAULT_DATA_LOADER);
+
+            if (user.getLogonId().equals("***REMOVED***"))
+            {
+                issueForm.setFormName("Readington's Issues");
+                issueForm.setAssigneeUserIds("");
+                issueForm.setGroupIds(String.valueOf(Group.getByName("Readington").getId()));
+                EOI.insert(issueForm, SystemTask.DEFAULT_DATA_LOADER);
+
+                issueForm.setFormName("Issues with the word 'vici'");
+                issueForm.setGroupIds("");
+                issueForm.setContainsText("vici");
+                EOI.insert(issueForm, SystemTask.DEFAULT_DATA_LOADER);
+
+                issueForm.setFormName("Reopened Issues");
+                issueForm.setContainsText("");
+                issueForm.setStatusIds(String.valueOf(Status.getByName("Re-opened").getId()));
+                EOI.insert(issueForm, SystemTask.DEFAULT_DATA_LOADER);
+
+                issueForm.setFormName("All Cinemang Issues");
+                issueForm.setStatusIds("");
+                issueForm.setProjectIds(String.valueOf(Project.getByName("Cinemang").getId()));
+                EOI.insert(issueForm, SystemTask.DEFAULT_DATA_LOADER);
+            }
         }
     }
 
