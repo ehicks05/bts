@@ -49,21 +49,8 @@ public class ModifyIssueHandler
     public static String ajaxGetChangeLog(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         Long issueId = Common.stringToLong(request.getParameter("issueId"));
-        Issue issue = Issue.getById(issueId);
 
-        // get audit records from issue, comments, watcherMaps, and attachments
-        List<Audit> audits = new ArrayList<>();
-        audits.addAll(Audit.getByObjectKey(issue.toString()));
-
-        for (Comment comment : Comment.getByIssueId(issueId))
-            audits.addAll(Audit.getByObjectKey(comment.toString()));
-        for (WatcherMap watcherMap : WatcherMap.getByIssueId(issueId))
-            audits.addAll(Audit.getByObjectKey(watcherMap.toString()));
-        for (Attachment attachment : Attachment.getByIssueId(issueId))
-            audits.addAll(Audit.getByObjectKey(attachment.toString()));
-        
-        audits.sort(Comparator.comparing(Audit::getEventTime));
-        request.setAttribute("audits", audits);
+        request.setAttribute("issueAudits", IssueAudit.getByIssueId(issueId));
 
         return "/WEB-INF/webroot/issueChangelog.jsp";
     }
@@ -112,11 +99,15 @@ public class ModifyIssueHandler
         issue.setDescription(description);
         issue.setCreatedOn(new Date());
         Long newIssueId = EOI.insert(issue, userSession);
+        issue = Issue.getById(newIssueId);
 
         WatcherMap watcherMap = new WatcherMap();
         watcherMap.setIssueId(newIssueId);
         watcherMap.setUserId(userSession.getUserId());
         EOI.insert(watcherMap, userSession);
+
+        IssueAudit issueAudit = new IssueAudit(newIssueId, userSession, "added", issue.toString());
+        EOI.insert(issueAudit, userSession);
 
         response.sendRedirect("view?tab1=issue&action=form&issueId=" + newIssueId);
     }
@@ -141,48 +132,77 @@ public class ModifyIssueHandler
 
         String updateLog = "";
         Issue issue = Issue.getById(issueId);
+        String oldValue = "";
+        String newValue = "";
         if (projectId != 0)
         {
+            oldValue = Project.getById(issue.getProjectId()).getName();
+            newValue = Project.getById(projectId).getName();
+
             issue.setProjectId(projectId);
             updateLog += "Project to " + Project.getById(projectId).getName();
         }
         if (issueTypeId != 0)
         {
+            oldValue = IssueType.getById(issue.getIssueTypeId()).getName();
+            newValue = IssueType.getById(issueTypeId).getName();
+
             issue.setIssueTypeId(issueTypeId);
             updateLog += "Type to " + IssueType.getById(issueTypeId).getName();
         }
         if (statusId != 0)
         {
+            oldValue = Status.getById(issue.getStatusId()).getName();
+            newValue = Status.getById(statusId).getName();
+
             issue.setStatusId(statusId);
             updateLog += "Status to " + Status.getById(statusId).getName();
         }
         if (severityId != 0)
         {
+            oldValue = Severity.getById(issue.getSeverityId()).getName();
+            newValue = Severity.getById(severityId).getName();
+
             issue.setSeverityId(severityId);
             updateLog += "Severity to " + Severity.getById(severityId).getName();
         }
         if (groupId != 0)
         {
+            oldValue = Group.getById(issue.getGroupId()).getName();
+            newValue = Group.getById(groupId).getName();
+
             issue.setGroupId(groupId);
             updateLog += "Group to " + Group.getById(groupId).getName();
         }
         if (title.length() != 0)
         {
+            oldValue = issue.getTitle();
+            newValue = title;
+
             issue.setTitle(title);
             updateLog += "Title";
         }
         if (description.length() != 0)
         {
+            oldValue = issue.getDescription();
+            newValue = description;
+
             issue.setDescription(description);
             updateLog += "Description";
         }
         if (assigneeId != 0)
         {
+            oldValue = issue.getAssignee().getLogonId();
+            newValue = User.getByUserId(assigneeId).getLogonId();
+
             issue.setAssigneeUserId(assigneeId);
             updateLog += "Assignee to " + User.getByUserId(assigneeId).getLogonId();
         }
         if (reporterId != 0)
         {
+            oldValue = issue.getReporter().getLogonId();
+            newValue = User.getByUserId(reporterId).getLogonId();
+
             issue.setReporterUserId(reporterId);
             updateLog += "Reporter to " + User.getByUserId(reporterId).getLogonId();
         }
@@ -193,6 +213,9 @@ public class ModifyIssueHandler
         }
 
         EOI.update(issue, userSession);
+
+        IssueAudit issueAudit = new IssueAudit(issueId, userSession, "changed", issue.toString(), fieldName.replace("fld", ""), oldValue, newValue);
+        EOI.insert(issueAudit, userSession);
 
         String toastMessage = "Updated " + updateLog;
         response.getWriter().println(toastMessage);
@@ -214,6 +237,10 @@ public class ModifyIssueHandler
         comment.setContent(content);
         comment.setVisibleToGroupId(visibility);
         long commentId = EOI.insert(comment, userSession);
+        comment = Comment.getById(commentId); // comment should now have id field populated
+
+        IssueAudit issueAudit = new IssueAudit(issueId, userSession, "added", comment.toString());
+        EOI.insert(issueAudit, userSession);
 
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setUserId(userSession.getUserId());
@@ -253,12 +280,14 @@ public class ModifyIssueHandler
 
         if (!content.equals(previousContent))
         {
-            // should we ever get here?
             comment.setLastUpdatedOn(new Date());
             EOI.update(comment, userSession);
 
             String toastMessage = "Comment Updated";
             response.getWriter().println(toastMessage);
+
+            IssueAudit issueAudit = new IssueAudit(comment.getIssueId(), userSession, "changed", comment.toString(), "content", previousContent, content);
+            EOI.insert(issueAudit, userSession);
         }
 
         DiffMatchPatch myDiff = new DiffMatchPatch();

@@ -6,6 +6,7 @@ import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.Attachment;
 import net.ehicks.bts.beans.DBFile;
 import net.ehicks.bts.beans.Group;
+import net.ehicks.bts.beans.IssueAudit;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 import org.apache.commons.fileupload.FileItem;
@@ -137,7 +138,11 @@ public class AttachmentHandler
             attachment.setThumbnailDbFileId(thumbnailId);
             attachment.setCreatedByUserId(userSession.getUserId());
             attachment.setCreatedOn(new Date());
-            EOI.insert(attachment, userSession);
+            long attachmentId = EOI.insert(attachment, userSession);
+            attachment = Attachment.getById(attachmentId);
+
+            IssueAudit issueAudit = new IssueAudit(issueId, userSession, "added", attachment.toString());
+            EOI.insert(issueAudit, userSession);
         }
 
         request.getSession().setAttribute("responseMessage", responseMessage);
@@ -175,6 +180,9 @@ public class AttachmentHandler
         DBFile thumbNail = attachment.getThumbnailDbFile();
         if (thumbNail != null)
             EOI.executeDelete(thumbNail, userSession);
+
+        IssueAudit issueAudit = new IssueAudit(issueId, userSession, "removed", attachment.toString());
+        EOI.insert(issueAudit, userSession);
 
         response.sendRedirect("view?tab1=issue&action=form&issueId=" + issueId);
     }

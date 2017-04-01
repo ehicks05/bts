@@ -20,8 +20,8 @@ public class DefaultDataLoader
 {
     private static final Logger log = LoggerFactory.getLogger(DefaultDataLoader.class);
 
-    private static int issueCount = (int) Math.pow(1_024, 1.3);
-    private static boolean useBatches = true;
+    private static int issueCount = (int) Math.pow(1_024, 1.2);
+    private static boolean useBatches = false;
 
     private static List<String> latin = Arrays.asList("annus", "ante meridiem", "aqua", "bene", "canis", "caput", "circus", "cogito",
             "corpus", "de facto", "deus", "ego", "equus", "ergo", "est", "hortus", "id", "in", "index", "iris", "latex",
@@ -245,7 +245,13 @@ public class DefaultDataLoader
                 if (useBatches)
                     comments.add(comment);
                 else
-                    EOI.insert(comment, SystemTask.DEFAULT_DATA_LOADER);
+                {
+                    long id = EOI.insert(comment, SystemTask.DEFAULT_DATA_LOADER);
+                    comment = Comment.getById(id);
+                    
+                    IssueAudit issueAudit = new IssueAudit(issueId, SystemTask.DEFAULT_DATA_LOADER, "added", comment.toString());
+                    EOI.insert(issueAudit, SystemTask.DEFAULT_DATA_LOADER);
+                }
             }
         };
         if (useBatches)
@@ -253,20 +259,6 @@ public class DefaultDataLoader
             EOI.batchInsert(comments);
             EOI.commit();
         }
-
-        Comment comment = new Comment();
-        comment.setIssueId(2L);
-        comment.setCreatedByUserId(2L);
-        comment.setCreatedOn(new Date());
-        comment.setContent("I think we can do that.");
-        EOI.insert(comment, SystemTask.DEFAULT_DATA_LOADER);
-
-        comment = new Comment();
-        comment.setIssueId(2L);
-        comment.setCreatedByUserId(3L);
-        comment.setCreatedOn(new Date());
-        comment.setContent("OK that will be great :).");
-        EOI.insert(comment, SystemTask.DEFAULT_DATA_LOADER);
     }
 
     private static void createProjectMaps()
@@ -285,14 +277,14 @@ public class DefaultDataLoader
 
     private static void createAttachments()
     {
-        File imgDir = Paths.get(SystemInfo.INSTANCE.getServletContext().getRealPath("/images/")).toFile();
+        File imgDir = Paths.get(SystemInfo.INSTANCE.getServletContext().getRealPath("/images/mimetypes")).toFile();
         if (imgDir.exists() && imgDir.isDirectory())
         {
             List<File> images = Arrays.asList(imgDir.listFiles());
             Collections.sort(images);
             for (File img : images)
             {
-                if (img.exists() && img.isFile() && img.getName().contains("Adobe_PDF"))
+                if (img.exists() && img.isFile() && img.getName().contains("Adobe.png"))
                 {
                     byte[] content = null;
                     try
@@ -311,11 +303,16 @@ public class DefaultDataLoader
                     long dbFileId = EOI.insert(dbFile, SystemTask.DEFAULT_DATA_LOADER);
 
                     Attachment attachment = new Attachment();
-                    attachment.setIssueId(2L);
+                    attachment.setIssueId(1L);
                     attachment.setCreatedByUserId(2L);
                     attachment.setCreatedOn(new Date());
                     attachment.setDbFileId(dbFileId);
-                    EOI.insert(attachment, SystemTask.DEFAULT_DATA_LOADER);
+                    attachment.setThumbnailDbFileId(dbFileId);
+                    long id = EOI.insert(attachment, SystemTask.DEFAULT_DATA_LOADER);
+                    attachment = Attachment.getById(id);
+
+                    IssueAudit issueAudit = new IssueAudit(1L, SystemTask.DEFAULT_DATA_LOADER, "added", attachment.toString());
+                    EOI.insert(issueAudit, SystemTask.DEFAULT_DATA_LOADER);
                 }
             }
         }
@@ -383,13 +380,13 @@ public class DefaultDataLoader
             issue.setTitle(title);
 
             String description = "";
-            for (int j = 0; j < r.nextInt(32); j++)
+            for (int j = 0; j < r.nextInt(32) + 1; j++)
             {
                 if (description.length() > 0)
                     description += " " ;
                 description += latin.get(r.nextInt(latin.size()));
             }
-            issue.setDescription(description);
+            issue.setDescription("<p>" + description + "</p>");
 
             Date createdOn = getRandomDateTime();
             issue.setCreatedOn(createdOn);
@@ -397,7 +394,13 @@ public class DefaultDataLoader
             if (useBatches)
                 issues.add(issue);
             else
-                EOI.insert(issue, SystemTask.DEFAULT_DATA_LOADER);
+            {
+                long id = EOI.insert(issue, SystemTask.DEFAULT_DATA_LOADER);
+                issue = Issue.getById(id);
+
+                IssueAudit issueAudit = new IssueAudit(id, SystemTask.DEFAULT_DATA_LOADER, "added", issue.toString());
+                EOI.insert(issueAudit, SystemTask.DEFAULT_DATA_LOADER);
+            }
         });
 
         if (useBatches)

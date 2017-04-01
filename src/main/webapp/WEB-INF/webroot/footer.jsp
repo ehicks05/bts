@@ -27,7 +27,7 @@
 </c:if>
 
 <script>
-    $(document).ready(showResponseMessage);
+    $(window).load(showResponseMessage);
 </script>
 
 <c:remove var="lastRequestDuration" scope="session" />

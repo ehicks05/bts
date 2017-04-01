@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<jsp:useBean id="audits" type="java.util.List<net.ehicks.bts.beans.Audit>" scope="request"/>
+<jsp:useBean id="issueAudits" type="java.util.List<net.ehicks.bts.beans.IssueAudit>" scope="request"/>
 
 <table id="filmTable" style="width:100%;margin: 0 auto" class="list">
     <thead>
@@ -19,7 +19,7 @@
     </thead>
 
     <tbody id="myTBody">
-    <c:forEach var="audit" items="${audits}" varStatus="loop">
+    <c:forEach var="audit" items="${issueAudits}" varStatus="loop">
         <tr class="${loop.index % 2 == 0 ? 'listrowodd' : 'listroweven'}">
             <td class="mdl-data-table__cell--non-numeric">${audit.userName}</td>
             <td class="alignright"><fmt:formatDate value="${audit.eventTime}" pattern="dd/MMM/yy hh:mm a" /></td>
