@@ -9,6 +9,7 @@ public class PrintableSqlResult
     private List<Object> resultRows;
     private Integer rowsUpdated;
     private String error;
+    private boolean truncated;
 
     public PrintableSqlResult(String sqlCommand)
     {
@@ -63,5 +64,15 @@ public class PrintableSqlResult
     public void setError(String error)
     {
         this.error = error;
+    }
+
+    public boolean isTruncated()
+    {
+        return truncated;
+    }
+
+    public void setTruncated(boolean truncated)
+    {
+        this.truncated = truncated;
     }
 }

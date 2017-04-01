@@ -47,8 +47,15 @@ public class SqlHandler
                 if (command.toUpperCase().startsWith("SELECT") || command.toUpperCase().startsWith("EXPLAIN"))
                 {
                     Map<String, List<Object>> printableResult = EOI.getPrintableResult(command);
+                    List<Object> resultRows = printableResult.get("resultRows");
+                    if (resultRows.size() > 1000)
+                    {
+                        resultRows = resultRows.subList(0, 1000);
+                        printableSqlResult.setTruncated(true);
+                    }
+
                     printableSqlResult.setColumnLabels(printableResult.get("columnLabels"));
-                    printableSqlResult.setResultRows(printableResult.get("resultRows"));
+                    printableSqlResult.setResultRows(resultRows);
                 }
                 if (command.toUpperCase().startsWith("CREATE") || command.toUpperCase().startsWith("DROP") || command.toUpperCase().startsWith("INSERT") || command.toUpperCase().startsWith("UPDATE") || command.toUpperCase().startsWith("DELETE"))
                 {

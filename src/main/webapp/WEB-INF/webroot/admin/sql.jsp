@@ -54,12 +54,18 @@
 
         <div class="tableContainer">
             <c:forEach var="resultSet" items="${resultSets}">
-                <pre>${resultSet.sqlCommand}</pre>
-
                 <c:if test="${!empty resultSet.columnLabels}">
                     <table class="list">
                         <tr class="listheading">
-                            <td colspan="100">${resultSet.sqlCommand}</td>
+                            <td colspan="100"><pre><code>${resultSet.sqlCommand}</code></pre></td>
+                        </tr>
+                        <tr class="listheading">
+                            <td colspan="100">
+                                <c:if test="${resultSet.truncated}">
+                                    Truncated to
+                                </c:if>
+                                ${fn:length(resultSet.resultRows)} rows
+                            </td>
                         </tr>
                         <tr class="listheading">
                             <c:forEach var="columnLabel" items="${resultSet.columnLabels}">
