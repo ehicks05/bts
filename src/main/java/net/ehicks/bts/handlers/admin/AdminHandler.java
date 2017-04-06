@@ -370,9 +370,7 @@ public class AdminHandler
     @Route(tab1 = "admin", tab2 = "email", tab3 = "modify", action = "form")
     public static String showModifyEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
-        Long emailId = Common.stringToLong(request.getParameter("emailId"));
-        EmailMessage emailMessage = EmailMessage.getById(emailId);
-        request.setAttribute("emailMessage", emailMessage);
+        request.setAttribute("btsSystem", BtsSystem.getSystem());
 
         return "/WEB-INF/webroot/admin/modifyEmail.jsp";
     }
@@ -381,14 +379,19 @@ public class AdminHandler
     public static void modifyEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long emailId = Common.stringToLong(request.getParameter("emailId"));
-        EmailMessage emailMessage = EmailMessage.getById(emailId);
-        if (emailMessage != null)
+
+        BtsSystem btsSystem = BtsSystem.getSystem();
+        if (btsSystem != null)
         {
-            String name = Common.getSafeString(request.getParameter("name"));
-            EOI.update(emailMessage, userSession);
+            btsSystem.setEmailHost(Common.getSafeString(request.getParameter("emailHost")));
+            btsSystem.setEmailUser(Common.getSafeString(request.getParameter("emailUser")));
+            btsSystem.setEmailPassword(Common.getSafeString(request.getParameter("emailPassword")));
+            btsSystem.setEmailPort(Common.stringToInt(request.getParameter("emailPort")));
+            btsSystem.setEmailFromAddress(Common.getSafeString(request.getParameter("emailFromAddress")));
+            btsSystem.setEmailFromName(Common.getSafeString(request.getParameter("emailFromName")));
+            EOI.update(btsSystem, userSession);
         }
 
-        response.sendRedirect("view?tab1=admin&tab2=email&tab3=modify&action=form&emailId=" + emailId);
+        response.sendRedirect("view?tab1=admin&tab2=email&tab3=modify&action=form");
     }
 }

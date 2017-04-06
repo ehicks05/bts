@@ -22,6 +22,24 @@ public class BtsSystem implements Serializable
     @Column(name = "logon_message")
     private String logonMessage;
 
+    @Column(name = "email_host")
+    private String emailHost;
+
+    @Column(name = "email_port")
+    private Integer emailPort;
+
+    @Column(name = "email_user")
+    private String emailUser;
+
+    @Column(name = "email_password")
+    private String emailPassword;
+
+    @Column(name = "email_from_address")
+    private String emailFromAddress;
+
+    @Column(name = "email_from_name")
+    private String emailFromName;
+
     @Override
     public boolean equals(Object obj)
     {
@@ -78,5 +96,65 @@ public class BtsSystem implements Serializable
     public void setLogonMessage(String logonMessage)
     {
         this.logonMessage = logonMessage;
+    }
+
+    public String getEmailHost()
+    {
+        return emailHost;
+    }
+
+    public void setEmailHost(String emailHost)
+    {
+        this.emailHost = emailHost;
+    }
+
+    public Integer getEmailPort()
+    {
+        return emailPort;
+    }
+
+    public void setEmailPort(Integer emailPort)
+    {
+        this.emailPort = emailPort;
+    }
+
+    public String getEmailUser()
+    {
+        return emailUser;
+    }
+
+    public void setEmailUser(String emailUser)
+    {
+        this.emailUser = emailUser;
+    }
+
+    public String getEmailPassword()
+    {
+        return emailPassword;
+    }
+
+    public void setEmailPassword(String emailPassword)
+    {
+        this.emailPassword = emailPassword;
+    }
+
+    public String getEmailFromAddress()
+    {
+        return emailFromAddress;
+    }
+
+    public void setEmailFromAddress(String emailFromAddress)
+    {
+        this.emailFromAddress = emailFromAddress;
+    }
+
+    public String getEmailFromName()
+    {
+        return emailFromName;
+    }
+
+    public void setEmailFromName(String emailFromName)
+    {
+        this.emailFromName = emailFromName;
     }
 }

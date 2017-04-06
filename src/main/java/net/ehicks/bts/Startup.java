@@ -39,14 +39,6 @@ public class Startup
         SystemInfo.INSTANCE.setDbConnectionString(Common.getSafeString(properties.getProperty("dbConnectionString")));
         SystemInfo.INSTANCE.setDatabaseCacheInKBs(Common.stringToLong(properties.getProperty("databaseCacheInKBs")));
 
-        SystemInfo.INSTANCE.setEmailHost(properties.getProperty("emailHost"));
-        SystemInfo.INSTANCE.setEmailPort(Common.stringToInt(properties.getProperty("emailPort")));
-        SystemInfo.INSTANCE.setEmailUser(properties.getProperty("emailUser"));
-        SystemInfo.INSTANCE.setEmailPassword(properties.getProperty("emailPassword"));
-        SystemInfo.INSTANCE.setEmailFromAddress(properties.getProperty("emailFromAddress"));
-        SystemInfo.INSTANCE.setEmailFromName(properties.getProperty("emailFromName"));
-        SystemInfo.INSTANCE.setEmailContext(properties.getProperty("emailContext"));
-
         SystemInfo.INSTANCE.setLogDirectory(properties.getProperty("logDirectory"));
         SystemInfo.INSTANCE.setBackupDirectory(properties.getProperty("backupDirectory"));
 

@@ -87,6 +87,14 @@ public class DefaultDataLoader
         BtsSystem system = new BtsSystem();
         system.setInstanceName("Valericon Industries");
         system.setLogonMessage("Welcome to Puffin Issue Tracker.<br>Please contact Eric for a demo.");
+
+        system.setEmailHost("***REMOVED***");
+        system.setEmailPort(587);
+        system.setEmailUser("***REMOVED***");
+        system.setEmailPassword("***REMOVED***");
+        system.setEmailFromAddress("noreply@ehicks.net");
+        system.setEmailFromName("Bug Tracking System");
+
         EOI.insert(system, SystemTask.DEFAULT_DATA_LOADER);
     }
 

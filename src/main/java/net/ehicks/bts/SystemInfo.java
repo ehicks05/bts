@@ -21,14 +21,6 @@ public enum SystemInfo
     private String dbConnectionString;
     private long databaseCacheInKBs;
 
-    private String emailHost = "";
-    private int emailPort;
-    private String emailUser = "";
-    private String emailPassword = "";
-    private String emailFromAddress = "";
-    private String emailFromName = "";
-    private String emailContext = "";
-
     private String logDirectory = "";
     private String backupDirectory = "";
 
@@ -161,76 +153,6 @@ public enum SystemInfo
     public void setDatabaseCacheInKBs(long databaseCacheInKBs)
     {
         this.databaseCacheInKBs = databaseCacheInKBs;
-    }
-
-    public String getEmailHost()
-    {
-        return emailHost;
-    }
-
-    public void setEmailHost(String emailHost)
-    {
-        this.emailHost = emailHost;
-    }
-
-    public int getEmailPort()
-    {
-        return emailPort;
-    }
-
-    public void setEmailPort(int emailPort)
-    {
-        this.emailPort = emailPort;
-    }
-
-    public String getEmailUser()
-    {
-        return emailUser;
-    }
-
-    public void setEmailUser(String emailUser)
-    {
-        this.emailUser = emailUser;
-    }
-
-    public String getEmailPassword()
-    {
-        return emailPassword;
-    }
-
-    public void setEmailPassword(String emailPassword)
-    {
-        this.emailPassword = emailPassword;
-    }
-
-    public String getEmailFromAddress()
-    {
-        return emailFromAddress;
-    }
-
-    public void setEmailFromAddress(String emailFromAddress)
-    {
-        this.emailFromAddress = emailFromAddress;
-    }
-
-    public String getEmailFromName()
-    {
-        return emailFromName;
-    }
-
-    public void setEmailFromName(String emailFromName)
-    {
-        this.emailFromName = emailFromName;
-    }
-
-    public String getEmailContext()
-    {
-        return emailContext;
-    }
-
-    public void setEmailContext(String emailContext)
-    {
-        this.emailContext = emailContext;
     }
 
     public String getLogDirectory()

@@ -123,11 +123,13 @@ public class EmailEngine
 
     private static void setConnectionFields(ImageHtmlEmail email) throws MalformedURLException, EmailException
     {
-        email.setHostName(SystemInfo.INSTANCE.getEmailHost());
-        email.setSmtpPort(SystemInfo.INSTANCE.getEmailPort());
-        email.setAuthenticator(new DefaultAuthenticator(SystemInfo.INSTANCE.getEmailUser(), SystemInfo.INSTANCE.getEmailPassword()));
+        BtsSystem btsSystem = BtsSystem.getSystem();
+
+        email.setHostName(btsSystem.getEmailHost());
+        email.setSmtpPort(btsSystem.getEmailPort());
+        email.setAuthenticator(new DefaultAuthenticator(btsSystem.getEmailUser(), btsSystem.getEmailPassword()));
         email.setStartTLSRequired(true);
-        email.setFrom(SystemInfo.INSTANCE.getEmailFromAddress(), SystemInfo.INSTANCE.getEmailFromName());
+        email.setFrom(btsSystem.getEmailFromAddress(), btsSystem.getEmailFromName());
         // define your base URL to resolve relative resource locations
         URL url = new URL("http://www.apache.org");
         email.setDataSourceResolver(new DataSourceUrlResolver(url));}

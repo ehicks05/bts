@@ -101,7 +101,7 @@ public class EmailMessage implements Serializable
 
     public String getBody()
     {
-        String emailContext = SystemInfo.INSTANCE.getEmailContext();
+        String emailContext = "http://localhost:8080/bts"; // todo figure this out
         if (actionId == EmailAction.ADD_COMMENT.getId())
         {
             User user = User.getByUserId(userId);

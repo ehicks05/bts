@@ -5,7 +5,7 @@
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<jsp:useBean id="userSession" type="net.ehicks.bts.UserSession" scope="session"/>
+<jsp:useBean id="btsSystem" type="net.ehicks.bts.beans.BtsSystem" scope="request"/>
 
 <!DOCTYPE html>
 <html>
@@ -32,23 +32,33 @@
         <form id="frmProject" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=email&tab3=modify&action=modify">
             <div style="padding: 10px;">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="emailhost" name="emailhost" type="text" value="${userSession.systemInfo.emailHost}"/>
-                    <label class="mdl-textfield__label" for="emailhost">Host:</label>
+                    <input class="mdl-textfield__input" id="emailHost" name="emailHost" type="text" value="${btsSystem.emailHost}"/>
+                    <label class="mdl-textfield__label" for="emailHost">Host:</label>
                 </div>
                 <br>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="Username" name="Username" type="text" value="${userSession.systemInfo.emailUser}"/>
-                    <label class="mdl-textfield__label" for="Username">Username:</label>
+                    <input class="mdl-textfield__input" id="emailUser" name="emailUser" type="text" value="${btsSystem.emailUser}"/>
+                    <label class="mdl-textfield__label" for="emailUser">Username:</label>
                 </div>
                 <br>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="emailPassword" name="emailPassword" type="text" value="${userSession.systemInfo.emailPassword}"/>
+                    <input class="mdl-textfield__input" id="emailPassword" name="emailPassword" type="text" value="${btsSystem.emailPassword}"/>
                     <label class="mdl-textfield__label" for="emailPassword">Password:</label>
                 </div>
                 <br>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="emailPort" name="emailPort" type="text" value="${userSession.systemInfo.emailPort}"/>
+                    <input class="mdl-textfield__input" id="emailPort" name="emailPort" type="text" value="${btsSystem.emailPort}"/>
                     <label class="mdl-textfield__label" for="emailPort">Port:</label>
+                </div>
+                <br>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" id="emailFromAddress" name="emailFromAddress" type="text" value="${btsSystem.emailFromAddress}"/>
+                    <label class="mdl-textfield__label" for="emailFromAddress">From Address:</label>
+                </div>
+                <br>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" id="emailFromName" name="emailFromName" type="text" value="${btsSystem.emailFromName}"/>
+                    <label class="mdl-textfield__label" for="emailFromName">From Name:</label>
                 </div>
             </div>
 
