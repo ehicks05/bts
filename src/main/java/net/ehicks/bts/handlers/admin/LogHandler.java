@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.*;
 
@@ -22,7 +21,8 @@ public class LogHandler
     public static String showLogs(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        List<File> logs = new ArrayList<>(Arrays.asList(Paths.get("../logs").toFile().listFiles()));
+        File logsDir = new File(SystemInfo.INSTANCE.getLogDirectory());
+        List<File> logs = new ArrayList<>(Arrays.asList(logsDir.listFiles()));
         logs.removeIf(file -> !file.getName().contains("bts"));
         Collections.reverse(logs);
         request.setAttribute("logs", logs);
@@ -110,7 +110,7 @@ public class LogHandler
 
     private static String getColorFromThread(String thread)
     {
-        String hash = String.valueOf(thread.hashCode());
+        String hash = String.valueOf(thread.hashCode() * 64);
         int r = 0;
         int g = 0;
         int b = 0;

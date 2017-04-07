@@ -3,6 +3,7 @@ package net.ehicks.bts;
 import net.ehicks.common.Common;
 
 import javax.servlet.ServletContext;
+import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Paths;
@@ -84,6 +85,18 @@ public enum SystemInfo
         long allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
         return (maxMemory - allocatedMemory);
     }
+
+    public String getLogDirectoryCanonical() throws IOException
+    {
+        return new File(logDirectory).getCanonicalPath();
+    }
+
+    public String getBackupDirectoryCanonical() throws IOException
+    {
+        return new File(backupDirectory).getCanonicalPath();
+    }
+
+    // getters setters
 
     public String getAppName()
     {

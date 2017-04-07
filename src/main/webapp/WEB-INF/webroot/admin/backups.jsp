@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <jsp:useBean id="backups" type="java.util.List<java.io.File>" scope="request"/>
+<jsp:useBean id="userSession" type="net.ehicks.bts.UserSession" scope="session"/>
 
 <!DOCTYPE html>
 <html>
@@ -31,7 +32,7 @@
 <div class="mdl-grid">
 
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Backups</h5></div>
+        <div class="mdl-card__title"><h5>Backups - ${userSession.systemInfo.backupDirectoryCanonical}</h5></div>
 
         <div class="tableContainer">
             <table class="mdl-data-table mdl-shadow--2dp">
