@@ -33,13 +33,15 @@ public class SqlHandler
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         String commandsParam = request.getParameter("sqlCommand").trim();
-        log.info("Received command from " + userSession.getUser() + " at ip " + userSession.getIpAddress() + ". " + commandsParam);
+        log.info("Received command from " + userSession.getUser() + " at ip " + userSession.getIpAddress() + ". ");
 
         List<PrintableSqlResult> printableSqlResults = new ArrayList<>();
 
+        int i = 1;
         for (String command : Arrays.asList(commandsParam.split(";")))
         {
             command = command.trim();
+            log.info("Command " + i++ + ": " + command.replaceAll("\r\n", " "));
             PrintableSqlResult printableSqlResult = new PrintableSqlResult(command.trim());
 
             try
