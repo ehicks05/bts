@@ -11,8 +11,43 @@
     <jsp:include page="../inc_header.jsp"/>
 
     <style>
-        #options {padding:5px;}
+        #options {padding:5px; margin: auto;}
+        #options div {text-align: center; padding: 10px;}
         #options i {vertical-align:middle!important; font-size: 3em!important;}
+
+        #options {
+            display: grid;
+            grid-template-rows: auto;
+            grid-template-columns: repeat(5, 200px);
+        }
+        @media (max-width: 1099px) and (min-width: 880px) {
+            #options {
+                display: grid;
+                grid-template-rows: auto;
+                grid-template-columns: repeat(4, 200px);
+            }
+        }
+        @media (max-width: 879px) and (min-width: 660px) {
+            #options {
+                display: grid;
+                grid-template-rows: auto;
+                grid-template-columns: repeat(3, 200px);
+            }
+        }
+        @media (max-width: 659px) and (min-width: 440px) {
+            #options {
+                display: grid;
+                grid-template-rows: auto;
+                grid-template-columns: repeat(2, 200px);
+            }
+        }
+        @media (max-width: 439px) {
+            #options {
+                display: grid;
+                grid-template-rows: auto;
+                grid-template-columns: repeat(1, 200px);
+            }
+        }
     </style>
 </head>
 <body>
@@ -27,43 +62,43 @@
         <div id="options">
             <div>
                 <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&action=form">
-                    <i class="material-icons">person</i>Manage Users</a>
+                    <i class="material-icons">person</i><br>Manage Users</a>
             </div>
             <div>
                 <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=projects&action=form">
-                    <i class="material-icons">folder</i>Manage Projects</a>
+                    <i class="material-icons">folder</i><br>Manage Projects</a>
             </div>
             <div>
                 <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=groups&action=form">
-                    <i class="material-icons">security</i>Manage Groups</a>
+                    <i class="material-icons">security</i><br>Manage Groups</a>
             </div>
             <div>
                 <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=cache&action=form">
-                    <i class="material-icons">memory</i>Cache Info</a>
+                    <i class="material-icons">memory</i><br>Cache Info</a>
             </div>
             <div>
                 <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=system&action=form">
-                    <i class="material-icons">computer</i>System Info</a>
+                    <i class="material-icons">computer</i><br>System Info</a>
             </div>
             <div>
                 <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=audit&action=form">
-                    <i class="material-icons">history</i>Audit Records</a>
+                    <i class="material-icons">history</i><br>Audit Records</a>
             </div>
             <div>
                 <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=email&action=form">
-                    <i class="material-icons">email</i>Manage Email</a>
+                    <i class="material-icons">email</i><br>Manage Email</a>
             </div>
             <div>
                 <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=logs&action=form">
-                    <i class="material-icons">assignment</i>Logs</a>
+                    <i class="material-icons">assignment</i><br>Logs</a>
             </div>
             <div>
                 <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=backups&action=form">
-                    <i class="material-icons">backup</i>Backups</a>
+                    <i class="material-icons">backup</i><br>Backups</a>
             </div>
             <div>
                 <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=sql&action=form">
-                    <i class="material-icons">storage</i>SQL</a>
+                    <i class="material-icons">storage</i><br>SQL</a>
             </div>
         </div>
     </div>
