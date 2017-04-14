@@ -1,5 +1,6 @@
 package net.ehicks.bts;
 
+import it.sauronsoftware.cron4j.Scheduler;
 import net.ehicks.eoi.EOIBackup;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -7,23 +8,16 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class BackupDbTask
 {
     private static final Logger log = LoggerFactory.getLogger(BackupDbTask.class);
-    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private static final Scheduler scheduler = new Scheduler();
 
-    public static ScheduledExecutorService getScheduler()
+    public static Scheduler getScheduler()
     {
         return scheduler;
     }
@@ -38,19 +32,8 @@ public class BackupDbTask
 
     public static void scheduleTask()
     {
-        LocalDateTime localNow = LocalDateTime.now();
-        ZoneId currentZone = ZoneId.systemDefault();
-        ZonedDateTime zonedNow = ZonedDateTime.of(localNow, currentZone);
-        ZonedDateTime zonedNext2Hours;
-        zonedNext2Hours = zonedNow.withHour(2).withMinute(0).withSecond(0);
-        if(zonedNow.compareTo(zonedNext2Hours) > 0)
-            zonedNext2Hours = zonedNext2Hours.plusDays(1);
-
-        log.info("BackupDbTask scheduled for " + zonedNext2Hours);
-        Duration duration = Duration.between(zonedNow, zonedNext2Hours);
-        long initialDelay = duration.getSeconds();
-
-        scheduler.scheduleAtFixedRate(BackupDbTask::backupToZip, initialDelay, 24*60*60, TimeUnit.SECONDS);
+        scheduler.schedule("* 2 * * *", BackupDbTask::backupToZip);
+        scheduler.start();
     }
 
     public static void backupToZip()

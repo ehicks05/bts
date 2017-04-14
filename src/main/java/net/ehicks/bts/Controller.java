@@ -60,7 +60,7 @@ public class Controller extends HttpServlet
     {
         log.info("BTS shutting down...");
         CommonScheduling.shutDown(EmailThreadPool.getPool());
-        CommonScheduling.shutDown(BackupDbTask.getScheduler());
+        BackupDbTask.getScheduler().stop();
         EOI.destroy();
         log.info("BTS finished shutting down...");
     }

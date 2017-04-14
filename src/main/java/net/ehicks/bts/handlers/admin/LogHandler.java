@@ -93,6 +93,8 @@ public class LogHandler
         }
         String thread = line.substring(0, closeIndex + 1);
         String threadWithoutBrackets = thread.substring(1, thread.length() - 2);
+        if (threadWithoutBrackets.length() > 64)
+            threadWithoutBrackets = threadWithoutBrackets.substring(0, 64) + "...";
         threadToColorMap.putIfAbsent(threadWithoutBrackets, getColorFromThread(threadWithoutBrackets));
 
         line = line.substring(closeIndex + 1);
