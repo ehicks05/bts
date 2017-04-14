@@ -19,7 +19,6 @@ public enum SystemInfo
 
     private ServletContext servletContext;
     private long systemStart;
-    private String dbConnectionString;
     private long databaseCacheInKBs;
 
     private String logDirectory = "";
@@ -146,16 +145,6 @@ public enum SystemInfo
     public void setSystemStart(long systemStart)
     {
         this.systemStart = systemStart;
-    }
-
-    public String getDbConnectionString()
-    {
-        return dbConnectionString;
-    }
-
-    public void setDbConnectionString(String dbConnectionString)
-    {
-        this.dbConnectionString = dbConnectionString;
     }
 
     public long getDatabaseCacheInKBs()

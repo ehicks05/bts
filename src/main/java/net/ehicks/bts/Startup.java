@@ -36,11 +36,19 @@ public class Startup
         SystemInfo.INSTANCE.setDebugLevel(Common.stringToInt(properties.getProperty("debugLevel")));
         SystemInfo.INSTANCE.setDropCreateLoad(properties.getProperty("dropCreateLoad").equals("true"));
 
-        SystemInfo.INSTANCE.setDbConnectionString(Common.getSafeString(properties.getProperty("dbConnectionString")));
-        SystemInfo.INSTANCE.setDatabaseCacheInKBs(Common.stringToLong(properties.getProperty("databaseCacheInKBs")));
-
         SystemInfo.INSTANCE.setLogDirectory(properties.getProperty("logDirectory"));
         SystemInfo.INSTANCE.setBackupDirectory(properties.getProperty("backupDirectory"));
+
+        DbSettings.setDbMode(Common.getSafeString(properties.getProperty("dbMode")));
+        DbSettings.setDbHost(Common.getSafeString(properties.getProperty("dbHost")));
+        DbSettings.setDbPort(Common.getSafeString(properties.getProperty("dbPort")));
+        DbSettings.setDbName(Common.getSafeString(properties.getProperty("dbName")));
+        DbSettings.setDbUser(Common.getSafeString(properties.getProperty("dbUser")));
+        DbSettings.setDbPass(Common.getSafeString(properties.getProperty("dbPass")));
+
+        DbSettings.setH2DbCacheKBs(Common.getSafeString(properties.getProperty("h2DbCacheKBs")));
+        DbSettings.setPgDumpPath(Common.getSafeString(properties.getProperty("pgDumpPath")));
+        DbSettings.setSqlserverServerInstance(Common.getSafeString(properties.getProperty("sqlserverServerInstance")));
 
         servletContext.setAttribute("systemInfo", SystemInfo.INSTANCE);
     }
@@ -57,7 +65,7 @@ public class Startup
         long subTaskStart = System.currentTimeMillis();
         int tablesCreated = 0;
         for (DBMap dbMap : DBMap.dbMaps)
-            if (!EOI.isTableExists(dbMap.tableName.toUpperCase()))
+            if (!EOI.isTableExists(dbMap.tableName))
             {
                 String createTableStatement = SQLGenerator.getCreateTableStatement(dbMap);
                 EOI.executeUpdate(createTableStatement);
@@ -76,7 +84,7 @@ public class Startup
         int tablesDropped = 0;
         for (DBMap dbMap : DBMap.dbMaps)
         {
-            String tableName = dbMap.tableName.toUpperCase();
+            String tableName = dbMap.tableName;
             try
             {
                 if (EOI.isTableExists(tableName))

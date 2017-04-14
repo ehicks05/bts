@@ -28,13 +28,8 @@ public class Controller extends HttpServlet
     {
         log.info("BTS starting...");
         Startup.loadProperties(getServletContext());
-        String h2Settings = "TRACE_LEVEL_FILE=1;DB_CLOSE_ON_EXIT=FALSE;COMPRESS=TRUE;CACHE_SIZE=" + SystemInfo.INSTANCE.getDatabaseCacheInKBs() + ";";
-        String h2ConnectionString = "jdbc:h2:tcp://localhost/~/bts/bts;" + h2Settings;
-        String h2MemConnectionString = "jdbc:h2:mem:" + h2Settings;
-        String mssqlConnectionString = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;user=erictest;***REMOVED***";
-        SystemInfo.INSTANCE.setDbConnectionString(h2ConnectionString);
 
-        EOI.init(SystemInfo.INSTANCE.getDbConnectionString());
+        EOI.init(DbSettings.getDbConnectionString());
 
         Startup.loadDBMaps(getServletContext());
 

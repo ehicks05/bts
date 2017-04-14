@@ -150,7 +150,7 @@ public class IssueForm extends SearchForm implements Serializable
         if (issueForm.getIssueId() != null && issueForm.getIssueId() != 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
-            whereClause += " lower(id) like ? ";
+            whereClause += " id = ? ";
             args.add(issueForm.getIssueId());
         }
 
@@ -158,11 +158,9 @@ public class IssueForm extends SearchForm implements Serializable
         {
             if (whereClause.length() > 0) whereClause += " and ";
             whereClause += "( ";
-            whereClause += " lower(id) like ? ";
-            whereClause += " or lower(title) like ? ";
+            whereClause += " lower(title) like ? ";
             whereClause += " or lower(description) like ? ";
             whereClause += ") ";
-            args.add("%" + issueForm.getContainsText().toLowerCase().replaceAll("\\*","%") + "%");
             args.add("%" + issueForm.getContainsText().toLowerCase().replaceAll("\\*","%") + "%");
             args.add("%" + issueForm.getContainsText().toLowerCase().replaceAll("\\*","%") + "%");
         }
@@ -190,7 +188,7 @@ public class IssueForm extends SearchForm implements Serializable
                 if (questionMarks.length() > 0)
                     questionMarks += ",";
                 questionMarks += "?";
-                args.add(id);
+                args.add(Long.valueOf(id));
             }
             whereClause += " project_id in (" + questionMarks +") ";
         }
@@ -204,7 +202,7 @@ public class IssueForm extends SearchForm implements Serializable
                 if (questionMarks.length() > 0)
                     questionMarks += ",";
                 questionMarks += "?";
-                args.add(id);
+                args.add(Long.valueOf(id));
             }
             whereClause += " group_id in (" + questionMarks +") ";
         }
@@ -218,7 +216,7 @@ public class IssueForm extends SearchForm implements Serializable
                 if (questionMarks.length() > 0)
                     questionMarks += ",";
                 questionMarks += "?";
-                args.add(id);
+                args.add(Long.valueOf(id));
             }
             whereClause += " severity_id in (" + questionMarks + ") ";
         }
@@ -232,7 +230,7 @@ public class IssueForm extends SearchForm implements Serializable
                 if (questionMarks.length() > 0)
                     questionMarks += ",";
                 questionMarks += "?";
-                args.add(id);
+                args.add(Long.valueOf(id));
             }
             whereClause += " status_id in (" + questionMarks + ") ";
         }
@@ -246,7 +244,7 @@ public class IssueForm extends SearchForm implements Serializable
                 if (questionMarks.length() > 0)
                     questionMarks += ",";
                 questionMarks += "?";
-                args.add(id);
+                args.add(Long.valueOf(id));
             }
             whereClause += " assignee_user_id in (" + questionMarks + ") ";
         }

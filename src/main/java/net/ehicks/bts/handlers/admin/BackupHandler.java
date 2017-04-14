@@ -2,6 +2,8 @@ package net.ehicks.bts.handlers.admin;
 
 import net.ehicks.bts.*;
 import net.ehicks.common.Common;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +17,8 @@ import java.util.List;
 
 public class BackupHandler
 {
+    private static final Logger log = LoggerFactory.getLogger(BackupHandler.class);
+
     @Route(tab1 = "admin", tab2 = "backups", tab3 = "", action = "form")
     public static String showBackups(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
