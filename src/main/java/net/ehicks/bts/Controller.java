@@ -43,8 +43,8 @@ public class Controller extends HttpServlet
         BtsSystem btsSystem = BtsSystem.getSystem();
         while (btsSystem == null)
         {
-            btsSystem = BtsSystem.getSystem();
             Common.sleep(100);
+            btsSystem = BtsSystem.getSystem();
         }
         getServletContext().setAttribute("btsSystem", btsSystem);
 
@@ -52,7 +52,7 @@ public class Controller extends HttpServlet
 
         BackupDbTask.scheduleTask();
 
-        log.info("BTS loaded in {} ms", (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()));
+        log.info("BTS Controller.init done in {} ms", (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()));
     }
 
     @Override

@@ -32,7 +32,8 @@ public class BackupDbTask
 
     public static void scheduleTask()
     {
-        scheduler.schedule("* 2 * * *", BackupDbTask::backupToZip);
+        String taskId = scheduler.schedule("0 2 * * *", BackupDbTask::backupToZip);
+        log.info("Scheduling task " + taskId);
         scheduler.start();
     }
 
