@@ -1,5 +1,6 @@
 package net.ehicks.bts;
 
+import net.ehicks.bts.beans.BtsSystem;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.DBMap;
 import net.ehicks.eoi.EOI;
@@ -8,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -38,6 +41,7 @@ public class Startup
 
         SystemInfo.INSTANCE.setLogDirectory(properties.getProperty("logDirectory"));
         SystemInfo.INSTANCE.setBackupDirectory(properties.getProperty("backupDirectory"));
+        SystemInfo.INSTANCE.setOverridePropertiesDirectory(properties.getProperty("overridePropertiesDirectory"));
 
         DbSettings.setDbMode(Common.getSafeString(properties.getProperty("dbMode")));
         DbSettings.setDbHost(Common.getSafeString(properties.getProperty("dbHost")));
@@ -51,6 +55,40 @@ public class Startup
         DbSettings.setSqlserverServerInstance(Common.getSafeString(properties.getProperty("sqlserverServerInstance")));
 
         servletContext.setAttribute("systemInfo", SystemInfo.INSTANCE);
+    }
+
+    static void loadOverrideProperties(String path)
+    {
+        File overridePropsFile = new File(path);
+        if (overridePropsFile.exists() && overridePropsFile.isFile())
+        {
+            Properties overrideProps = new Properties();
+
+            try (InputStream input = new FileInputStream(overridePropsFile);)
+            {
+                overrideProps.load(input);
+            }
+            catch (IOException e)
+            {
+                log.error(e.getMessage(), e);
+            }
+
+            BtsSystem btsSystem = BtsSystem.getSystem();
+            if (btsSystem == null)
+            {
+                btsSystem = new BtsSystem();
+                EOI.insert(btsSystem, SystemTask.STARTUP);
+            }
+            // only override email settings if they're not already in the DB.
+            if (btsSystem.getEmailHost().isEmpty()) btsSystem.setEmailHost(overrideProps.getProperty("emailHost"));
+            if (btsSystem.getEmailPort() == 0) btsSystem.setEmailPort(Common.stringToInt(overrideProps.getProperty("emailPort")));
+            if (btsSystem.getEmailUser().isEmpty()) btsSystem.setEmailUser(overrideProps.getProperty("emailUser"));
+            if (btsSystem.getEmailPassword().isEmpty()) btsSystem.setEmailPassword(overrideProps.getProperty("emailPassword"));
+            if (btsSystem.getEmailFromAddress().isEmpty()) btsSystem.setEmailFromAddress(overrideProps.getProperty("emailFromAddress"));
+            if (btsSystem.getEmailFromName().isEmpty()) btsSystem.setEmailFromName(overrideProps.getProperty("emailFromName"));
+
+            EOI.update(btsSystem, SystemTask.STARTUP);
+        }
     }
 
     static void loadDBMaps(ServletContext servletContext)

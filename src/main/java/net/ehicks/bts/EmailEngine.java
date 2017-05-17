@@ -99,7 +99,7 @@ public class EmailEngine
             setConnectionFields(email);
 
             for (String recipient : recipients)
-                if (recipient.equals("***REMOVED***")) // todo remove this safeguard
+                if (recipient.equals("eric@test.com")) // todo remove this safeguard
                     email.addTo(recipient, recipient);
 
             email.setSubject(emailMessage.getSubject());

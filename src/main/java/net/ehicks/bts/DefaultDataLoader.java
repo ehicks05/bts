@@ -84,18 +84,16 @@ public class DefaultDataLoader
 
     private static void createBtsSystem()
     {
-        BtsSystem system = new BtsSystem();
+        BtsSystem system = BtsSystem.getSystem();
+        if (system == null)
+        {
+            system = new BtsSystem();
+            EOI.insert(system, SystemTask.DEFAULT_DATA_LOADER);
+        }
         system.setInstanceName("Valericon Industries");
         system.setLogonMessage("Welcome to Puffin Issue Tracker.<br>Please contact Eric for a demo.");
 
-        system.setEmailHost("***REMOVED***");
-        system.setEmailPort(587);
-        system.setEmailUser("***REMOVED***");
-        system.setEmailPassword("***REMOVED***");
-        system.setEmailFromAddress("noreply@ehicks.net");
-        system.setEmailFromName("Bug Tracking System");
-
-        EOI.insert(system, SystemTask.DEFAULT_DATA_LOADER);
+        EOI.update(system, SystemTask.DEFAULT_DATA_LOADER);
     }
 
     private static void createIssueForms()
@@ -112,7 +110,7 @@ public class DefaultDataLoader
             issueForm.setAssigneeUserIds(String.valueOf(user.getId()));
             EOI.insert(issueForm, SystemTask.DEFAULT_DATA_LOADER);
 
-            if (user.getLogonId().equals("***REMOVED***"))
+            if (user.getLogonId().equals("eric@test.com"))
             {
                 issueForm.setFormName("Readington's Issues");
                 issueForm.setAssigneeUserIds("");
@@ -483,9 +481,9 @@ public class DefaultDataLoader
         {
             GroupMap groupMap = new GroupMap();
             groupMap.setUserId(user.getId());
-            if (user.getLogonId().equals("***REMOVED***") || user.getLogonId().equals("***REMOVED***"))
+            if (user.getLogonId().equals("eric@test.com") || user.getLogonId().equals("steve@test.com"))
                 groupMap.setGroupId(admin.getId());
-            else if (user.getLogonId().equals("tupac@yahoo.com"))
+            else if (user.getLogonId().equals("tupac@test.com"))
                 groupMap.setGroupId(support.getId());
             else
             {
@@ -523,8 +521,8 @@ public class DefaultDataLoader
     private static void createUsers()
     {
         Map<String, List<String>> users = new HashMap<>();
-        users.put("***REMOVED***", new ArrayList<>(Arrays.asList("eric", "2", "Eric", ***REMOVED***)));
-        users.put("***REMOVED***", new ArrayList<>(Arrays.asList("steve", "15", "Steve", ***REMOVED***)));
+        users.put("eric@test.com", new ArrayList<>(Arrays.asList("eric", "2", "Eric", "Tester")));
+        users.put("steve@test.com", new ArrayList<>(Arrays.asList("steve", "15", "Steve", "Tester")));
         users.put("tupac@test.com", new ArrayList<>(Arrays.asList("test", "3", "2", "Pac")));
         users.put("bill@test.com", new ArrayList<>(Arrays.asList("test", "8", "Bill", "Smith")));
         users.put("john@test.com", new ArrayList<>(Arrays.asList("test", "5", "John", "Doe")));
@@ -555,7 +553,7 @@ public class DefaultDataLoader
             role.setRoleName("user");
             EOI.insert(role, SystemTask.DEFAULT_DATA_LOADER);
 
-            if (user.getLogonId().equals("***REMOVED***"))
+            if (user.getLogonId().equals("eric@test.com"))
             {
                 role.setRoleName("admin");
                 EOI.insert(role, SystemTask.DEFAULT_DATA_LOADER);

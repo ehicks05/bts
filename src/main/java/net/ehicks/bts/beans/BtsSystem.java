@@ -20,25 +20,25 @@ public class BtsSystem implements Serializable
     private String instanceName = "";
 
     @Column(name = "logon_message")
-    private String logonMessage;
+    private String logonMessage = "";
 
     @Column(name = "email_host")
-    private String emailHost;
+    private String emailHost = "";
 
     @Column(name = "email_port")
-    private Integer emailPort;
+    private Integer emailPort = 0;
 
     @Column(name = "email_user")
-    private String emailUser;
+    private String emailUser = "";
 
     @Column(name = "email_password")
-    private String emailPassword;
+    private String emailPassword = "";
 
     @Column(name = "email_from_address")
-    private String emailFromAddress;
+    private String emailFromAddress = "";
 
     @Column(name = "email_from_name")
-    private String emailFromName;
+    private String emailFromName = "";
 
     @Override
     public boolean equals(Object obj)

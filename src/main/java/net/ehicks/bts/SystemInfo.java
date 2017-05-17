@@ -23,6 +23,7 @@ public enum SystemInfo
 
     private String logDirectory = "";
     private String backupDirectory = "";
+    private String overridePropertiesDirectory = "";
 
     public Date getSystemStartTime()
     {
@@ -175,5 +176,15 @@ public enum SystemInfo
     public void setBackupDirectory(String backupDirectory)
     {
         this.backupDirectory = backupDirectory;
+    }
+
+    public String getOverridePropertiesDirectory()
+    {
+        return overridePropertiesDirectory;
+    }
+
+    public void setOverridePropertiesDirectory(String overridePropertiesDirectory)
+    {
+        this.overridePropertiesDirectory = overridePropertiesDirectory;
     }
 }

@@ -40,6 +40,8 @@ public class Controller extends HttpServlet
             new Thread(DefaultDataLoader::createDemoData).start();
         }
 
+        Startup.loadOverrideProperties(SystemInfo.INSTANCE.getOverridePropertiesDirectory());
+
         BtsSystem btsSystem = BtsSystem.getSystem();
         while (btsSystem == null)
         {

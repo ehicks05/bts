@@ -4,16 +4,15 @@ import net.ehicks.eoi.AuditUser;
 
 public enum SystemTask implements AuditUser
 {
-    DEFAULT_DATA_LOADER("DEFAULT_DATA_LOADER", "127.0.0.1"),
-    EMAIL_ENGINE("EMAIL_ENGINE", "127.0.0.1");
+    DEFAULT_DATA_LOADER("DEFAULT_DATA_LOADER"),
+    STARTUP("STARTUP"),
+    EMAIL_ENGINE("EMAIL_ENGINE");
 
     private String id;
-    private String ipAddress;
 
-    SystemTask(String id, String ipAddress)
+    SystemTask(String id)
     {
         this.id = id;
-        this.ipAddress = ipAddress;
     }
 
     @Override
@@ -25,6 +24,6 @@ public enum SystemTask implements AuditUser
     @Override
     public String getIpAddress()
     {
-        return ipAddress;
+        return "LOCALHOST";
     }
 }
