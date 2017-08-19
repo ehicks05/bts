@@ -1,6 +1,7 @@
 package net.ehicks.bts;
 
 import net.ehicks.common.Common;
+import net.ehicks.eoi.ConnectionInfo;
 
 import javax.servlet.ServletContext;
 import java.io.File;
@@ -12,6 +13,8 @@ import java.util.*;
 public enum SystemInfo
 {
     INSTANCE;
+
+    private ConnectionInfo dbConnectionInfo;
 
     private String appName;
     private int debugLevel;
@@ -97,6 +100,16 @@ public enum SystemInfo
     }
 
     // getters setters
+
+    public ConnectionInfo getDbConnectionInfo()
+    {
+        return dbConnectionInfo;
+    }
+
+    public void setDbConnectionInfo(ConnectionInfo dbConnectionInfo)
+    {
+        this.dbConnectionInfo = dbConnectionInfo;
+    }
 
     public String getAppName()
     {

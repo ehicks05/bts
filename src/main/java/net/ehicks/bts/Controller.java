@@ -29,7 +29,7 @@ public class Controller extends HttpServlet
         log.info("BTS starting...");
         Startup.loadProperties(getServletContext());
 
-        EOI.init(DbSettings.getDbConnectionString());
+        EOI.init(SystemInfo.INSTANCE.getDbConnectionInfo());
 
         Startup.loadDBMaps(getServletContext());
 

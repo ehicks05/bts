@@ -46,8 +46,7 @@ public class BackupDbTask
             String zippedBackupPath = backupPath.substring(0, backupPath.lastIndexOf(".")) + ".zip";
             new File(zippedBackupPath).delete();
             
-            EOIBackup.backup(backupPath, DbSettings.getPgDumpPath(), DbSettings.getDbHost(), DbSettings.getDbPort(),
-                    DbSettings.getDbName(), DbSettings.getDbUser(), DbSettings.getDbPass());
+            EOIBackup.backup(backupPath, SystemInfo.INSTANCE.getDbConnectionInfo());
 
             try (InputStream inputStream = new BufferedInputStream(new FileInputStream(backupPath));
                  ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(zippedBackupPath));)

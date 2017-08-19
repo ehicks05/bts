@@ -2,6 +2,7 @@ package net.ehicks.bts;
 
 import net.ehicks.bts.beans.BtsSystem;
 import net.ehicks.common.Common;
+import net.ehicks.eoi.ConnectionInfo;
 import net.ehicks.eoi.DBMap;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.SQLGenerator;
@@ -43,16 +44,16 @@ public class Startup
         SystemInfo.INSTANCE.setBackupDirectory(properties.getProperty("backupDirectory"));
         SystemInfo.INSTANCE.setOverridePropertiesDirectory(properties.getProperty("overridePropertiesDirectory"));
 
-        DbSettings.setDbMode(Common.getSafeString(properties.getProperty("dbMode")));
-        DbSettings.setDbHost(Common.getSafeString(properties.getProperty("dbHost")));
-        DbSettings.setDbPort(Common.getSafeString(properties.getProperty("dbPort")));
-        DbSettings.setDbName(Common.getSafeString(properties.getProperty("dbName")));
-        DbSettings.setDbUser(Common.getSafeString(properties.getProperty("dbUser")));
-        DbSettings.setDbPass(Common.getSafeString(properties.getProperty("dbPass")));
-
-        DbSettings.setH2DbCacheKBs(Common.getSafeString(properties.getProperty("h2DbCacheKBs")));
-        DbSettings.setPgDumpPath(Common.getSafeString(properties.getProperty("pgDumpPath")));
-        DbSettings.setSqlserverServerInstance(Common.getSafeString(properties.getProperty("sqlserverServerInstance")));
+        ConnectionInfo dbConnectionInfo = new ConnectionInfo(Common.getSafeString(properties.getProperty("dbMode")),
+                Common.getSafeString(properties.getProperty("dbHost")),
+                Common.getSafeString(properties.getProperty("dbPort")),
+                Common.getSafeString(properties.getProperty("dbName")),
+                Common.getSafeString(properties.getProperty("dbUser")),
+                Common.getSafeString(properties.getProperty("dbPass")),
+                Common.getSafeString(properties.getProperty("h2DbCacheKBs")),
+                Common.getSafeString(properties.getProperty("pgDumpPath")),
+                Common.getSafeString(properties.getProperty("sqlserverServerInstance")));
+        SystemInfo.INSTANCE.setDbConnectionInfo(dbConnectionInfo);
 
         servletContext.setAttribute("systemInfo", SystemInfo.INSTANCE);
     }

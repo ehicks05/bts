@@ -21,7 +21,8 @@ repositories {
 dependencies {
 //    compile 'net.ehicks:eoi:1.0-SNAPSHOT'
 //    compile 'net.ehicks:common:1.0-SNAPSHOT'
-    compile 'com.github.ehicks05:eoi:-SNAPSHOT'
+//    compile 'com.github.ehicks05:eoi:-SNAPSHOT'
+    compile group: "com.github.ehicks05", name: "eoi", version: "-SNAPSHOT", changing: true 
     compile 'com.github.ehicks05:common:-SNAPSHOT'
 
     compile 'org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1.Final'

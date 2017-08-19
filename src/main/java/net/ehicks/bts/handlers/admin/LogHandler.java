@@ -24,7 +24,12 @@ public class LogHandler
         File logsDir = new File(SystemInfo.INSTANCE.getLogDirectory());
         List<File> logs = new ArrayList<>(Arrays.asList(logsDir.listFiles()));
         logs.removeIf(file -> !file.getName().contains("bts"));
-        Collections.reverse(logs);
+        logs.sort((o1, o2) -> {
+            if (o1.lastModified() == o2.lastModified()) return 0;
+            if (o1.lastModified() > o2.lastModified()) return -1;
+            if (o1.lastModified() < o2.lastModified()) return 1;
+            return 0;
+        });
         request.setAttribute("logs", logs);
 
         return "/WEB-INF/webroot/admin/logs.jsp";
