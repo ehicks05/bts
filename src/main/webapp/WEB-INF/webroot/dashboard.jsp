@@ -10,6 +10,20 @@
 <head>
     <jsp:include page="inc_title.jsp"/>
     <jsp:include page="inc_header.jsp"/>
+
+    <script>
+        function confirmDelete(id)
+        {
+            if (confirm('Are you sure you want to remove this saved search from your dashboard?'))
+            {
+                location.href = '${pageContext.request.contextPath}/view?tab1=dashboard&action=remove&issueFormId=' + id;
+            }
+        }
+        function modifySavedSearch(id)
+        {
+            location.href = '${pageContext.request.contextPath}/view?tab1=search&action=form&issueFormId=' + id;
+        }
+    </script>
 </head>
 <body>
 
@@ -26,8 +40,12 @@
                 ${issueForm.formName}: ${searchResult.size} Issues
                 <div class="mdl-layout-spacer" style="float: right;"></div>
                 <div style="float: right;">
-                    <a class="material-icons nounderline" href="${pageContext.request.contextPath}/view?tab1=search&action=form&issueFormId=${issueForm.id}">mode_edit</a>
-                    <a class="material-icons nounderline" href="${pageContext.request.contextPath}/view?tab1=dashboard&action=remove&issueFormId=${issueForm.id}">clear</a>
+                    <button class="mdl-button mdl-js-button mdl-button--icon nounderline" onclick="modifySavedSearch(${issueForm.id})">
+                        <i class="material-icons">mode_edit</i>
+                    </button>
+                    <button class="mdl-button mdl-js-button mdl-button--icon nounderline" onclick="confirmDelete(${issueForm.id})">
+                        <i class="material-icons">clear</i>
+                    </button>
                 </div>
             </div>
 
