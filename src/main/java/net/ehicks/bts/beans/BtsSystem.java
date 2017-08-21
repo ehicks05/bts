@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Collections;
 
 @Entity
 @Table(name = "bts_system")
@@ -63,7 +64,12 @@ public class BtsSystem implements Serializable
 
     public static BtsSystem getSystem()
     {
-        return EOI.executeQueryOneResult("select * from bts_system;");
+        return EOI.executeQueryOneResult("select * from bts_system");
+    }
+
+    public static BtsSystem getById(long id)
+    {
+        return EOI.executeQueryOneResult("select * from bts_system where id=?", Collections.singletonList(id));
     }
 
     // -------- Getters / Setters ----------

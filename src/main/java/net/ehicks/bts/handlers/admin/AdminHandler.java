@@ -4,6 +4,7 @@ import net.ehicks.bts.*;
 import net.ehicks.bts.beans.*;
 import net.ehicks.bts.util.PasswordUtil;
 import net.ehicks.common.Common;
+import net.ehicks.eoi.ConnectionInfo;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.EOICache;
 import net.ehicks.eoi.Metrics;
@@ -59,10 +60,28 @@ public class AdminHandler
     public static String showSystemInfo(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        List<Object> dbInfo = EOI.executeQuery("SELECT NAME, VALUE FROM INFORMATION_SCHEMA.SETTINGS");
+        List<Object> dbInfo;
+        Map<String, String> dbInfoMap = new LinkedHashMap<>();
+        if (SystemInfo.INSTANCE.getDbConnectionInfo().getDbMode().equals(ConnectionInfo.DbMode.POSTGRESQL.toString()))
+        {
+            dbInfo = EOI.executeQuery("select * from pg_stat_database where datname='bts'");
+            Object[] results = (Object[]) dbInfo.get(0);
+            List<String> headers = Arrays.asList("datid","datname","numbackends","xact_commit","xact_rollback","blks_read",
+                    "blks_hit","tup_returned","tup_fetched","tup_inserted","tup_updated","tup_deleted","conflicts","temp_files",
+                    "temp_bytes","deadlocks","blk_read_time","blk_write_time","stats_reset");
+            for (int i = 0; i < headers.size(); i++)
+            {
+                dbInfoMap.put(headers.get(i), results[i].toString());
+            }
+            request.setAttribute("dbInfoMap", dbInfoMap);
+        }
+        else
+            dbInfo = EOI.executeQuery("SELECT NAME, VALUE FROM INFORMATION_SCHEMA.SETTINGS");
+        
         Map<String, String> cpInfo = Metrics.getMetrics();
         request.setAttribute("dbInfo", dbInfo);
         request.setAttribute("cpInfo", cpInfo);
+        request.setAttribute("connectionInfo", SystemInfo.INSTANCE.getDbConnectionInfo());
 
         List<UserSession> userSessions = SessionListener.getSessions();
         userSessions.sort(Comparator.comparing(UserSession::getLastActivity).reversed());

@@ -88,7 +88,8 @@ public class DefaultDataLoader
         if (system == null)
         {
             system = new BtsSystem();
-            EOI.insert(system, SystemTask.DEFAULT_DATA_LOADER);
+            long id = EOI.insert(system, SystemTask.DEFAULT_DATA_LOADER);
+            system = BtsSystem.getById(id);
         }
         system.setInstanceName("Valericon Industries");
         system.setLogonMessage("Welcome to Puffin Issue Tracker.<br>Please contact Eric for a demo.");

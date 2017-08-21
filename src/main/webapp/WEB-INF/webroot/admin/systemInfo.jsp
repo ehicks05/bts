@@ -5,6 +5,7 @@
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <jsp:useBean id="userSession" type="net.ehicks.bts.UserSession" scope="session"/>
 <jsp:useBean id="userSessions" type="java.util.List<net.ehicks.bts.UserSession>" scope="request"/>
+<jsp:useBean id="connectionInfo" type="net.ehicks.eoi.ConnectionInfo" scope="request"/>
 
 <!DOCTYPE html>
 <html>
@@ -83,7 +84,7 @@
     </div>
 
     <div class="flexItem">
-        <div class="mdl-card__title"><h5>CP Info</h5></div>
+        <div class="mdl-card__title"><h5>DB Pool Info</h5></div>
 
         <table class="table">
             <thead>
@@ -120,6 +121,51 @@
                     </tr>
                 </c:if>
             </c:forEach>
+            <c:if test="${!empty dbInfoMap}">
+                <c:forEach var="dbInfoItem" items="${dbInfoMap}">
+                    <tr>
+                        <td class="mdl-data-table__cell--non-numeric">${dbInfoItem.key}</td>
+                        <td class="alignright">${dbInfoItem.value}</td>
+                    </tr>
+                </c:forEach>
+            </c:if>
+        </table>
+    </div>
+
+    <div class="flexItem">
+        <div class="mdl-card__title"><h5>Connection Info</h5></div>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric">Property</th>
+                <th class="alignright">Value</th>
+            </tr>
+            </thead>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Mode</td>
+                <td class="alignright">${connectionInfo.dbMode}</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Host</td>
+                <td class="alignright">${connectionInfo.dbHost}</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">DB Name</td>
+                <td class="alignright">${connectionInfo.dbName}</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Port</td>
+                <td class="alignright">${connectionInfo.dbPort}</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">User</td>
+                <td class="alignright">${connectionInfo.dbUser}</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Pass</td>
+                <td class="alignright">****</td>
+            </tr>
         </table>
     </div>
 
