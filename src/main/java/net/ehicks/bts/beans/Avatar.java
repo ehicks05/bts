@@ -23,6 +23,9 @@ public class Avatar implements Serializable, ISelectTagSupport
     @Column(name = "thumbnail_db_file_id")
     private Long thumbnailDbFileId;
 
+    @Column(name = "public_use")
+    private Boolean publicUse;
+
     @Column(name = "created_by_user_id")
     private Long createdByUserId;
 
@@ -71,6 +74,11 @@ public class Avatar implements Serializable, ISelectTagSupport
     public static List<Avatar> getAll()
     {
         return EOI.executeQuery("select * from avatars");
+    }
+
+    public static List<Avatar> getAllPublic()
+    {
+        return EOI.executeQuery("select * from avatars where public_use=?", Arrays.asList(Boolean.TRUE));
     }
 
     public static Avatar getById(Long id)
@@ -139,6 +147,16 @@ public class Avatar implements Serializable, ISelectTagSupport
     public void setThumbnailDbFileId(Long thumbnailDbFileId)
     {
         this.thumbnailDbFileId = thumbnailDbFileId;
+    }
+
+    public Boolean getPublicUse()
+    {
+        return publicUse;
+    }
+
+    public void setPublicUse(Boolean publicUse)
+    {
+        this.publicUse = publicUse;
     }
 
     public Long getCreatedByUserId()

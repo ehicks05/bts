@@ -24,55 +24,65 @@
 
 <jsp:include page="../header.jsp"/>
 
-<div class="mdl-grid">
-
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Logs - ${userSession.systemInfo.logDirectoryCanonical}</h5></div>
-
-        <div class="tableContainer">
-            <table class="mdl-data-table mdl-shadow--2dp">
-                <thead>
-                <tr>
-                    <th>
-                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="table-header">
-                            <input type="checkbox" id="table-header" class="mdl-checkbox__input" />
-                        </label>
-                    </th>
-                    <th></th>
-                    <th class="mdl-data-table__cell--non-numeric">Name</th>
-                    <th>Size</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-                </thead>
-                <c:forEach var="log" items="${logs}" varStatus="loop">
-                    <tr>
-                        <td>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="row[${loop.count}]">
-                                <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
-                            </label>
-                        </td>
-                        <td>${loop.count}</td>
-                        <td class="mdl-data-table__cell--non-numeric">
-                            ${log.name}
-                        </td>
-                        <td>${ct:fileSize(log.length())}</td>
-
-                        <td class="mdl-data-table__cell--non-numeric">
-                            <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=logs&action=viewLog&logName=${log.name}">
-                                <i class="material-icons">assignment</i>Raw</a>
-                        </td>
-                        <td class="mdl-data-table__cell--non-numeric">
-                            <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=logs&action=viewLogPretty&logName=${log.name}">
-                                <i class="material-icons">grid_on</i>Pretty</a>
-                        </td>
-                        <td><a onclick="deleteLog('${log.name}');" class="clickable material-icons">delete</a></td>
-                    </tr>
-                </c:forEach>
-            </table>
+<section class="hero is-primary is-small">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Logs - ${userSession.systemInfo.logDirectoryCanonical}
+            </h1>
         </div>
     </div>
-</div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column">
+                <table class="table is-striped is-narrow is-hoverable">
+                    <thead>
+                    <tr>
+                        <th>
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="table-header">
+                                <input type="checkbox" id="table-header" class="mdl-checkbox__input" />
+                            </label>
+                        </th>
+                        <th></th>
+                        <th>Name</th>
+                        <th class="has-text-right">Size</th>
+                        <th>Raw</th>
+                        <th>Formatted</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <c:forEach var="log" items="${logs}" varStatus="loop">
+                        <tr>
+                            <td>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="row[${loop.count}]">
+                                    <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
+                                </label>
+                            </td>
+                            <td class="has-text-right">${loop.count}</td>
+                            <td class="mdl-data-table__cell--non-numeric">
+                                ${log.name}
+                            </td>
+                            <td class="has-text-right">${ct:fileSize(log.length())}</td>
+
+                            <td class="has-text-centered">
+                                <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=logs&action=viewLog&logName=${log.name}">
+                                    <i class="fas fa-file-alt"></i></a>
+                            </td>
+                            <td class="has-text-centered">
+                                <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=logs&action=viewLogPretty&logName=${log.name}">
+                                    <i class="fas fa-table"></i></a>
+                            </td>
+                            <td><a onclick="deleteLog('${log.name}');"><i class="fas fa-trash"></i></a></td>
+                        </tr>
+                    </c:forEach>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
 
 <jsp:include page="../footer.jsp"/>
 </body>

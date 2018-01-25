@@ -5,29 +5,29 @@
 
 <jsp:useBean id="issueAudits" type="java.util.List<net.ehicks.bts.beans.IssueAudit>" scope="request"/>
 
-<table id="filmTable" style="width:100%;margin: 0 auto" class="list">
+<table id="filmTable" class="table is-striped is-narrow is-hoverable is-fullwidth">
     <thead>
-    <tr class="listheading">
-        <th class="mdl-data-table__cell--non-numeric">User</th>
-        <th class="mdl-data-table__cell--non-numeric">Event Time</th>
-        <th class="mdl-data-table__cell--non-numeric">Event Type</th>
-        <th class="mdl-data-table__cell--non-numeric">Object Key</th>
-        <th class="mdl-data-table__cell--non-numeric">Field Name</th>
-        <th class="mdl-data-table__cell--non-numeric">Old Value</th>
-        <th class="mdl-data-table__cell--non-numeric">New Value</th>
+    <tr>
+        <th>User</th>
+        <th>Event Time</th>
+        <th>Event Type</th>
+        <th>Object Key</th>
+        <th>Field Name</th>
+        <th>Old Value</th>
+        <th>New Value</th>
     </tr>
     </thead>
 
     <tbody id="myTBody">
     <c:forEach var="audit" items="${issueAudits}" varStatus="loop">
-        <tr class="${loop.index % 2 == 0 ? 'listrowodd' : 'listroweven'}">
-            <td class="mdl-data-table__cell--non-numeric">${audit.userName}</td>
-            <td class="alignright"><fmt:formatDate value="${audit.eventTime}" pattern="dd/MMM/yy hh:mm a" /></td>
-            <td class="mdl-data-table__cell--non-numeric">${audit.eventType}</td>
-            <td class="mdl-data-table__cell--non-numeric">${audit.objectKey}</td>
-            <td class="mdl-data-table__cell--non-numeric">${audit.fieldName}</td>
-            <td class="mdl-data-table__cell--non-numeric">${audit.oldValue}</td>
-            <td class="mdl-data-table__cell--non-numeric">${audit.newValue}</td>
+        <tr>
+            <td>${audit.userName}</td>
+            <td class="has-text-right"><fmt:formatDate value="${audit.eventTime}" pattern="dd/MMM/yy hh:mm a" /></td>
+            <td>${audit.eventType}</td>
+            <td>${audit.objectKey}</td>
+            <td>${audit.fieldName}</td>
+            <td>${audit.oldValue}</td>
+            <td>${audit.newValue}</td>
         </tr>
     </c:forEach>
     </tbody>

@@ -32,7 +32,7 @@ public class SearchResult
         List<Integer> navPages = new ArrayList<>();
         int delta = 0;
 
-        while (count <= getPages() && count <= 10)
+        while (count <= getPages() && count <= 6)
         {
             int possiblePage1 = currentPage - delta;
             int possiblePage2 = currentPage + delta;

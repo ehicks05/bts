@@ -6,7 +6,7 @@
 <script>
     function goToIssue()
     {
-        var issueId = document.getElementById('goToIssue').value;
+        var issueId = document.getElementById('fldGoToIssue').value;
         if (issueId)
             location.href = '${pageContext.request.contextPath}/view?tab1=issue&action=form&issueId=' + issueId;
     }
@@ -35,103 +35,157 @@
         }
     }
 
+    $(showResponseMessage);
+    $(function () {
+        $('#fldGoToIssue').on('keypress', function (e) {
+            document.getElementById('goToIssueButton').disabled = false;
+            if (e.keyCode === 13)
+            {
+                goToIssue();
+            }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // Get all "navbar-burger" elements
+        var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+        // Check if there are any navbar burgers
+        if ($navbarBurgers.length > 0) {
+
+            // Add a click event on each of them
+            $navbarBurgers.forEach(function ($el) {
+                $el.addEventListener('click', function () {
+
+                    // Get the target from the "data-target" attribute
+                    var target = $el.dataset.target;
+                    var $target = document.getElementById(target);
+
+                    // Toggle the class on both the "navbar-burger" and the "navbar-menu"
+                    $el.classList.toggle('is-active');
+                    $target.classList.toggle('is-active');
+
+                });
+            });
+        }
+
+    });
 
 </script>
 
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header">
-        <div class="mdl-layout__header-row">
-            <%--<span class="mdl-layout-title">BTS</span>--%>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <%--<div class="navbar-item">--%>
+                <%--<span>${applicationScope['systemInfo'].appName}</span>--%>
+            <%--</div>--%>
+            <div class="navbar-item">
+                <img src="${pageContext.request.contextPath}/images/puffin-text.png" alt="Puffin" />
+            </div>
 
-            <c:if test="${!empty sessionScope.userSession}">
-                <span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}')">${param.tab1}</span>
-                <c:if test="${!empty param.tab2}">
-                    <i class="material-icons">navigate_next</i><span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}')">${param.tab2}</span>
-                </c:if>
-                <c:if test="${!empty param.tab3}">
-                    <i class="material-icons">navigate_next</i><span style="font-size: 1em;" class="mdl-layout-title clickable" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}','${param.tab3}')">${param.tab3}</span>
-                </c:if>
-
-                <input id="goToIssue" type="text" size="1" maxlength="32" style="margin-left: 30px;font-size:18px;" onkeypress="document.getElementById('goToIssueButton').disabled = false;" onclick="document.getElementById('goToIssueButton').disabled = false;"/>
-                <button id="goToIssueButton" class="mdl-button mdl-js-button mdl-button--icon" onclick="goToIssue();">
-                    <i class="material-icons">search</i>
-                </button>
-
-                <div class="mdl-layout-spacer"></div>
-
-                <button id="show-create-issue-dialog" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--accent">
-                    <i class="material-icons">add</i>
-                </button>
-            </c:if>
+            <button class="button navbar-burger" data-target="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
-    </header>
 
-    <c:if test="${!empty sessionScope.userSession}">
-        <style>
-            .selectedLink {color: white !important; background-color: #3f51b5}
-            .selectedLink:hover {color: white !important; background-color: #3f51b5 !important;}
-        </style>
-
-        <div class="mdl-layout__drawer">
-            <span class="mdl-layout-title">
-                <img style="height: 24px;padding-right: 10px;" src="${pageContext.request.contextPath}/images/puffin.png"
-                ><span style="color:black;">${applicationScope['systemInfo'].appName}</span>
-            </span>
-            <nav class="mdl-navigation">
-                <c:if test="${param.tab1 == 'dashboard'}">
-                    <c:set var="statusClass" value="selectedLink"/>
-                </c:if>
-                <c:if test="${param.tab1 != 'dashboard'}">
-                    <c:set var="statusClass" value=""/>
-                </c:if>
-                <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=dashboard&action=form">
-                    <i class="material-icons" style="padding-right: 10px;">dashboard</i>Dashboard
-                </a>
-                <c:if test="${param.tab1 == 'search'}">
-                    <c:set var="statusClass" value="selectedLink"/>
-                </c:if>
-                <c:if test="${param.tab1 != 'search'}">
-                    <c:set var="statusClass" value=""/>
-                </c:if>
-                <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=search&action=form">
-                    <i class="material-icons" style="padding-right: 10px;">search</i>Search
-                </a>
-                <c:if test="${param.tab1 == 'settings'}">
-                    <c:set var="statusClass" value="selectedLink"/>
-                </c:if>
-                <c:if test="${param.tab1 != 'settings'}">
-                    <c:set var="statusClass" value=""/>
-                </c:if>
-                <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=settings&action=form">
-                    <i class="material-icons" style="padding-right: 10px;">settings</i>Settings
-                </a>
-                <c:if test="${param.tab1 == 'admin'}">
-                    <c:set var="statusClass" value="selectedLink"/>
-                </c:if>
-                <c:if test="${param.tab1 != 'admin'}">
-                    <c:set var="statusClass" value=""/>
-                </c:if>
-
-                <c:if test="${userSession.user.admin}">
-                    <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=admin&tab2=overview&action=form">
-                        <i class="material-icons" style="padding-right: 10px;">build</i>Admin
+        <div class="navbar-menu" id="navMenu">
+            <div class="navbar-start">
+                <div class="navbar-item">
+                    <a class="button" id="createIssueButton">
+                        <span class="icon has-text-primary">
+                          <i class="fas fa-plus-square"></i>
+                        </span>
+                        <span>Create Issue</span>
                     </a>
-                </c:if>
+                </div>
+                <div class="navbar-item">
+                    <div class="field has-addons">
+                        <div class="control">
+                            <input id="fldGoToIssue" type="text" class="input" size="3" maxlength="16" />
+                        </div>
+                        <div class="control">
+                            <button id="goToIssueButton" class="button has-text-primary" onclick="goToIssue();" disabled>
+                                <span class="icon">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <c:set var="statusClass" value="${param.tab1 == 'dashboard' ? 'is-active' : ''}"/>
+                <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=dashboard&action=form">
+                    Dashboard
+                </a>
+                <c:set var="statusClass" value="${param.tab1 == 'search' ? 'is-active' : ''}"/>
+                <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=search&action=form">
+                    Search
+                </a>
+                <c:set var="statusClass" value="${param.tab1 == 'settings' ? 'is-active' : ''}"/>
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=settings&action=form">
+                        Settings
+                    </a>
+                    <div class="navbar-dropdown">
+                        <c:forEach var="settingsSubscreen" items="${userSession.systemInfo.settingsSubscreens}">
+                            <c:set var="statusClass" value="${param.tab2 == settingsSubscreen[3] ? 'is-active' : ''}"/>
 
-                <c:if test="${param.tab1 == 'profile'}">
-                    <c:set var="statusClass" value="selectedLink"/>
+                            <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/${settingsSubscreen[0]}">
+                                    <span class="icon is-medium has-text-info">
+                                        <i class="fas fa-lg fa-${settingsSubscreen[1]}"></i>
+                                    </span>
+                                    ${settingsSubscreen[2]}
+                            </a>
+                        </c:forEach>
+                    </div>
+                </div>
+                <c:set var="statusClass" value="${param.tab1 == 'admin' ? 'is-active' : ''}"/>
+                <c:if test="${userSession.user.admin}">
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=admin&action=form">
+                            Admin
+                        </a>
+                        <div class="navbar-dropdown">
+                            <c:forEach var="adminSubscreen" items="${userSession.systemInfo.adminSubscreens}">
+                                <c:set var="statusClass" value="${param.tab2 == adminSubscreen[3] ? 'is-active' : ''}"/>
+
+                                <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/${adminSubscreen[0]}">
+                                    <span class="icon is-medium has-text-info">
+                                        <i class="fas fa-lg fa-${adminSubscreen[1]}"></i>
+                                    </span>
+                                    ${adminSubscreen[2]}
+                                </a>
+                            </c:forEach>
+                        </div>
+                    </div>
                 </c:if>
-                <c:if test="${param.tab1 != 'profile'}">
-                    <c:set var="statusClass" value=""/>
-                </c:if>
-                <a class="mdl-navigation__link ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${userSession.userId}">
-                    <i class="material-icons" style="padding-right: 10px;">account_circle</i>Profile
+                <c:set var="statusClass" value="${param.tab1 == 'profile' ? 'is-active' : ''}"/>
+                <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${userSession.userId}">
+                    Profile
                 </a>
-                <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/view?tab1=logout&action=logout">
-                    <i class="material-icons" style="padding-right: 10px;">power_settings_new</i>Logout
+                <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=logout&action=logout">
+                    Logout
                 </a>
-            </nav>
+            </div>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <nav class="breadcrumb" aria-label="breadcrumbs">
+                        <ul>
+                            <li><a href="#" onclick="followBreadcrumbs('${param.tab1}')">${param.tab1}</a></li>
+                            <c:if test="${!empty param.tab2}">
+                                <li><a href="#" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}')">${param.tab2}</a></li>
+                            </c:if>
+                            <c:if test="${!empty param.tab3}">
+                                <li><a href="#" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}','${param.tab3}')">${param.tab3}</a></li>
+                            </c:if>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
-    </c:if>
-    <main class="mdl-layout__content">
-    <c:remove var="responseMessage" scope="session" />
+    </div>
+</nav>
+
+<c:remove var="responseMessage" scope="session" />

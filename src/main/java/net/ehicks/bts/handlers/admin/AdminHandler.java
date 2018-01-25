@@ -8,30 +8,40 @@ import net.ehicks.eoi.ConnectionInfo;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.EOICache;
 import net.ehicks.eoi.Metrics;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FilenameUtils;
+import org.imgscalr.Scalr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class AdminHandler
 {
-    @Route(tab1 = "admin", tab2 = "", tab3 = "", action = "")
-    @Route(tab1 = "admin", tab2 = "", tab3 = "", action = "form")
-    public static void redirect(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
-    {
-        response.sendRedirect("view?tab1=admin&tab2=overview&action=form");
-    }
+    private static final Logger log = LoggerFactory.getLogger(AdminHandler.class);
 
-    @Route(tab1 = "admin", tab2 = "overview", tab3 = "", action = "form")
+    @Route(tab1 = "admin", tab2 = "", tab3 = "", action = "form")
     public static String showOverview(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         List<IssueForm> issueForms = IssueForm.getByUserId(userSession.getUserId());
         request.setAttribute("issueForms", issueForms);
+
+        request.setAttribute("adminSubscreens", SystemInfo.INSTANCE.getAdminSubscreens());
 
         return "/WEB-INF/webroot/admin/overview.jsp";
     }
@@ -141,7 +151,7 @@ public class AdminHandler
         Long userId = Common.stringToLong(request.getParameter("userId"));
         User user = User.getByUserId(userId);
         request.setAttribute("user", user);
-        request.setAttribute("avatars", Avatar.getAll());
+        request.setAttribute("publicAvatars", Avatar.getAllPublic());
 
         return "/WEB-INF/webroot/admin/modifyUser.jsp";
     }
@@ -205,6 +215,107 @@ public class AdminHandler
             }
         }
 
+        response.sendRedirect("view?tab1=admin&tab2=users&tab3=modify&action=form&userId=" + userId);
+    }
+
+    @Route(tab1 = "admin", tab2 = "users", tab3 = "modify", action = "updateAvatar")
+    public static void updateAvatar(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        Long userId = Common.stringToLong(request.getParameter("userId"));
+        User user = User.getByUserId(userId);
+        if (user != null)
+        {
+            Long avatarId = Common.stringToLong(request.getParameter("fldAvatarId"));
+            if (avatarId > 0)
+            {
+                user.setAvatarId(avatarId);
+                EOI.update(user, userSession);
+            }
+        }
+
+        response.sendRedirect("view?tab1=admin&tab2=users&tab3=modify&action=form&userId=" + userId);
+    }
+
+    @Route(tab1 = "admin", tab2 = "users", tab3 = "modify", action = "uploadAvatar")
+    public static void uploadAvatar(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        String userId = request.getParameter("userId");
+
+        String responseMessage = "";
+        long dbFileId = 0;
+        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+        if (isMultipart)
+        {
+            // Create a factory for disk-based file items
+            DiskFileItemFactory factory = new DiskFileItemFactory();
+
+            // Configure a repository (to ensure a secure temp location is used)
+            ServletContext servletContext = request.getServletContext();
+            File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+            factory.setRepository(repository);
+
+            // Create a new file upload handler
+            ServletFileUpload upload = new ServletFileUpload(factory);
+
+            // Parse the request
+            try
+            {
+                List<FileItem> items = upload.parseRequest(request);
+                for (FileItem fileItem : items)
+                {
+                    if (fileItem.getSize() > 1 * 1024 * 1024) // up to 1MB
+                    {
+                        responseMessage = "File size too large.";
+                        continue;
+                    }
+
+                    byte[] fileContents = fileItem.get();
+                    String fileName = fileItem.getName();
+                    if (fileName != null)
+                        fileName = FilenameUtils.getName(fileName);
+
+                    String contentType = fileItem.getContentType();
+                    if (contentType.length() == 0)
+                        contentType = URLConnection.guessContentTypeFromName(fileName);
+
+                    if (!contentType.startsWith("image"))
+                    {
+                        responseMessage = "Not an image.";
+                        continue;
+                    }
+
+                    DBFile dbFile = new DBFile();
+                    dbFile.setName(fileName);
+                    dbFile.setContent(fileContents);
+                    dbFile.setLength(fileItem.getSize());
+                    dbFileId = EOI.insert(dbFile, userSession);
+
+                }
+            }
+            catch (FileUploadException e)
+            {
+                log.error(e.getMessage(), e);
+            }
+        }
+
+        if (dbFileId > 0)
+        {
+            Avatar avatar = new Avatar();
+            avatar.setDbFileId(dbFileId);
+            avatar.setCreatedByUserId(userSession.getUserId());
+            avatar.setCreatedOn(new Date());
+            long avatarId = EOI.insert(avatar, userSession);
+
+            User user = User.getByUserId(Long.valueOf(userId));
+            user.setAvatarId(avatarId);
+            EOI.update(user, userSession);
+
+            responseMessage = "Avatar updated.";
+        }
+
+        request.getSession().setAttribute("responseMessage", responseMessage);
         response.sendRedirect("view?tab1=admin&tab2=users&tab3=modify&action=form&userId=" + userId);
     }
 

@@ -3,6 +3,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
 <jsp:useBean id="projects" type="java.util.List<net.ehicks.bts.beans.Project>" scope="request"/>
 
 <!DOCTYPE html>
@@ -23,94 +25,84 @@
 
 <jsp:include page="../header.jsp"/>
 
-<div class="mdl-grid">
+<section class="hero is-primary is-small">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Manage Projects
+            </h1>
+        </div>
+    </div>
+</section>
 
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Manage Projects</h5></div>
-
-        <div class="tableContainer">
-            <table class="mdl-data-table mdl-shadow--2dp">
-                <thead>
-                <tr>
-                    <th>
-                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="table-header">
-                            <input type="checkbox" id="table-header" class="mdl-checkbox__input" />
-                        </label>
-                    </th>
-                    <th>Object Id</th>
-                    <th class="mdl-data-table__cell--non-numeric">Name</th>
-                    <th>Prefix</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <c:forEach var="project" items="${projects}" varStatus="loop">
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column">
+                <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
                     <tr>
-                        <td>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="row[${loop.count}]">
-                                <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
+                        <th>
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="table-header">
+                                <input type="checkbox" id="table-header" class="mdl-checkbox__input" />
                             </label>
-                        </td>
-                        <td>${project.id}</td>
-                        <td class="mdl-data-table__cell--non-numeric"><a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=projects&tab3=modify&action=form&projectId=${project.id}">${project.name}</a></td>
-                        <td class="mdl-data-table__cell--non-numeric">${project.prefix}</td>
-                        <td><a onclick="deleteProject('${project.id}');" class="clickable material-icons">delete</a></td>
+                        </th>
+                        <th class="has-text-right">Object Id</th>
+                        <th>Name</th>
+                        <th>Prefix</th>
+                        <th></th>
                     </tr>
-                </c:forEach>
-            </table>
-        </div>
+                    </thead>
+                    <c:forEach var="project" items="${projects}" varStatus="loop">
+                        <tr>
+                            <td>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="row[${loop.count}]">
+                                    <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
+                                </label>
+                            </td>
+                            <td class="has-text-right">${project.id}</td>
+                            <td><a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=projects&tab3=modify&action=form&projectId=${project.id}">${project.name}</a></td>
+                            <td>${project.prefix}</td>
+                            <td class="has-text-centered"><a onclick="deleteProject('${project.id}');" ><i class="fas fa-trash"></i></a></td>
+                        </tr>
+                    </c:forEach>
+                </table>
 
-        <div class="mdl-card__actions">
-            <input id="addProjectButton" type="button" value="Add Project" class="mdl-button mdl-js-button mdl-button--raised" />
+                <input id="createProjectButton" type="button" value="Create Project" class="button is-primary" />
+            </div>
         </div>
+    </div>
+</section>
+
+<div id="createProjectDialog" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Create Project</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <form id="frmCreateProject" name="frmCreateProject" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=projects&action=create">
+                <t:text id="fldName" value="" label="Name" required="true"/>
+                <t:text id="fldPrefix" value="" label="Prefix" required="true"/>
+            </form>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-success create">Create</button>
+            <button class="button close">Cancel</button>
+        </footer>
     </div>
 </div>
 
-<dialog id="addProjectDialog" class="mdl-dialog">
-    <h4 class="mdl-dialog__title">Add Project</h4>
-    <div class="mdl-dialog__content">
-        <form id="frmCreateProject" name="frmCreateProject" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=projects&action=create">
-            <table>
-                <tr>
-                    <td>Name:</td>
-                    <td>
-                        <input type="text" id="fldName" name="fldName" size="20" maxlength="256" value="" required/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Prefix:</td>
-                    <td>
-                        <input type="text" id="fldPrefix" name="fldPrefix" size="20" maxlength="256" value="" required/>
-                    </td>
-                </tr>
-            </table>
-        </form>
-    </div>
-    <div class="mdl-dialog__actions">
-        <button type="button" class="mdl-button create">Create</button>
-        <button type="button" class="mdl-button close">Cancel</button>
-    </div>
-</dialog>
 <script>
-    var addProjectDialog = document.querySelector('#addProjectDialog');
-    var addProjectButton = document.querySelector('#addProjectButton');
-    if (!addProjectDialog.showModal)
-    {
-        dialogPolyfill.registerDialog(addProjectDialog);
-    }
-    addProjectButton.addEventListener('click', function ()
-    {
-        addProjectDialog.showModal();
-    });
-    document.querySelector('#addProjectDialog .create').addEventListener('click', function ()
+    initDialog('createProject');
+
+    document.querySelector('#createProjectDialog .create').addEventListener('click', function ()
     {
         if (!document.querySelector('#fldName').value || !document.querySelector('#fldPrefix').value)
             alert('Please enter a project name and prefix.');
         else
             $('#frmCreateProject').submit();
-    });
-    addProjectDialog.querySelector('#addProjectDialog .close').addEventListener('click', function ()
-    {
-        addProjectDialog.close();
     });
 </script>
 

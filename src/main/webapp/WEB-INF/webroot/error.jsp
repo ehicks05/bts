@@ -10,31 +10,25 @@
     <jsp:include page="inc_title.jsp"/>
     <jsp:include page="inc_header.jsp"/>
     <script>
-        function initHeader()
-        {
-
-        }
     </script>
 
 </head>
-<body onload="initHeader();">
+<body>
 
 <jsp:include page="header.jsp"/>
 
-<div class="mdl-grid">
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title">
-            <h5>
-                <div class="mdl-card__title-text">
-                    Sorry...
-                </div>
-                <div class="mdl-card__subtitle-text">
-                    something went wrong...
-                </div>
-            </h5>
+<section class="hero is-primary is-small">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Sorry...
+            </h1>
+            <h3 class="subtitle">
+                something went wrong...
+            </h3>
         </div>
     </div>
-</div>
+</section>
 
 <jsp:include page="footer.jsp"/>
 </body>

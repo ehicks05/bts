@@ -51,4 +51,4 @@ See deployment for notes on how to deploy the project on a live system.
 * [Cron4J](http://www.sauronsoftware.it/projects/cron4j/index.php) - Job Scheduler
 * [Apache Commons Email](https://commons.apache.org/proper/commons-email/) - API for sending mail
 * [Apache PDFBox](https://pdfbox.apache.org/) - PDF creation
-* [Google MDL](https://getmdl.io/) - Web framework
+* [Bulma](https://bulma.io/) - CSS framework

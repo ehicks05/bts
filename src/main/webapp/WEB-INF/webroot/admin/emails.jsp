@@ -28,69 +28,65 @@
 
 <jsp:include page="../header.jsp"/>
 
-<div class="mdl-grid">
-
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Manage Emails</h5></div>
-
-        <div class="tableContainer">
-            <table class="mdl-data-table mdl-shadow--2dp">
-                <thead>
-                <tr>
-                    <th>
-                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="table-header">
-                            <input type="checkbox" id="table-header" class="mdl-checkbox__input" />
-                        </label>
-                    </th>
-                    <th>Object Id</th>
-                    <th class="mdl-data-table__cell--non-numeric">Status</th>
-                    <th class="mdl-data-table__cell--non-numeric">User</th>
-                    <th class="mdl-data-table__cell--non-numeric">action</th>
-                    <th class="mdl-data-table__cell--non-numeric">issueId</th>
-                    <th class="mdl-data-table__cell--non-numeric">commentId</th>
-                    <th class="mdl-data-table__cell--non-numeric">description</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <c:forEach var="email" items="${emails}" varStatus="loop">
-                    <tr>
-                        <td>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="row[${loop.count}]">
-                                <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
-                            </label>
-                        </td>
-                        <td>${email.id}</td>
-                        <td class="mdl-data-table__cell--non-numeric" title="${email.status}">
-                            <c:if test="${email.status == 'CREATED'}">
-                                <i class="material-icons" style="color: blueviolet;">mail</i>
-                            </c:if>
-                            <c:if test="${email.status == 'WAITING'}">
-                                <i class="material-icons" style="color: saddlebrown;">send</i>
-                            </c:if>
-                            <c:if test="${email.status == 'SENT'}">
-                                <i class="material-icons" style="color: green;">done</i>
-                            </c:if>
-                            <c:if test="${email.status == 'FAILED'}">
-                                <i class="material-icons" style="color: red;">error</i>
-                            </c:if>
-                        </td>
-                        <td class="mdl-data-table__cell--non-numeric">${email.userId}</td>
-                        <td class="mdl-data-table__cell--non-numeric">${email.emailAction.verb}</td>
-                        <td class="mdl-data-table__cell--non-numeric">${email.issueId}</td>
-                        <td class="mdl-data-table__cell--non-numeric">${email.commentId}</td>
-                        <td class="mdl-data-table__cell--non-numeric">${email.description}</td>
-                        <td><a onclick="deleteEmail('${email.id}');" class="clickable material-icons">delete</a></td>
-                    </tr>
-                </c:forEach>
-            </table>
-        </div>
-
-        <div class="mdl-card__actions">
-            <input id="sendTestEmailButton" type="button" value="Send Test Email" class="mdl-button mdl-js-button mdl-button--raised" />
-            <input id="emailSettings" type="button" value="Email Settings" onclick="goToEmailSettings();" class="mdl-button mdl-js-button mdl-button--raised" />
+<section class="hero is-primary is-small">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Manage Emails
+            </h1>
         </div>
     </div>
-</div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column">
+                <table class="table is-striped is-narrow is-hoverable">
+                    <thead>
+                    <tr>
+                        <th>
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="table-header">
+                                <input type="checkbox" id="table-header" class="mdl-checkbox__input" />
+                            </label>
+                        </th>
+                        <th>Object Id</th>
+                        <th>Status</th>
+                        <th>User</th>
+                        <th>action</th>
+                        <th>issueId</th>
+                        <th>commentId</th>
+                        <th>description</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <c:forEach var="email" items="${emails}" varStatus="loop">
+                        <tr>
+                            <td>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="row[${loop.count}]">
+                                    <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
+                                </label>
+                            </td>
+                            <td>${email.id}</td>
+                            <td title="${email.status}">
+                                <i class="fas fa-${email.statusIcon}"></i>
+                            </td>
+                            <td>${email.userId}</td>
+                            <td>${email.emailAction.verb}</td>
+                            <td>${email.issueId}</td>
+                            <td>${email.commentId}</td>
+                            <td>${email.description}</td>
+                            <td><a onclick="deleteEmail('${email.id}');"><i class="fas fa-trash"></i></a></td>
+                        </tr>
+                    </c:forEach>
+                </table>
+
+                <input id="sendTestEmailButton" type="button" value="Send Test Email" class="button" />
+                <input id="emailSettings" type="button" value="Email Settings" onclick="goToEmailSettings();" class="button" />
+            </div>
+        </div>
+    </div>
+</section>
 
 <dialog id="sendTestEmailDialog" class="mdl-dialog">
     <h4 class="mdl-dialog__title">Send Test Email</h4>
@@ -107,8 +103,8 @@
         </form>
     </div>
     <div class="mdl-dialog__actions">
-        <button type="button" class="mdl-button send">Send</button>
-        <button type="button" class="mdl-button close">Cancel</button>
+        <button type="button" class="button is-primary send">Send</button>
+        <button type="button" class="button close">Cancel</button>
     </div>
 </dialog>
 <script>

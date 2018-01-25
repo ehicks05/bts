@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%@tag description="Text To Select Tag" pageEncoding="UTF-8" %>
+<%@tag description="Select Tag" pageEncoding="UTF-8" %>
 <%@attribute name="id" fragment="false" %>
 <%@attribute name="value" fragment="false" %>
 <%@attribute name="items" fragment="false" type="java.util.List<net.ehicks.bts.ISelectTagSupport>" %>

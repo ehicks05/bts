@@ -165,6 +165,7 @@ public class DefaultDataLoader
 
                     Avatar avatar = new Avatar();
                     avatar.setDbFileId(dbFileId);
+                    avatar.setPublicUse(true);
                     avatar.setCreatedOn(new Date());
                     EOI.insert(avatar, SystemTask.DEFAULT_DATA_LOADER);
                 }

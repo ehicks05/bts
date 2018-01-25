@@ -20,18 +20,30 @@
     </script>
 </head>
 <body>
-<jsp:include page="header.jsp"/>
 
-<div class="mdl-grid">
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-shadow--2dp">
-
-        <div class="mdl-card__title"><h5>Sorry, login failed!</h5></div>
-
-        <div class="mdl-card__actions">
-            <input type="submit" id="backButton" value="Back" class="mdl-button mdl-js-button mdl-button--raised" onclick="location.href='${pageContext.request.contextPath}/view?tab1=dashboard&action=form';"/>
+<section class="hero is-primary is-small">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Login Failed
+            </h1>
         </div>
     </div>
-</div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column is-centered">
+                <div class=""><h5>Sorry, login failed!</h5></div>
+
+                <div class="is-centered">
+                    <input type="submit" id="backButton" value="Back" class="button is-primary" onclick="location.href='${pageContext.request.contextPath}/view?tab1=dashboard&action=form';"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <script>
     $(document).ready(showResponseMessage);

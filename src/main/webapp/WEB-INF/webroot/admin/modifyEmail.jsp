@@ -24,50 +24,90 @@
 
 <jsp:include page="../header.jsp"/>
 
-<div class="mdl-grid">
-
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Email Settings</h5></div>
-
-        <form id="frmProject" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=email&tab3=modify&action=modify">
-            <div style="padding: 10px;">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="emailHost" name="emailHost" type="text" value="${btsSystem.emailHost}"/>
-                    <label class="mdl-textfield__label" for="emailHost">Host:</label>
-                </div>
-                <br>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="emailUser" name="emailUser" type="text" value="${btsSystem.emailUser}"/>
-                    <label class="mdl-textfield__label" for="emailUser">Username:</label>
-                </div>
-                <br>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="emailPassword" name="emailPassword" type="text" value="${btsSystem.emailPassword}"/>
-                    <label class="mdl-textfield__label" for="emailPassword">Password:</label>
-                </div>
-                <br>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="emailPort" name="emailPort" type="text" value="${btsSystem.emailPort}"/>
-                    <label class="mdl-textfield__label" for="emailPort">Port:</label>
-                </div>
-                <br>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="emailFromAddress" name="emailFromAddress" type="text" value="${btsSystem.emailFromAddress}"/>
-                    <label class="mdl-textfield__label" for="emailFromAddress">From Address:</label>
-                </div>
-                <br>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="emailFromName" name="emailFromName" type="text" value="${btsSystem.emailFromName}"/>
-                    <label class="mdl-textfield__label" for="emailFromName">From Name:</label>
-                </div>
-            </div>
-
-            <div class="mdl-card__actions">
-                <input id="saveProjectButton" type="submit" value="Save" class="mdl-button mdl-js-button mdl-button--raised" />
-            </div>
-        </form>
+<section class="hero is-primary is-small">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Email Settings
+            </h1>
+        </div>
     </div>
-</div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column">
+                <form id="frmProject" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=email&tab3=modify&action=modify">
+                    <div class="field is-horizontal">
+                        <div class="field-label">
+                            <label class="label">Host</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="control">
+                                <input class="input" type="text" placeholder="Host" id="emailHost" name="emailHost" value="${btsSystem.emailHost}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field is-horizontal">
+                        <div class="field-label">
+                            <label class="label">Username</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="control">
+                                <input class="input" type="text" placeholder="Username" id="emailUser" name="emailUser" value="${btsSystem.emailUser}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field is-horizontal">
+                        <div class="field-label">
+                            <label class="label">Password</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="control">
+                                <input class="input" type="text" placeholder="Password" id="emailPassword" name="emailPassword" value="${btsSystem.emailPassword}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field is-horizontal">
+                        <div class="field-label">
+                            <label class="label">Port</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="control">
+                                <input class="input" type="text" placeholder="Port" id="emailPort" name="emailPort" value="${btsSystem.emailPort}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field is-horizontal">
+                        <div class="field-label">
+                            <label class="label">From Address</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="control">
+                                <input class="input" type="text" placeholder="From Address" id="emailFromAddress" name="emailFromAddress" value="${btsSystem.emailFromAddress}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field is-horizontal">
+                        <div class="field-label">
+                            <label class="label">From Name</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="control">
+                                <input class="input" type="text" placeholder="From Name" id="emailFromName" name="emailFromName" value="${btsSystem.emailFromName}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="is-centered">
+                        <input id="saveProjectButton" type="submit" value="Save" class="button is-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
 
 <jsp:include page="../footer.jsp"/>
 </body>

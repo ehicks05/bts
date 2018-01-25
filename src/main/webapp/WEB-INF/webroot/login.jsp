@@ -13,53 +13,93 @@
     <jsp:include page="inc_header.jsp"/>
 
     <script>
-
-        function initForm()
-        {
+        $(function () {
             $('#j_username').focus();
-        }
 
-        window.onload = initForm;
+
+            $('#j_password').on('keypress', function (e) {
+                if (e.keyCode === 13)
+                {
+                    $('#frmLogin').submit();
+                }
+            });
+        });
     </script>
+    <style>
+        html,body {
+            font-size: 14px;
+            font-weight: 300;
+        }
+        .hero.is-success {
+            background: #F2F6FA;
+        }
+        /*.avatar {*/
+            /*margin-top: -70px;*/
+            /*padding-bottom: 20px;*/
+        /*}*/
+        .avatar img {
+            /*padding: 5px;*/
+            /*background: #fff;*/
+            /*border-radius: 0%;*/
+            /*-webkit-box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);*/
+            /*box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);*/
+        }
+        /*p.subtitle {*/
+            /*padding-top: 1rem;*/
+        /*}*/
+    </style>
 </head>
 <body>
-<jsp:include page="header.jsp"/>
+<section class="hero is-success is-fullheight">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class="column is-4 is-offset-4">
+                <%--<h3 class="title has-text-grey">${applicationScope['systemInfo'].appName}</h3>--%>
+                <%--<p class="subtitle has-text-grey">Please login to proceed.</p>--%>
+                <div class="box">
+                    <figure class="avatar">
+                        <img src="${pageContext.request.contextPath}/images/puffin-text.png" style="width: 128px">
+                    </figure>
+                    <form id="frmLogin" method="POST" action="j_security_check">
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-medium" type="email" placeholder="Your Email" autofocus="" id="j_username" name="j_username">
+                            </div>
+                        </div>
 
-<div class="mdl-grid">
-    <div style="margin: 8px auto" class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-shadow--2dp">
-        <form method="POST" action="j_security_check">
-
-            <div class="mdl-card__title"><h5>Log in to ${applicationScope['systemInfo'].appName}</h5></div>
-
-            <div class="mdl-card__supporting-text">
-
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="emailMessage" size="20" maxlength="32" id="j_username" name="j_username">
-                    <label class="mdl-textfield__label" for="j_username">Email</label>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-medium" type="password" placeholder="Your Password" id="j_password" name="j_password">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="checkbox">
+                                <input type="checkbox">
+                                Remember me
+                            </label>
+                        </div>
+                        <a class="button is-block is-primary is-medium" onclick="frmLogin.submit();">Login</a>
+                    </form>
                 </div>
-                <br>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="password" size="20" maxlength="32" id="j_password" name="j_password">
-                    <label class="mdl-textfield__label" for="j_password">Password</label>
-                </div>
 
+                <article id="welcomeMessage" class="message is-primary">
+                    <div class="message-header">
+                        <p>Welcome Message</p>
+                        <button class="delete" aria-label="delete" onclick="$('#welcomeMessage').addClass('is-hidden')"></button>
+                    </div>
+                    <div class="message-body">
+                        ${applicationScope['btsSystem'].logonMessage}
+                    </div>
+                </article>
+
+                <p class="has-text-grey">
+                    <a href="../">Sign Up</a> &nbsp;·&nbsp;
+                    <a href="../">Forgot Password</a> &nbsp;·&nbsp;
+                    <a href="../">Need Help?</a>
+                </p>
             </div>
-
-            <div class="mdl-card__actions">
-                <input type="submit" value="Log In" class="mdl-button mdl-js-button mdl-button--raised"/>
-            </div>
-        </form>
-    </div>
-
-    <div style="margin: 8px auto" class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--4-col-tablet mdl-shadow--2dp">
-
-        <div class="mdl-card__title"><h5>Welcome Message</h5></div>
-        <div class="mdl-card__supporting-text">
-            ${applicationScope['btsSystem'].logonMessage}
         </div>
     </div>
-</div>
-
-<jsp:include page="footer.jsp"/>
+</section>
 </body>
 </html>

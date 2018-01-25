@@ -52,6 +52,32 @@ public enum SystemInfo
         return stats;
     }
 
+    /** url, icon name, label, tab2 of the url */
+    public List<List<String>> getSettingsSubscreens()
+    {
+        return Arrays.asList(
+                Arrays.asList("view?tab1=settings&tab2=savedSearches&action=form", "search", "Saved Searches", "savedSearches"),
+                Arrays.asList("view?tab1=settings&tab2=subscriptions&action=form", "envelope", "Subscriptions", "subscriptions")
+        );
+    }
+
+    /** url, icon name, label, tab2 of the url */
+    public List<List<String>> getAdminSubscreens()
+    {
+        return Arrays.asList(
+                Arrays.asList("view?tab1=admin&tab2=users&action=form", "user", "Manage Users", "users"),
+                Arrays.asList("view?tab1=admin&tab2=groups&action=form", "users", "Manage Groups", "groups"),
+                Arrays.asList("view?tab1=admin&tab2=projects&action=form", "folder", "Manage Projects", "projects"),
+                Arrays.asList("view?tab1=admin&tab2=cache&action=form", "microchip", "Cache Info", "cache"),
+                Arrays.asList("view?tab1=admin&tab2=system&action=form", "server", "System Info", "system"),
+                Arrays.asList("view?tab1=admin&tab2=audit&action=form", "history", "Audit Records", "audit"),
+                Arrays.asList("view?tab1=admin&tab2=email&action=form", "envelope", "Manage Email", "email"),
+                Arrays.asList("view?tab1=admin&tab2=logs&action=form", "file-alt", "Logs", "logs"),
+                Arrays.asList("view?tab1=admin&tab2=backups&action=form", "cloud-upload-alt", "Backups", "backups"),
+                Arrays.asList("view?tab1=admin&tab2=sql&action=form", "database", "SQL", "sql")
+        );
+    }
+
     public String getDatabaseCache()
     {
         return Common.toMetric(getDatabaseCacheInKBs() * 1024);

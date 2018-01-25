@@ -18,57 +18,91 @@
 
 <jsp:include page="../header.jsp"/>
 
-<div class="mdl-grid">
-
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Audit Records</h5></div>
-
-        <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=audit&action=search">
-            <input type="hidden" name="sortColumn" id="sortColumn" value="${auditForm.sortColumn}"/>
-            <input type="hidden" name="sortDirection" id="sortDirection" value="${auditForm.sortDirection}"/>
-            <input type="hidden" name="page" id="page" value="${auditForm.page}"/>
-
-            <div style="padding: 10px;">
-
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="objectKey" name="objectKey" value="${auditForm.objectKey}">
-                    <label class="mdl-textfield__label" for="objectKey">Object Key:</label>
-                </div>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="fieldName" name="fieldName" value="${auditForm.fieldName}">
-                    <label class="mdl-textfield__label" for="fieldName">Field Name:</label>
-                </div>
-                <br>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <fmt:formatDate var="fromEvent" value="${auditForm.fromEventTime}" pattern="MM/dd/yyyy"/>
-                    <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="fromEventTime" name="fromEventTime" value="${fromEvent}">
-                    <label class="mdl-textfield__label" for="fromEventTime">From Event Time:</label>
-                </div>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <fmt:formatDate var="toEvent" value="${auditForm.toEventTime}" pattern="MM/dd/yyyy"/>
-                    <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="toEventTime" name="toEventTime" value="${toEvent}">
-                    <label class="mdl-textfield__label"  for="toEventTime">To Event Time:</label>
-                </div>
-
-                <br>
-                <t:multiSelect id="eventType" selectedValues="${auditForm.eventType}" items="${ct:stringToISelectTag('INSERT,UPDATE,DELETE')}" placeHolder="Event Type:"/>
-                <br>
-            </div>
-            <div class="mdl-card__actions">
-                <input type="submit" value="Search" class="mdl-button mdl-js-button mdl-button--raised" />
-            </div>
-        </form>
-    </div>
-
-    <br>
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Found ${searchResult.size} Audit Records</h5></div>
-
-        <div class="tableContainer">
-            <jsp:include page="../auditTable.jsp"/>
+<section class="hero is-primary is-small">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Audit Records
+            </h1>
         </div>
     </div>
-</div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column is-one-fifth">
+                <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=audit&action=search">
+                    <input type="hidden" name="sortColumn" id="sortColumn" value="${auditForm.sortColumn}"/>
+                    <input type="hidden" name="sortDirection" id="sortDirection" value="${auditForm.sortDirection}"/>
+                    <input type="hidden" name="page" id="page" value="${auditForm.page}"/>
+
+                    <nav class="panel">
+                        <p class="panel-heading">
+                            Search for Audit Records
+                        </p>
+                        <div class="panel-block">
+                            <div class="field">
+                                <label class="label" for="objectKey">Object Key</label>
+                                <div class="control">
+                                    <input class="input" type="text" placeholder="Object Key" id="objectKey" name="objectKey" value="${auditForm.objectKey}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-block">
+                            <div class="field">
+                                <label class="label" for="fieldName">Field Name</label>
+                                <div class="control">
+                                    <input class="input" type="text" placeholder="Field Name" id="fieldName" name="fieldName" value="${auditForm.fieldName}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-block">
+                            <div class="field">
+                                <label class="label" for="fromEventTime">From Event Time</label>
+                                <div class="control">
+                                    <fmt:formatDate var="fromEvent" value="${auditForm.fromEventTime}" pattern="MM/dd/yyyy"/>
+                                    <input class="input" type="text" placeholder="From Event Time" id="fromEventTime" name="fromEventTime" value="${fromEvent}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-block">
+                            <div class="field">
+                                <label class="label" for="toEventTime">To Event Time</label>
+                                <div class="control">
+                                    <fmt:formatDate var="toEvent" value="${auditForm.toEventTime}" pattern="MM/dd/yyyy"/>
+                                    <input class="input" type="text" placeholder="To Event Time" id="toEventTime" name="toEventTime" value="${toEvent}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-block">
+                            <div class="field">
+                                <label class="label" for="eventType">Event Type</label>
+                                <div class="control">
+                                    <t:multiSelect id="eventType" selectedValues="${auditForm.eventType}" items="${ct:stringToISelectTag('INSERT,UPDATE,DELETE')}" placeHolder=""/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-block">
+                            <input type="submit" value="Search" class="button is-link is-outlined is-fullwidth" />
+                        </div>
+                    </nav>
+                </form>
+            </div>
+            <div class="column">
+                <p class="panel-heading">
+                    Found ${searchResult.size} Audit Records
+                </p>
+
+                <div class="tableContainer">
+                    <jsp:include page="../auditTable.jsp"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <jsp:include page="../footer.jsp"/>
 </body>

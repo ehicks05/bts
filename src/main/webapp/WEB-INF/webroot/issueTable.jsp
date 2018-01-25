@@ -6,13 +6,13 @@
 <jsp:useBean id="issueForm" type="net.ehicks.bts.beans.IssueForm" scope="request"/>
 <jsp:useBean id="searchResult" type="net.ehicks.bts.SearchResult" scope="request"/>
 
-<table id="filmTable" style="width:100%;margin: 0 auto" class="list">
+<table id="filmTable" class="table is-striped is-narrow is-hoverable is-fullwidth">
     <thead>
         <tr class="listheading">
             <t:sortableCell code="id" label="ID" style="text-align:right;" searchForm="${issueForm}" />
             <t:sortableCell code="title" label="Title" searchForm="${issueForm}"/>
             <t:sortableCell code="created_on" label="Created" style="text-align:right;" cssClass="hideOnSmall" searchForm="${issueForm}" />
-            <t:sortableCell code="last_updated_on" label="Updated" style="text-align:right;" searchForm="${issueForm}" />
+            <t:sortableCell code="last_updated_on" label="Updated" style="text-align:right;" cssClass="hideOnSmall" searchForm="${issueForm}" />
         </tr>
     </thead>
 
@@ -26,7 +26,7 @@
                 <a href="${pageContext.request.contextPath}/view?tab1=issue&action=form&issueId=${issue.id}">${issue.title}</a>
             </td>
             <td class="alignright hideOnSmall"><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yy" /></td>
-            <td class="alignright"><fmt:formatDate value="${issue.lastUpdatedOn}" pattern="dd/MMM/yy" /></td>
+            <td class="alignright hideOnSmall"><fmt:formatDate value="${issue.lastUpdatedOn}" pattern="dd/MMM/yy" /></td>
         </tr>
     </c:forEach>
     </tbody>
@@ -34,5 +34,5 @@
     <c:if test="${empty searchResult.searchResults}">
         <tr><td colspan="100">No Results</td></tr>
     </c:if>
-    <t:paginator searchForm="${issueForm}" searchResult="${searchResult}"/>
 </table>
+<t:paginator searchForm="${issueForm}" searchResult="${searchResult}"/>

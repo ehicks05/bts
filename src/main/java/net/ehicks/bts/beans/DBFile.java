@@ -7,7 +7,9 @@ import net.ehicks.eoi.EOI;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "db_files")
@@ -72,6 +74,17 @@ public class DBFile implements Serializable, ISelectTagSupport
         return EOI.executeQueryOneResult("select * from db_files where name=?", Arrays.asList(name));
     }
 
+    public String getPreviewIcon()
+    {
+        Map<String, String> extToPreviewIcon = new HashMap<>();
+        extToPreviewIcon.put("docx", "file-word");
+        extToPreviewIcon.put("pdf", "file-pdf");
+        extToPreviewIcon.put("pptx", "file-powerpoint");
+        extToPreviewIcon.put("xlsx", "file-excel");
+        String ext = name.substring(name.lastIndexOf(".") + 1);
+        return extToPreviewIcon.getOrDefault(ext, "file");
+    }
+
     public String getBase64()
     {
         return "data:image/png;base64," + Common.byteArrayToBase64(content);
@@ -80,6 +93,11 @@ public class DBFile implements Serializable, ISelectTagSupport
     public String getLengthPretty()
     {
         return Common.toMetric(length);
+    }
+
+    public String getShortName()
+    {
+        return name.length() > 32 ? name.substring(0, 26) : name;
     }
 
     // -------- Getters / Setters ----------

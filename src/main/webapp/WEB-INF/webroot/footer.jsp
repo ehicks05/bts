@@ -4,30 +4,23 @@
     <jsp:useBean id="userSession" type="net.ehicks.bts.UserSession" scope="session"/>
 </c:if>
 
-    <footer class="mdl-mini-footer">
-        <div class="mdl-mini-footer__left-section">
-            <div class="mdl-logo">
+<footer class="footer">
+    <div class="container">
+        <div class="content has-text-centered">
+            <p>
+                <strong>Puffin</strong> by <a href="http://ehicks.net">Eric Hicks</a>.
+            </p>
+            <p>
                 <c:if test="${!empty sessionScope.userSession}">
-                    server processed request in ${userSession.currentTimeMillis - userSession.enteredController} ms
+                    Page rendered in ${userSession.currentTimeMillis - userSession.enteredController} ms
                 </c:if>
-            </div>
+            </p>
         </div>
-        <div class="mdl-mini-footer__right-section">
-            <ul class="mdl-mini-footer__link-list">
-                <li>
-                    &copy;2017
-                    <img style="height: 24px;" src="${pageContext.request.contextPath}/images/puffin.png">
-                </li>
-            </ul>
-        </div>
-    </footer>
-</main>
+    </div>
+</footer>
+
 <c:if test="${!empty sessionScope.userSession}">
     <jsp:include page="inc_footer.jsp"/>
 </c:if>
-
-<script>
-    $(window).load(showResponseMessage);
-</script>
 
 <c:remove var="lastRequestDuration" scope="session" />

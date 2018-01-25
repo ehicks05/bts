@@ -19,23 +19,32 @@
 
 <jsp:include page="header.jsp"/>
 
-<div class="mdl-grid">
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Settings</h5></div>
-
-        <div id="options">
-            <div>
-                <a href="${pageContext.request.contextPath}/view?tab1=settings&tab2=savedSearches&action=form">
-                    <i class="material-icons">search</i>Saved Searches</a>
-            </div>
-
-            <div>
-                <a href="${pageContext.request.contextPath}/view?tab1=settings&tab2=subscriptions&action=form">
-                    <i class="material-icons">email</i>Subscriptions</a>
-            </div>
+<section class="hero is-primary is-small">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Settings
+            </h1>
         </div>
     </div>
-</div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <c:forEach var="adminSubscreen" items="${userSession.systemInfo.settingsSubscreens}">
+                <div class="column is-one-third has-text-centered">
+                    <a href="${pageContext.request.contextPath}/${adminSubscreen[0]}">
+                        <span class="icon is-large">
+                            <i class="fas fa-3x fa-${adminSubscreen[1]}"></i>
+                        </span>
+                        <br>${adminSubscreen[2]}
+                    </a>
+                </div>
+            </c:forEach>
+        </div>
+    </div>
+</section>
 
 <jsp:include page="footer.jsp"/>
 </body>

@@ -35,55 +35,91 @@
 
 <jsp:include page="header.jsp"/>
 
-<div class="mdl-grid">
-    <div class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-cell--top mdl-shadow--2dp">
-        <c:set var="formName" value="${fn:length(issueForm.formName) == 0 ? 'New Filter' : issueForm.formName}"/>
-        <div class="mdl-card__title"><h5>Issue Filter: ${formName}</h5></div>
-        <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=search&action=search">
-            <input type="hidden" name="sortColumn" id="sortColumn" value="${issueForm.sortColumn}"/>
-            <input type="hidden" name="sortDirection" id="sortDirection" value="${issueForm.sortDirection}"/>
-            <input type="hidden" name="page" id="page" value="${issueForm.page}"/>
-            <input type="hidden" name="filterName" id="filterName"/>
-            <input type="hidden" name="filterId" id="filterId" value="${issueForm.id}"/>
-
-            <div style="padding: 10px;">
-
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" size="20" maxlength="32" id="containsText" name="containsText" value="${issueForm.containsText}">
-                    <label class="mdl-textfield__label" for="containsText">Contains Text:</label>
-                </div>
-
-                <br><br>
-                <t:multiSelect id="projectIds" selectedValues="${issueForm.projectIdsAsList}" items="${projects}" placeHolder="Projects:"/>
-                <br><br>
-                <t:multiSelect id="groupIds" selectedValues="${issueForm.groupIdsAsList}" items="${groups}" placeHolder="Groups:"/>
-                <br><br>
-                <t:multiSelect id="severityIds" selectedValues="${issueForm.severityIdsAsList}" items="${severities}" placeHolder="Severities:"/>
-                <br><br>
-                <t:multiSelect id="statusIds" selectedValues="${issueForm.statusIdsAsList}" items="${statuses}" placeHolder="Statuses:"/>
-                <br><br>
-                <t:multiSelect id="assigneeIds" selectedValues="${issueForm.assigneeUserIdsAsList}" items="${users}" placeHolder="Assignees:"/>
-            </div>
-            <div class="mdl-card__actions">
-                <input type="submit" value="Search" class="mdl-button mdl-js-button mdl-button--raised" />
-                <input type="button" value="Save" class="mdl-button mdl-js-button mdl-button--raised" id="showSaveIssueFormDialog" />
-
-                <c:if test="${empty issueForm.id || issueForm.id == 0 || issueForm.onDash}">
-                    <c:set var="addToDashStatus" value="disabled"/>
-                </c:if>
-                <input type="button" value="Add to Dash" class="mdl-button mdl-js-button mdl-button--raised" onclick="addToDashboard('${issueForm.id}');" ${addToDashStatus}/>
-            </div>
-        </form>
-    </div>
-
-    <div class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--8-col-tablet mdl-cell--top mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Found ${searchResult.size} Issues</h5></div>
-
-        <div class="tableContainer">
-            <jsp:include page="issueTable.jsp"/>
+<section class="hero is-primary is-small">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Search
+            </h1>
         </div>
     </div>
-</div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column is-one-fifth">
+                <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=search&action=search">
+                <nav class="panel">
+                    <p class="panel-heading">
+                        <c:set var="formName" value="${fn:length(issueForm.formName) == 0 ? 'New Filter' : issueForm.formName}"/>
+                        Issue Filter: ${formName}
+                    </p>
+                    <div class="panel-block">
+                        <input type="hidden" name="sortColumn" id="sortColumn" value="${issueForm.sortColumn}"/>
+                        <input type="hidden" name="sortDirection" id="sortDirection" value="${issueForm.sortDirection}"/>
+                        <input type="hidden" name="page" id="page" value="${issueForm.page}"/>
+                        <input type="hidden" name="filterName" id="filterName"/>
+                        <input type="hidden" name="filterId" id="filterId" value="${issueForm.id}"/>
+
+                        <div class="field">
+                            <label class="label" for="containsText">Contains Text:</label>
+                            <div class="control">
+                                <input class="input" type="text" placeholder="Text input" id="containsText" name="containsText" value="${issueForm.containsText}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-block">
+                        <t:multiSelect id="projectIds" selectedValues="${issueForm.projectIdsAsList}" items="${projects}" placeHolder="Projects:"/>
+                    </div>
+                    <div class="panel-block">
+                        <t:multiSelect id="groupIds" selectedValues="${issueForm.groupIdsAsList}" items="${groups}" placeHolder="Groups:"/>
+                    </div>
+                    <div class="panel-block">
+                        <t:multiSelect id="severityIds" selectedValues="${issueForm.severityIdsAsList}" items="${severities}" placeHolder="Severities:"/>
+                    </div>
+                    <div class="panel-block">
+                        <t:multiSelect id="statusIds" selectedValues="${issueForm.statusIdsAsList}" items="${statuses}" placeHolder="Statuses:"/>
+                    </div>
+                    <div class="panel-block">
+                        <t:multiSelect id="assigneeIds" selectedValues="${issueForm.assigneeUserIdsAsList}" items="${users}" placeHolder="Assignees:"/>
+                    </div>
+
+                    <div class="panel-block">
+                        <input type="submit" value="Search" class="button is-link is-outlined is-fullwidth" />
+                    </div>
+                    <div class="panel-block">
+                        <button id="showSaveIssueFormDialog" class="button is-link is-outlined is-fullwidth">
+                            Save
+                        </button>
+                    </div>
+                    <div class="panel-block">
+                        <c:set var="addToDashStatus" value="${empty issueForm.id || issueForm.id == 0 || issueForm.onDash ? 'disabled' : ''}"/>
+                        <button class="button is-link is-outlined is-fullwidth" onclick="addToDashboard('${issueForm.id}');" ${addToDashStatus}>
+                            Add to Dash
+                        </button>
+                    </div>
+                </nav>
+                </form>
+            </div>
+            <div class="column has-text-centered">
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title">
+                            Found ${searchResult.size} Issues
+                        </p>
+                    </header>
+
+                    <div class="card-content">
+                        <div class="tableContainer">
+                            <jsp:include page="issueTable.jsp"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <dialog class="mdl-dialog" id="saveFilterDialog">
     <h4 class="mdl-dialog__title">Save Issue Filter</h4>

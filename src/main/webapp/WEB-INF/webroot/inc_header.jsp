@@ -22,23 +22,36 @@
 <script src="${pageContext.request.contextPath}/js/spin.min.js"></script>
 <%-- spin.js --%>
 
-<%-- MDL --%>
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-blue.min.css">
-<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-<%-- MDL --%>
-
-<%-- qTip --%>
+<%-- qTip2 --%>
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.css">
 <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.js"></script>
-<%-- qTip --%>
+<%-- qTip2 --%>
 
 <%-- CKEditor --%>
 <%--<script src="../../ckeditor/ckeditor.js"></script>--%>
 <%-- CKEditor --%>
 
+<%-- Bulma --%>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css" />
+<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/default/bulmaswatch.min.css">--%>
+<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/cosmo/bulmaswatch.min.css">--%>
+<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/flatly/bulmaswatch.min.css">--%>
+<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/journal/bulmaswatch.min.css">--%>
+<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/lux/bulmaswatch.min.css">--%>
+<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/pulse/bulmaswatch.min.css">--%>
+<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/simplex/bulmaswatch.min.css">--%>
+<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/superhero/bulmaswatch.min.css">--%>
+<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/united/bulmaswatch.min.css">--%>
+<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/yeti/bulmaswatch.min.css">--%>
+<%-- Bulma --%>
+
+<%-- Font Awesome --%>
+<script defer src="https://use.fontawesome.com/releases/v5.0.4/js/all.js"></script>
+<%-- Font Awesome --%>
+
+<%--<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>--%>
+
 <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/puffin.png">
-<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-<%--<link href="https://fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet">--%>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/bts.css" media="screen" />
+<script src="${pageContext.request.contextPath}/js/util.js"></script>
 <script src="${pageContext.request.contextPath}/js/ajaxUtil.js"></script>

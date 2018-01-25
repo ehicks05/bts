@@ -36,63 +36,76 @@
 
 <jsp:include page="../header.jsp"/>
 
-<div style="margin: 1%">
-    <div>
-        <div class="mdl-card__title"><h5>SQL Command</h5></div>
-
-        <form id="frmSqlCommand" name="frmSqlCommand" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=sql&action=runCommand">
-            <label for="sqlCommand">SQL Command:</label><br>
-            <textarea id="sqlCommand" name="sqlCommand" rows="5" cols="80">${sessionScope.sqlCommand}</textarea>
-        </form>
-
-        <div>
-            <input id="runCommand" type="button" value="Run Command" class="mdl-button mdl-js-button mdl-button--raised" />
-        </div>
-        <br>
-        
-        <div class="mdl-card__title"><h5>Results</h5></div>
-
-        <div class="tableContainer">
-            <c:forEach var="resultSet" items="${resultSets}">
-                <c:if test="${!empty resultSet.columnLabels}">
-                    <table class="list">
-                        <tr class="listheading">
-                            <td colspan="100"><pre><code>${resultSet.sqlCommand}</code></pre></td>
-                        </tr>
-                        <tr class="listheading">
-                            <td colspan="100">
-                                <c:if test="${resultSet.truncated}">
-                                    Truncated to
-                                </c:if>
-                                ${fn:length(resultSet.resultRows)} rows
-                            </td>
-                        </tr>
-                        <tr class="listheading">
-                            <c:forEach var="columnLabel" items="${resultSet.columnLabels}">
-                                <td>${columnLabel}</td>
-                            </c:forEach>
-                        </tr>
-                        <c:forEach var="resultRow" items="${resultSet.resultRows}">
-                            <tr>
-                                <c:forEach var="resultCell" items="${resultRow}">
-                                    <td><pre>${resultCell}</pre></td>
-                                </c:forEach>
-                            </tr>
-                        </c:forEach>
-                    </table>
-                </c:if>
-
-                <c:if test="${!empty resultSet.rowsUpdated}">
-                    ${resultSet.rowsUpdated} rows updated.
-                </c:if>
-                <c:if test="${!empty resultSet.error}">
-                    ${resultSet.error}
-                </c:if>
-                <hr>
-            </c:forEach>
+<section class="hero is-primary is-small">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                SQL Command
+            </h1>
         </div>
     </div>
-</div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column">
+                <form id="frmSqlCommand" name="frmSqlCommand" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=sql&action=runCommand">
+                    <textarea class="textarea" id="sqlCommand" name="sqlCommand" rows="5" cols="80" placeholder="Enter command...">${sessionScope.sqlCommand}</textarea>
+                </form>
+
+                <div>
+                    <input id="runCommand" type="button" value="Run Command" class="button is-primary" />
+                </div>
+                <br>
+
+                <h3 class="subtitle is-3">Result Sets</h3>
+
+                <div class="tableContainer">
+                    <c:forEach var="resultSet" items="${resultSets}" varStatus="loop">
+                        <h5 class="subtitle is-5">
+                            Result Set ${loop.count}:
+                            <c:if test="${resultSet.truncated}">
+                                Truncated to
+                            </c:if>
+                            ${fn:length(resultSet.resultRows)} rows
+                        </h5>
+                        Command: <pre><code>${resultSet.sqlCommand}</code></pre>
+
+                        <c:if test="${!empty resultSet.columnLabels}">
+                            <table class="table is-striped is-narrow is-hoverable">
+                                <thead>
+                                <tr>
+                                    <c:forEach var="columnLabel" items="${resultSet.columnLabels}">
+                                        <th>${columnLabel}</th>
+                                    </c:forEach>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="resultRow" items="${resultSet.resultRows}">
+                                        <tr>
+                                            <c:forEach var="resultCell" items="${resultRow}">
+                                                <td>${resultCell}</td>
+                                            </c:forEach>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                        </c:if>
+
+                        <c:if test="${!empty resultSet.rowsUpdated}">
+                            ${resultSet.rowsUpdated} rows updated.
+                        </c:if>
+                        <c:if test="${!empty resultSet.error}">
+                            ${resultSet.error}
+                        </c:if>
+                        <hr>
+                    </c:forEach>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <jsp:include page="../footer.jsp"/>
 </body>

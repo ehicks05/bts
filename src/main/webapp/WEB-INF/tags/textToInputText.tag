@@ -6,6 +6,7 @@
 <%@attribute name="text" fragment="false" %>
 <%@attribute name="submitAction" fragment="false" %>
 <%@attribute name="tag" fragment="false" %>
+<%@attribute name="clazz" fragment="false" %>
 
 <c:if test="${empty tag}">
     <c:set var="tag" value="div"/>
@@ -20,7 +21,7 @@
     </script>
 </c:if>
 
-<${tag} contenteditable="true" id="${id}" class="editable">${text}</${tag}>
+<${tag} contenteditable="true" id="${id}" class="editable ${clazz}">${text}</${tag}>
 <script>
     CKEDITOR.inline( '${id}', {
         on: {

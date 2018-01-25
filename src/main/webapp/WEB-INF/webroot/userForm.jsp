@@ -11,49 +11,46 @@
     <jsp:include page="inc_title.jsp"/>
     <jsp:include page="inc_header.jsp"/>
     <script>
-        function initHeader()
-        {
 
-        }
     </script>
 
 </head>
-<body onload="initHeader();">
+<body>
 
 <jsp:include page="header.jsp"/>
 
-<div class="mdl-grid">
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title">
-            <h5>
-                <div class="mdl-card__title-text">
-                    <img src="${user.avatar.base64}" style="padding-right: 8px; height: 48px;"/>
-                    <span style="padding-top: 8px;">${user.name}</span>
-                </div>
-            </h5>
+<section class="hero is-primary is-small">
+    <div class="hero-body">
+        <div class="container">
+            <span class="title">
+                <span>${user.name}</span>
+            </span>
         </div>
     </div>
-    <div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Details</h5></div>
+</section>
 
-        <form name="frmSave" id="frmSave" method="post" action="${pageContext.request.contextPath}/view?tab1=modify&action=save">
-            <div class="mdl-card__supporting-text">
-                <table>
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column is-one-third">
+                <h3 class="subtitle is-3">Details</h3>
+
+                <table class="table">
                     <tr>
-                        <td style="padding: 0 8px;">Logon Id:</td>
-                        <td style="padding: 0 8px;">${user.logonId}</td>
-                        <td style="padding: 0 8px;"></td>
-                        <td style="padding: 0 8px;"></td>
+                        <td>Logon Id:</td>
+                        <td>${user.logonId}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 0 8px;">Created:</td>
-                        <td style="padding: 0 8px;"><fmt:formatDate value="${user.createdOn}" pattern="dd/MMM/yy h:mm a"/></td>
-                        <td style="padding: 0 8px;">Updated:</td>
-                        <td style="padding: 0 8px;"><fmt:formatDate value="${user.updatedOn}" pattern="dd/MMM/yy h:mm a"/></td>
+                        <td>Created:</td>
+                        <td><fmt:formatDate value="${user.createdOn}" pattern="dd/MMM/yy h:mm a"/></td>
                     </tr>
                     <tr>
-                        <td style="padding: 0 8px;vertical-align: top">Groups:</td>
-                        <td style="padding: 0 8px;">
+                        <td>Updated:</td>
+                        <td><fmt:formatDate value="${user.updatedOn}" pattern="dd/MMM/yy h:mm a"/></td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: top">Groups:</td>
+                        <td>
                             <c:forEach var="group" items="${user.allGroups}">
                                 ${group.name}
                                 <br>
@@ -61,41 +58,84 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding: 0 8px;vertical-align: top">Projects:</td>
-                        <td style="padding: 0 8px;">
+                        <td style="vertical-align: top">Projects:</td>
+                        <td>
                             <c:forEach var="project" items="${user.allProjects}">
                                 ${project.name}
                                 <br>
                             </c:forEach>
                         </td>
                     </tr>
+                    <tr>
+                        <td>Avatar:</td>
+                        <td>
+                            <figure class="image is-64x64">
+                                <img src="${user.avatar.base64}">
+                            </figure>
+                        </td>
+                    </tr>
                 </table>
             </div>
-        </form>
-    </div>
+            <div class="column">
+                <h3 class="subtitle is-3">Activity</h3>
 
-    <div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Activity</h5></div>
+                <c:forEach var="comment" items="${user.recentComments}">
+                    <article class="media">
+                        <figure class="media-left">
+                            <p class="image is-32x32">
+                                <img src="${!empty comment.createdBy.avatar.base64 ? comment.createdBy.avatar.base64 : comment.defaultAvatar.base64}">
+                            </p>
+                        </figure>
+                        <div class="media-content">
+                            <div class="content">
+                                <div>
+                                    <strong class="hasTooltip">
+                                        ${comment.createdBy.name}
+                                    </strong>
+                                    <div style="display: none;">
+                                        <table>
+                                            <tr>
+                                                <td rowspan="2">
+                                                    <img src="${!empty comment.createdBy.avatar.base64 ? comment.createdBy.avatar.base64 : comment.defaultAvatar.base64}" style="height:36px;margin-right: 4px;border-radius: 3px;">
+                                                </td>
+                                                <td><b>${comment.createdBy.name}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>${comment.createdBy.logonId}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
 
-        <div class="mdl-card__supporting-text">
-            <c:forEach var="comment" items="${user.recentComments}">
-                <div style="padding: 0 8px;">
-                    <a href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${user.id}">
-                        <img src="${user.avatar.base64}" style="padding-right: 4px; height: 24px;"/>${user.name}
-                    </a>
-                    commented on
-                    <a href="${pageContext.request.contextPath}/view?tab1=issue&action=form&issueId=${comment.issue.id}">
-                        ${comment.issue.project.prefix}-${comment.issue.id} -  ${comment.issue.title} - <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy h:mm a"/>
-                    </a>
+                                    <a href="${pageContext.request.contextPath}/view?tab1=issue&action=form&issueId=${comment.issue.id}">
+                                        ${comment.issue.project.prefix}-${comment.issue.id} -  ${comment.issue.title} -
+                                    </a>
 
-                </div>
-                <br>
-                <div style="padding: 0 8px;">${comment.content}</div>
-                <hr>
-            </c:forEach>
+                                    on <fmt:formatDate value="${comment.createdOn}" pattern="dd/MMM/yy h:mm a"/>
+
+                                    <br>
+                                    ${comment.content}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="media-right">
+                            <c:if test="${!empty comment.lastUpdatedOn && comment.createdOn != comment.lastUpdatedOn}">
+                                <span class="icon is-small" title="Edited ${comment.lastUpdatedOn}">
+                                    <i class="fas fa-edit"></i>
+                                </span>
+                            </c:if>
+                            <c:if test="${comment.visibleToGroupId != 0}">
+                                <span class="icon is-small has-text-danger" title="Visible to ${comment.visibleToGroup.name}">
+                                    <i class="fas fa-user-secret"></i>
+                                </span>
+                            </c:if>
+                        </div>
+                    </article>
+                </c:forEach>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 <jsp:include page="footer.jsp"/>
 </body>

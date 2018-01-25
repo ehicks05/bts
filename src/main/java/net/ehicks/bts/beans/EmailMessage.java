@@ -6,9 +6,7 @@ import net.ehicks.eoi.EOI;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "email_messages")
@@ -197,6 +195,15 @@ public class EmailMessage implements Serializable
         return null;
     }
 
+    public String getStatusIcon()
+    {
+        Map<String, String> statusToIcon = new HashMap<>();
+        statusToIcon.put("CREATED", "hourglass-start has-text-info");
+        statusToIcon.put("WAITING", "hourglass-half has-text-warning");
+        statusToIcon.put("SENT", "check has-text-success");
+        statusToIcon.put("FAILED", "ban has-text -danger");
+        return statusToIcon.getOrDefault(status, "question is-warning");
+    }
     // -------- Getters / Setters ----------
 
 

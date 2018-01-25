@@ -136,6 +136,11 @@ public class User implements Serializable, ISelectTagSupport
         return Group.getByUserId(id).stream().map(Group::getId).collect(Collectors.toList());
     }
 
+    public List<String> getAllGroupIdsAsStrings()
+    {
+        return Group.getByUserId(id).stream().map(g -> String.valueOf(g.getId())).collect(Collectors.toList());
+    }
+
     public List<Project> getAllProjects()
     {
         return Project.getAllForUser(id);
@@ -148,10 +153,10 @@ public class User implements Serializable, ISelectTagSupport
 
     public DBFile getAvatar()
     {
-        return DBFile.getById(avatarId);
+        return Avatar.getById(avatarId).getDbFile();
     }
 
-    public static DBFile getDefaultAvatar()
+    public DBFile getDefaultAvatar()
     {
         return DBFile.getByName("no-avatar.png");
     }

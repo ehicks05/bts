@@ -42,7 +42,7 @@ public class PdfCreator
 
             PDPageContentStream contentStream = new PDPageContentStream(document, page);
             Timer timer = new Timer();
-            addTable(document, page, "User Report", data);
+            addTable(document, page, header, data);
             timer.printDuration("created table");
 
             contentStream.close();

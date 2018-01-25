@@ -6,7 +6,7 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="user" type="net.ehicks.bts.beans.User" scope="request"/>
-<jsp:useBean id="avatars" type="java.util.List<net.ehicks.bts.beans.Avatar>" scope="request"/>
+<jsp:useBean id="publicAvatars" type="java.util.List<net.ehicks.bts.beans.Avatar>" scope="request"/>
 <jsp:useBean id="groups" type="java.util.List<net.ehicks.bts.beans.Group>" scope="request"/>
 
 <!DOCTYPE html>
@@ -16,125 +16,218 @@
     <jsp:include page="../inc_header.jsp"/>
 
     <script>
-        function formatAvatar(avatarOption)
-        {
-            if (!avatarOption.id)
-            {
-                return avatarOption.text;
-            }
 
-            var avatarId = avatarOption.id;
-            var src = document.getElementById('avatar' + avatarId).src;
-            var $avatar = $('<span><img style="padding-bottom:5px; height:22px;" src="' + src + '" class="img-flag" /> ' + avatarOption.text +  '</span>');
-            return $avatar;
-        }
     </script>
 </head>
 <body>
 
-<div style="display: none;">
-    <c:forEach var="avatar" items="${avatars}">
-        <img id="avatar${avatar.id}" src="${avatar.dbFile.base64}"/>
-    </c:forEach>
-</div>
-
 <jsp:include page="../header.jsp"/>
 
-<div class="mdl-grid">
+<section class="hero is-primary is-small">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Modify User ${user.logonId}
+            </h1>
+        </div>
+    </div>
+</section>
 
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Modify User ${user.logonId}</h5></div>
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column">
+                <form id="frmUser" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&tab3=modify&action=modify&userId=${user.id}">
+                    <t:text id="userId" label="User Id" value="${user.id}" isStatic="true" />
+                    <t:text id="logonId" label="Logon Id" value="${user.logonId}" />
+                    <t:text id="firstName" label="First Name" value="${user.firstName}" />
+                    <t:text id="lastName" label="Last Name" value="${user.lastName}" />
+                    <t:checkbox id="enabled" label="Enabled" checked="${user.enabled}" />
 
-        <form id="frmUser" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&tab3=modify&action=modify&userId=${user.id}">
-            <div style="padding: 10px;">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="userId" name="userId" type="text" value="${user.id}" readonly/>
-                    <label class="mdl-textfield__label" for="userId">User Id:</label>
-                </div><br>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="logonId" name="logonId" type="text" value="${user.logonId}"/>
-                    <label class="mdl-textfield__label" for="logonId">Logon Id:</label>
-                </div><br>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="firstName" name="firstName" type="text" value="${user.firstName}"/>
-                    <label class="mdl-textfield__label" for="firstName">First Name:</label>
-                </div><br>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" id="lastName" name="lastName" type="text" value="${user.lastName}"/>
-                    <label class="mdl-textfield__label" for="lastName">Last Name:</label>
-                </div><br>
-                <div>
-                    <label class="mdl-checkbox mdl-js-checkbox" for="enabled">
-                        <input type="checkbox" id="enabled" name="enabled" class="mdl-checkbox__input" <c:if test="${user.enabled}">checked</c:if> />
-                        <span class="mdl-checkbox__label">Enabled</span>
-                    </label>
-                </div>
-                <br>
-                <div>
-                    <label class="" for="avatarId">Avatar:</label>
-                    <t:select id="avatarId" items="${avatars}" value="${user.avatarId}" formatFunction="formatAvatar"/>
-                </div>
-                <br>
-                <div>
-                    <label class="" for="groups">Groups:</label>
-                    <t:multiSelect id="groups" items="${groups}" selectedValues="${user.allGroupIds}" placeHolder="None"/>
-                </div>
-                <br>
-                <div>
-                    <label class="" for="projects">Projects:</label>
-                    <t:multiSelect id="projects" items="${projects}" selectedValues="${user.allProjectIds}" placeHolder="None"/>
-                </div>
+
+                    <div class="field is-horizontal">
+                        <div class="field-label">
+                            <label class="label">Groups</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="control is-expanded">
+                                <div class="select is-multiple is-fullwidth">
+                                    <%--<select id="groups" name="groups" size="4" multiple>--%>
+                                        <%--<c:forEach var="item" items="${groups}">--%>
+                                            <%--<c:set var="selected" value="${user.allGroupIdsAsStrings.contains(item.value) ? 'selected' : ''}"/>--%>
+                                            <%--<option value="${item.value}" ${selected} class="is-active">${item.text}</option>--%>
+                                        <%--</c:forEach>--%>
+                                    <%--</select>--%>
+                                    <t:multiSelect id="groups" items="${groups}" selectedValues="${user.allProjectIds}" placeHolder="None"/>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field is-horizontal">
+                        <div class="field-label">
+                            <label class="label">Avatar</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="control is-expanded">
+                                <div class="box button is-large" id="updateAvatarButton" title="${user.avatar.name}">
+                                    <figure class="image is-32x32">
+                                        <img src="${user.avatar.base64}"/>
+                                    </figure>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field is-horizontal">
+                        <div class="field-label">
+                            <label class="label">Projects</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="control is-expanded">
+                                <div class="select is-multiple is-fullwidth">
+                                    <t:multiSelect id="projects" items="${projects}" selectedValues="${user.allProjectIds}" placeHolder="None"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input id="saveUserButton" type="submit" value="Save" class="button is-primary" />
+                    <input id="changePasswordButton" type="button" value="Change Password" class="button" />
+                </form>
             </div>
+        </div>
+    </div>
+</section>
 
-            <div class="mdl-card__actions">
-                <input id="saveUserButton" type="submit" value="Save" class="mdl-button mdl-js-button mdl-button--raised" />
-                <input id="changePassword" type="button" value="Change Password" class="mdl-button mdl-js-button mdl-button--raised" />
-            </div>
-        </form>
+<div class="modal" id="changePasswordDialog">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Change Password</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <form id="frmChangePassword" name="frmChangePassword" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&action=changePassword&userId=${user.id}">
+                <t:text id="password" label="New Password" required="true"/>
+            </form>
+        </section>
+
+        <footer class="modal-card-foot">
+            <button type="button" class="button is-primary change">Change</button>
+            <button type="button" class="button close">Cancel</button>
+        </footer>
     </div>
 </div>
 
-<dialog id="changePasswordDialog" class="mdl-dialog">
-    <h4 class="mdl-dialog__title">Change Password</h4>
-    <div class="mdl-dialog__content">
-        <form id="frmChangePassword" name="frmChangePassword" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&action=changePassword&userId=${user.id}">
-            <table>
-                <tr>
-                    <td>New Password:</td>
-                    <td>
-                        <input type="text" id="password" name="password" size="20" maxlength="256" value="" required/>
-                    </td>
-                </tr>
-            </table>
-        </form>
-    </div>
-    <div class="mdl-dialog__actions">
-        <button type="button" class="mdl-button change">Change</button>
-        <button type="button" class="mdl-button close">Cancel</button>
-    </div>
-</dialog>
 <script>
-    var changePasswordDialog = document.querySelector('#changePasswordDialog');
-    var changePasswordButton = document.querySelector('#changePassword');
-    if (!changePasswordDialog.showModal)
-    {
-        dialogPolyfill.registerDialog(changePasswordDialog);
-    }
-    changePasswordButton.addEventListener('click', function ()
-    {
-        changePasswordDialog.showModal();
+    initDialog('changePassword');
+
+    $(function () {
+        document.querySelector('#changePasswordDialog .change').addEventListener('click', function ()
+        {
+            if (!document.querySelector('#password').value)
+                alert('Please enter a password.');
+            else
+                $('#frmChangePassword').submit();
+        });
     });
-    document.querySelector('#changePasswordDialog .change').addEventListener('click', function ()
-    {
-        if (!document.querySelector('#password').value)
-            alert('Please enter a password.');
-        else
-            $('#frmChangePassword').submit();
+</script>
+
+<div class="modal" id="updateAvatarDialog">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Update Avatar</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <h5 class="subtitle is-5">Current Avatar:</h5>
+            <div class="columns is-multiline is-centered is-gapless">
+                <div class="column is-one-fifth has-text-centered" style="border: 6px solid black; border-radius: 5px;">
+                    <div class="box has-text-centered" title="${user.avatar.name}">
+                        <figure class="image is-64x64 has-text-centered">
+                            <img src="${user.avatar.base64}"/>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <h5 class="subtitle is-5">Choose Existing:</h5>
+            <form id="frmUpdateAvatar" name="frmUpdateAvatar" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&tab3=modify&action=updateAvatar&userId=${user.id}">
+                <input type="hidden" id="fldAvatarId" name="fldAvatarId" value="${user.avatar.id}"/>
+                <div class="columns is-multiline is-centered is-gapless">
+                    <c:forEach var="avatar" items="${publicAvatars}">
+                        <c:set var="borderColor" value="${user.avatar.id eq avatar.id ? '#4488FF' : '#FFF'}" />
+                        <div id="avatar${avatar.id}" class="column is-one-fifth has-text-centered" style="border: 6px solid ${borderColor}; border-radius: 5px;" onclick="selectAvatar(this.id, '${avatar.id}');">
+                            <div class="box has-text-centered" title="${avatar.dbFile.name}">
+                                <figure class="image is-64x64 has-text-centered">
+                                    <img src="${avatar.dbFile.base64}"/>
+                                </figure>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+
+                <input type="submit" value="Update" class="button is-primary save" />
+            </form>
+
+            <script>
+                function selectAvatar(selectedElementId, avatarId)
+                {
+                    var previousValue = $('#fldAvatarId').val();
+                    $('#avatar' + previousValue).css('border-color', '#FFF');
+
+                    $('#fldAvatarId').val(avatarId);
+                    $('#' + selectedElementId).css('border-color', '#4488FF');
+                }
+            </script>
+            <hr>
+            <h5 class="subtitle is-5">Upload Avatar:</h5>
+            <form id="frmUploadAvatar" name="frmUploadAvatar" enctype="multipart/form-data" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&tab3=modify&action=uploadAvatar&userId=${user.id}">
+                <div class="field has-addons">
+
+                    <div class="file has-name is-fullwidth">
+                        <label class="file-label">
+                            <input class="file-input" type="file" id="fldFile" name="fldFile" required>
+                            <span class="file-cta">
+                                <span class="file-icon">
+                                    <i class="fas fa-upload"></i>
+                                </span>
+                                <span class="file-label">
+                                    Choose a file…
+                                </span>
+                            </span>
+                            <span id="uploadAvatarFilename" class="file-name">
+                                
+                            </span>
+                        </label>
+                    </div>
+
+                    <input type="submit" value="Upload" class="button is-primary save" />
+                </div>
+            </form>
+        </section>
+
+        <footer class="modal-card-foot">
+            <button class="button close">Cancel</button>
+        </footer>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        var file = document.getElementById("fldFile");
+        file.onchange = function() {
+            if (file.files.length > 0)
+            {
+                document.getElementById('uploadAvatarFilename').innerHTML = file.files[0].name;
+            }
+        };
     });
-    changePasswordDialog.querySelector('#changePasswordDialog .close').addEventListener('click', function ()
-    {
-        changePasswordDialog.close();
-    });
+
+    initDialog('updateAvatar');
 </script>
 
 <jsp:include page="../footer.jsp"/>

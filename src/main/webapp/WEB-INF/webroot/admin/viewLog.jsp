@@ -17,35 +17,46 @@
 
 <jsp:include page="../header.jsp"/>
 
-<div class="mdl-grid">
-
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Log ${logName}</h5></div>
-
-        <div class="tableContainer" style="margin: auto">
-            <table class="list" style="font-size: 0.8em">
-                <thead>
-                <tr class="listheading">
-                    <td>Time</td>
-                    <td>Thread</td>
-                    <td>Level</td>
-                    <td>Class</td>
-                    <td>Message</td>
-                </tr>
-                </thead>
-                <c:forEach var="line" items="${lines}" varStatus="loop">
-                    <tr class="listrowodd" style="background-color: ${threadToColorMap[line[1]]}">
-                        <td>${line[0]}</td>
-                        <td>${line[1]}</td>
-                        <td>${line[2]}</td>
-                        <td>${line[3]}</td>
-                        <td>${line[4]}</td>
-                    </tr>
-                </c:forEach>
-            </table>
+<section class="hero is-primary is-small">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Log ${logName}
+            </h1>
         </div>
     </div>
-</div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column">
+                <table class="table is-striped is-narrow is-hoverable">
+                    <thead>
+                    <tr class="listheading">
+                        <th>Time</th>
+                        <th>Thread</th>
+                        <th>Level</th>
+                        <th>Class</th>
+                        <th>Message</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="line" items="${lines}" varStatus="loop">
+                            <tr style="background-color: ${threadToColorMap[line[1]]}">
+                                <td>${line[0]}</td>
+                                <td>${line[1]}</td>
+                                <td>${line[2]}</td>
+                                <td>${line[3]}</td>
+                                <td>${line[4]}</td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
 
 <jsp:include page="../footer.jsp"/>
 </body>

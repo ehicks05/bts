@@ -31,53 +31,70 @@
 
 <jsp:include page="../header.jsp"/>
 
-<div class="mdl-grid">
+<section class="hero is-primary is-small">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Manage Users
+            </h1>
+        </div>
+    </div>
+</section>
 
-    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-        <div class="mdl-card__title"><h5>Manage Users</h5></div>
-
-        <div class="tableContainer">
-            <table class="mdl-data-table mdl-shadow--2dp">
-                <thead>
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column">
+                <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
                     <tr>
                         <th>
                             <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="table-header">
                                 <input type="checkbox" id="table-header" class="mdl-checkbox__input" />
                             </label>
                         </th>
-                        <th>Object Id</th>
-                        <th class="mdl-data-table__cell--non-numeric">Logon Id</th>
-                        <th class="mdl-data-table__cell--non-numeric">Name</th>
-                        <th>Enabled</th>
+                        <th class="has-text-right">Object Id</th>
+                        <th>Logon Id</th>
+                        <th>Name</th>
+                        <th class="has-text-centered">Enabled</th>
                         <th></th>
                     </tr>
-                </thead>
-                <c:forEach var="user" items="${users}" varStatus="loop">
-                    <tr>
-                        <td>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="row[${loop.count}]">
-                                <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
-                            </label>
-                        </td>
-                        <td><a href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${user.id}">${user.id}</a></td>
-                        <td class="mdl-data-table__cell--non-numeric"><a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&tab3=modify&action=form&userId=${user.id}">${user.logonId}</a></td>
-                        <td class="mdl-data-table__cell--non-numeric">${user.name}</td>
-                        <td class="mdl-data-table__cell--non-numeric">
-                            <c:if test="${user.enabled}"><i class="material-icons" style="color: green;">check</i></c:if>
-                            <c:if test="${!user.enabled}"><i class="material-icons" style="color: red;">clear</i></c:if>
-                        </td>
-                        <td><a onclick="deleteUser('${user.id}');" class="clickable material-icons">delete</a></td>
-                    </tr>
-                </c:forEach>
-            </table>
-        </div>
+                    </thead>
+                    <c:forEach var="user" items="${users}" varStatus="loop">
+                        <tr>
+                            <td>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="row[${loop.count}]">
+                                    <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
+                                </label>
+                            </td>
+                            <td class="has-text-right"><a href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${user.id}">${user.id}</a></td>
+                            <td><a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=users&tab3=modify&action=form&userId=${user.id}">${user.logonId}</a></td>
+                            <td>${user.name}</td>
+                            <td class="has-text-centered">
+                                <c:if test="${user.enabled}"><i class="fas fa-check has-text-success" ></i></c:if>
+                                <c:if test="${!user.enabled}"><i class="fas fa-ban has-text-danger" ></i></c:if>
+                            </td>
+                            <td class="has-text-centered"><a onclick="deleteUser('${user.id}');"><i class="fas fa-trash"></i></a></td>
+                        </tr>
+                    </c:forEach>
+                </table>
 
-        <div class="mdl-card__actions">
-            <input id="addUserButton" type="button" value="Add User" class="mdl-button mdl-js-button mdl-button--raised" />
-            <input id="printUserButton" type="button" value="Print Users" onclick="printUsers();" class="mdl-button mdl-js-button mdl-button--raised" style="padding-left:40px;background-image: url('${pageContext.request.contextPath}/images/mimetypes/Adobe.png'); background-position: left; background-repeat: no-repeat;"/>
+                <a class="button is-primary" id="addUserButton">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>Add User</span>
+                </a>
+                <a class="button" onclick="printUsers();">
+                    <span class="icon">
+                        <i class="fas fa-print"></i>
+                    </span>
+                    <span>Print Users</span>
+                </a>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 <dialog id="addUserDialog" class="mdl-dialog">
     <h4 class="mdl-dialog__title">Add User</h4>
@@ -94,8 +111,8 @@
         </form>
     </div>
     <div class="mdl-dialog__actions">
-        <button type="button" class="mdl-button create">Create</button>
-        <button type="button" class="mdl-button close">Cancel</button>
+        <button type="button" class="button is-primary create">Create</button>
+        <button type="button" class="button close">Cancel</button>
     </div>
 </dialog>
 <script>
