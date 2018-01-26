@@ -193,35 +193,38 @@
                                     <td>
                                         <t:textToSelect id="fldProject" tag="span" myClass="" value="${issue.projectId}" text="${issue.project.name}" items="${projects}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
                                     </td>
-                                    <td></td>
-                                    <td>
-                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Type:</td>
                                     <td>
                                         <t:textToSelect id="fldIssueType" value="${issue.issueType.id}" text="${issue.issueType.name}" items="${issueTypes}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
                                     </td>
+                                </tr>
+                                <tr>
                                     <td>Status:</td>
                                     <td>
                                         <t:textToSelect id="fldStatus" value="${issue.status.id}" text="${issue.status.name}" items="${statuses}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Created:</td>
-                                    <td><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yy h:mm a"/></td>
-                                    <td>Updated:</td>
-                                    <td><fmt:formatDate value="${issue.lastUpdatedOn}" pattern="dd/MMM/yy h:mm a"/></td>
-                                </tr>
-                                <tr>
                                     <td>Severity:</td>
                                     <td>
                                         <t:textToSelect id="fldSeverity" value="${issue.severity.id}" text="${issue.severity.name}" items="${severities}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
                                     </td>
+                                </tr>
+                                <tr>
                                     <td>Group:</td>
                                     <td>
                                         <t:textToSelect id="fldGroup" value="${issue.group.id}" text="${issue.group.name}" items="${groups}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
                                     </td>
+                                </tr>
+                                <tr>
+                                    <td>Created:</td>
+                                    <td><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yy h:mm a"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Updated:</td>
+                                    <td><fmt:formatDate value="${issue.lastUpdatedOn}" pattern="dd/MMM/yy h:mm a"/></td>
                                 </tr>
                             </table>
                         </div>
@@ -391,66 +394,32 @@
                                 </figure>
                                 <div class="media-content">
                                     <div class="content">
-                                        <div>
-                                            <strong class="hasTooltip">
-                                                <a href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${userSession.userId}">
-                                                    ${userSession.user.name}
-                                                </a>
-                                            </strong>
-                                            <div style="display: none;">
-                                                <table>
-                                                    <tr>
-                                                        <td rowspan="2">
-                                                            <img src="${!empty userSession.user.avatar.base64 ? userSession.user.avatar.base64 : userSession.user.defaultAvatar.base64}"
-                                                                 style="height:36px;margin-right: 4px;border-radius: 3px;">
-                                                        </td>
-                                                        <td><b>${userSession.user.name}</b></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>${userSession.user.logonId}</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-
-                                            <form class="" id="frmNewComment" name="frmNewComment" method="post" action="${pageContext.request.contextPath}/view?tab1=issue&action=addComment&issueId=${issue.id}">
-                                                <div class="field is-horizontal">
-                                                    <div class="field-label is-normal">
-                                                        <label class="label">Comment</label>
-                                                    </div>
-                                                    <div class="field-body">
-                                                        <div class="field">
-                                                            <div class="control">
-                                                                <textarea class="textarea" rows="3" id="fldContent" name="fldContent" placeholder="Write comment here..."></textarea>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="field is-horizontal">
-                                                    <div class="field-label">
-                                                        <label class="label">Visibility</label>
-                                                    </div>
-                                                    <div class="field-body">
-                                                        <div class="field is-narrow">
-                                                            <div class="control">
-                                                                <div class="select">
-                                                                    <select id="fldVisibility" name="fldVisibility">
-                                                                        <option value="">Default</option>
-                                                                        <c:forEach var="group" items="${groups}">
-                                                                            <option value="${group.id}">${group.name}</option>
-                                                                        </c:forEach>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div id="activityActions" class="">
-                                                    <input type="button" value="Add" id="submitAddComment" class="button is-primary"/>
-                                                </div>
-                                            </form>
+                                        <strong class="hasTooltip">
+                                            <a href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${userSession.userId}">
+                                                ${userSession.user.name}
+                                            </a>
+                                        </strong>
+                                        <div style="display: none;">
+                                            <table>
+                                                <tr>
+                                                    <td rowspan="2">
+                                                        <img src="${!empty userSession.user.avatar.base64 ? userSession.user.avatar.base64 : userSession.user.defaultAvatar.base64}"
+                                                             style="height:36px;margin-right: 4px;border-radius: 3px;">
+                                                    </td>
+                                                    <td><b>${userSession.user.name}</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>${userSession.user.logonId}</td>
+                                                </tr>
+                                            </table>
                                         </div>
+
+                                        <form id="frmNewComment" name="frmNewComment" method="post" action="${pageContext.request.contextPath}/view?tab1=issue&action=addComment&issueId=${issue.id}">
+                                            <t:textarea id="fldContent" label="Comment" placeholder="Write a comment here..." />
+                                            <t:basicSelect id="fldVisibility" label="Visibility" items="${groups}" blankLabel="Default" />
+
+                                            <input type="button" value="Add" id="submitAddComment" class="button is-primary"/>
+                                        </form>
                                     </div>
                                 </div>
                             </article>

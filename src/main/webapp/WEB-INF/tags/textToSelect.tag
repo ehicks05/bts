@@ -36,7 +36,7 @@
 
         function select2Disable(textId, selectId, optionValue)
         {
-            var newText = $("#" + selectId + " option[value='" + optionValue + "']").text();
+            var newText = $("#" + selectId + " option[value=" + optionValue + "]").text();
             var newValue = $("#" + selectId + " option[value='" + optionValue + "']").val();
             //alert(newText);
             var oldText = $('#' + textId).text();

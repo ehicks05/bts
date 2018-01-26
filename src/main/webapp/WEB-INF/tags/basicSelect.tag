@@ -3,16 +3,30 @@
 <%@tag description="Text with Label" pageEncoding="UTF-8" %>
 <%@attribute name="id" fragment="false" %>
 <%@attribute name="value" fragment="false" required="false" %>
-<%@attribute name="items" fragment="false" type="java.util.List" %>
+<%@attribute name="items" fragment="false" type="java.util.List<net.ehicks.bts.ISelectTagSupport>" %>
 <%@attribute name="label" fragment="false" %>
 <%@attribute name="placeholder" fragment="false" required="false" %>
 <%@attribute name="horizontal" fragment="false" required="false" %>
 <%@attribute name="required" fragment="false" required="false" %>
+<%@attribute name="blankLabel" fragment="false" required="false" %>
+<%@attribute name="submitAction" fragment="false" %>
 
 <c:set var="selectCounter" value="${requestScope.selectCounter + 1}" scope="request"/>
 <c:if test="${selectCounter == 1}">
     <script>
-
+        function blurHandler(id)
+        {
+            var e = $('#' + id);
+            var hidden = $('#' + id + 'prev');
+            
+            var newValue = e.val();
+            var oldValue = hidden.val();
+            if (newValue !== oldValue)
+            {
+                update(id, newValue, '${submitAction}');
+                hidden.val(newValue);
+            }
+        }
     </script>
 </c:if>
 
@@ -30,10 +44,14 @@
     <div class="field-body">
         <div class="control">
             <div class="select">
-                <select id="${id}" name="${id}" <c:if test="${required}">required</c:if>>
+                <input type="hidden" id="${id}prev" value="${value}" />
+                <select id="${id}" name="${id}" <c:if test="${required}">required</c:if> onblur="blurHandler(this.id)">
+                    <c:if test="${!required}">
+                        <option value="">${blankLabel}</option>
+                    </c:if>
                     <c:forEach var="item" items="${items}">
-                        <c:set var="selected" value="${!empty value && item.value eq value}" />
-                        <option value="${item.value}">${item.text}</option>
+                        <c:set var="selected" value="${item.value eq value ? 'selected' : ''}" />
+                        <option value="${item.value}" ${selected}>${item.text}</option>
                     </c:forEach>
                 </select>
             </div>

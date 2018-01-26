@@ -36,7 +36,7 @@ function ajaxItems(callingElementId, context, endpoint, issueFormId, newPage, ne
         left: '50%' // Left position relative to parent
     };
 
-    var target = $('#' + callingElementId).closest('.tableContainer'); //put your target here!
+    var target = $('#' + callingElementId).closest('.ajaxTableContainer'); //put your target here!
     target.css('opacity', '.50');
     var spinner = new Spinner(opts).spin(target[0]);
 
@@ -49,7 +49,7 @@ function ajaxItems(callingElementId, context, endpoint, issueFormId, newPage, ne
             {
                 var rows = [];
 
-                $('#' + callingElementId).closest('.tableContainer').html(data);
+                $('#' + callingElementId).closest('.ajaxTableContainer').html(data);
             }
             if (textStatus == "error")
                 alert("Error: " + xhr.status + ": " + xhr.statusText);

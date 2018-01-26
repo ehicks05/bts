@@ -16,23 +16,33 @@
     </script>
 </c:if>
 
+<c:if test="${empty horizontal}">
+    <c:set var="horizontal" value="${true}" />
+</c:if>
 <c:if test="${empty placeholder}">
     <c:set var="placeholder" value="${label}" />
 </c:if>
-<c:if test="${empty horizontal || horizontal}">
-    <c:set var="isHorizontal" value="is-horizontal" />
-</c:if>
+<c:set var="required" value="${required ? 'required' : ''}" />
+<c:set var="isStatic" value="${isStatic ? 'is-static' : ''}"/>
 
-<div class="field ${isHorizontal}">
-    <div class="field-label">
+<c:if test="${!horizontal}">
+    <div class="field">
         <label class="label">${label}</label>
-    </div>
-    <div class="field-body">
         <div class="control">
-            <c:set var="isStatic" value="${isStatic ? 'is-static' : ''}"/>
-            <input class="input ${isStatic}" type="text" placeholder="${label}" id="${id}" name="${id}" value="${value}"
-                   <c:if test="${required}">required</c:if>
-            />
+            <input class="input ${isStatic}" type="text" placeholder="${label}" id="${id}" name="${id}" value="${value}" ${required}/>
         </div>
     </div>
-</div>
+</c:if>
+
+<c:if test="${horizontal}">
+    <div class="field is-horizontal">
+        <div class="field-label">
+            <label class="label">${label}</label>
+        </div>
+        <div class="field-body">
+            <div class="control">
+                <input class="input ${isStatic}" type="text" placeholder="${label}" id="${id}" name="${id}" value="${value}" ${required}/>
+            </div>
+        </div>
+    </div>
+</c:if>

@@ -1,66 +1,14 @@
-body {
-    /*font-family: 'Open Sans', sans-serif;*/
-    /*background-color: #f9f9f9;*/
-    /*background-color: #262626;*/
-    /*margin: 0;*/
-}
-
-/*a {color: #3b73af; text-decoration: none;}*/
-/*a:hover, a:focus, a:active {text-decoration: underline;}*/
-
-/* Tables */
-.alignleft {text-align: left}
-.aligncenter {text-align: center}
 .alignright {text-align: right}
 
-.table {border-collapse: collapse; background-color: #ffffff}
-.table td {padding: 2px 6px}
-.list {border-collapse: collapse; border: 1px solid lightgray; background-color: #ffffff}
-.list tr {
-    transition-duration: .28s;
-    transition-timing-function: cubic-bezier(.4,0,.2,1);
-    transition-property: background-color;
-}
-.list tr:hover {background-color: #eee;}
-.list td {border: 1px solid #e5e5e5; padding: 2px 6px}
-/*.listheading {background-color: lightgray; font-weight: bold}*/
-.listheading th {white-space: nowrap}
-.listrowodd { background-color: white}
-.listroweven {background-color: #efefff}
-
-/* JQuery */
-.ui-datepicker {z-index: 4 !important;}
-div.ui-datepicker{
-    font-size:10px;
-}
-
-.ui-dialog {font-size: 11pt;}
-/* JQuery */
+.overflowTableContainer {overflow-x: auto; padding: 1rem;}
 
 .js-example-basic-single {padding-right: 24px; width: 96%}
-
-.clickable {cursor: pointer; text-decoration: none;}
-.clickable:hover {text-decoration: underline}
-
-/* Material */
-.mdl-grid {padding: 0;max-width: 1080px;}
-.mdl-layout__drawer .mdl-navigation {padding-top: 8px;}
-.mdl-card__title {padding: 8px; background-color: #cedff9; min-height: 56px;}
-.mdl-card__supporting-text {padding: 8px;}
-.mdl-card {
-    overflow: visible;
-    z-index: auto;
-}
-.nounderline:hover {color:blue; text-decoration: none}
 
 @media (max-width: 479px)
 {
     .mdl-card {margin: 0; width: 100% !important;}
     .hideOnSmall {display:none;}
 }
-/* Material */
-
-/*h1,h2,h3,h4,h5,h6 {margin: 12px 0 8px;}*/
 
 .sortableHeader {cursor: pointer; color: navy}
 .sortableHeaderSelected {cursor: pointer; color: white;}

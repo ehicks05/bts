@@ -42,38 +42,18 @@
                             Search for Audit Records
                         </p>
                         <div class="panel-block">
-                            <div class="field">
-                                <label class="label" for="objectKey">Object Key</label>
-                                <div class="control">
-                                    <input class="input" type="text" placeholder="Object Key" id="objectKey" name="objectKey" value="${auditForm.objectKey}">
-                                </div>
-                            </div>
+                            <t:text id="objectKey" label="Object Key" value="${auditForm.objectKey}" horizontal="false" />
                         </div>
                         <div class="panel-block">
-                            <div class="field">
-                                <label class="label" for="fieldName">Field Name</label>
-                                <div class="control">
-                                    <input class="input" type="text" placeholder="Field Name" id="fieldName" name="fieldName" value="${auditForm.fieldName}">
-                                </div>
-                            </div>
+                            <t:text id="fieldName" label="Field Name" value="${auditForm.fieldName}" horizontal="false" />
                         </div>
                         <div class="panel-block">
-                            <div class="field">
-                                <label class="label" for="fromEventTime">From Event Time</label>
-                                <div class="control">
-                                    <fmt:formatDate var="fromEvent" value="${auditForm.fromEventTime}" pattern="MM/dd/yyyy"/>
-                                    <input class="input" type="text" placeholder="From Event Time" id="fromEventTime" name="fromEventTime" value="${fromEvent}">
-                                </div>
-                            </div>
+                            <fmt:formatDate var="fromEvent" value="${auditForm.fromEventTime}" pattern="MM/dd/yyyy"/>
+                            <t:text id="fromEventTime" label="From Event Time" value="${fromEvent}" horizontal="false" />
                         </div>
                         <div class="panel-block">
-                            <div class="field">
-                                <label class="label" for="toEventTime">To Event Time</label>
-                                <div class="control">
-                                    <fmt:formatDate var="toEvent" value="${auditForm.toEventTime}" pattern="MM/dd/yyyy"/>
-                                    <input class="input" type="text" placeholder="To Event Time" id="toEventTime" name="toEventTime" value="${toEvent}">
-                                </div>
-                            </div>
+                            <fmt:formatDate var="toEvent" value="${auditForm.toEventTime}" pattern="MM/dd/yyyy"/>
+                            <t:text id="toEventTime" label="To Event Time" value="${toEvent}" horizontal="false" />
                         </div>
 
                         <div class="panel-block">
@@ -91,12 +71,12 @@
                     </nav>
                 </form>
             </div>
-            <div class="column">
-                <p class="panel-heading">
+            <div class="column is-four-fifths">
+                <h5 class="subtitle is-5">
                     Found ${searchResult.size} Audit Records
-                </p>
+                </h5>
 
-                <div class="tableContainer">
+                <div class="ajaxTableContainer">
                     <jsp:include page="../auditTable.jsp"/>
                 </div>
             </div>
