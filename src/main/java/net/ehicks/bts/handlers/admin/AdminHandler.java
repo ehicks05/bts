@@ -170,7 +170,8 @@ public class AdminHandler
             String lastName = Common.getSafeString(request.getParameter("lastName"));
             boolean enabled = request.getParameter("enabled") != null;
             user.setLogonId(logonId);
-            user.setAvatarId(avatarId);
+            if (avatarId > 0)
+                user.setAvatarId(avatarId);
             user.setFirstName(firstName);
             user.setLastName(lastName);
             user.setEnabled(enabled);

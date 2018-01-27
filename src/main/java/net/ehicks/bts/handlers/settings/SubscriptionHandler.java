@@ -26,7 +26,7 @@ public class SubscriptionHandler
 
         request.setAttribute("subscriptions", Subscription.getByUserId(userSession.getUserId()));
 
-        return "/WEB-INF/webroot/subscriptions.jsp";
+        return "/WEB-INF/webroot/settings/subscriptions.jsp";
     }
 
     @Route(tab1 = "settings", tab2 = "subscriptions", tab3 = "", action = "add")

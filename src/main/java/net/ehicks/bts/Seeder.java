@@ -84,6 +84,9 @@ public class Seeder
         createComments();
         log.debug(timer.printDuration("createComments"));
 
+        createSubscriptions();
+        log.debug(timer.printDuration("createSubscriptions"));
+
         log.info(timer.printDuration("Done seeding dummy data"));
     }
 
@@ -535,7 +538,7 @@ public class Seeder
 
     private static void createUsers()
     {
-        Map<String, List<String>> users = new HashMap<>();
+        Map<String, List<String>> users = new LinkedHashMap<>();
         users.put("eric@test.com", new ArrayList<>(Arrays.asList("eric", "2", "Eric", "Tester")));
         users.put("steve@test.com", new ArrayList<>(Arrays.asList("steve", "15", "Steve", "Tester")));
         users.put("tupac@test.com", new ArrayList<>(Arrays.asList("test", "3", "2", "Pac")));
@@ -572,6 +575,33 @@ public class Seeder
             {
                 role.setRoleName("admin");
                 EOI.insert(role, SystemTask.SEEDER);
+            }
+        }
+    }
+
+    private static void createSubscriptions()
+    {
+        User user = User.getByUserId(1L);
+        if (user != null)
+        {
+            List<Subscription> subs = Subscription.getByUserId(user.getId());
+            if (subs.size() == 0)
+            {
+                Subscription sub = new Subscription();
+                sub.setUserId(user.getId());
+                sub.setProjectIds("1");
+                EOI.insert(sub, SystemTask.SEEDER);
+
+                sub = new Subscription();
+                sub.setUserId(user.getId());
+                sub.setGroupIds("1,2");
+                EOI.insert(sub, SystemTask.SEEDER);
+
+                sub = new Subscription();
+                sub.setUserId(user.getId());
+                sub.setSeverityIds("1");
+                sub.setStatusIds("1,3");
+                EOI.insert(sub, SystemTask.SEEDER);
             }
         }
     }

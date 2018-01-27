@@ -88,6 +88,12 @@ public class Project implements Serializable, ISelectTagSupport
         }
     }
 
+    public static List<Project> getAllBelongingToUser(Long userId)
+    {
+        List<ProjectMap> projectMaps = ProjectMap.getByUserId(userId);
+        return projectMaps.stream().map(projectMap -> Project.getById(projectMap.getProjectId())).collect(Collectors.toList());
+    }
+
     // -------- Getters / Setters ----------
 
 

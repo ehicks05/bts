@@ -44,7 +44,6 @@
                     <t:text id="lastName" label="Last Name" value="${user.lastName}" />
                     <t:checkbox id="enabled" label="Enabled" checked="${user.enabled}" />
 
-
                     <div class="field is-horizontal">
                         <div class="field-label">
                             <label class="label">Groups</label>
@@ -58,8 +57,21 @@
                                             <%--<option value="${item.value}" ${selected} class="is-active">${item.text}</option>--%>
                                         <%--</c:forEach>--%>
                                     <%--</select>--%>
-                                    <t:multiSelect id="groups" items="${groups}" selectedValues="${user.allProjectIds}" placeHolder="None"/>
+                                    <t:multiSelect id="groups" items="${groups}" selectedValues="${user.allGroupIds}" placeHolder="None"/>
 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field is-horizontal">
+                        <div class="field-label">
+                            <label class="label">Projects</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="control is-expanded">
+                                <div class="select is-multiple is-fullwidth">
+                                    <t:multiSelect id="projects" items="${projects}" selectedValues="${user.belongedToProjectIds}" placeHolder="None"/>
                                 </div>
                             </div>
                         </div>
@@ -75,19 +87,6 @@
                                     <figure class="image is-32x32">
                                         <img src="${user.avatar.base64}"/>
                                     </figure>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="field is-horizontal">
-                        <div class="field-label">
-                            <label class="label">Projects</label>
-                        </div>
-                        <div class="field-body">
-                            <div class="control is-expanded">
-                                <div class="select is-multiple is-fullwidth">
-                                    <t:multiSelect id="projects" items="${projects}" selectedValues="${user.allProjectIds}" placeHolder="None"/>
                                 </div>
                             </div>
                         </div>

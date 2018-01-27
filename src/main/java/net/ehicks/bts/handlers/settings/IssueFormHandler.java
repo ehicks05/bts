@@ -25,7 +25,7 @@ public class IssueFormHandler
         List<IssueForm> issueForms = IssueForm.getByUserId(userSession.getUserId());
         request.setAttribute("issueForms", issueForms);
 
-        return "/WEB-INF/webroot/manageIssueFilters.jsp";
+        return "/WEB-INF/webroot/settings/manageIssueFilters.jsp";
     }
 
     @Route(tab1 = "settings", tab2 = "savedSearches", tab3 = "", action = "delete")

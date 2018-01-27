@@ -53,7 +53,7 @@
     <div class="container">
         <div class="columns is-multiline is-centered">
             <div class="column is-one-quarter">
-                <div class="box">
+                <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">Sessions</h5>
 
                     <table class="table">
@@ -76,7 +76,7 @@
                 </div>
             </div>
             <div class="column is-one-quarter">
-                <div class="box">
+                <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">System Info</h5>
 
                     <table class="table">
@@ -97,7 +97,7 @@
                 </div>
             </div>
             <div class="column is-one-quarter">
-                <div class="box">
+                <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">DB Info</h5>
 
                     <table class="table">
@@ -127,7 +127,7 @@
                 </div>
             </div>
             <div class="column is-one-quarter">
-                <div class="box">
+                <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">Connection Info</h5>
 
                     <table class="table">
@@ -165,7 +165,7 @@
                 </div>
             </div>
             <div class="column is-one-half">
-                <div class="box">
+                <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">DB Pool Info</h5>
 
                     <table class="table">
@@ -186,7 +186,7 @@
                 </div>
             </div>
             <div class="column is-one-half">
-                <div class="box">
+                <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">Runtime MXBean Arguments</h5>
 
                     <table class="table">
@@ -204,7 +204,7 @@
                 </div>
             </div>
             <div class="column is-one-half">
-                <div class="box">
+                <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">Application Scope Vars</h5>
 
                     <table class="table">
