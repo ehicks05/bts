@@ -4,8 +4,9 @@ import net.ehicks.eoi.AuditUser;
 
 public enum SystemTask implements AuditUser
 {
-    DEFAULT_DATA_LOADER("DEFAULT_DATA_LOADER"),
+    SEEDER("SEEDER"),
     STARTUP("STARTUP"),
+    REGISTRATION_HANDLER("REGISTRATION_HANDLER"),
     EMAIL_ENGINE("EMAIL_ENGINE");
 
     private String id;

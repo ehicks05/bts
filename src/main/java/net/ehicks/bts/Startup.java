@@ -74,13 +74,8 @@ public class Startup
                 log.error(e.getMessage(), e);
             }
 
-            BtsSystem btsSystem = BtsSystem.getById(1);
-            if (btsSystem == null)
-            {
-                btsSystem = new BtsSystem();
-                long id = EOI.insert(btsSystem, SystemTask.DEFAULT_DATA_LOADER);
-                btsSystem = BtsSystem.getById(id);
-            }
+            BtsSystem btsSystem = BtsSystem.getSystem();
+
             // only override email settings if they're not already in the DB.
             if (btsSystem.getEmailHost().isEmpty()) btsSystem.setEmailHost(overrideProps.getProperty("emailHost"));
             if (btsSystem.getEmailPort() == 0) btsSystem.setEmailPort(Common.stringToInt(overrideProps.getProperty("emailPort")));

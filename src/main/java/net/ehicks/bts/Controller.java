@@ -1,7 +1,6 @@
 package net.ehicks.bts;
 
 import net.ehicks.bts.beans.*;
-import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,22 +36,26 @@ public class Controller extends HttpServlet
         {
             Startup.dropTables();
             Startup.createTables();
-            new Thread(DefaultDataLoader::createDemoData).start();
+
+            BtsSystem btsSystem = BtsSystem.getSystem();
+            if (btsSystem == null)
+            {
+                btsSystem = new BtsSystem();
+                EOI.insert(btsSystem, SystemTask.STARTUP);
+            }
+
+            Seeder.createDemoData();
         }
+        // run pre-migration sql script here
+        // database migration here
 
         Startup.loadOverrideProperties(SystemInfo.INSTANCE.getOverridePropertiesDirectory());
-
-        BtsSystem btsSystem = BtsSystem.getSystem();
-        while (btsSystem == null)
-        {
-            Common.sleep(100);
-            btsSystem = BtsSystem.getSystem();
-        }
-        getServletContext().setAttribute("btsSystem", btsSystem);
 
         Router.loadRoutes();
 
         BackupDbTask.scheduleTask();
+
+        getServletContext().setAttribute("btsSystem", BtsSystem.getSystem());
 
         log.info("BTS Controller.init done in {} ms", (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()));
     }

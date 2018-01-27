@@ -5,6 +5,10 @@
   Time: 10:59 PM
   To change this template use File | Settings | File Templates.
 --%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
@@ -92,8 +96,27 @@
                     </div>
                 </article>
 
+                <c:if test="${!empty sessionScope['signUpResultMessage']}">
+                    <article id="signUpResultMessage" class="message ${sessionScope['signUpResultClass']}">
+                        <div class="message-header">
+                            <p>Sign Up Result</p>
+                            <button class="delete" aria-label="delete" onclick="$('#signUpResultMessage').addClass('is-hidden')"></button>
+                        </div>
+                        <div class="message-body">
+                            ${sessionScope['signUpResultMessage']}
+                            <c:if test="${sessionScope['signUpResultClass'] eq 'is-success'}">
+                                <i class="fas fa-trophy has-text-warning" ></i>
+                                <i class="fas fa-star has-text-warning" ></i>
+                            </c:if>
+                        </div>
+                    </article>
+
+                    <c:remove var="signUpResultMessage" scope="session"/>
+                    <c:remove var="signUpResultClass" scope="session"/>
+                </c:if>
+
                 <p class="has-text-grey">
-                    <a href="../">Sign Up</a> &nbsp;·&nbsp;
+                    <a href="#" id="signUpButton">Sign Up</a> &nbsp;·&nbsp;
                     <a href="../">Forgot Password</a> &nbsp;·&nbsp;
                     <a href="../">Need Help?</a>
                 </p>
@@ -101,5 +124,39 @@
         </div>
     </div>
 </section>
+
+<div class="modal" id="signUpDialog">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Sign Up</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <form id="frmSignUp" name="frmCreateIssue" method="post" action="${pageContext.request.contextPath}/signUp?tab1=registration&action=register">
+                <t:text id="fldEmailAddress" label="Email" required="true" />
+                <t:text id="fldPassword" label="Password" required="true" />
+                <t:text id="fldPassword2" label="Re-enter Password" required="true" />
+            </form>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-primary create">Sign Up</button>
+            <button class="button close">Cancel</button>
+        </footer>
+    </div>
+</div>
+
+<script>
+    initDialog('signUp');
+
+    $(function () {
+        var dialog = $('#signUpDialog');
+
+        dialog.find('.create').on('click', function ()
+        {
+            $('#frmSignUp').submit()
+        });
+    });
+</script>
 </body>
 </html>

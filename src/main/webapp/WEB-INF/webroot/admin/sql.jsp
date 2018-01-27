@@ -61,47 +61,47 @@
 
                 <h3 class="subtitle is-3">Result Sets</h3>
 
-                <div class="tableContainer">
-                    <c:forEach var="resultSet" items="${resultSets}" varStatus="loop">
-                        <h5 class="subtitle is-5">
-                            Result Set ${loop.count}:
-                            <c:if test="${resultSet.truncated}">
-                                Truncated to
-                            </c:if>
-                            ${fn:length(resultSet.resultRows)} rows
-                        </h5>
-                        Command: <pre><code>${resultSet.sqlCommand}</code></pre>
+                <c:forEach var="resultSet" items="${resultSets}" varStatus="loop">
+                    <h5 class="subtitle is-5">
+                        Result Set ${loop.count}:
+                        <c:if test="${resultSet.truncated}">
+                            Truncated to
+                        </c:if>
+                        ${fn:length(resultSet.resultRows)} rows
+                    </h5>
+                    Command: <pre><code>${resultSet.sqlCommand}</code></pre>
 
-                        <c:if test="${!empty resultSet.columnLabels}">
-                            <table class="table is-striped is-narrow is-hoverable">
+                    <c:if test="${!empty resultSet.columnLabels}">
+                        <div class="overflowTableContainer">
+                            <table style="overflow-x:auto;width:1600px;display:block;" class="table is-narrow is-fullwidth">
                                 <thead>
-                                <tr>
-                                    <c:forEach var="columnLabel" items="${resultSet.columnLabels}">
-                                        <th>${columnLabel}</th>
-                                    </c:forEach>
-                                </tr>
+                                    <tr>
+                                        <c:forEach var="columnLabel" items="${resultSet.columnLabels}">
+                                            <th>${columnLabel}</th>
+                                        </c:forEach>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <c:forEach var="resultRow" items="${resultSet.resultRows}">
                                         <tr>
                                             <c:forEach var="resultCell" items="${resultRow}">
-                                                <td>${resultCell}</td>
+                                                <td><pre style="padding:0;background-color:inherit;">${resultCell}</pre></td>
                                             </c:forEach>
                                         </tr>
                                     </c:forEach>
                                 </tbody>
                             </table>
-                        </c:if>
+                        </div>
+                    </c:if>
 
-                        <c:if test="${!empty resultSet.rowsUpdated}">
-                            ${resultSet.rowsUpdated} rows updated.
-                        </c:if>
-                        <c:if test="${!empty resultSet.error}">
-                            ${resultSet.error}
-                        </c:if>
-                        <hr>
-                    </c:forEach>
-                </div>
+                    <c:if test="${!empty resultSet.rowsUpdated}">
+                        ${resultSet.rowsUpdated} rows updated.
+                    </c:if>
+                    <c:if test="${!empty resultSet.error}">
+                        ${resultSet.error}
+                    </c:if>
+                    <hr>
+                </c:forEach>
             </div>
         </div>
     </div>

@@ -25,6 +25,7 @@ public class SecurityFilter implements Filter
             boolean isResource = false;
             String servletPath = request.getServletPath();
 
+            if (servletPath.startsWith("/signUp"))     isResource = true;
             if (servletPath.startsWith("/images/"))     isResource = true;
             if (servletPath.startsWith("/styles/"))     isResource = true;
             if (servletPath.endsWith(".css"))           isResource = true;

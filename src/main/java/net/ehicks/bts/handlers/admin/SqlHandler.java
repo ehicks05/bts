@@ -1,6 +1,5 @@
 package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.bts.DefaultDataLoader;
 import net.ehicks.bts.Route;
 import net.ehicks.bts.UserSession;
 import net.ehicks.eoi.EOI;
