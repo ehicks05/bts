@@ -96,7 +96,7 @@ public class Seeder
             long id = EOI.insert(system, SystemTask.SEEDER);
             system = BtsSystem.getById(id);
         }
-        system.setInstanceName("Valericon Industries");
+        system.setInstanceName("BugCo Industries");
         system.setLogonMessage("Welcome to Puffin Issue Tracker.<br>Please contact Eric for a demo.");
 
         EOI.update(system, SystemTask.SEEDER);

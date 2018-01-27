@@ -49,7 +49,7 @@
 <section class="section">
     <div class="container">
         <div class="columns is-multiline is-centered">
-            <div class="column">
+            <div class="column is-one-fifth">
                 <form id="frmSqlCommand" name="frmSqlCommand" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=sql&action=runCommand">
                     <textarea class="textarea" id="sqlCommand" name="sqlCommand" rows="5" cols="80" placeholder="Enter command...">${sessionScope.sqlCommand}</textarea>
                 </form>
@@ -57,8 +57,13 @@
                 <div>
                     <input id="runCommand" type="button" value="Run Command" class="button is-primary" />
                 </div>
-                <br>
-
+                <div>
+                    <ul>
+                        <li>explain analyze select * from table</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="column is-four-fifths">
                 <h3 class="subtitle is-3">Result Sets</h3>
 
                 <c:forEach var="resultSet" items="${resultSets}" varStatus="loop">
@@ -73,7 +78,7 @@
 
                     <c:if test="${!empty resultSet.columnLabels}">
                         <div class="overflowTableContainer">
-                            <table style="overflow-x:auto;width:1600px;display:block;" class="table is-narrow is-fullwidth">
+                            <table class="table is-narrow is-fullwidth">
                                 <thead>
                                     <tr>
                                         <c:forEach var="columnLabel" items="${resultSet.columnLabels}">

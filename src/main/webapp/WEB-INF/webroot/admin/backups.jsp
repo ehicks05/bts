@@ -42,7 +42,7 @@
 <section class="section">
     <div class="container">
         <div class="columns is-multiline is-centered">
-            <div class="column">
+            <div class="column is-narrow">
                 <div class="box">
                     <table class="table is-striped is-narrow is-hoverable is-fullwidth">
                         <thead>
@@ -52,9 +52,9 @@
                                     <input type="checkbox" id="table-header" class="mdl-checkbox__input" />
                                 </label>
                             </th>
-                            <th></th>
+                            <th class="has-text-right"></th>
                             <th class="mdl-data-table__cell--non-numeric">Name</th>
-                            <th>Size</th>
+                            <th class="has-text-right">Size</th>
                             <th>Last Modified</th>
                             <th></th>
                         </tr>
@@ -66,12 +66,12 @@
                                         <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
                                     </label>
                                 </td>
-                                <td>${loop.count}</td>
+                                <td class="has-text-right">${loop.count}</td>
                                 <td>
                                     <a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=backups&action=viewBackup&backupName=${backup.name}">
                                             ${backup.name}</a>
                                 </td>
-                                <td>${ct:fileSize(backup.length())}</td>
+                                <td class="has-text-right">${ct:fileSize(backup.length())}</td>
                                 <td><fmt:formatDate value="${ct:longToDate(backup.lastModified())}" pattern="MM-dd-yyyy hh:mm:ss a"/> </td>
                                 <td><a onclick="deleteBackup('${backup.name}');"><i class="fas fa-trash"></i></a></td>
                             </tr>

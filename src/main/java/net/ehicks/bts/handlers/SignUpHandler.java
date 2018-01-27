@@ -50,7 +50,7 @@ public class SignUpHandler
             role.setRoleName("user");
             EOI.insert(role, SystemTask.REGISTRATION_HANDLER);
 
-            request.getSession().setAttribute("signUpResultMessage", "Sign up successful! Please sign in.");
+            request.getSession().setAttribute("signUpResultMessage", "Sign up successful! Please log in.");
             request.getSession().setAttribute("signUpResultClass", "is-success");
         }
         else

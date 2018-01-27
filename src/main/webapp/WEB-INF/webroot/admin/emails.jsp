@@ -41,7 +41,7 @@
 <section class="section">
     <div class="container">
         <div class="columns is-multiline is-centered">
-            <div class="column">
+            <div class="column is-narrow">
                 <table class="table is-striped is-narrow is-hoverable">
                     <thead>
                     <tr>
@@ -50,12 +50,12 @@
                                 <input type="checkbox" id="table-header" class="mdl-checkbox__input" />
                             </label>
                         </th>
-                        <th>Object Id</th>
-                        <th>Status</th>
-                        <th>User</th>
+                        <th class="has-text-right">Object Id</th>
+                        <th class="has-text-centered">Status</th>
+                        <th class="has-text-right">User</th>
                         <th>action</th>
-                        <th>issueId</th>
-                        <th>commentId</th>
+                        <th class="has-text-right">issueId</th>
+                        <th class="has-text-right">commentId</th>
                         <th>description</th>
                         <th></th>
                     </tr>
@@ -67,14 +67,14 @@
                                     <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
                                 </label>
                             </td>
-                            <td>${email.id}</td>
-                            <td title="${email.status}">
+                            <td class="has-text-right">${email.id}</td>
+                            <td  class="has-text-centered" title="${email.status}">
                                 <i class="fas fa-${email.statusIcon}"></i>
                             </td>
-                            <td>${email.userId}</td>
+                            <td class="has-text-right">${email.userId}</td>
                             <td>${email.emailAction.verb}</td>
-                            <td>${email.issueId}</td>
-                            <td>${email.commentId}</td>
+                            <td class="has-text-right">${email.issueId}</td>
+                            <td class="has-text-right">${email.commentId}</td>
                             <td>${email.description}</td>
                             <td><a onclick="deleteEmail('${email.id}');"><i class="fas fa-trash"></i></a></td>
                         </tr>

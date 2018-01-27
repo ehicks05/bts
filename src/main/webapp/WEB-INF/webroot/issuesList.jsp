@@ -111,7 +111,7 @@
                     </header>
 
                     <div class="card-content">
-                        <div class="tableContainer">
+                        <div class="ajaxTableContainer">
                             <jsp:include page="issueTable.jsp"/>
                         </div>
                     </div>

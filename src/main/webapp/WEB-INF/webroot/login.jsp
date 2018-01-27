@@ -10,6 +10,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<jsp:useBean id="btsSystem" type="net.ehicks.bts.beans.BtsSystem" scope="application"/>
+<c:if test="${!empty signUpResultMessage}">
+    <jsp:useBean id="signUpResultMessage" type="java.lang.String" scope="session"/>
+</c:if>
+<c:if test="${!empty signUpResultClass}">
+    <jsp:useBean id="signUpResultClass" type="java.lang.String" scope="session"/>
+</c:if>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -58,8 +66,8 @@
     <div class="hero-body">
         <div class="container has-text-centered">
             <div class="column is-4 is-offset-4">
-                <%--<h3 class="title has-text-grey">${applicationScope['systemInfo'].appName}</h3>--%>
-                <%--<p class="subtitle has-text-grey">Please login to proceed.</p>--%>
+                <h3 class="title has-text-grey">${btsSystem.instanceName}</h3>
+                <p class="subtitle has-text-grey">Please login to proceed.</p>
                 <div class="box">
                     <figure class="avatar">
                         <img src="${pageContext.request.contextPath}/images/puffin-text.png" style="width: 128px">
@@ -92,7 +100,7 @@
                         <button class="delete" aria-label="delete" onclick="$('#welcomeMessage').addClass('is-hidden')"></button>
                     </div>
                     <div class="message-body">
-                        ${applicationScope['btsSystem'].logonMessage}
+                        ${btsSystem.logonMessage}
                     </div>
                 </article>
 

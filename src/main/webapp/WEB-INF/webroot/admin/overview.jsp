@@ -26,17 +26,20 @@
 
 <section class="section">
     <div class="container">
-        <div class="columns is-multiline is-mobile is-centered">
+        <div class="columns is-multiline is-mobile is-centered is-gapless">
             <c:forEach var="adminSubscreen" items="${userSession.systemInfo.adminSubscreens}">
-                <div class="column is-one-third has-text-centered">
+                <div class="column has-text-centered">
                     <a href="${pageContext.request.contextPath}/${adminSubscreen[0]}">
-                        <span class="icon is-large">
-                            <i class="fas fa-3x fa-${adminSubscreen[1]}"></i>
-                        </span>
-                        <br>${adminSubscreen[2]}
+                        <div class="box has-text-link">
+                            <span class="icon is-large">
+                                <i class="fas fa-3x fa-${adminSubscreen[1]}"></i>
+                            </span>
+                            <br>${adminSubscreen[2]}
+                        </div>
                     </a>
                 </div>
             </c:forEach>
+            <style>.box:hover{background-color: lightgrey}</style>
         </div>
     </div>
 </section>

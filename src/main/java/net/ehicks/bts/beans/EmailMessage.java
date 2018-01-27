@@ -201,7 +201,7 @@ public class EmailMessage implements Serializable
         statusToIcon.put("CREATED", "hourglass-start has-text-info");
         statusToIcon.put("WAITING", "hourglass-half has-text-warning");
         statusToIcon.put("SENT", "check has-text-success");
-        statusToIcon.put("FAILED", "ban has-text -danger");
+        statusToIcon.put("FAILED", "ban has-text-danger");
         return statusToIcon.getOrDefault(status, "question is-warning");
     }
     // -------- Getters / Setters ----------

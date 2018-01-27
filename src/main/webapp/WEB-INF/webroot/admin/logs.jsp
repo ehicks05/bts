@@ -37,7 +37,7 @@
 <section class="section">
     <div class="container">
         <div class="columns is-multiline is-centered">
-            <div class="column">
+            <div class="column is-narrow">
                 <table class="table is-striped is-narrow is-hoverable">
                     <thead>
                     <tr>

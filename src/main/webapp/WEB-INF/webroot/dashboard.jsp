@@ -69,7 +69,7 @@
                         </header>
 
                         <div class="card-content">
-                            <div class="tableContainer">
+                            <div class="ajaxTableContainer">
                                 <c:set var="issueForm" value="${issueForm}" scope="request"/>
                                 <c:set var="searchResult" value="${searchResult}" scope="request"/>
                                 <jsp:include page="issueTable.jsp"/>

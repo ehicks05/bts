@@ -66,7 +66,7 @@ public class AdminHandler
         response.sendRedirect("view?tab1=admin&tab2=cache&action=form");
     }
 
-    @Route(tab1 = "admin", tab2 = "system", tab3 = "", action = "form")
+    @Route(tab1 = "admin", tab2 = "system", tab3 = "info", action = "form")
     public static String showSystemInfo(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
@@ -523,5 +523,32 @@ public class AdminHandler
         }
 
         response.sendRedirect("view?tab1=admin&tab2=email&tab3=modify&action=form");
+    }
+
+    @Route(tab1 = "admin", tab2 = "system", tab3 = "modify", action = "form")
+    public static String showModifySystem(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        request.setAttribute("btsSystem", BtsSystem.getSystem());
+
+        return "/WEB-INF/webroot/admin/modifySystem.jsp";
+    }
+
+    @Route(tab1 = "admin", tab2 = "system", tab3 = "modify", action = "modify")
+    public static void modifySystem(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+
+        BtsSystem btsSystem = BtsSystem.getSystem();
+        if (btsSystem != null)
+        {
+            btsSystem.setInstanceName(Common.getSafeString(request.getParameter("instanceName")));
+            btsSystem.setLogonMessage(Common.getSafeString(request.getParameter("logonMessage")));
+            btsSystem.setDefaultAvatar(Common.stringToLong(request.getParameter("defaultAvatar")));
+            EOI.update(btsSystem, userSession);
+
+            request.getServletContext().setAttribute("btsSystem", BtsSystem.getSystem());
+        }
+
+        response.sendRedirect("view?tab1=admin&tab2=system&tab3=modify&action=form");
     }
 }

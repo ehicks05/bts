@@ -65,11 +65,12 @@ public enum SystemInfo
     public List<List<String>> getAdminSubscreens()
     {
         return Arrays.asList(
+                Arrays.asList("view?tab1=admin&tab2=system&tab3=modify&action=form", "server", "Manage System", "system"),
                 Arrays.asList("view?tab1=admin&tab2=users&action=form", "user", "Manage Users", "users"),
                 Arrays.asList("view?tab1=admin&tab2=groups&action=form", "users", "Manage Groups", "groups"),
                 Arrays.asList("view?tab1=admin&tab2=projects&action=form", "folder", "Manage Projects", "projects"),
                 Arrays.asList("view?tab1=admin&tab2=cache&action=form", "microchip", "Cache Info", "cache"),
-                Arrays.asList("view?tab1=admin&tab2=system&action=form", "server", "System Info", "system"),
+                Arrays.asList("view?tab1=admin&tab2=system&tab3=info&action=form", "chart-bar", "System Info", "system"),
                 Arrays.asList("view?tab1=admin&tab2=audit&action=form", "history", "Audit Records", "audit"),
                 Arrays.asList("view?tab1=admin&tab2=email&action=form", "envelope", "Manage Email", "email"),
                 Arrays.asList("view?tab1=admin&tab2=logs&action=form", "file-alt", "Logs", "logs"),

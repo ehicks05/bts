@@ -36,7 +36,7 @@
         <div class="columns is-multiline is-centered">
             <div class="column">
                 <form id="frmGroup" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=groups&tab3=modify&action=modify&groupId=${group.id}">
-                    <t:text id="groupId" label="Group Id" value="${group.id}"/>
+                    <t:text id="groupId" label="Group Id" value="${group.id}" isStatic="true"/>
                     <t:text id="name" label="Name" value="${group.name}"/>
 
                     <input id="saveGroupButton" type="submit" value="Save" class="button is-primary" />

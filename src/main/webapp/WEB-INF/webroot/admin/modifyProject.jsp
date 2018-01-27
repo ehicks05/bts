@@ -36,7 +36,7 @@
         <div class="columns is-multiline is-centered">
             <div class="column">
                 <form id="frmProject" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=projects&tab3=modify&action=modify&projectId=${project.id}">
-                    <t:text id="projectId" label="Project Id" value="${project.id}"/>
+                    <t:text id="projectId" label="Project Id" value="${project.id}" isStatic="true"/>
                     <t:text id="name" label="Name" value="${project.name}"/>
                     <t:text id="prefix" label="Prefix" value="${project.prefix}"/>
 

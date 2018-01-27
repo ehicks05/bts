@@ -83,7 +83,7 @@
                 <div class="box">
                     <h3 class="subtitle is-3">Manage Subscriptions</h3>
 
-                    <div class="tableContainer">
+                    <div class="ajaxTableContainer">
                         <table class="table">
                             <thead>
                             <tr>

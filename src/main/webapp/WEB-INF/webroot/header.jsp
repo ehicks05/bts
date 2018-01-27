@@ -1,4 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:if test="${!empty btsSystem}">
+    <jsp:useBean id="btsSystem" type="net.ehicks.bts.beans.BtsSystem" scope="application"/>
+</c:if>
 <c:if test="${!empty userSession}">
     <jsp:useBean id="userSession" type="net.ehicks.bts.UserSession" scope="session"/>
 </c:if>
@@ -170,19 +173,9 @@
                 </a>
             </div>
             <div class="navbar-end">
-                <div class="navbar-item">
-                    <nav class="breadcrumb" aria-label="breadcrumbs">
-                        <ul>
-                            <li><a href="#" onclick="followBreadcrumbs('${param.tab1}')">${param.tab1}</a></li>
-                            <c:if test="${!empty param.tab2}">
-                                <li><a href="#" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}')">${param.tab2}</a></li>
-                            </c:if>
-                            <c:if test="${!empty param.tab3}">
-                                <li><a href="#" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}','${param.tab3}')">${param.tab3}</a></li>
-                            </c:if>
-                        </ul>
-                    </nav>
-                </div>
+                <%--<div class="navbar-item">--%>
+                    <%----%>
+                <%--</div>--%>
             </div>
         </div>
     </div>

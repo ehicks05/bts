@@ -138,4 +138,9 @@ public class Startup
     {
         SQLMigrator.migrate(DBMap.dbMaps);
     }
+
+    static void runSqlScripts()
+    {
+
+    }
 }

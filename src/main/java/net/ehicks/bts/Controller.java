@@ -49,6 +49,7 @@ public class Controller extends HttpServlet
         else
         {
             // run pre-migration sql script here
+            Startup.runSqlScripts();
             // database migration here
             Startup.migrateDb();
         }
