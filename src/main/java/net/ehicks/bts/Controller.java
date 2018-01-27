@@ -46,8 +46,12 @@ public class Controller extends HttpServlet
 
             Seeder.createDemoData();
         }
-        // run pre-migration sql script here
-        // database migration here
+        else
+        {
+            // run pre-migration sql script here
+            // database migration here
+            Startup.migrateDb();
+        }
 
         Startup.loadOverrideProperties(SystemInfo.INSTANCE.getOverridePropertiesDirectory());
 

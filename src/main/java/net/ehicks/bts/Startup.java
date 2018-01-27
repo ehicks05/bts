@@ -2,10 +2,7 @@ package net.ehicks.bts;
 
 import net.ehicks.bts.beans.BtsSystem;
 import net.ehicks.common.Common;
-import net.ehicks.eoi.ConnectionInfo;
-import net.ehicks.eoi.DBMap;
-import net.ehicks.eoi.EOI;
-import net.ehicks.eoi.SQLGenerator;
+import net.ehicks.eoi.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,5 +132,10 @@ public class Startup
             }
         }
         log.info("Dropped {}/{} existing tables in {} ms", tablesDropped, DBMap.dbMaps.size(), (System.currentTimeMillis() - subTaskStart));
+    }
+
+    static void migrateDb()
+    {
+        SQLMigrator.migrate(DBMap.dbMaps);
     }
 }
