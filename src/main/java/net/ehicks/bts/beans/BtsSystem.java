@@ -23,6 +23,9 @@ public class BtsSystem implements Serializable
     @Column(name = "logon_message")
     private String logonMessage = "";
 
+    @Column(name = "default_avatar")
+    private Long defaultAvatar;
+
     @Column(name = "email_host")
     private String emailHost = "";
 
@@ -102,6 +105,16 @@ public class BtsSystem implements Serializable
     public void setLogonMessage(String logonMessage)
     {
         this.logonMessage = logonMessage;
+    }
+
+    public Long getDefaultAvatar()
+    {
+        return defaultAvatar;
+    }
+
+    public void setDefaultAvatar(Long defaultAvatar)
+    {
+        this.defaultAvatar = defaultAvatar;
     }
 
     public String getEmailHost()

@@ -20,11 +20,11 @@ public class ProfileHandler
         Long userId = Common.stringToLong(request.getParameter("userId"));
         User user = User.getByUserId(userId);
 
-        if (!User.getAllForUser(userSession.getUserId()).contains(user))
+        if (!userId.equals(userSession.getUserId()) && !User.getAllForUser(userSession.getUserId()).contains(user))
             return "/WEB-INF/webroot/error.jsp";
 
         request.setAttribute("user", user);
 
-        return "/WEB-INF/webroot/userForm.jsp";
+        return "/WEB-INF/webroot/profile.jsp";
     }
 }

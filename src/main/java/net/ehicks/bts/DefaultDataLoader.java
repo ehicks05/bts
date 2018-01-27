@@ -2,6 +2,7 @@ package net.ehicks.bts;
 
 import net.ehicks.bts.beans.*;
 import net.ehicks.bts.util.PasswordUtil;
+import net.ehicks.common.Common;
 import net.ehicks.common.Timer;
 import net.ehicks.eoi.EOI;
 import org.slf4j.Logger;
@@ -167,7 +168,15 @@ public class DefaultDataLoader
                     avatar.setDbFileId(dbFileId);
                     avatar.setPublicUse(true);
                     avatar.setCreatedOn(new Date());
-                    EOI.insert(avatar, SystemTask.DEFAULT_DATA_LOADER);
+                    long avatarId = EOI.insert(avatar, SystemTask.DEFAULT_DATA_LOADER);
+
+                    // set default avatar
+                    if (dbFile.getName().equals("no_avatar.png"))
+                    {
+                        BtsSystem btsSystem = BtsSystem.getSystem();
+                        btsSystem.setDefaultAvatar(avatarId);
+                        EOI.update(btsSystem, SystemTask.DEFAULT_DATA_LOADER);
+                    }
                 }
             }
         }

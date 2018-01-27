@@ -203,6 +203,26 @@
                     </table>
                 </div>
             </div>
+            <div class="column is-one-half">
+                <div class="box">
+                    <h5 class="subtitle is-5">Application Scope Vars</h5>
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Key</th>
+                            <th>Val</th>
+                        </tr>
+                        </thead>
+                        <c:forEach var="entry" items="${applicationScope}">
+                            <tr>
+                                <td>${entry.key}</td>
+                                <td>${entry.value}</td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </section>
