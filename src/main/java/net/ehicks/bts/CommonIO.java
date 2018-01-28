@@ -1,7 +1,6 @@
 package net.ehicks.bts;
 
 import net.ehicks.bts.beans.DBFile;
-import net.ehicks.eoi.EOI;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommonIO
@@ -30,7 +30,7 @@ public class CommonIO
         }
         catch (Exception e)
         {
-
+            // do nothing
         }
     }
 
@@ -41,10 +41,11 @@ public class CommonIO
         response.setHeader("Content-Disposition", String.format(contentDisposition + "; filename=%s", file.getName()));
         response.setContentLength(Long.valueOf(file.length()).intValue());
 
-        InputStream inputStream = new FileInputStream(file);
-        IOUtils.copy(inputStream, response.getOutputStream());
-        IOUtils.closeQuietly(inputStream);
-        IOUtils.closeQuietly(response.getOutputStream());
+        try (InputStream inputStream = new FileInputStream(file);
+             OutputStream outputStream = response.getOutputStream())
+        {
+            IOUtils.copy(inputStream, outputStream);
+        }
     }
 
     public static void sendFileInResponse(HttpServletResponse response, DBFile dbFile, boolean inline) throws IOException
@@ -54,14 +55,16 @@ public class CommonIO
         response.setHeader("Content-Disposition", String.format(contentDisposition + "; filename=%s", dbFile.getName()));
         response.setContentLength(Long.valueOf(dbFile.getContent().length).intValue());
 
-        InputStream inputStream = new ByteArrayInputStream(dbFile.getContent());
-        IOUtils.copy(inputStream, response.getOutputStream());
-        IOUtils.closeQuietly(inputStream);
-        IOUtils.closeQuietly(response.getOutputStream());
+        try (InputStream inputStream = new ByteArrayInputStream(dbFile.getContent());
+             OutputStream outputStream = response.getOutputStream())
+        {
+            IOUtils.copy(inputStream, outputStream);
+        }
     }
 
-    public static void getFilesFromRequest(HttpServletRequest request)
+    public static List<FileItem> getFilesFromRequest(HttpServletRequest request)
     {
+        List<FileItem> fileItems = new ArrayList<>();
         String responseMessage = "";
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
         if (isMultipart)
@@ -110,5 +113,7 @@ public class CommonIO
                 log.error(e.getMessage(), e);
             }
         }
+
+        return fileItems;
     }
 }
