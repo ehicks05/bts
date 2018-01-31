@@ -2,6 +2,8 @@ package net.ehicks.bts.tags;
 
 import net.ehicks.bts.ISelectTagSupport;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +13,11 @@ public class TagUtils
     public static Date longToDate(long input)
     {
         return new Date(input);
+    }
+
+    public static String formatZonedDateTime(ZonedDateTime zonedDateTime)
+    {
+        return zonedDateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME);
     }
 
     public static List<ISelectTagSupport> stringToISelectTag(String input)

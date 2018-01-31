@@ -8,11 +8,12 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Paths;
+import java.time.ZonedDateTime;
 import java.util.*;
 
-public enum SystemInfo
+public class SystemInfo
 {
-    INSTANCE;
+    public static SystemInfo INSTANCE = new SystemInfo();
 
     private ConnectionInfo dbConnectionInfo;
 
@@ -24,9 +25,12 @@ public enum SystemInfo
     private long systemStart;
     private long databaseCacheInKBs;
 
-    private String logDirectory = "";
     private String backupDirectory = "";
     private String overridePropertiesDirectory = "";
+
+    private String version = "";
+    private String gitVersion = "";
+    private ZonedDateTime gitVersionDate;
 
     public Date getSystemStartTime()
     {
@@ -50,6 +54,12 @@ public enum SystemInfo
         stats.put("Backup Directory", Paths.get(getBackupDirectory()).toFile().getCanonicalPath());
 
         return stats;
+    }
+
+    // actual configuration is in log4j.properties
+    public String getLogDirectory()
+    {
+        return "../logs/";
     }
 
     /** url, icon name, label, tab2 of the url */
@@ -118,7 +128,7 @@ public enum SystemInfo
 
     public String getLogDirectoryCanonical() throws IOException
     {
-        return new File(logDirectory).getCanonicalPath();
+        return new File(getLogDirectory()).getCanonicalPath();
     }
 
     public String getBackupDirectoryCanonical() throws IOException
@@ -198,16 +208,6 @@ public enum SystemInfo
         this.databaseCacheInKBs = databaseCacheInKBs;
     }
 
-    public String getLogDirectory()
-    {
-        return logDirectory;
-    }
-
-    public void setLogDirectory(String logDirectory)
-    {
-        this.logDirectory = logDirectory;
-    }
-
     public String getBackupDirectory()
     {
         return backupDirectory;
@@ -226,5 +226,35 @@ public enum SystemInfo
     public void setOverridePropertiesDirectory(String overridePropertiesDirectory)
     {
         this.overridePropertiesDirectory = overridePropertiesDirectory;
+    }
+
+    public String getVersion()
+    {
+        return version;
+    }
+
+    public void setVersion(String version)
+    {
+        this.version = version;
+    }
+
+    public String getGitVersion()
+    {
+        return gitVersion;
+    }
+
+    public void setGitVersion(String gitVersion)
+    {
+        this.gitVersion = gitVersion;
+    }
+
+    public ZonedDateTime getGitVersionDate()
+    {
+        return gitVersionDate;
+    }
+
+    public void setGitVersionDate(ZonedDateTime gitVersionDate)
+    {
+        this.gitVersionDate = gitVersionDate;
     }
 }

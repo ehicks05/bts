@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.ZonedDateTime;
 import java.util.Properties;
 
 public class Startup
@@ -37,7 +38,6 @@ public class Startup
         SystemInfo.INSTANCE.setDebugLevel(Common.stringToInt(properties.getProperty("debugLevel")));
         SystemInfo.INSTANCE.setDropCreateLoad(properties.getProperty("dropCreateLoad").equals("true"));
 
-        SystemInfo.INSTANCE.setLogDirectory(properties.getProperty("logDirectory"));
         SystemInfo.INSTANCE.setBackupDirectory(properties.getProperty("backupDirectory"));
         SystemInfo.INSTANCE.setOverridePropertiesDirectory(properties.getProperty("overridePropertiesDirectory"));
 
@@ -51,6 +51,26 @@ public class Startup
                 Common.getSafeString(properties.getProperty("pgDumpPath")),
                 Common.getSafeString(properties.getProperty("sqlserverServerInstance")));
         SystemInfo.INSTANCE.setDbConnectionInfo(dbConnectionInfo);
+
+        servletContext.setAttribute("systemInfo", SystemInfo.INSTANCE);
+    }
+
+    static void loadVersionFile(ServletContext servletContext)
+    {
+        Properties properties = new Properties();
+
+        try (InputStream input = servletContext.getResourceAsStream("/WEB-INF/version.txt");)
+        {
+            properties.load(input);
+        }
+        catch (IOException e)
+        {
+            log.error(e.getMessage(), e);
+        }
+
+        SystemInfo.INSTANCE.setVersion(properties.getProperty("Version"));
+        SystemInfo.INSTANCE.setGitVersion(properties.getProperty("Revision"));
+        SystemInfo.INSTANCE.setGitVersionDate(ZonedDateTime.parse(properties.getProperty("Revision-Date")));
 
         servletContext.setAttribute("systemInfo", SystemInfo.INSTANCE);
     }
