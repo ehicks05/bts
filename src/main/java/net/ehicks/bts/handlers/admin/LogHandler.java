@@ -32,7 +32,7 @@ public class LogHandler
         });
         request.setAttribute("logs", logs);
 
-        return "/WEB-INF/webroot/admin/logs.jsp";
+        return "/webroot/admin/logs.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "logs", tab3 = "", action = "delete")
@@ -77,7 +77,7 @@ public class LogHandler
         request.setAttribute("lines", lines);
         request.setAttribute("logName", logName);
         request.setAttribute("threadToColorMap", threadToColorMap);
-        return "/WEB-INF/webroot/admin/viewLog.jsp";
+        return "/webroot/admin/viewLog.jsp";
     }
 
     private static void parseLine(List<List<String>> lines, String line, Map<String, String> threadToColorMap)

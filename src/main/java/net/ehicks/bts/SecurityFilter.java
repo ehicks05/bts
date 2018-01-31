@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = "/*", filterName="Security Filter")
+//@WebFilter(urlPatterns = "/*", filterName="Security Filter")
 public class SecurityFilter implements Filter
 {
     @Override

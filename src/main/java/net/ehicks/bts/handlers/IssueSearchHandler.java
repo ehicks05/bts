@@ -44,7 +44,7 @@ public class IssueSearchHandler
         request.setAttribute("issueForm", issueForm);
         request.setAttribute("searchResult", searchResult);
 
-        return "/WEB-INF/webroot/issuesList.jsp";
+        return "/webroot/issuesList.jsp";
     }
 
     @Route(tab1 = "search", tab2 = "", tab3 = "", action = "ajaxGetPageOfResults")
@@ -98,7 +98,7 @@ public class IssueSearchHandler
             request.getSession().setAttribute("issueForm", issueForm);
             request.getSession().setAttribute("searchResult", searchResult);
         }
-        request.getRequestDispatcher("/WEB-INF/webroot/issueTable.jsp").forward(request, response);
+        request.getRequestDispatcher("/webroot/issueTable.jsp").forward(request, response);
     }
 
     @Route(tab1 = "search", tab2 = "", tab3 = "", action = "search")

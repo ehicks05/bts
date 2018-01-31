@@ -21,10 +21,10 @@ public class ProfileHandler
         User user = User.getByUserId(userId);
 
         if (!userId.equals(userSession.getUserId()) && !User.getAllForUser(userSession.getUserId()).contains(user))
-            return "/WEB-INF/webroot/error.jsp";
+            return "/webroot/error.jsp";
 
         request.setAttribute("user", user);
 
-        return "/WEB-INF/webroot/profile.jsp";
+        return "/webroot/profile.jsp";
     }
 }

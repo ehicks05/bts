@@ -27,6 +27,7 @@ public class Controller extends HttpServlet
     {
         log.info("BTS starting...");
         Startup.loadProperties(getServletContext());
+        Startup.loadVersionFile(getServletContext());
 
         EOI.init(SystemInfo.INSTANCE.getDbConnectionInfo());
 
@@ -108,7 +109,7 @@ public class Controller extends HttpServlet
 
             request.setAttribute("responseMessage", "Your account is disabled...");
 
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/webroot/login-failed.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/webroot/login-failed.jsp");
             dispatcher.forward(request, response);
 
             return;
@@ -156,7 +157,7 @@ public class Controller extends HttpServlet
 
         // security
         if (tab1.equals("admin") && !userSession.getUser().isAdmin())
-            return "/WEB-INF/webroot/error.jsp";
+            return "/webroot/error.jsp";
 
         // routing
         RouteDescription routeDescription = new RouteDescription(tab1, tab2, tab3, action);

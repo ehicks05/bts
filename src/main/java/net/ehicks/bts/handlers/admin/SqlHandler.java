@@ -24,7 +24,7 @@ public class SqlHandler
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
 
-        return "/WEB-INF/webroot/admin/sql.jsp";
+        return "/webroot/admin/sql.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "sql", tab3 = "", action = "runCommand")

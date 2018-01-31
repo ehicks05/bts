@@ -33,4 +33,10 @@
         <function-class>net.ehicks.bts.tags.TagUtils</function-class>
         <function-signature>java.util.Date longToDate(long)</function-signature>
     </function>
+
+    <function>
+        <name>formatZonedDateTime</name>
+        <function-class>net.ehicks.bts.tags.TagUtils</function-class>
+        <function-signature>java.lang.String formatZonedDateTime(java.time.ZonedDateTime)</function-signature>
+    </function>
 </taglib>

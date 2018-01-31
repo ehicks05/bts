@@ -22,11 +22,11 @@ public class ModifyIssueHandler
         Long issueId = Common.stringToLong(request.getParameter("issueId"));
 
         if (Issue.getById(issueId) == null)
-            return "/WEB-INF/webroot/error.jsp";
+            return "/webroot/error.jsp";
         
         // security
         if (!userSession.getUser().hasAccess(Issue.getById(issueId)))
-            return "/WEB-INF/webroot/error.jsp";
+            return "/webroot/error.jsp";
 
         List<Comment> comments = Comment.getByIssueId(issueId);
         retainVisibleComments(comments, (UserSession) request.getSession().getAttribute("userSession"));
@@ -42,7 +42,7 @@ public class ModifyIssueHandler
         request.setAttribute("potentialAssignees", User.getAll());
         request.setAttribute("potentialReporters", User.getAll());
 
-        return "/WEB-INF/webroot/issueForm.jsp";
+        return "/webroot/issueForm.jsp";
     }
 
     @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "ajaxGetChangeLog")
@@ -52,7 +52,7 @@ public class ModifyIssueHandler
 
         request.setAttribute("issueAudits", IssueAudit.getByIssueId(issueId));
 
-        return "/WEB-INF/webroot/issueChangelog.jsp";
+        return "/webroot/issueChangelog.jsp";
     }
 
     private static List<Comment> retainVisibleComments(List<Comment> comments, UserSession userSession)

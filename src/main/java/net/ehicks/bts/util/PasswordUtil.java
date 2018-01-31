@@ -1,10 +1,9 @@
 package net.ehicks.bts.util;
 
-import org.apache.catalina.realm.MessageDigestCredentialHandler;
+import org.apache.shiro.authc.credential.DefaultPasswordService;
+import org.apache.shiro.authc.credential.PasswordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.security.NoSuchAlgorithmException;
 
 public class PasswordUtil
 {
@@ -17,17 +16,13 @@ public class PasswordUtil
 
         try
         {
-            MessageDigestCredentialHandler credentialHandler = new MessageDigestCredentialHandler();
-            credentialHandler.setAlgorithm("SHA-256");
-            credentialHandler.setIterations(cryptoIterations);
-            credentialHandler.setSaltLength(32);
-
-            String digested = credentialHandler.mutate(password);
+            PasswordService passwordService = new DefaultPasswordService();
+            String digested = passwordService.encryptPassword(password);
 
             log.debug("{} sha-256 iterations in {} ms", cryptoIterations, (System.currentTimeMillis() - start));
             return digested;
         }
-        catch (NoSuchAlgorithmException e)
+        catch (Exception e)
         {
             log.error(e.getMessage(), e);
         }

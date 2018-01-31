@@ -39,7 +39,7 @@ public class UserHandler
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         request.setAttribute("users", User.getAll());
 
-        return "/WEB-INF/webroot/admin/users.jsp";
+        return "/webroot/admin/users.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "users", tab3 = "", action = "create")
@@ -86,7 +86,7 @@ public class UserHandler
         request.setAttribute("user", user);
         request.setAttribute("publicAvatars", Avatar.getAllPublic());
 
-        return "/WEB-INF/webroot/admin/modifyUser.jsp";
+        return "/webroot/admin/modifyUser.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "users", tab3 = "modify", action = "modify")

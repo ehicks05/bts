@@ -24,7 +24,7 @@ public class DashboardHandler
 
         request.setAttribute("dashBoardIssueForms", dashBoardIssueForms);
 
-        return "/WEB-INF/webroot/dashboard.jsp";
+        return "/webroot/dashboard.jsp";
     }
 
     @Route(tab1 = "dashboard", tab2 = "", tab3 = "", action = "remove")

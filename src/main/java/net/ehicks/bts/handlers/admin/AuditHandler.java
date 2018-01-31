@@ -33,7 +33,7 @@ public class AuditHandler
         request.setAttribute("auditForm", auditForm);
         request.setAttribute("searchResult", searchResult);
 
-        return "/WEB-INF/webroot/admin/audit.jsp";
+        return "/webroot/admin/audit.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "audit", tab3 = "", action = "search")
@@ -89,7 +89,7 @@ public class AuditHandler
         request.getSession().setAttribute("auditForm", auditForm);
         request.getSession().setAttribute("searchResult", searchResult);
 
-        request.getRequestDispatcher("/WEB-INF/webroot/auditTable.jsp").forward(request, response);
+        request.getRequestDispatcher("/webroot/auditTable.jsp").forward(request, response);
     }
 
     private static AuditForm updateAuditFormFromRequest(AuditForm auditForm, HttpServletRequest request)

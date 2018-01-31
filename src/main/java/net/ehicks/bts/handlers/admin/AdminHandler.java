@@ -29,7 +29,7 @@ public class AdminHandler
 
         request.setAttribute("adminSubscreens", SystemInfo.INSTANCE.getAdminSubscreens());
 
-        return "/WEB-INF/webroot/admin/overview.jsp";
+        return "/webroot/admin/overview.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "cache", tab3 = "", action = "form")
@@ -41,7 +41,7 @@ public class AdminHandler
         request.setAttribute("misses", EOICache.misses);
         request.setAttribute("keyHitObjectMiss", EOICache.keyHitObjectMiss);
 
-        return "/WEB-INF/webroot/admin/cacheInfo.jsp";
+        return "/webroot/admin/cacheInfo.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "cache", tab3 = "", action = "clearCache")
@@ -83,7 +83,7 @@ public class AdminHandler
         userSessions.sort(Comparator.comparing(UserSession::getLastActivity).reversed());
         request.setAttribute("userSessions", userSessions);
 
-        return "/WEB-INF/webroot/admin/systemInfo.jsp";
+        return "/webroot/admin/systemInfo.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "projects", tab3 = "", action = "form")
@@ -92,7 +92,7 @@ public class AdminHandler
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         request.setAttribute("projects", Project.getAll());
 
-        return "/WEB-INF/webroot/admin/projects.jsp";
+        return "/webroot/admin/projects.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "projects", tab3 = "", action = "create")
@@ -128,7 +128,7 @@ public class AdminHandler
         Project project = Project.getById(projectId);
         request.setAttribute("project", project);
 
-        return "/WEB-INF/webroot/admin/modifyProject.jsp";
+        return "/webroot/admin/modifyProject.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "projects", tab3 = "modify", action = "modify")
@@ -155,7 +155,7 @@ public class AdminHandler
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         request.setAttribute("groups", Group.getAll());
 
-        return "/WEB-INF/webroot/admin/groups.jsp";
+        return "/webroot/admin/groups.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "groups", tab3 = "", action = "create")
@@ -189,7 +189,7 @@ public class AdminHandler
         Group group = Group.getById(groupId);
         request.setAttribute("group", group);
 
-        return "/WEB-INF/webroot/admin/modifyGroup.jsp";
+        return "/webroot/admin/modifyGroup.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "groups", tab3 = "modify", action = "modify")
@@ -214,7 +214,7 @@ public class AdminHandler
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         request.setAttribute("emails", EmailMessage.getAll());
 
-        return "/WEB-INF/webroot/admin/emails.jsp";
+        return "/webroot/admin/emails.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "email", tab3 = "", action = "sendTest")
@@ -250,7 +250,7 @@ public class AdminHandler
     {
         request.setAttribute("btsSystem", BtsSystem.getSystem());
 
-        return "/WEB-INF/webroot/admin/modifyEmail.jsp";
+        return "/webroot/admin/modifyEmail.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "email", tab3 = "modify", action = "modify")
@@ -278,7 +278,7 @@ public class AdminHandler
     {
         request.setAttribute("btsSystem", BtsSystem.getSystem());
 
-        return "/WEB-INF/webroot/admin/modifySystem.jsp";
+        return "/webroot/admin/modifySystem.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "system", tab3 = "modify", action = "modify")

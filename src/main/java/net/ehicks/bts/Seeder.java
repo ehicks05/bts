@@ -20,7 +20,7 @@ public class Seeder
 {
     private static final Logger log = LoggerFactory.getLogger(Seeder.class);
 
-    private static int issueCount = (int) Math.pow(1_024, 1.0);
+    private static int issueCount = (int) Math.pow(1_024, 0.7);
     private static boolean useBatches = false;
 
     private static List<String> latin = Arrays.asList("annus", "ante meridiem", "aqua", "bene", "canis", "caput", "circus", "cogito",

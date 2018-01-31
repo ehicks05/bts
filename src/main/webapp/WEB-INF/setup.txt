@@ -1,3 +1,0 @@
-1. install intellij, java, tomcat
-2. do a svn checkout of the project
-3. refer to server-sample.xml to configure your server.xml (maybe it can just be copied over?)

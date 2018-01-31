@@ -31,7 +31,7 @@ public class BackupHandler
         Collections.reverse(backups);
         request.setAttribute("backups", backups);
 
-        return "/WEB-INF/webroot/admin/backups.jsp";
+        return "/webroot/admin/backups.jsp";
     }
 
     @Route(tab1 = "admin", tab2 = "backups", tab3 = "", action = "create")
