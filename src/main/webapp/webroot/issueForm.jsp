@@ -239,7 +239,7 @@
 
                     <div class="columns is-multiline">
                         <c:forEach var="attachment" items="${issue.attachments}">
-                            <c:if test="${attachment.thumbnailDbFileId > 0}">
+                            <c:if test="${attachment.dbFile.thumbnailId > 0}">
                                 <div class="column is-one-quarter">
                                     <div class="card">
                                         <header class="card-header">
@@ -256,7 +256,7 @@
                                         </header>
                                         <div class="card-image has-text-centered">
                                             <%--<figure class="image">--%>
-                                                <img src="${attachment.thumbnailDbFile.base64}" title="size ${attachment.dbFile.lengthPretty}" alt="${attachment.dbFile.name}">
+                                                <img src="${attachment.dbFile.thumbnail.base64}" title="size ${attachment.dbFile.lengthPretty}" alt="${attachment.dbFile.name}">
                                             <%--</figure>--%>
                                         </div>
                                         <div class="card-content">
@@ -273,7 +273,7 @@
                     <%--<br>--%>
                     <table class="table">
                         <c:forEach var="attachment" items="${issue.attachments}">
-                            <c:if test="${attachment.thumbnailDbFileId == 0}">
+                            <c:if test="${attachment.dbFile.thumbnailId == 0}">
                                 <tr>
                                     <td>
                                         <a target="_blank" href="${pageContext.request.contextPath}/view?tab1=issue&action=retrieveAttachment&attachmentId=${attachment.id}">

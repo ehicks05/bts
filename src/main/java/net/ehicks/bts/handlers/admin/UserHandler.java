@@ -179,59 +179,22 @@ public class UserHandler
 
         String responseMessage = "";
         long dbFileId = 0;
-        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-        if (isMultipart)
+
+        for (FileItem fileItem : CommonIO.getFilesFromRequest(request))
         {
-            // Create a factory for disk-based file items
-            DiskFileItemFactory factory = new DiskFileItemFactory();
-
-            // Configure a repository (to ensure a secure temp location is used)
-            ServletContext servletContext = request.getServletContext();
-            File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-            factory.setRepository(repository);
-
-            // Create a new file upload handler
-            ServletFileUpload upload = new ServletFileUpload(factory);
-
-            // Parse the request
-            try
+            if (!CommonIO.isValidSize(fileItem))
             {
-                List<FileItem> items = upload.parseRequest(request);
-                for (FileItem fileItem : items)
-                {
-                    if (fileItem.getSize() > 1 * 1024 * 1024) // up to 1MB
-                    {
-                        responseMessage = "File size too large.";
-                        continue;
-                    }
-
-                    byte[] fileContents = fileItem.get();
-                    String fileName = fileItem.getName();
-                    if (fileName != null)
-                        fileName = FilenameUtils.getName(fileName);
-
-                    String contentType = fileItem.getContentType();
-                    if (contentType.length() == 0)
-                        contentType = URLConnection.guessContentTypeFromName(fileName);
-
-                    if (!contentType.startsWith("image"))
-                    {
-                        responseMessage = "Not an image.";
-                        continue;
-                    }
-
-                    DBFile dbFile = new DBFile();
-                    dbFile.setName(fileName);
-                    dbFile.setContent(fileContents);
-                    dbFile.setLength(fileItem.getSize());
-                    dbFileId = EOI.insert(dbFile, userSession);
-
-                }
+                responseMessage = "File size too large.";
+                continue;
             }
-            catch (FileUploadException e)
+            if (!CommonIO.isImage(fileItem))
             {
-                log.error(e.getMessage(), e);
+                responseMessage = "Not an image.";
+                continue;
             }
+
+            DBFile dbFile = new DBFile(CommonIO.getName(fileItem), fileItem.get());
+            dbFileId = EOI.insert(dbFile, userSession);
         }
 
         if (dbFileId > 0)

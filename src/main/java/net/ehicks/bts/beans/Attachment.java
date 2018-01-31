@@ -19,11 +19,8 @@ public class Attachment implements Serializable
     @Column(name = "issue_id", nullable = false)
     private Long issueId;
 
-    @Column(name = "db_file_id")
+    @Column(name = "db_file_id", nullable = false)
     private Long dbFileId;
-
-    @Column(name = "thumbnail_db_file_id")
-    private Long thumbnailDbFileId;
 
     @Column(name = "created_by_user_id")
     private Long createdByUserId;
@@ -38,6 +35,18 @@ public class Attachment implements Serializable
     @Column(name = "last_updated_on")
     @Temporal(TemporalType.DATE)
     private Date lastUpdatedOn;
+
+    public Attachment()
+    {
+    }
+
+    public Attachment(Long issueId, Long dbFileId, Long createdByUserId)
+    {
+        this.issueId = issueId;
+        this.dbFileId = dbFileId;
+        this.createdByUserId = createdByUserId;
+        this.createdOn = new Date();
+    }
 
     @Override
     public boolean equals(Object obj)
@@ -88,11 +97,6 @@ public class Attachment implements Serializable
         return DBFile.getById(dbFileId);
     }
 
-    public DBFile getThumbnailDbFile()
-    {
-        return DBFile.getById(thumbnailDbFileId);
-    }
-
     public Issue getIssue()
     {
         return Issue.getById(issueId);
@@ -139,16 +143,6 @@ public class Attachment implements Serializable
     public void setDbFileId(Long dbFileId)
     {
         this.dbFileId = dbFileId;
-    }
-
-    public Long getThumbnailDbFileId()
-    {
-        return thumbnailDbFileId;
-    }
-
-    public void setThumbnailDbFileId(Long thumbnailDbFileId)
-    {
-        this.thumbnailDbFileId = thumbnailDbFileId;
     }
 
     public Long getCreatedByUserId()

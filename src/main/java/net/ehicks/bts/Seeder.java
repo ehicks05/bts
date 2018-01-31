@@ -165,10 +165,7 @@ public class Seeder
                         log.error(e.getMessage(), e);
                     }
 
-                    DBFile dbFile = new DBFile();
-                    dbFile.setName(avatarFile.getName());
-                    dbFile.setContent(content);
-                    dbFile.setLength((long) content.length);
+                    DBFile dbFile = new DBFile(avatarFile.getName(), content);
                     long dbFileId = EOI.insert(dbFile, SystemTask.SEEDER);
 
                     Avatar avatar = new Avatar();
@@ -320,18 +317,10 @@ public class Seeder
                         log.error(e.getMessage(), e);
                     }
 
-                    DBFile dbFile = new DBFile();
-                    dbFile.setName(img.getName());
-                    dbFile.setContent(content);
-                    dbFile.setLength((long) content.length);
+                    DBFile dbFile = new DBFile(img.getName(), content);
                     long dbFileId = EOI.insert(dbFile, SystemTask.SEEDER);
 
-                    Attachment attachment = new Attachment();
-                    attachment.setIssueId(1L);
-                    attachment.setCreatedByUserId(2L);
-                    attachment.setCreatedOn(new Date());
-                    attachment.setDbFileId(dbFileId);
-                    attachment.setThumbnailDbFileId(dbFileId);
+                    Attachment attachment = new Attachment(1L, dbFileId, 2L);
                     long id = EOI.insert(attachment, SystemTask.SEEDER);
                     attachment = Attachment.getById(id);
 

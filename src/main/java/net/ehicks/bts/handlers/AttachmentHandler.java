@@ -7,30 +7,18 @@ import net.ehicks.bts.beans.Attachment;
 import net.ehicks.bts.beans.DBFile;
 import net.ehicks.bts.beans.Group;
 import net.ehicks.bts.beans.IssueAudit;
+import net.ehicks.bts.util.AttachmentLogic;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.FilenameUtils;
-import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.net.URLConnection;
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 public class AttachmentHandler
 {
@@ -62,82 +50,36 @@ public class AttachmentHandler
         String responseMessage = "";
         Long issueId = Common.stringToLong(request.getParameter("issueId"));
         long dbFileId = 0;
-        long thumbnailId = 0;
-        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-        if (isMultipart)
+
+        for (FileItem fileItem : CommonIO.getFilesFromRequest(request))
         {
-            // Create a factory for disk-based file items
-            DiskFileItemFactory factory = new DiskFileItemFactory();
-
-            // Configure a repository (to ensure a secure temp location is used)
-            ServletContext servletContext = request.getServletContext();
-            File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-            factory.setRepository(repository);
-
-            // Create a new file upload handler
-            ServletFileUpload upload = new ServletFileUpload(factory);
-
-            // Parse the request
-            try
+            if (!CommonIO.isValidSize(fileItem))
             {
-                List<FileItem> items = upload.parseRequest(request);
-                for (FileItem fileItem : items)
-                {
-                    if (fileItem.getSize() > 10 * 1024 * 1024) // up to 10MB
-                    {
-                        responseMessage = "File size too large.";
-                        continue;
-                    }
-                    
-                    byte[] fileContents = fileItem.get();
-                    String fileName = fileItem.getName();
-                    if (fileName != null)
-                        fileName = FilenameUtils.getName(fileName);
-
-                    String contentType = fileItem.getContentType();
-                    if (contentType.length() == 0)
-                        contentType = URLConnection.guessContentTypeFromName(fileName);
-
-                    if (Arrays.asList("image/bmp", "image/gif", "image/jpeg", "image/png").contains(contentType))
-                    {
-                        BufferedImage srcImage = ImageIO.read(fileItem.getInputStream()); // Load image
-                        Scalr.Mode mode = srcImage.getWidth() > srcImage.getHeight() ? Scalr.Mode.FIT_TO_WIDTH : Scalr.Mode.FIT_TO_HEIGHT;
-                        BufferedImage scaledImage = Scalr.resize(srcImage, mode, 200, 200); // Scale image
-                        String formatName = contentType.replace("image/", "");
-                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        ImageIO.write(scaledImage, formatName, byteArrayOutputStream);
-                        byte[] scaledBytes = byteArrayOutputStream.toByteArray();
-
-                        DBFile dbFile = new DBFile();
-                        dbFile.setName(fileName);
-                        dbFile.setContent(scaledBytes);
-                        dbFile.setLength((long) scaledBytes.length);
-                        thumbnailId = EOI.insert(dbFile, userSession);
-                    }
-
-                    DBFile dbFile = new DBFile();
-                    dbFile.setName(fileName);
-                    dbFile.setContent(fileContents);
-                    dbFile.setLength(fileItem.getSize());
-                    dbFileId = EOI.insert(dbFile, userSession);
-
-                    responseMessage = "Attachment added.";
-                }
+                responseMessage = "File size too large.";
+                continue;
             }
-            catch (FileUploadException e)
+
+            String fileName = CommonIO.getName(fileItem);
+
+            long thumbnailId = 0;
+            if (CommonIO.isImage(fileItem))
             {
-                log.error(e.getMessage(), e);
+                byte[] scaledBytes = CommonIO.getThumbnail(fileItem);
+
+                DBFile thumbnail = new DBFile(fileName, scaledBytes);
+                thumbnailId = EOI.insert(thumbnail, userSession);
             }
+
+            DBFile dbFile = new DBFile(fileName, fileItem.get());
+            dbFile.setThumbnailId(thumbnailId);
+            dbFileId = EOI.insert(dbFile, userSession);
+
+            responseMessage = "Attachment added.";
         }
 
         if (dbFileId > 0)
         {
-            Attachment attachment = new Attachment();
-            attachment.setIssueId(issueId);
-            attachment.setDbFileId(dbFileId);
-            attachment.setThumbnailDbFileId(thumbnailId);
-            attachment.setCreatedByUserId(userSession.getUserId());
-            attachment.setCreatedOn(new Date());
+            Attachment attachment = new Attachment(issueId, dbFileId, userSession.getUserId());
             long attachmentId = EOI.insert(attachment, userSession);
             attachment = Attachment.getById(attachmentId);
 
@@ -156,33 +98,7 @@ public class AttachmentHandler
         Long issueId = Common.stringToLong(request.getParameter("issueId"));
         Long attachmentId = Common.stringToLong(request.getParameter("attachmentId"));
 
-        Attachment attachment = Attachment.getById(attachmentId);
-        if (attachment == null)
-            return;
-
-        Group issueGroup = attachment.getIssue().getGroup();
-        if (!userSession.getUser().getAllGroups().contains(Group.getByName("Admin")) && !userSession.getUser().getAllGroups().contains(issueGroup))
-            return;
-
-        EOI.executeDelete(attachment, userSession);
-
-        DBFile dbFile = attachment.getDbFile();
-        if (dbFile == null)
-            return;
-
-        // check references
-        List<Attachment> attachments = Attachment.getByDbFileId(dbFile.getId());
-        if (attachments.size() > 0)
-            return;
-
-        EOI.executeDelete(dbFile, userSession);
-
-        DBFile thumbNail = attachment.getThumbnailDbFile();
-        if (thumbNail != null)
-            EOI.executeDelete(thumbNail, userSession);
-
-        IssueAudit issueAudit = new IssueAudit(issueId, userSession, "removed", attachment.toString());
-        EOI.insert(issueAudit, userSession);
+        AttachmentLogic.deleteAttachment(userSession, attachmentId);
 
         response.sendRedirect("view?tab1=issue&action=form&issueId=" + issueId);
     }

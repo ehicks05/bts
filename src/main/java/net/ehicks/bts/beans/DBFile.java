@@ -28,6 +28,20 @@ public class DBFile implements Serializable, ISelectTagSupport
     @Column(name = "length", nullable = false)
     private Long length;
 
+    @Column(name = "thumbnail_id")
+    private Long thumbnailId;
+
+    public DBFile()
+    {
+    }
+
+    public DBFile(String name, byte[] content)
+    {
+        this.name = name;
+        this.content = content;
+        this.length = (long) content.length;
+    }
+
     @Override
     public boolean equals(Object obj)
     {
@@ -72,6 +86,11 @@ public class DBFile implements Serializable, ISelectTagSupport
     public static DBFile getByName(String name)
     {
         return EOI.executeQueryOneResult("select * from db_files where name=?", Arrays.asList(name));
+    }
+
+    public DBFile getThumbnail()
+    {
+        return DBFile.getById(thumbnailId);
     }
 
     public String getPreviewIcon()
@@ -140,5 +159,15 @@ public class DBFile implements Serializable, ISelectTagSupport
     public void setLength(Long length)
     {
         this.length = length;
+    }
+
+    public Long getThumbnailId()
+    {
+        return thumbnailId;
+    }
+
+    public void setThumbnailId(Long thumbnailId)
+    {
+        this.thumbnailId = thumbnailId;
     }
 }

@@ -36,7 +36,7 @@
             <div class="column">
                 <form id="frmProject" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=system&tab3=modify&action=modify">
                     <t:text id="instanceName" label="Instance Name" value="${btsSystem.instanceName}" />
-                    <t:text id="logonMessage" label="Logon Message" value="${btsSystem.logonMessage}"/>
+                    <t:textarea id="logonMessage" label="Logon Message" value="${btsSystem.logonMessage}"/>
                     <t:text id="defaultAvatar" label="Default Avatar" value="${btsSystem.defaultAvatar}"/>
 
                     <input id="saveSystemButton" type="submit" value="Save" class="button is-primary" />
