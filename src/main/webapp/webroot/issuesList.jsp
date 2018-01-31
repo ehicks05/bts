@@ -13,11 +13,12 @@
     <jsp:include page="inc_title.jsp"/>
     <jsp:include page="inc_header.jsp"/>
     <script>
-        function initHeader()
-        {
-            var filterName = $('#fldName').val();
-            $('#filterName').val(filterName);
-        }
+        $(function (){
+            $('#filterName').on('keyup', enableSaveFilterButton);
+            enableSaveFilterButton();
+
+            $('#saveFilterButton').on('click', saveIssueForm);
+        });
 
         function saveIssueForm()
         {
@@ -28,10 +29,24 @@
         {
             location.href = '${pageContext.request.contextPath}/view?tab1=search&action=addToDashboard&issueFormId=' + issueFormId;
         }
+
+        function enableSaveFilterButton(e)
+        {
+            if ($('#filterName').val())
+            {
+                $('#saveFilterButton').prop('disabled', false);
+                $('#saveFilterButton').html('Save');
+            }
+            else
+            {
+                $('#saveFilterButton').prop('disabled', true);
+                $('#saveFilterButton').html('Save (Enter a filter name)');
+            }
+        }
     </script>
 
 </head>
-<body onload="initHeader();">
+<body>
 
 <jsp:include page="header.jsp"/>
 
@@ -59,15 +74,13 @@
                         <input type="hidden" name="sortColumn" id="sortColumn" value="${issueForm.sortColumn}"/>
                         <input type="hidden" name="sortDirection" id="sortDirection" value="${issueForm.sortDirection}"/>
                         <input type="hidden" name="page" id="page" value="${issueForm.page}"/>
-                        <input type="hidden" name="filterName" id="filterName"/>
+                        <%--<input type="hidden" name="filterName" id="filterName"/>--%>
                         <input type="hidden" name="filterId" id="filterId" value="${issueForm.id}"/>
 
-                        <div class="field">
-                            <label class="label" for="containsText">Contains Text:</label>
-                            <div class="control">
-                                <input class="input" type="text" placeholder="Text input" id="containsText" name="containsText" value="${issueForm.containsText}">
-                            </div>
-                        </div>
+                        <t:text id="filterName" label="Filter Name" value="${issueForm.formName}" horizontal="false" />
+                    </div>
+                    <div class="panel-block">
+                        <t:text id="containsText" label="Contains Text" value="${issueForm.containsText}" horizontal="false" />
                     </div>
                     <div class="panel-block">
                         <t:multiSelect id="projectIds" selectedValues="${issueForm.projectIdsAsList}" items="${projects}" placeHolder="Projects:"/>
@@ -89,8 +102,8 @@
                         <input type="submit" value="Search" class="button is-link is-outlined is-fullwidth" />
                     </div>
                     <div class="panel-block">
-                        <button id="showSaveIssueFormDialog" class="button is-link is-outlined is-fullwidth">
-                            Save
+                        <button id="saveFilterButton" class="button is-link is-outlined is-fullwidth" disabled>
+                            Save (Enter a filter name)
                         </button>
                     </div>
                     <div class="panel-block">
@@ -120,46 +133,6 @@
         </div>
     </div>
 </section>
-
-<dialog class="mdl-dialog" id="saveFilterDialog">
-    <h4 class="mdl-dialog__title">Save Issue Filter</h4>
-    <div class="mdl-dialog__content">
-        <form id="frmSave" name="frmSave" method="post" action="${pageContext.request.contextPath}/view?tab1=search&action=saveIssueForm">
-            <table>
-                <tr>
-                    <td>Filter Name:</td>
-                    <td><input type="text" id="fldName" name="fldName" size="20" maxlength="256" value="${issueForm.formName}" required/></td>
-                </tr>
-            </table>
-        </form>
-    </div>
-    <div class="mdl-dialog__actions">
-        <button type="button" class="mdl-button save">Save</button>
-        <button type="button" class="mdl-button close">Cancel</button>
-    </div>
-</dialog>
-<script>
-    var dialog = document.querySelector('#saveFilterDialog');
-    var showDialogButton = document.querySelector('#showSaveIssueFormDialog');
-    if (!dialog.showModal)
-    {
-        dialogPolyfill.registerDialog(dialog);
-    }
-    showDialogButton.addEventListener('click', function ()
-    {
-        dialog.showModal();
-    });
-    dialog.querySelector('.save').addEventListener('click', function ()
-    {
-        var filterName = $('#fldName').val();
-        $('#filterName').val(filterName);
-        saveIssueForm();
-    });
-    dialog.querySelector('.close').addEventListener('click', function ()
-    {
-        dialog.close();
-    });
-</script>
 
 <jsp:include page="footer.jsp"/>
 </body>
