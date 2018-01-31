@@ -168,7 +168,7 @@
                 <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${userSession.userId}">
                     Profile
                 </a>
-                <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=logout&action=logout">
+                <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/logout">
                     Logout
                 </a>
             </div>
