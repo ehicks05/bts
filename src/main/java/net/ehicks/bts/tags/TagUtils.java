@@ -20,7 +20,7 @@ public class TagUtils
         return zonedDateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME);
     }
 
-    public static List<ISelectTagSupport> stringToISelectTag(String input)
+    private static List<ISelectTagSupport> stringToISelectTag(String input)
     {
         int indexOfPipe = input.indexOf("|");
         String delimiter = ",";
@@ -29,17 +29,49 @@ public class TagUtils
         List<ISelectTagSupport> selectTagObjects = new ArrayList<>();
         for (String item : input.split(delimiter))
         {
-            boolean compound = item.contains("=");
-            String value = item;
-            String text = item;
-            if (compound)
-            {
-                value = item.split("=")[0];
-                text = item.split("=")[1];
-            }
-            selectTagObjects.add(new SelectTagObject(value, text));
+            selectTagObjects.add(stringToSelectTagObject(item));
         }
         return selectTagObjects;
+    }
+
+    private static SelectTagObject stringToSelectTagObject(String item)
+    {
+        boolean compound = item.contains("=");
+        String value = item;
+        String text = item;
+        if (compound)
+        {
+            value = item.split("=")[0];
+            text = item.split("=")[1];
+        }
+        return new SelectTagObject(value, text);
+    }
+
+    public static List<ISelectTagSupport> parseItemsForSelect(Object items)
+    {
+        if (items == null)
+            return null;
+        if (items instanceof String)
+        {
+            return stringToISelectTag((String) items);
+        }
+        if (items instanceof List)
+        {
+            List itemsList = (List) items;
+            if (itemsList.size() == 0)
+                return itemsList;
+            if (itemsList.get(0) instanceof ISelectTagSupport)
+                return itemsList;
+            if (itemsList.get(0) instanceof String)
+            {
+                List<ISelectTagSupport> selectTagObjects = new ArrayList<>();
+                for (Object item : itemsList)
+                    selectTagObjects.add(stringToSelectTagObject((String) item));
+                return selectTagObjects;
+            }
+        }
+
+        return null;
     }
 
     private static class SelectTagObject implements ISelectTagSupport

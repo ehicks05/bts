@@ -1,16 +1,18 @@
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<jsp:useBean id="btsSystem" type="net.ehicks.bts.beans.BtsSystem" scope="application"/>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="utf-8" />
 
 <%-- JQuery --%>
-<%--<script src="${pageContext.request.contextPath}/js/jquery-2.1.1.min.js"></script>--%>
 <script
-        src="https://code.jquery.com/jquery-2.2.4.min.js"
-        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
         crossorigin="anonymous"></script>
-<%--<script--%>
-        <%--src="https://code.jquery.com/jquery-3.1.1.min.js"--%>
-        <%--integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="--%>
-        <%--crossorigin="anonymous"></script>--%>
 <%-- JQuery --%>
 
 <%-- Select2 --%>
@@ -32,24 +34,17 @@
 <%-- CKEditor --%>
 
 <%-- Bulma --%>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css" />
-<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/default/bulmaswatch.min.css">--%>
-<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/cosmo/bulmaswatch.min.css">--%>
-<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/flatly/bulmaswatch.min.css">--%>
-<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/journal/bulmaswatch.min.css">--%>
-<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/lux/bulmaswatch.min.css">--%>
-<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/pulse/bulmaswatch.min.css">--%>
-<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/simplex/bulmaswatch.min.css">--%>
-<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/superhero/bulmaswatch.min.css">--%>
-<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/united/bulmaswatch.min.css">--%>
-<%--<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/yeti/bulmaswatch.min.css">--%>
+<c:if test="${empty btsSystem.theme || btsSystem.theme eq 'default'}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css" />
+</c:if>
+<c:if test="${!empty btsSystem.theme && !(btsSystem.theme eq 'default')}">
+    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/${btsSystem.theme}/bulmaswatch.min.css">
+</c:if>
 <%-- Bulma --%>
 
 <%-- Font Awesome --%>
 <script defer src="https://use.fontawesome.com/releases/v5.0.4/js/all.js"></script>
 <%-- Font Awesome --%>
-
-<%--<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>--%>
 
 <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/puffin.png">
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/bts.css" media="screen" />

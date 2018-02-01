@@ -1,10 +1,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 
 <%@tag description="Multi Select Tag" pageEncoding="UTF-8" %>
 <%@attribute name="id" fragment="false" %>
-<%@attribute name="items" fragment="false" type="java.util.List<net.ehicks.bts.ISelectTagSupport>" %>
+<%@attribute name="items" fragment="false" %>
 <%@attribute name="selectedValues" fragment="false" %>
 <%@attribute name="placeHolder" fragment="false" %>
+
+<c:set var="items" value="${ct:parseItemsForSelect(items)}" />
+
 
 <c:set var="multiSelectCounter" value="${requestScope.multiSelectCounter + 1}" scope="request"/>
 <c:if test="${multiSelectCounter == 1}">

@@ -26,6 +26,9 @@ public class BtsSystem implements Serializable
     @Column(name = "default_avatar")
     private Long defaultAvatar;
 
+    @Column(name = "theme")
+    private String theme = "";
+
     @Column(name = "email_host")
     private String emailHost = "";
 
@@ -115,6 +118,16 @@ public class BtsSystem implements Serializable
     public void setDefaultAvatar(Long defaultAvatar)
     {
         this.defaultAvatar = defaultAvatar;
+    }
+
+    public String getTheme()
+    {
+        return theme;
+    }
+
+    public void setTheme(String theme)
+    {
+        this.theme = theme;
     }
 
     public String getEmailHost()

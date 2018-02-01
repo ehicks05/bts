@@ -60,7 +60,7 @@
                             <div class="field">
                                 <label class="label" for="eventType">Event Type</label>
                                 <div class="control">
-                                    <t:multiSelect id="eventType" selectedValues="${auditForm.eventType}" items="${ct:stringToISelectTag('INSERT,UPDATE,DELETE')}" placeHolder=""/>
+                                    <t:multiSelect id="eventType" selectedValues="${auditForm.eventType}" items="INSERT,UPDATE,DELETE" placeHolder=""/>
                                 </div>
                             </div>
                         </div>

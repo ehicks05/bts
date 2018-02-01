@@ -17,7 +17,7 @@
     <c:if test="${searchForm.sortDirection == 'desc'}"><c:set var="sortIcon" value="&#9660;"/></c:if>
 </c:if>
 
-<th id="${code}${searchForm.id}" class="sortableHeader ${cssClass}" style="${style}"
+<th id="${code}${searchForm.id}" class="nowrap ${cssClass}" style="${style}"
     onclick="ajaxItems(this.id, '${pageContext.servletConfig.servletContext.contextPath}', '${searchForm.endpoint}', '${searchForm.id}', 0, '${code}', '${searchForm.sortDirection}');">
     ${label}
     <span>${sortIcon}</span>

@@ -8,9 +8,9 @@
     <uri>http://eric-hicks.com/bts/commontags</uri>
 
     <function>
-        <name>stringToISelectTag</name>
+        <name>parseItemsForSelect</name>
         <function-class>net.ehicks.bts.tags.TagUtils</function-class>
-        <function-signature>java.util.List stringToISelectTag(java.lang.String)</function-signature>
+        <function-signature>java.util.List parseItemsForSelect(java.lang.Object)</function-signature>
     </function>
 
     <function>

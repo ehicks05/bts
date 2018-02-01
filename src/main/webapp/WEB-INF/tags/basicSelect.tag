@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 
 <%@tag description="Text with Label" pageEncoding="UTF-8" %>
 <%@attribute name="id" fragment="false" %>
@@ -10,6 +11,8 @@
 <%@attribute name="required" fragment="false" required="false" %>
 <%@attribute name="blankLabel" fragment="false" required="false" %>
 <%@attribute name="submitAction" fragment="false" %>
+
+<c:set var="items" value="${ct:parseItemsForSelect(items)}" />
 
 <c:set var="selectCounter" value="${requestScope.selectCounter + 1}" scope="request"/>
 <c:if test="${selectCounter == 1}">

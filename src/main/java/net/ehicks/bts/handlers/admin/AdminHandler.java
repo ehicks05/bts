@@ -277,7 +277,7 @@ public class AdminHandler
     public static String showModifySystem(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
         request.setAttribute("btsSystem", BtsSystem.getSystem());
-
+        request.setAttribute("themes", Arrays.asList("default","cosmo","flatly","journal","lux","pulse","simplex","superhero","united","yeti"));
         return "/webroot/admin/modifySystem.jsp";
     }
 
@@ -292,6 +292,7 @@ public class AdminHandler
             btsSystem.setInstanceName(Common.getSafeString(request.getParameter("instanceName")));
             btsSystem.setLogonMessage(Common.getSafeString(request.getParameter("logonMessage")));
             btsSystem.setDefaultAvatar(Common.stringToLong(request.getParameter("defaultAvatar")));
+            btsSystem.setTheme(Common.getSafeString(request.getParameter("theme")));
             EOI.update(btsSystem, userSession);
 
             request.getServletContext().setAttribute("btsSystem", BtsSystem.getSystem());

@@ -116,7 +116,7 @@ public class Controller extends HttpServlet
         }
 
         // Set standard HTTP/1.1 no-cache headers.
-        response.setHeader("Cache-)Control", "private, no-store, no-cache, must-revalidate");
+        response.setHeader("Cache-Control", "private, no-store, no-cache, must-revalidate");
 
         // start of collections used in footer.jsp
         request.setAttribute("issueTypes", IssueType.getAll());

@@ -38,6 +38,7 @@
                     <t:text id="instanceName" label="Instance Name" value="${btsSystem.instanceName}" />
                     <t:textarea id="logonMessage" label="Logon Message" value="${btsSystem.logonMessage}"/>
                     <t:text id="defaultAvatar" label="Default Avatar" value="${btsSystem.defaultAvatar}"/>
+                    <t:basicSelect id="theme" label="Theme" items="${themes}" value="${btsSystem.theme}"/>
 
                     <input id="saveSystemButton" type="submit" value="Save" class="button is-primary" />
                 </form>
