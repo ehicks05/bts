@@ -82,18 +82,19 @@ public class Group implements Serializable, ISelectTagSupport
     public static List<Group> getByUserId(Long userId)
     {
         List<GroupMap> groupMaps = GroupMap.getByUserId(userId);
-        return groupMaps.stream().map(groupMap -> Group.getById(groupMap.getGroupId())).collect(Collectors.toList());
+        return groupMaps.stream()
+                .map(groupMap -> Group.getById(groupMap.getGroupId()))
+                .collect(Collectors.toList());
     }
 
-    public static List<Group> getAllForUser(Long userId)
+    public static List<Group> getAllVisible(Long userId)
     {
         User user = User.getByUserId(userId);
         if (user.isAdmin() || user.isSupport())
             return Group.getAll();
         else
         {
-            List<GroupMap> groupMaps = GroupMap.getByUserId(userId);
-            return groupMaps.stream().map(groupMap -> Group.getById(groupMap.getGroupId())).collect(Collectors.toList());
+            return getByUserId(userId);
         }
     }
 

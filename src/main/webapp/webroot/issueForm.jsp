@@ -82,14 +82,18 @@
                 {
                     notification.className = 'notification is-success';
                     notification.innerHTML = '<button class="delete"></button>Success: ' + data;
-                    return 'success';
                 }
                 else
                 {
                     notification.className = 'notification is-danger';
                     notification.innerHTML = 'Failed: ' + data;
-                    return 'fail';
                 }
+
+                setTimeout(function () {
+                    notification.className = 'notification is-hidden';
+                }, 3000);
+
+                return textStatus;
             });
         }
 
@@ -174,8 +178,15 @@
         </div>
     </div>
 </section>
-<div id="ajax-update-notification" class="notification is-hidden">
-    <button class="delete"></button>
+
+<div class="container">
+    <div class="columns is-multiline is-centered">
+        <div class="column is-one-quarter">
+            <div id="ajax-update-notification" class="notification is-hidden" style="position: absolute;z-index: 10;">
+                <button class="delete"></button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <section class="section">
@@ -187,7 +198,7 @@
 
                     <form name="frmSave" id="frmSave" method="post" action="${pageContext.request.contextPath}/view?tab1=modify&action=save">
                         <div class="">
-                            <table class="table">
+                            <table class="table is-narrow">
                                 <tr>
                                     <td>Project:</td>
                                     <td>
@@ -229,6 +240,88 @@
                             </table>
                         </div>
                     </form>
+                </div>
+            </div>
+            <div class="column is-one-quarter">
+                <div class="box">
+                    <h2 class="subtitle">People</h2>
+
+                    <table class="table">
+                        <tr>
+                            <td>Assignee:</td>
+                            <td>
+                                <c:if test="${!empty issue.assignee}">
+                                    <a href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${issue.assigneeUserId}">
+                                        <img src="${issue.assignee.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
+
+                                    <t:textToSelect id="fldAssigneeId" value="${issue.assigneeUserId}" text="${issue.assignee.name}" items="${potentialAssignees}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
+                                </c:if>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Reporter:</td>
+                            <td>
+                                <a href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${issue.reporterUserId}">
+                                    <img src="${issue.reporter.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
+
+                                <t:textToSelect id="fldReporterId" value="${issue.reporterUserId}" text="${issue.reporter.name}" items="${potentialReporters}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <hr>
+                    <table>
+                        <tr>
+                            <td style="padding: 0 8px;vertical-align: top;">Watchers:</td>
+                            <td>
+                                <c:if test="${!empty watcherMaps}">
+                                    <a id="showWatchers" style="cursor: pointer">
+                                        View</a>
+
+                                    <div class="watchersDiv" style="display: none;">
+                                        <table class="table">
+                                            <c:forEach var="watcherMap" items="${watcherMaps}">
+                                                <tr>
+                                                    <td>
+                                                        <a style="" href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${watcherMap.watcher.id}">
+                                                            <img src="${watcherMap.watcher.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;">${watcherMap.watcher.name}
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <a class="icon is-medium" href="${pageContext.request.contextPath}/view?tab1=issue&action=removeWatcher&issueId=${issue.id}&watcherMapId=${watcherMap.id}">
+                                                            <span><i class="fas fa-trash fa-lg"></i></span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </table>
+                                    </div>
+                                    <br>
+                                </c:if>
+
+                                <c:if test="${!empty potentialWatchers}">
+                                    <div class="field has-addons">
+                                        <div class="control">
+                                            <select id="fldWatcher" style="z-index: 100" class="js-example-basic-single">
+                                                <c:forEach var="potentialWatchers" items="${potentialWatchers}">
+                                                    <option value="${potentialWatchers.id}">${potentialWatchers.name}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
+                                        <div class="control">
+                                            <a class="button is-primary is-small" onclick="addWatcher('fldWatcher', '${issue.id}')">
+                                                <span class="icon is-small">
+                                                    <i class="fas fa-plus"></i>
+                                                </span>
+                                                <span>
+                                                    Add
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </c:if>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
@@ -308,7 +401,7 @@
             </div>
         </div>
         <div class="columns is-multiline is-centered">
-            <div class="column is-three-quarters">
+            <div class="column">
                 <div class="box">
 
                     <h2 class="subtitle">Description</h2>
@@ -430,91 +523,6 @@
 
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="column">
-                <div class="box">
-                    <h2 class="subtitle">People</h2>
-
-                    <div class="">
-                        <table class="table">
-                            <tr>
-                                <td>Assignee:</td>
-                                <td>
-                                    <c:if test="${!empty issue.assignee}">
-                                        <a href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${issue.assigneeUserId}">
-                                            <img src="${issue.assignee.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
-
-                                        <t:textToSelect id="fldAssigneeId" value="${issue.assigneeUserId}" text="${issue.assignee.name}" items="${potentialAssignees}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
-                                    </c:if>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Reporter:</td>
-                                <td>
-                                    <a href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${issue.reporterUserId}">
-                                        <img src="${issue.reporter.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
-
-                                    <t:textToSelect id="fldReporterId" value="${issue.reporterUserId}" text="${issue.reporter.name}" items="${potentialReporters}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <hr>
-                    <div class="">
-                        <table>
-                            <tr>
-                                <td style="padding: 0 8px;vertical-align: top;">Watchers:</td>
-                                <td>
-                                    <c:if test="${!empty watcherMaps}">
-                                        <a id="showWatchers" style="cursor: pointer">
-                                            View</a>
-
-                                        <div class="watchersDiv" style="display: none;">
-                                            <table class="table">
-                                                <c:forEach var="watcherMap" items="${watcherMaps}">
-                                                    <tr>
-                                                        <td>
-                                                            <a style="" href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${watcherMap.watcher.id}">
-                                                                <img src="${watcherMap.watcher.avatar.base64}" style="height:24px;margin-right: 4px;border-radius: 3px;">${watcherMap.watcher.name}
-                                                            </a>
-                                                        </td>
-                                                        <td>
-                                                            <a class="icon is-medium" href="${pageContext.request.contextPath}/view?tab1=issue&action=removeWatcher&issueId=${issue.id}&watcherMapId=${watcherMap.id}">
-                                                                <span><i class="fas fa-trash fa-lg"></i></span>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
-                                            </table>
-                                        </div>
-                                        <br>
-                                    </c:if>
-
-                                    <c:if test="${!empty potentialWatchers}">
-                                        Add:
-
-                                        <div class="field has-addons">
-                                            <div class="control">
-                                                <select id="fldWatcher" style="z-index: 100" class="js-example-basic-single">
-                                                    <c:forEach var="potentialWatchers" items="${potentialWatchers}">
-                                                        <option value="${potentialWatchers.id}">${potentialWatchers.name}</option>
-                                                    </c:forEach>
-                                                </select>
-                                            </div>
-                                            <div class="control">
-                                                <a class="button is-primary is-small" onclick="addWatcher('fldWatcher', '${issue.id}')">
-                                                    <span class="icon is-small">
-                                                        <i class="fas fa-plus"></i>
-                                                    </span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </c:if>
-                                </td>
-                            </tr>
-                        </table>
                     </div>
                 </div>
             </div>

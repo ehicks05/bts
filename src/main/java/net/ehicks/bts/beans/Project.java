@@ -76,22 +76,21 @@ public class Project implements Serializable, ISelectTagSupport
         return EOI.executeQueryOneResult("select * from projects where name=?", Arrays.asList(name));
     }
 
-    public static List<Project> getAllForUser(Long userId)
+    public static List<Project> getByUserId(Long userId)
+    {
+        List<ProjectMap> projectMaps = ProjectMap.getByUserId(userId);
+        return projectMaps.stream().map(projectMap -> Project.getById(projectMap.getProjectId())).collect(Collectors.toList());
+    }
+
+    public static List<Project> getAllVisible(Long userId)
     {
         User user = User.getByUserId(userId);
         if (user.isAdmin() || user.isSupport())
             return Project.getAll();
         else
         {
-            List<ProjectMap> projectMaps = ProjectMap.getByUserId(userId);
-            return projectMaps.stream().map(projectMap -> Project.getById(projectMap.getProjectId())).collect(Collectors.toList());
+            return getByUserId(userId);
         }
-    }
-
-    public static List<Project> getAllBelongingToUser(Long userId)
-    {
-        List<ProjectMap> projectMaps = ProjectMap.getByUserId(userId);
-        return projectMaps.stream().map(projectMap -> Project.getById(projectMap.getProjectId())).collect(Collectors.toList());
     }
 
     // -------- Getters / Setters ----------

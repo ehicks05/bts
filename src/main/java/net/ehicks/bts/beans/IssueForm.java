@@ -123,7 +123,7 @@ public class IssueForm extends SearchForm implements Serializable
         if (!user.isAdmin())
         {
             if (whereClause.length() > 0) whereClause += " and ";
-            for (Group group : Group.getAllForUser(user.getId()))
+            for (Group group : Group.getAllVisible(user.getId()))
             {
                 if (questionMarks.length() > 0)
                     questionMarks += ",";
@@ -134,7 +134,7 @@ public class IssueForm extends SearchForm implements Serializable
 
             if (whereClause.length() > 0) whereClause += " and ";
             questionMarks = "";
-            for (Project project : Project.getAllForUser(user.getId()))
+            for (Project project : Project.getAllVisible(user.getId()))
             {
                 if (questionMarks.length() > 0)
                     questionMarks += ",";

@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Date;
 
 public class AttachmentHandler
 {
@@ -34,7 +33,7 @@ public class AttachmentHandler
         if (attachment != null)
         {
             Group issueGroup = attachment.getIssue().getGroup();
-            if (!Group.getAllForUser(userSession.getUserId()).contains(issueGroup))
+            if (!Group.getAllVisible(userSession.getUserId()).contains(issueGroup))
                 return;
 
             DBFile dbFile = attachment.getDbFile();

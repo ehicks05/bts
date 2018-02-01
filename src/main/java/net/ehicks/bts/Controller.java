@@ -118,15 +118,15 @@ public class Controller extends HttpServlet
         // Set standard HTTP/1.1 no-cache headers.
         response.setHeader("Cache-)Control", "private, no-store, no-cache, must-revalidate");
 
+        // start of collections used in footer.jsp
         request.setAttribute("issueTypes", IssueType.getAll());
         request.setAttribute("severities", Severity.getAll());
         request.setAttribute("statuses", Status.getAll());
 
         // the following collections have restricted access
-        request.setAttribute("projects", Project.getAllForUser(userSession.getUserId()));
-        request.setAttribute("users", User.getAllForUser(userSession.getUserId()));
-        request.setAttribute("groups", Group.getAllForUser(userSession.getUserId()));
-        request.setAttribute("issueForms", IssueForm.getByUserId(userSession.getUserId()));
+        request.setAttribute("projects", Project.getAllVisible(userSession.getUserId()));
+        request.setAttribute("groups", Group.getAllVisible(userSession.getUserId()));
+        // end of collections used in footer.jsp
 
         if (request.getParameter("tab1") == null)
         {

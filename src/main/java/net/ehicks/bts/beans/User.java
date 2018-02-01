@@ -86,7 +86,7 @@ public class User implements Serializable, ISelectTagSupport
         return EOI.executeQuery("select * from bts_users;");
     }
 
-    public static List<User> getAllForUser(Long userId)
+    public static List<User> getAllVisible(Long userId)
     {
         User user = User.getByUserId(userId);
         if (user.isAdmin() || user.isSupport())
@@ -143,17 +143,17 @@ public class User implements Serializable, ISelectTagSupport
 
     public List<Project> getAllProjects()
     {
-        return Project.getAllForUser(id);
+        return Project.getAllVisible(id);
     }
 
     public List<Long> getAllProjectIds()
     {
-        return Project.getAllForUser(id).stream().map(Project::getId).collect(Collectors.toList());
+        return Project.getAllVisible(id).stream().map(Project::getId).collect(Collectors.toList());
     }
 
     public List<Long> getBelongedToProjectIds()
     {
-        return Project.getAllBelongingToUser(id).stream().map(Project::getId).collect(Collectors.toList());
+        return Project.getByUserId(id).stream().map(Project::getId).collect(Collectors.toList());
     }
 
     public DBFile getAvatar()

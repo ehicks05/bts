@@ -5,6 +5,7 @@ import net.ehicks.bts.PdfCreator;
 import net.ehicks.bts.Route;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.Subscription;
+import net.ehicks.bts.beans.User;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 
@@ -25,6 +26,7 @@ public class SubscriptionHandler
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
 
         request.setAttribute("subscriptions", Subscription.getByUserId(userSession.getUserId()));
+        request.setAttribute("users", User.getAllVisible(userSession.getUserId()));
 
         return "/webroot/settings/subscriptions.jsp";
     }

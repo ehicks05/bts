@@ -4,6 +4,7 @@ import net.ehicks.bts.Route;
 import net.ehicks.bts.SearchResult;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.IssueForm;
+import net.ehicks.bts.beans.User;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 import net.ehicks.eoi.PSIngredients;
@@ -22,6 +23,8 @@ public class IssueSearchHandler
     @Route(tab1 = "search", tab2 = "", tab3 = "", action = "form")
     public static String showIssues(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+
         Long issueFormId = Common.stringToLong(request.getParameter("issueFormId"));
         IssueForm issueForm = IssueForm.getById(issueFormId);
 
@@ -32,7 +35,6 @@ public class IssueSearchHandler
         if (issueForm == null)
         {
             issueForm = new IssueForm();
-            UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
             issueForm.setUserId(userSession.getUserId());
             issueForm = updateIssueFormFromRequest(issueForm, request);
 
@@ -41,6 +43,7 @@ public class IssueSearchHandler
 
         SearchResult searchResult = issueForm.getSearchResult();
 
+        request.setAttribute("users", User.getAllVisible(userSession.getUserId()));
         request.setAttribute("issueForm", issueForm);
         request.setAttribute("searchResult", searchResult);
 

@@ -20,7 +20,7 @@ public class ProfileHandler
         Long userId = Common.stringToLong(request.getParameter("userId"));
         User user = User.getByUserId(userId);
 
-        if (!userId.equals(userSession.getUserId()) && !User.getAllForUser(userSession.getUserId()).contains(user))
+        if (!userId.equals(userSession.getUserId()) && !User.getAllVisible(userSession.getUserId()).contains(user))
             return "/webroot/error.jsp";
 
         request.setAttribute("user", user);
