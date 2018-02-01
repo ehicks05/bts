@@ -79,13 +79,13 @@ public class ModifyIssueHandler
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
 
-        Long projectId      = Common.stringToLong(request.getParameter("fldProject"));
-        Long groupId        = Common.stringToLong(request.getParameter("fldGroup"));
-        Long issueTypeId    = Common.stringToLong(request.getParameter("fldIssueType"));
-        Long severityId     = Common.stringToLong(request.getParameter("fldSeverity"));
-        Long statusId       = Common.stringToLong(request.getParameter("fldStatus"));
-        String title        = Common.getSafeString(request.getParameter("fldTitle"));
-        String description  = Common.getSafeString(request.getParameter("fldDescription"));
+        Long projectId      = Common.stringToLong(request.getParameter("createIssueProject"));
+        Long groupId        = Common.stringToLong(request.getParameter("createIssueGroup"));
+        Long issueTypeId    = Common.stringToLong(request.getParameter("createIssueIssueType"));
+        Long severityId     = Common.stringToLong(request.getParameter("createIssueSeverity"));
+        Long statusId       = Common.stringToLong(request.getParameter("createIssueStatus"));
+        String title        = Common.getSafeString(request.getParameter("createIssueTitle"));
+        String description  = Common.getSafeString(request.getParameter("createIssueDescription"));
 
         Issue issue = new Issue();
         issue.setReporterUserId(userSession.getUserId());

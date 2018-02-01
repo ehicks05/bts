@@ -11,13 +11,13 @@
         </header>
         <section class="modal-card-body">
             <form id="frmCreateIssue" name="frmCreateIssue" method="post" action="${pageContext.request.contextPath}/view?tab1=issue&action=create">
-                <t:text id="fldTitle" label="Title" required="true" />
-                <t:text id="fldDescription" label="Description" required="true" />
-                <t:basicSelect id="fldProject" label="Project" items="${projects}" required="true" />
-                <t:basicSelect id="fldGroup" label="Group" items="${groups}" required="true" />
-                <t:basicSelect id="fldIssueType" label="Issue Type" items="${issueTypes}" required="true" />
-                <t:basicSelect id="fldSeverity" label="Severity" items="${severities}" required="true" />
-                <t:basicSelect id="fldStatus" label="Status" items="${statuses}" required="true" />
+                <t:text        id="createIssueTitle" label="Title" required="true" />
+                <t:text        id="createIssueDescription" label="Description" required="true" />
+                <t:basicSelect id="createIssueProject" label="Project" items="${projects}" required="true" />
+                <t:basicSelect id="createIssueGroup" label="Group" items="${groups}" required="true" />
+                <t:basicSelect id="createIssueIssueType" label="Issue Type" items="${issueTypes}" required="true" />
+                <t:basicSelect id="createIssueSeverity" label="Severity" items="${severities}" required="true" />
+                <t:basicSelect id="createIssueStatus" label="Status" items="${statuses}" required="true" />
             </form>
         </section>
         <footer class="modal-card-foot">
@@ -35,7 +35,10 @@
 
         createIssueDialog.find('.create').on('click', function ()
         {
-            $('#frmCreateIssue').submit()
+            if ($('#createIssueTitle').val() && $('#createIssueDescription').val())
+                $('#frmCreateIssue').submit();
+            else
+                alert('Please enter a title and description.');
         });
     });
 </script>
