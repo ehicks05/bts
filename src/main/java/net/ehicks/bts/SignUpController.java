@@ -1,5 +1,7 @@
 package net.ehicks.bts;
 
+import net.ehicks.bts.routing.RouteDescription;
+import net.ehicks.bts.routing.Router;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

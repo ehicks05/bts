@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="t" uri="http://eric-hicks.com/bts/commontags" %>
 
 <%@tag description="Textarea with Label" pageEncoding="UTF-8" %>
 <%@attribute name="id" fragment="false" %>
@@ -8,12 +9,17 @@
 <%@attribute name="horizontal" fragment="false" required="false"  %>
 <%@attribute name="required" fragment="false" required="false"  %>
 <%@attribute name="readOnly" fragment="false" required="false"  %>
+<%@attribute name="rich" fragment="false" required="false"  %>
 
-<c:set var="selectCounter" value="${requestScope.selectCounter + 1}" scope="request"/>
-<c:if test="${selectCounter == 1}">
-    <script>
-
-    </script>
+<c:set var="textareaCounter" value="${requestScope.textareaCounter + 1}" scope="request"/>
+<c:if test="${textareaCounter == 1}">
+    <c:if test="${rich}">
+        <script src="https://cdn.ckeditor.com/4.8.0/basic/ckeditor.js"></script>
+        <script>
+            // CKEDITOR.disableAutoInline = true;
+            // CKEDITOR.config.extraAllowedContent = 'div(*)';
+        </script>
+    </c:if>
 </c:if>
 
 <c:if test="${empty placeholder}">
@@ -38,3 +44,9 @@
         </div>
     </div>
 </div>
+
+<c:if test="${rich}">
+    <script>
+        CKEDITOR.replace('${id}');
+    </script>
+</c:if>

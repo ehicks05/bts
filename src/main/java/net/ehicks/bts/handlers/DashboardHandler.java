@@ -1,6 +1,6 @@
 package net.ehicks.bts.handlers;
 
-import net.ehicks.bts.Route;
+import net.ehicks.bts.routing.Route;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.IssueForm;
 import net.ehicks.common.Common;

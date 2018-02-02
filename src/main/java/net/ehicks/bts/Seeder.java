@@ -92,17 +92,18 @@ public class Seeder
 
     private static void createBtsSystem()
     {
-        BtsSystem system = BtsSystem.getSystem();
-        if (system == null)
+        BtsSystem btsSystem = BtsSystem.getSystem();
+        if (btsSystem == null)
         {
-            system = new BtsSystem();
-            long id = EOI.insert(system, SystemTask.SEEDER);
-            system = BtsSystem.getById(id);
+            btsSystem = new BtsSystem();
+            long id = EOI.insert(btsSystem, SystemTask.SEEDER);
+            btsSystem = BtsSystem.getById(id);
         }
-        system.setInstanceName("BugCo Industries");
-        system.setLogonMessage("Welcome to Puffin Issue Tracker.<br>Please contact Eric for a demo.");
+        btsSystem.setInstanceName("BugCo Industries");
+        btsSystem.setLogonMessage("<span>Welcome to Puffin Issue Tracker.<br>Please contact Eric for a demo.</span>");
+        btsSystem.setTheme("default");
 
-        EOI.update(system, SystemTask.SEEDER);
+        EOI.update(btsSystem, SystemTask.SEEDER);
     }
 
     private static void createIssueForms()

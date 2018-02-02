@@ -9,8 +9,7 @@
 <meta charset="utf-8" />
 
 <%-- JQuery --%>
-<script
-        src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
         crossorigin="anonymous"></script>
 <%-- JQuery --%>
@@ -28,10 +27,6 @@
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.css">
 <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.js"></script>
 <%-- qTip2 --%>
-
-<%-- CKEditor --%>
-<%--<script src="../../ckeditor/ckeditor.js"></script>--%>
-<%-- CKEditor --%>
 
 <%-- Bulma --%>
 <c:if test="${empty btsSystem.theme || btsSystem.theme eq 'default'}">

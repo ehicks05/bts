@@ -1,7 +1,7 @@
 package net.ehicks.bts.handlers.admin;
 
 import net.ehicks.bts.AuditForm;
-import net.ehicks.bts.Route;
+import net.ehicks.bts.routing.Route;
 import net.ehicks.bts.SearchResult;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;

@@ -1,7 +1,7 @@
 package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.bts.CommonIO;
-import net.ehicks.bts.Route;
+import net.ehicks.bts.util.CommonIO;
+import net.ehicks.bts.routing.Route;
 import net.ehicks.bts.SystemInfo;
 import net.ehicks.bts.UserSession;
 import net.ehicks.common.Common;

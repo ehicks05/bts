@@ -36,7 +36,7 @@
             <div class="column">
                 <form id="frmProject" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=system&tab3=modify&action=modify">
                     <t:text id="instanceName" label="Instance Name" value="${btsSystem.instanceName}" />
-                    <t:textarea id="logonMessage" label="Logon Message" value="${btsSystem.logonMessage}"/>
+                    <t:textarea id="logonMessage" label="Logon Message" value="${btsSystem.logonMessage}" rich="true"/>
                     <t:text id="defaultAvatar" label="Default Avatar" value="${btsSystem.defaultAvatar}"/>
                     <t:basicSelect id="theme" label="Theme" items="${themes}" value="${btsSystem.theme}"/>
 

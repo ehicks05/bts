@@ -1,6 +1,6 @@
 package net.ehicks.bts.handlers;
 
-import net.ehicks.bts.Route;
+import net.ehicks.bts.routing.Route;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;

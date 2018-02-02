@@ -1,27 +1,21 @@
 package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.bts.CommonIO;
-import net.ehicks.bts.PdfCreator;
-import net.ehicks.bts.Route;
+import net.ehicks.bts.util.CommonIO;
+import net.ehicks.bts.util.PdfCreator;
+import net.ehicks.bts.routing.Route;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.*;
 import net.ehicks.bts.util.PasswordUtil;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;

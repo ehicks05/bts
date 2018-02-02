@@ -1,6 +1,6 @@
 package net.ehicks.bts.handlers;
 
-import net.ehicks.bts.Route;
+import net.ehicks.bts.routing.Route;
 import net.ehicks.bts.SystemTask;
 import net.ehicks.bts.beans.BtsSystem;
 import net.ehicks.bts.beans.Role;

@@ -1,13 +1,13 @@
 package net.ehicks.bts.handlers;
 
-import net.ehicks.bts.CommonIO;
-import net.ehicks.bts.Route;
+import net.ehicks.bts.util.CommonIO;
+import net.ehicks.bts.routing.Route;
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.Attachment;
 import net.ehicks.bts.beans.DBFile;
 import net.ehicks.bts.beans.Group;
 import net.ehicks.bts.beans.IssueAudit;
-import net.ehicks.bts.util.AttachmentLogic;
+import net.ehicks.bts.model.AttachmentLogic;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.EOI;
 import org.apache.commons.fileupload.FileItem;

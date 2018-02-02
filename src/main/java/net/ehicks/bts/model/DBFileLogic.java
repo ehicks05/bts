@@ -1,4 +1,4 @@
-package net.ehicks.bts.util;
+package net.ehicks.bts.model;
 
 import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.Attachment;
