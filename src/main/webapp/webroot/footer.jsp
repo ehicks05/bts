@@ -31,7 +31,7 @@
                 &centerdot; <strong>Puffin</strong> by <a href="http://ehicks.net">Eric Hicks</a>
             </p>
             <p>build <span title="${userSession.systemInfo.gitVersion}">${userSession.systemInfo.version}</span>
-                &centerdot; ${ct:formatZonedDateTime(userSession.systemInfo.gitVersionDate)}
+                <%--&centerdot; ${ct:formatZonedDateTime(userSession.systemInfo.gitVersionDate)}--%>
             </p>
             <p>
                 <c:if test="${!empty sessionScope.userSession}">

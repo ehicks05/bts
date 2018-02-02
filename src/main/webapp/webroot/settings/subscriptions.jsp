@@ -57,19 +57,19 @@
                             Add Subscription
                         </p>
                         <div class="panel-block">
-                            <t:multiSelect id="projectIds" selectedValues="" items="${projects}" placeHolder="Projects:"/>
+                            <t:multiSelect id="projectIds" selectedValues="" items="${projects}" placeHolder="Projects"/>
                         </div>
                         <div class="panel-block">
-                            <t:multiSelect id="groupIds" selectedValues="" items="${groups}" placeHolder="Groups:"/>
+                            <t:multiSelect id="groupIds" selectedValues="" items="${groups}" placeHolder="Groups"/>
                         </div>
                         <div class="panel-block">
-                            <t:multiSelect id="severityIds" selectedValues="" items="${severities}" placeHolder="Severities:"/>
+                            <t:multiSelect id="severityIds" selectedValues="" items="${severities}" placeHolder="Severities"/>
                         </div>
                         <div class="panel-block">
-                            <t:multiSelect id="statusIds" selectedValues="" items="${statuses}" placeHolder="Statuses:"/>
+                            <t:multiSelect id="statusIds" selectedValues="" items="${statuses}" placeHolder="Statuses"/>
                         </div>
                         <div class="panel-block">
-                            <t:multiSelect id="assigneeIds" selectedValues="" items="${users}" placeHolder="Assignees:"/>
+                            <t:multiSelect id="assigneeIds" selectedValues="" items="${users}" placeHolder="Assignees"/>
                         </div>
 
                         <div class="panel-block">

@@ -61,7 +61,7 @@ public class TagUtils
             if (itemsList.size() == 0)
                 return itemsList;
             if (itemsList.get(0) instanceof ISelectTagSupport)
-                return itemsList;
+                return (List<ISelectTagSupport>) items;
             if (itemsList.get(0) instanceof String)
             {
                 List<ISelectTagSupport> selectTagObjects = new ArrayList<>();

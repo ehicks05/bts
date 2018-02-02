@@ -14,8 +14,8 @@
 
 <c:set var="items" value="${ct:parseItemsForSelect(items)}" />
 
-<c:set var="selectCounter" value="${requestScope.selectCounter + 1}" scope="request"/>
-<c:if test="${selectCounter == 1}">
+<c:set var="basicSelectCounter" value="${requestScope.basicSelectCounter + 1}" scope="request"/>
+<c:if test="${basicSelectCounter == 1}">
     <script>
         function blurHandler(id)
         {
