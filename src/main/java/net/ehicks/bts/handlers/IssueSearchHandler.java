@@ -47,7 +47,7 @@ public class IssueSearchHandler
         request.setAttribute("issueForm", issueForm);
         request.setAttribute("searchResult", searchResult);
 
-        return "/webroot/issuesList.jsp";
+        return "/webroot/issueSearch.jsp";
     }
 
     @Route(tab1 = "search", tab2 = "", tab3 = "", action = "ajaxGetPageOfResults")

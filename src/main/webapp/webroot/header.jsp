@@ -168,14 +168,16 @@
                 <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=profile&action=form&userId=${userSession.userId}">
                     Profile
                 </a>
-                <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/logout">
-                    Logout
+                <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/view?tab1=chat&action=form">
+                    Chat
                 </a>
             </div>
             <div class="navbar-end">
-                <%--<div class="navbar-item">--%>
-                    <%----%>
-                <%--</div>--%>
+                <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/logout">
+                    <span class="icon is-medium has-text-info">
+                        <i class="fas fa-lg fa-sign-out-alt"></i>
+                    </span>
+                </a>
             </div>
         </div>
     </div>
