@@ -47,7 +47,7 @@ public class ChatRoomUserMap implements Serializable
 
     public static List<ChatRoomUserMap> getByRoomId(Long roomId)
     {
-        return EOI.executeQuery("select * from chat_room_user_maps where group_id=?", Arrays.asList(roomId));
+        return EOI.executeQuery("select * from chat_room_user_maps where room_id=?", Arrays.asList(roomId));
     }
 
     public static List<ChatRoomUserMap> getByUserId(Long userId)

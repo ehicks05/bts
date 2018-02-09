@@ -26,9 +26,6 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
     {
         HttpSession session = se.getSession();
 
-        ServletContext context = session.getServletContext();
-        Map activeUsers = (Map) context.getAttribute("activeUsers");
-        activeUsers.remove(session.getId());
         sessions.remove(session);
 
         log.info("!!!!!!!!!!! session destroyed: {}", se.getSession().getId());

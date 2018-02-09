@@ -1,81 +1,192 @@
 package net.ehicks.bts.util;
 
-import net.ehicks.bts.beans.ChatRoom;
-import net.ehicks.bts.beans.ChatRoomMessage;
+import net.ehicks.bts.beans.*;
+import net.ehicks.common.Common;
+import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.json.JsonObject;
 import javax.json.spi.JsonProvider;
-import javax.websocket.Session;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.Random;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
-//@ApplicationScoped
 public class ChatSessionHandler
 {
     private static final Logger log = LoggerFactory.getLogger(ChatSessionHandler.class);
 
-//    private final Map<Session, HttpSession> sessions = new ConcurrentHashMap<>();
-    private final Map<Session, String> sessions = new ConcurrentHashMap<>();
-    private final Map<ChatRoom, String> chatRooms = new ConcurrentHashMap<>();
-    private final Map<ChatRoomMessage, String> chatRoomMessages = new ConcurrentSkipListMap<>();
+    public static final Map<Session, ChatRoom> sessions = new ConcurrentHashMap<>();
+    public static final Map<ChatRoom, List<ChatRoomMessage>> chatRooms = new ConcurrentHashMap<>();
 
-    public void addSession(Session session)
+    public static void init()
     {
-//        sessions.put(session, (HttpSession) session.getUserProperties().get("httpSession"));
-        sessions.put(session, "");
-        for (ChatRoomMessage chatRoomMessage : chatRoomMessages.keySet())
+        List<ChatRoom> rooms = ChatRoom.getAll();
+        for (ChatRoom room : rooms)
         {
-            JsonObject addMessage = createAddMessage(chatRoomMessage);
-            sendToSession(session, addMessage);
+            chatRooms.put(room, new CopyOnWriteArrayList<>(ChatRoomMessage.getByRoomId(room.getId())));
+            
         }
+
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                AtomicLong id = new AtomicLong(10000);
+
+                while (true)
+                {
+                    Common.sleep((long) (new Random().nextDouble() * 5 * 1000));
+                    long roomId = new Random().nextInt(chatRooms.keySet().size()) + 1;
+                    long userId = new Random().nextInt(User.getAll().size()) + 1;
+                    User user = User.getByUserId(userId);
+
+                    ChatRoomMessage message = new ChatRoomMessage();
+                    message.setId(id.getAndIncrement());
+                    message.setRoomId(roomId);
+                    message.setUserId(userId);
+                    message.setAuthor(user.getName());
+                    message.setTimestamp(new Date());
+                    message.setContents(Comment.getAll().get(new Random().nextInt(Comment.getAll().size())).getContent());
+
+                    chatRooms.get(message.getRoom()).add(message);
+                    JsonObject addMessage = createAddMessage(message);
+                    sendToAllConnectedSessions(addMessage, message.getRoom());
+                }
+            }
+        }.start();
     }
 
-    public void removeSession(Session session)
+    public static void addSession(Session session)
+    {
+        sessions.put(session, new ChatRoom());
+    }
+
+    public static void removeSession(Session session)
     {
         sessions.remove(session);
     }
 
-    public void addChatRoomMessage(ChatRoomMessage chatRoomMessage)
-    {
-        chatRoomMessages.put(chatRoomMessage, "");
-        JsonObject addMessage = createAddMessage(chatRoomMessage);
-        sendToAllConnectedSessions(addMessage);
-    }
-
-    private JsonObject createAddMessage(ChatRoomMessage message)
-    {
-        JsonProvider provider = JsonProvider.provider();
-        return provider.createObjectBuilder()
-                .add("action", "add")
-                .add("id", message.getId())
-                .add("timestamp", message.getTimestamp().toString())
-                .add("author", message.getUserId())
-                .add("contents", message.getContents())
-                .build();
-    }
-
-    private void sendToAllConnectedSessions(JsonObject message)
+    private static void sendToAllConnectedSessions(JsonObject message, ChatRoom room)
     {
         for (Session session : sessions.keySet())
         {
-            sendToSession(session, message);
+            if (sessions.get(session).equals(room))
+                sendToSession(session, message);
         }
     }
 
-    private void sendToSession(Session session, JsonObject message)
+    private static void sendToSession(Session session, JsonObject message)
     {
         try
         {
-            session.getBasicRemote().sendText(message.toString());
+            session.getRemote().sendString(message.toString());
         }
         catch (IOException ex)
         {
             sessions.remove(session);
             log.error(ex.getMessage());
         }
+    }
+
+    //
+    // logic for specific handlers
+    //
+
+    public static void changeRoom(Session session, ChatRoom room)
+    {
+        sessions.put(session, room);
+
+        // tell client about messages in the room
+        List<ChatRoomMessage> messagesForRoom = chatRooms.get(room);
+        if (messagesForRoom != null)
+        {
+            for (ChatRoomMessage chatRoomMessage : messagesForRoom)
+            {
+                JsonObject addMessage = createAddMessage(chatRoomMessage);
+                sendToSession(session, addMessage);
+            }
+        }
+
+        // tell client about people in the room
+        ChatRoomUserMap.getByRoomId(room.getId()).forEach(chatRoomUserMap -> {
+            JsonObject addRoomMember = createAddRoomMember(User.getByUserId(chatRoomUserMap.getUserId()));
+            sendToSession(session, addRoomMember);
+        });
+    }
+
+    public static void sendRooms(Session session, Long userId)
+    {
+        List<Long> groupIds = Group.getAllVisible(userId).stream().map(Group::getId).collect(Collectors.toList());
+
+        chatRooms.keySet().forEach(room -> {
+            boolean hasAccess = false;
+
+            JsonObject addRoomMessage = createAddRoom(room);
+
+            // does group membership grant access?
+            if (groupIds.contains(room.getGroupId()))
+                hasAccess = true;
+
+            // are we already a member of the room?
+            if (room.getDirectChat())
+            {
+                List<Long> userIds = ChatRoomUserMap.getByRoomId(room.getId()).stream().map(ChatRoomUserMap::getUserId).collect(Collectors.toList());
+                if (userIds.contains(userId))
+                    hasAccess = true;
+            }
+
+            if (hasAccess)
+                sendToSession(session, addRoomMessage);
+        });
+    }
+
+    public static void addChatRoomMessage(ChatRoomMessage chatRoomMessage)
+    {
+        chatRooms.get(chatRoomMessage.getRoom()).add(chatRoomMessage);
+
+        // tell room members about new message
+        JsonObject addMessage = createAddMessage(chatRoomMessage);
+        sendToAllConnectedSessions(addMessage, chatRoomMessage.getRoom());
+    }
+
+    private static JsonObject createAddMessage(ChatRoomMessage message)
+    {
+        JsonProvider provider = JsonProvider.provider();
+        return provider.createObjectBuilder()
+                .add("action", "addMessage")
+                .add("id", message.getId())
+                .add("timestamp", new SimpleDateFormat("h:mm a").format(message.getTimestamp()))
+                .add("author", message.getAuthor())
+                .add("contents", message.getContents())
+                .build();
+    }
+
+    private static JsonObject createAddRoomMember(User user)
+    {
+        JsonProvider provider = JsonProvider.provider();
+        return provider.createObjectBuilder()
+                .add("action", "addRoomMember")
+                .add("id", user.getId())
+                .add("name", user.getName())
+                .add("logonid", user.getLogonId())
+                .build();
+    }
+
+    private static JsonObject createAddRoom(ChatRoom room)
+    {
+        JsonProvider provider = JsonProvider.provider();
+        return provider.createObjectBuilder()
+                .add("action", "addRoom")
+                .add("id", room.getId())
+                .add("name", room.getName())
+                .build();
     }
 }

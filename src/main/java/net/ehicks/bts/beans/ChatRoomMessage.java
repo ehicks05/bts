@@ -22,6 +22,9 @@ public class ChatRoomMessage implements Serializable, Comparable
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Column(name = "author", nullable = false)
+    private String author;
+
     @Column(name = "contents", nullable = false)
     private String contents;
 
@@ -53,6 +56,11 @@ public class ChatRoomMessage implements Serializable, Comparable
         return this.getTimestamp().compareTo(((ChatRoomMessage) o).getTimestamp());
     }
 
+    public ChatRoom getRoom()
+    {
+        return ChatRoom.getById(roomId);
+    }
+
     public static List<ChatRoomMessage> getAll()
     {
         return EOI.executeQuery("select * from chat_room_messages");
@@ -60,7 +68,7 @@ public class ChatRoomMessage implements Serializable, Comparable
 
     public static List<ChatRoomMessage> getByRoomId(Long roomId)
     {
-        return EOI.executeQuery("select * from chat_room_messages where group_id=?", Arrays.asList(roomId));
+        return EOI.executeQuery("select * from chat_room_messages where room_id=?", Arrays.asList(roomId));
     }
 
     public static List<ChatRoomMessage> getByUserId(Long userId)
@@ -108,6 +116,16 @@ public class ChatRoomMessage implements Serializable, Comparable
     public void setUserId(Long userId)
     {
         this.userId = userId;
+    }
+
+    public String getAuthor()
+    {
+        return author;
+    }
+
+    public void setAuthor(String author)
+    {
+        this.author = author;
     }
 
     public String getContents()

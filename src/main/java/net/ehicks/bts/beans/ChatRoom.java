@@ -15,8 +15,14 @@ public class ChatRoom implements Serializable
     @Column(name = "id", updatable = false, nullable = false, columnDefinition = "bigint not null auto_increment primary key")
     private Long id;
 
-    @Column(name = "room_id", nullable = false, unique = false)
-    private Long roomId;
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "group_id")
+    private Long groupId;
+
+    @Column(name = "direct_chat", nullable = false)
+    private Boolean directChat;
 
     @Override
     public boolean equals(Object obj)
@@ -42,9 +48,9 @@ public class ChatRoom implements Serializable
         return EOI.executeQuery("select * from chat_rooms");
     }
 
-    public static List<ChatRoom> getByRoomId(Long roomId)
+    public static ChatRoom getByGroupId(Long groupId)
     {
-        return EOI.executeQuery("select * from chat_rooms where group_id=?", Arrays.asList(roomId));
+        return EOI.executeQueryOneResult("select * from chat_rooms where group_id=?", Arrays.asList(groupId));
     }
 
     public static ChatRoom getById(Long id)
@@ -64,13 +70,33 @@ public class ChatRoom implements Serializable
         this.id = id;
     }
 
-    public Long getRoomId()
+    public String getName()
     {
-        return roomId;
+        return name;
     }
 
-    public void setRoomId(Long roomId)
+    public void setName(String name)
     {
-        this.roomId = roomId;
+        this.name = name;
+    }
+
+    public Long getGroupId()
+    {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId)
+    {
+        this.groupId = groupId;
+    }
+
+    public Boolean getDirectChat()
+    {
+        return directChat;
+    }
+
+    public void setDirectChat(Boolean directChat)
+    {
+        this.directChat = directChat;
     }
 }

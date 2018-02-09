@@ -12,7 +12,7 @@
     <jsp:include page="inc_title.jsp"/>
     <jsp:include page="inc_header.jsp"/>
     <script>
-        var socket = new WebSocket("ws://${pageContext.request.serverName}:${pageContext.request.serverPort}/${pageContext.request.contextPath}/chat");
+        var socket = new WebSocket("ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/chat");
         socket.onmessage = onMessage;
 
         $(function () {
@@ -26,8 +26,14 @@
 
         function onMessage(event) {
             var message = JSON.parse(event.data);
-            if (message.action === "add") {
+            if (message.action === "addMessage") {
                 printMessage(message);
+            }
+            if (message.action === "addRoomMember") {
+                printRoomMember(message);
+            }
+            if (message.action === "addRoom") {
+                printRoom(message);
             }
         }
 
@@ -35,6 +41,13 @@
             var messageAction = {
                 action: "addMessage",
                 contents: contents
+            };
+            socket.send(JSON.stringify(messageAction));
+        }
+        function changeRoomMessage(newRoom) {
+            var messageAction = {
+                action: "changeRoom",
+                newRoom: newRoom
             };
             socket.send(JSON.stringify(messageAction));
         }
@@ -47,7 +60,7 @@
             messages.appendChild(messageDiv);
 
             var messageAuthor = document.createElement("span");
-            messageAuthor.innerHTML = message.author + " (" + message.timestamp + "):   ";
+            messageAuthor.innerHTML = message.author + " " + message.timestamp + ":   ";
             messageDiv.appendChild(messageAuthor);
 
             var messageContents = document.createElement("span");
@@ -55,11 +68,50 @@
             messageDiv.appendChild(messageContents);
         }
 
+        function printRoomMember(roomMember) {
+            var roomMembers = document.getElementById("roomMembers");
+
+            var roomMemberDiv = document.createElement("div");
+            roomMemberDiv.setAttribute("id", roomMember.id);
+            roomMembers.appendChild(roomMemberDiv);
+
+            var roomMemberName = document.createElement("span");
+            roomMemberName.innerHTML = roomMember.name;
+            roomMemberDiv.appendChild(roomMemberName);
+        }
+
+        function printRoom(room) {
+            var rooms = document.getElementById("roomList");
+
+            var roomDiv = document.createElement("div");
+            roomDiv.classList.add('button');
+            roomDiv.onclick = changeRoom;
+            roomDiv.setAttribute("id", 'room' + room.id);
+            roomDiv.innerHTML = room.name;
+            rooms.appendChild(roomDiv);
+        }
+
         function formSubmit() {
-            var form = document.getElementById("addMessageForm");
             var contents = document.querySelector('#addMessageForm #fldContents').value;
             document.querySelector('#addMessageForm #fldContents').value = '';
             addMessage(contents);
+        }
+        function changeRoom(e) {
+            var newRoom = e.target.id.replace('room', '');
+
+            var messages = document.getElementById("messages");
+            while (messages.firstChild) {
+                messages.removeChild(messages.firstChild);
+            }
+
+            var roomMembers = document.getElementById("roomMembers");
+            while (roomMembers.firstChild) {
+                roomMembers.removeChild(roomMembers.firstChild);
+            }
+
+            $('#roomList .is-primary').removeClass('is-primary');
+            $('#room' + newRoom).addClass('is-primary');
+            changeRoomMessage(newRoom);
         }
     </script>
 </head>
@@ -84,14 +136,16 @@
                 <div class="box">
                     <h2 class="subtitle">Rooms</h2>
                     <hr>
+                    <div id="roomList">
 
+                    </div>
                 </div>
             </div>
             <div class="column is-three-fifths">
                 <div class="box">
                     <h2 class="subtitle">Messages</h2>
                     <hr>
-                    <div id="messages">
+                    <div id="messages" style="max-height:300px; overflow-y: auto;">
 
                     </div>
                     <hr>
@@ -106,7 +160,9 @@
                 <div class="box">
                     <h2 class="subtitle">People</h2>
                     <hr>
+                    <div id="roomMembers">
 
+                    </div>
                 </div>
             </div>
         </div>

@@ -87,6 +87,9 @@ public class Seeder
         createSubscriptions();
         log.debug(timer.printDuration("createSubscriptions"));
 
+        createChatObjects();
+        log.debug(timer.printDuration("createSubscriptions"));
+
         log.info(timer.printDuration("Done seeding dummy data"));
     }
 
@@ -592,6 +595,86 @@ public class Seeder
                 sub.setSeverityIds("1");
                 sub.setStatusIds("1,3");
                 EOI.insert(sub, SystemTask.SEEDER);
+            }
+        }
+    }
+
+    private static void createChatObjects()
+    {
+        User user = User.getByUserId(1L);
+        if (user != null)
+        {
+            List<ChatRoom> rooms = ChatRoom.getAll();
+            if (rooms.size() == 0)
+            {
+                ChatRoom room = new ChatRoom();
+                room.setName("General");
+                room.setGroupId(1L);
+                room.setDirectChat(false);
+                EOI.insert(room, SystemTask.SEEDER);
+
+                room = new ChatRoom();
+                room.setName("Troubleshooting");
+                room.setGroupId(1L);
+                room.setDirectChat(false);
+                EOI.insert(room, SystemTask.SEEDER);
+
+                room = new ChatRoom();
+                room.setName("Off Topic");
+                room.setGroupId(1L);
+                room.setDirectChat(false);
+                EOI.insert(room, SystemTask.SEEDER);
+
+                ChatRoomUserMap chatRoomUserMap = new ChatRoomUserMap();
+                chatRoomUserMap.setRoomId(1L);
+                chatRoomUserMap.setUserId(1L);
+                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
+
+                chatRoomUserMap = new ChatRoomUserMap();
+                chatRoomUserMap.setRoomId(1L);
+                chatRoomUserMap.setUserId(2L);
+                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
+
+                chatRoomUserMap = new ChatRoomUserMap();
+                chatRoomUserMap.setRoomId(1L);
+                chatRoomUserMap.setUserId(3L);
+                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
+
+                chatRoomUserMap = new ChatRoomUserMap();
+                chatRoomUserMap.setRoomId(1L);
+                chatRoomUserMap.setUserId(4L);
+                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
+
+                chatRoomUserMap = new ChatRoomUserMap();
+                chatRoomUserMap.setRoomId(2L);
+                chatRoomUserMap.setUserId(1L);
+                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
+
+                chatRoomUserMap = new ChatRoomUserMap();
+                chatRoomUserMap.setRoomId(2L);
+                chatRoomUserMap.setUserId(2L);
+                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
+
+                chatRoomUserMap = new ChatRoomUserMap();
+                chatRoomUserMap.setRoomId(3L);
+                chatRoomUserMap.setUserId(1L);
+                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
+
+                ChatRoomMessage chatRoomMessage = new ChatRoomMessage();
+                chatRoomMessage.setRoomId(1L);
+                chatRoomMessage.setUserId(1L);
+                chatRoomMessage.setAuthor("eric");
+                chatRoomMessage.setContents("Welcome to room 1");
+                chatRoomMessage.setTimestamp(new Date());
+                EOI.insert(chatRoomMessage, SystemTask.SEEDER);
+
+                chatRoomMessage = new ChatRoomMessage();
+                chatRoomMessage.setRoomId(2L);
+                chatRoomMessage.setUserId(1L);
+                chatRoomMessage.setAuthor("eric");
+                chatRoomMessage.setContents("Welcome to room 2");
+                chatRoomMessage.setTimestamp(new Date());
+                EOI.insert(chatRoomMessage, SystemTask.SEEDER);
             }
         }
     }

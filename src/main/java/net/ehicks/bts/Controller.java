@@ -4,6 +4,7 @@ import net.ehicks.bts.beans.*;
 import net.ehicks.bts.routing.Route;
 import net.ehicks.bts.routing.RouteDescription;
 import net.ehicks.bts.routing.Router;
+import net.ehicks.bts.util.ChatSessionHandler;
 import net.ehicks.bts.util.CommonScheduling;
 import net.ehicks.eoi.EOI;
 import org.slf4j.Logger;
@@ -64,6 +65,8 @@ public class Controller extends HttpServlet
         Router.loadRoutes();
 
         BackupDbTask.scheduleTask();
+
+        ChatSessionHandler.init(); // todo: move this?
 
         getServletContext().setAttribute("btsSystem", BtsSystem.getSystem());
 
