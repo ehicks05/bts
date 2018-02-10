@@ -32,6 +32,12 @@
             if (message.action === "addRoomMember") {
                 printRoomMember(message);
             }
+            if (message.action === "addPerson") {
+                printPerson(message);
+            }
+            if (message.action === "updatePerson") {
+                updatePerson(message);
+            }
             if (message.action === "addRoom") {
                 printRoom(message);
             }
@@ -109,13 +115,108 @@
         function printRoomMember(roomMember) {
             var roomMembers = document.getElementById("roomMembers");
 
-            var roomMemberDiv = document.createElement("div");
-            roomMemberDiv.setAttribute("id", roomMember.id);
-            roomMembers.appendChild(roomMemberDiv);
+            var messageArticle = document.createElement("article");
+            messageArticle.classList.add('media');
+            messageArticle.setAttribute("id", 'roomMemberArticle' + roomMember.id);
+            roomMembers.appendChild(messageArticle);
 
-            var roomMemberName = document.createElement("span");
-            roomMemberName.innerHTML = roomMember.name;
-            roomMemberDiv.appendChild(roomMemberName);
+            var figure = document.createElement('figure');
+            figure.classList.add('media-left');
+            messageArticle.appendChild(figure);
+
+            var para = document.createElement('p');
+            para.classList.add('image', 'is-32x32');
+            figure.appendChild(para);
+
+            var img = document.createElement('img');
+            img.setAttribute("id", 'roomMemberImg' + roomMember.id);
+            img.setAttribute('src', roomMember.avatarBase64);
+            para.appendChild(img);
+
+            var mediaContentDiv = document.createElement('div');
+            mediaContentDiv.classList.add('media-content');
+            messageArticle.appendChild(mediaContentDiv);
+
+            var contentDiv = document.createElement('div');
+            contentDiv.classList.add('content');
+            mediaContentDiv.appendChild(contentDiv);
+
+            var plainDiv = document.createElement('div');
+            contentDiv.appendChild(plainDiv);
+
+            var strong = document.createElement('strong');
+            strong.setAttribute("id", 'roomMemberName' + roomMember.id);
+            strong.innerHTML = roomMember.name;
+            plainDiv.appendChild(strong);
+
+            var mediaRightDiv = document.createElement('div');
+            mediaRightDiv.classList.add('media-right');
+            messageArticle.appendChild(mediaRightDiv);
+
+            var statusSpan = document.createElement('span');
+            statusSpan.setAttribute("id", 'roomMemberStatus' + roomMember.id);
+            statusSpan.classList.add('tag', roomMember.statusClass);
+            statusSpan.innerHTML = '  ';
+            mediaRightDiv.appendChild(statusSpan);
+        }
+
+        function printPerson(person) {
+            var people = document.getElementById("people");
+
+            var messageArticle = document.createElement("article");
+            messageArticle.classList.add('media');
+            messageArticle.setAttribute("id", 'personArticle' + person.id);
+            people.appendChild(messageArticle);
+
+            var figure = document.createElement('figure');
+            figure.classList.add('media-left');
+            messageArticle.appendChild(figure);
+
+            var para = document.createElement('p');
+            para.classList.add('image', 'is-32x32');
+            figure.appendChild(para);
+
+            var img = document.createElement('img');
+            img.setAttribute("id", 'personImg' + person.id);
+            img.setAttribute('src', person.avatarBase64);
+            para.appendChild(img);
+
+            var mediaContentDiv = document.createElement('div');
+            mediaContentDiv.classList.add('media-content');
+            messageArticle.appendChild(mediaContentDiv);
+
+            var contentDiv = document.createElement('div');
+            contentDiv.classList.add('content');
+            mediaContentDiv.appendChild(contentDiv);
+
+            var plainDiv = document.createElement('div');
+            contentDiv.appendChild(plainDiv);
+
+            var strong = document.createElement('strong');
+            strong.setAttribute("id", 'personName' + person.id);
+            strong.innerHTML = person.name;
+            plainDiv.appendChild(strong);
+
+            var mediaRightDiv = document.createElement('div');
+            mediaRightDiv.classList.add('media-right');
+            messageArticle.appendChild(mediaRightDiv);
+
+            var statusSpan = document.createElement('span');
+            statusSpan.setAttribute("id", 'personStatus' + person.id);
+            statusSpan.classList.add('tag', person.statusClass);
+            statusSpan.innerHTML = '  ';
+            mediaRightDiv.appendChild(statusSpan);
+        }
+
+        function updatePerson(person) {
+            var img = document.getElementById('personImg' + person.id);
+            img.setAttribute('src', person.avatarBase64);
+
+            var strong = document.getElementById('personName' + person.id);
+            strong.innerHTML = person.name;
+
+            var statusSpan = document.getElementById('personStatus' + person.id);
+            statusSpan.className = 'tag ' + person.statusClass;
         }
 
         function printRoom(room) {
@@ -147,8 +248,8 @@
                 roomMembers.removeChild(roomMembers.firstChild);
             }
 
-            $('#roomList .is-primary').removeClass('is-primary');
-            $('#room' + newRoom).addClass('is-primary');
+            $('#roomList .is-info').removeClass('is-info');
+            $('#room' + newRoom).addClass('is-info');
             changeRoomMessage(newRoom);
         }
     </script>
@@ -178,12 +279,19 @@
 
                     </div>
                 </div>
+                <div class="box">
+                    <h2 class="subtitle">People</h2>
+                    <hr>
+                    <div id="people" class="has-text-centered">
+
+                    </div>
+                </div>
             </div>
             <div class="column is-three-fifths">
                 <div class="box">
                     <h2 class="subtitle">Messages</h2>
                     <hr>
-                    <div id="messages" style="max-height:300px; overflow-y: auto;">
+                    <div id="messages" style="height:500px; overflow-y: auto;">
 
                     </div>
                     <hr>
@@ -196,7 +304,7 @@
             </div>
             <div class="column is-one-fifth">
                 <div class="box">
-                    <h2 class="subtitle">People</h2>
+                    <h2 class="subtitle">Room Members</h2>
                     <hr>
                     <div id="roomMembers">
 

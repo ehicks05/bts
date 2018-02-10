@@ -24,7 +24,9 @@ public class ChatSessionHandler
 {
     private static final Logger log = LoggerFactory.getLogger(ChatSessionHandler.class);
 
-    public static final Map<Session, ChatRoom> sessions = new ConcurrentHashMap<>();
+    public static final Map<Long, Session> userIdToSocketSession = new ConcurrentHashMap<>();
+    public static final Map<Session, Long> socketSessionToUserId = new ConcurrentHashMap<>();
+    public static final Map<Session, SocketSessionInfo> sessions = new ConcurrentHashMap<>();
     public static final Map<ChatRoom, List<ChatRoomMessage>> chatRooms = new ConcurrentHashMap<>();
 
     public static void init()
@@ -82,13 +84,17 @@ public class ChatSessionHandler
         }.start();
     }
 
-    public static void addSession(Session session)
+    public static void addSession(Session session, Long userId)
     {
-        sessions.put(session, new ChatRoom());
+        userIdToSocketSession.put(userId, session);
+        socketSessionToUserId.put(session, userId);
+        sessions.put(session, new SocketSessionInfo(null, new Date(), "active"));
     }
 
-    public static void removeSession(Session session)
+    public static void removeSession(Session session, Long userId)
     {
+        userIdToSocketSession.remove(userId);
+        socketSessionToUserId.remove(userId);
         sessions.remove(session);
     }
 
@@ -96,7 +102,7 @@ public class ChatSessionHandler
     {
         for (Session session : sessions.keySet())
         {
-            if (sessions.get(session).getId() != null && sessions.get(session).equals(room))
+            if (sessions.get(session).getRoomId() != null && sessions.get(session).getRoomId().equals(room.getId()))
                 sendToSession(session, message);
         }
     }
@@ -120,7 +126,7 @@ public class ChatSessionHandler
 
     public static void changeRoom(Session session, ChatRoom room)
     {
-        sessions.put(session, room);
+        sessions.get(session).setRoomId(room.getId());
 
         // tell client about messages in the room
         List<ChatRoomMessage> messagesForRoom = chatRooms.get(room);
@@ -170,6 +176,32 @@ public class ChatSessionHandler
         });
     }
 
+    public static void sendPeople(Session session, Long userId)
+    {
+        // tell client about people
+        User.getAllVisible(userId)
+                .forEach(visibleUser -> {
+                    JsonObject addPerson = createAddPerson(visibleUser);
+                    sendToSession(session, addPerson);
+                });
+    }
+
+    public static void announceStatusChange(Session session, Long announcerUserId)
+    {
+        // announce changes to person's status change
+        sessions.keySet()
+                .forEach(announcee -> {
+                    Long announceeUserId = socketSessionToUserId.get(announcee);
+                    boolean announceeCanSeeMe = User.getAllVisible(announceeUserId).contains(User.getByUserId(announcerUserId));
+
+                    if (announceeCanSeeMe)
+                    {
+                        JsonObject updatePerson = createUpdatePerson(User.getByUserId(announcerUserId));
+                        sendToSession(announcee, updatePerson);
+                    }
+                });
+    }
+
     public static void addChatRoomMessage(ChatRoomMessage chatRoomMessage)
     {
         chatRooms.get(chatRoomMessage.getRoom()).add(chatRoomMessage);
@@ -194,12 +226,67 @@ public class ChatSessionHandler
 
     private static JsonObject createAddRoomMember(User user)
     {
+        String statusClass = "is-dark";
+        Session session = userIdToSocketSession.get(user.getId());
+        if (session != null)
+        {
+            SocketSessionInfo socketSessionInfo = sessions.get(session);
+            if (socketSessionInfo != null)
+                statusClass = socketSessionInfo.getStatusClass();
+        }
+
         JsonProvider provider = JsonProvider.provider();
         return provider.createObjectBuilder()
                 .add("action", "addRoomMember")
                 .add("id", user.getId())
                 .add("name", user.getName())
+                .add("avatarBase64", user.getAvatar().getBase64())
                 .add("logonid", user.getLogonId())
+                .add("statusClass", statusClass)
+                .build();
+    }
+
+    private static JsonObject createAddPerson(User user)
+    {
+        String statusClass = "is-dark";
+        Session session = userIdToSocketSession.get(user.getId());
+        if (session != null)
+        {
+            SocketSessionInfo socketSessionInfo = sessions.get(session);
+            if (socketSessionInfo != null)
+                statusClass = socketSessionInfo.getStatusClass();
+        }
+
+        JsonProvider provider = JsonProvider.provider();
+        return provider.createObjectBuilder()
+                .add("action", "addPerson")
+                .add("id", user.getId())
+                .add("name", user.getName())
+                .add("avatarBase64", user.getAvatar().getBase64())
+                .add("logonid", user.getLogonId())
+                .add("statusClass", statusClass)
+                .build();
+    }
+
+    private static JsonObject createUpdatePerson(User user)
+    {
+        String statusClass = "is-dark";
+        Session session = userIdToSocketSession.get(user.getId());
+        if (session != null)
+        {
+            SocketSessionInfo socketSessionInfo = sessions.get(session);
+            if (socketSessionInfo != null)
+                statusClass = socketSessionInfo.getStatusClass();
+        }
+
+        JsonProvider provider = JsonProvider.provider();
+        return provider.createObjectBuilder()
+                .add("action", "updatePerson")
+                .add("id", user.getId())
+                .add("name", user.getName())
+                .add("avatarBase64", user.getAvatar().getBase64())
+                .add("logonid", user.getLogonId())
+                .add("statusClass", statusClass)
                 .build();
     }
 
