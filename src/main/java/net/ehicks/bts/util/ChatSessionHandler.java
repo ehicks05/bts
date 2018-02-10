@@ -2,6 +2,8 @@ package net.ehicks.bts.util;
 
 import net.ehicks.bts.beans.*;
 import net.ehicks.common.Common;
+import net.ehicks.eoi.AuditUser;
+import net.ehicks.eoi.EOI;
 import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +16,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 public class ChatSessionHandler
@@ -39,26 +41,42 @@ public class ChatSessionHandler
             @Override
             public void run()
             {
-                AtomicLong id = new AtomicLong(10000);
-
                 while (true)
                 {
                     Common.sleep((long) (new Random().nextDouble() * 5 * 1000));
-                    long roomId = new Random().nextInt(chatRooms.keySet().size()) + 1;
-                    long userId = new Random().nextInt(User.getAll().size()) + 1;
-                    User user = User.getByUserId(userId);
 
-                    ChatRoomMessage message = new ChatRoomMessage();
-                    message.setId(id.getAndIncrement());
-                    message.setRoomId(roomId);
-                    message.setUserId(userId);
-                    message.setAuthor(user.getName());
-                    message.setTimestamp(new Date());
-                    message.setContents(Comment.getAll().get(new Random().nextInt(Comment.getAll().size())).getContent());
+                    synchronized (ChatSessionHandler.class)
+                    {
+                        long roomId = new Random().nextInt(chatRooms.keySet().size()) + 1;
+                        long userId = new Random().nextInt(User.getAll().size()) + 1;
+                        User user = User.getByUserId(userId);
 
-                    chatRooms.get(message.getRoom()).add(message);
-                    JsonObject addMessage = createAddMessage(message);
-                    sendToAllConnectedSessions(addMessage, message.getRoom());
+                        ChatRoomMessage message = new ChatRoomMessage();
+                        message.setRoomId(roomId);
+                        message.setUserId(userId);
+                        message.setAuthor(user.getName());
+                        message.setTimestamp(new Date());
+                        message.setContents(Comment.getAll().get(new Random().nextInt(Comment.getAll().size())).getContent());
+                        long messageId = EOI.insert(message, new AuditUser()
+                        {
+                            @Override
+                            public String getId()
+                            {
+                                return String.valueOf(userId);
+                            }
+
+                            @Override
+                            public String getIpAddress()
+                            {
+                                return "0";
+                            }
+                        });
+                        message.setId(messageId);
+
+                        chatRooms.get(message.getRoom()).add(message);
+                        JsonObject addMessage = createAddMessage(message);
+                        sendToAllConnectedSessions(addMessage, message.getRoom());
+                    }
                 }
             }
         }.start();
@@ -78,7 +96,7 @@ public class ChatSessionHandler
     {
         for (Session session : sessions.keySet())
         {
-            if (sessions.get(session).equals(room))
+            if (sessions.get(session).getId() != null && sessions.get(session).equals(room))
                 sendToSession(session, message);
         }
     }
@@ -108,7 +126,11 @@ public class ChatSessionHandler
         List<ChatRoomMessage> messagesForRoom = chatRooms.get(room);
         if (messagesForRoom != null)
         {
-            for (ChatRoomMessage chatRoomMessage : messagesForRoom)
+            List<ChatRoomMessage> messages = messagesForRoom;
+            if (messages.size() > 50)
+                messages = messages.subList(messages.size() - 51, messages.size() - 1);
+
+            for (ChatRoomMessage chatRoomMessage : messages)
             {
                 JsonObject addMessage = createAddMessage(chatRoomMessage);
                 sendToSession(session, addMessage);

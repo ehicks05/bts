@@ -55,6 +55,8 @@
         function printMessage(message) {
             var messages = document.getElementById("messages");
 
+            var autoScroll = (messages.scrollHeight - messages.scrollTop) === messages.clientHeight;
+
             var messageDiv = document.createElement("div");
             messageDiv.setAttribute("id", message.id);
             messages.appendChild(messageDiv);
@@ -66,6 +68,11 @@
             var messageContents = document.createElement("span");
             messageContents.innerHTML = message.contents;
             messageDiv.appendChild(messageContents);
+
+            if (autoScroll)
+            {
+                document.getElementById("messages").scrollTo(0, document.getElementById("messages").scrollHeight);
+            }
         }
 
         function printRoomMember(roomMember) {
@@ -151,8 +158,8 @@
                     <hr>
 
                     <div id="addMessageForm">
-                        <input id="fldContents" name="fldContents">
-                        <button onclick="formSubmit();">Submit</button>
+                        <t:text id="fldContents" horizontal="false"/>
+                        <button class="button is-primary" onclick="formSubmit();">Submit</button>
                     </div>
                 </div>
             </div>
