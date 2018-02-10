@@ -25,7 +25,7 @@ public class ChatRoomMessage implements Serializable, Comparable
     @Column(name = "author", nullable = false)
     private String author;
 
-    @Column(name = "contents", nullable = false)
+    @Column(name = "contents", length = 8000, nullable = false)
     private String contents;
 
     @Column(name = "time_stamp", nullable = false)

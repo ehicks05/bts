@@ -187,6 +187,7 @@ public class ChatSessionHandler
                 .add("id", message.getId())
                 .add("timestamp", new SimpleDateFormat("h:mm a").format(message.getTimestamp()))
                 .add("author", message.getAuthor())
+                .add("avatarBase64", User.getByUserId(message.getUserId()).getAvatar().getBase64())
                 .add("contents", message.getContents())
                 .build();
     }

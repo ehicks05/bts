@@ -57,17 +57,48 @@
 
             var autoScroll = (messages.scrollHeight - messages.scrollTop) === messages.clientHeight;
 
-            var messageDiv = document.createElement("div");
-            messageDiv.setAttribute("id", message.id);
-            messages.appendChild(messageDiv);
+            var messageArticle = document.createElement("article");
+            messageArticle.classList.add('media');
+            messageArticle.setAttribute("id", message.id);
+            messages.appendChild(messageArticle);
 
-            var messageAuthor = document.createElement("span");
-            messageAuthor.innerHTML = message.author + " " + message.timestamp + ":   ";
-            messageDiv.appendChild(messageAuthor);
+            var figure = document.createElement('figure');
+            figure.classList.add('media-left');
+            messageArticle.appendChild(figure);
 
-            var messageContents = document.createElement("span");
-            messageContents.innerHTML = message.contents;
-            messageDiv.appendChild(messageContents);
+            var para = document.createElement('p');
+            para.classList.add('image', 'is-32x32');
+            figure.appendChild(para);
+
+            var img = document.createElement('img');
+            img.setAttribute('src', message.avatarBase64);
+            para.appendChild(img);
+
+            var mediaContentDiv = document.createElement('div');
+            mediaContentDiv.classList.add('media-content');
+            messageArticle.appendChild(mediaContentDiv);
+
+            var contentDiv = document.createElement('div');
+            contentDiv.classList.add('content');
+            mediaContentDiv.appendChild(contentDiv);
+
+            var plainDiv = document.createElement('div');
+            contentDiv.appendChild(plainDiv);
+
+            var strong = document.createElement('strong');
+            strong.innerHTML = message.author;
+            plainDiv.appendChild(strong);
+
+            var dateSpan = document.createElement('span');
+            dateSpan.innerHTML = ' ' + message.timestamp;
+            plainDiv.appendChild(dateSpan);
+
+            var breakEl = document.createElement('br');
+            plainDiv.appendChild(breakEl);
+
+            var contentsSpan = document.createElement('span');
+            contentsSpan.innerHTML = message.contents;
+            plainDiv.appendChild(contentsSpan);
 
             if (autoScroll)
             {
@@ -143,7 +174,7 @@
                 <div class="box">
                     <h2 class="subtitle">Rooms</h2>
                     <hr>
-                    <div id="roomList">
+                    <div id="roomList" class="has-text-centered">
 
                     </div>
                 </div>
