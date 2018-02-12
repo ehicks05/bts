@@ -3,6 +3,7 @@ package net.ehicks.bts.util;
 import net.ehicks.bts.SessionListener;
 import net.ehicks.bts.beans.ChatRoom;
 import net.ehicks.bts.beans.ChatRoomMessage;
+import net.ehicks.bts.beans.User;
 import net.ehicks.eoi.EOI;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -37,45 +38,48 @@ public class ChatSocket
     {
         log.debug("Message received:" + message);
 
+        Long userId = SessionListener.getBySessionId(httpSession.getId()).getUserId();
         try (JsonReader reader = Json.createReader(new StringReader(message)))
         {
             JsonObject jsonMessage = reader.readObject();
             String action = jsonMessage.getString("action");
 
             if (action.equals("addMessage"))
-            {
-                handleAddMessage(session, jsonMessage);
-            }
-
-            if (action.equals("remove"))
-            {
-                int id = (int) jsonMessage.getInt("id");
-            }
+                handleAddMessage(session, userId, jsonMessage);
             if (action.equals("changeRoom"))
-            {
-                handleChangeRoom(session, jsonMessage);
-            }
+                handleChangeRoom(session, userId, jsonMessage);
+            if (action.equals("changeToPrivateRoom"))
+                handleChangeToPrivateRoom(session, userId, jsonMessage);
         }
     }
 
-    private void handleChangeRoom(Session session, JsonObject jsonMessage)
+    private void handleChangeRoom(Session session, Long userId, JsonObject jsonMessage)
     {
         Long newRoom = Long.valueOf(jsonMessage.getString("newRoom"));
+
         ChatSessionHandler.changeRoom(session, ChatRoom.getById(newRoom));
+        ChatSessionHandler.announceStatusChange(session, userId);
     }
 
-    private void handleAddMessage(Session session, JsonObject jsonMessage)
+    private void handleChangeToPrivateRoom(Session session, Long userId, JsonObject jsonMessage)
+    {
+        Long otherUserId = Long.valueOf(jsonMessage.getString("otherUserId"));
+
+        ChatSessionHandler.changeToPrivateRoom(session, otherUserId);
+        ChatSessionHandler.announceStatusChange(session, userId);
+    }
+
+    private void handleAddMessage(Session session, Long userId, JsonObject jsonMessage)
     {
         ChatRoomMessage chatRoomMessage = new ChatRoomMessage();
         chatRoomMessage.setTimestamp(new Date());
         chatRoomMessage.setRoomId(ChatSessionHandler.sessions.get(session).getRoomId());
-        chatRoomMessage.setUserId(SessionListener.getBySessionId(httpSession.getId()).getUserId());
-        chatRoomMessage.setAuthor(SessionListener.getBySessionId(httpSession.getId()).getLogonId());
-
+        chatRoomMessage.setUserId(userId);
+        chatRoomMessage.setAuthor(User.getByUserId(userId).getLogonId());
         chatRoomMessage.setContents(jsonMessage.getString("contents"));
 
-        long id = EOI.insert(chatRoomMessage, SessionListener.getBySessionId(httpSession.getId()));
-        chatRoomMessage = ChatRoomMessage.getById(id);
+        long messageId = EOI.insert(chatRoomMessage, SessionListener.getBySessionId(httpSession.getId()));
+        chatRoomMessage = ChatRoomMessage.getById(messageId);
 
         ChatSessionHandler.addChatRoomMessage(chatRoomMessage);
     }

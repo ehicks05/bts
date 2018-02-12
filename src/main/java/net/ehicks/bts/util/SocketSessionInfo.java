@@ -26,6 +26,17 @@ public class SocketSessionInfo
         return "";
     }
 
+    public String getStatusIcon()
+    {
+        if (status.equals("active"))
+            return "fas";
+        if (status.equals("idle"))
+            return "";
+        if (status.equals("away"))
+            return "";
+        return "";
+    }
+
     public Long getRoomId()
     {
         return roomId;

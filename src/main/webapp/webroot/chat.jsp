@@ -32,6 +32,9 @@
             if (message.action === "addRoomMember") {
                 printRoomMember(message);
             }
+            if (message.action === "updateRoomMember") {
+                updateRoomMember(message);
+            }
             if (message.action === "addPerson") {
                 printPerson(message);
             }
@@ -54,6 +57,13 @@
             var messageAction = {
                 action: "changeRoom",
                 newRoom: newRoom
+            };
+            socket.send(JSON.stringify(messageAction));
+        }
+        function changeToPrivateRoomMessage(otherUserId) {
+            var messageAction = {
+                action: "changeToPrivateRoom",
+                otherUserId: otherUserId
             };
             socket.send(JSON.stringify(messageAction));
         }
@@ -156,74 +166,61 @@
             var statusSpan = document.createElement('span');
             statusSpan.setAttribute("id", 'roomMemberStatus' + roomMember.id);
             statusSpan.classList.add('tag', roomMember.statusClass);
-            statusSpan.innerHTML = '  ';
+            // statusSpan.innerHTML = '  ';
             mediaRightDiv.appendChild(statusSpan);
+        }
+
+        function updateRoomMember(roomMember) {
+            if (!document.getElementById('roomMemberImg' + roomMember.id))
+                return;
+
+            var img = document.getElementById('roomMemberImg' + roomMember.id);
+            img.setAttribute('src', roomMember.avatarBase64);
+
+            var strong = document.getElementById('roomMemberName' + roomMember.id);
+            strong.innerHTML = roomMember.name;
+
+            var statusSpan = document.getElementById('roomMemberStatus' + roomMember.id);
+            statusSpan.className = 'tag ' + roomMember.statusClass;
         }
 
         function printPerson(person) {
             var people = document.getElementById("people");
 
-            var messageArticle = document.createElement("article");
-            messageArticle.classList.add('media');
-            messageArticle.setAttribute("id", 'personArticle' + person.id);
-            people.appendChild(messageArticle);
-
-            var figure = document.createElement('figure');
-            figure.classList.add('media-left');
-            messageArticle.appendChild(figure);
-
-            var para = document.createElement('p');
-            para.classList.add('image', 'is-32x32');
-            figure.appendChild(para);
-
-            var img = document.createElement('img');
-            img.setAttribute("id", 'personImg' + person.id);
-            img.setAttribute('src', person.avatarBase64);
-            para.appendChild(img);
-
-            var mediaContentDiv = document.createElement('div');
-            mediaContentDiv.classList.add('media-content');
-            messageArticle.appendChild(mediaContentDiv);
-
-            var contentDiv = document.createElement('div');
-            contentDiv.classList.add('content');
-            mediaContentDiv.appendChild(contentDiv);
-
-            var plainDiv = document.createElement('div');
-            contentDiv.appendChild(plainDiv);
-
-            var strong = document.createElement('strong');
-            strong.setAttribute("id", 'personName' + person.id);
-            strong.innerHTML = person.name;
-            plainDiv.appendChild(strong);
-
-            var mediaRightDiv = document.createElement('div');
-            mediaRightDiv.classList.add('media-right');
-            messageArticle.appendChild(mediaRightDiv);
+            var personDiv = document.createElement("div");
+            personDiv.classList.add('button', 'is-fullwidth');
+            personDiv.setAttribute("id", 'person' + person.id);
+            personDiv.addEventListener("click", changeToPrivateRoom);
+            people.appendChild(personDiv);
 
             var statusSpan = document.createElement('span');
-            statusSpan.setAttribute("id", 'personStatus' + person.id);
-            statusSpan.classList.add('tag', person.statusClass);
-            statusSpan.innerHTML = '  ';
-            mediaRightDiv.appendChild(statusSpan);
+            statusSpan.classList.add('icon');
+            personDiv.appendChild(statusSpan);
+
+            var icon = document.createElement('i');
+            icon.setAttribute("id", 'personStatus' + person.id);
+            icon.classList.add('fa-circle', person.statusIcon);
+            statusSpan.appendChild(icon);
+
+            var nameSpan = document.createElement('span');
+            nameSpan.setAttribute("id", 'personName' + person.id);
+            nameSpan.innerHTML = person.name;
+            personDiv.appendChild(nameSpan);
         }
 
         function updatePerson(person) {
-            var img = document.getElementById('personImg' + person.id);
-            img.setAttribute('src', person.avatarBase64);
-
             var strong = document.getElementById('personName' + person.id);
             strong.innerHTML = person.name;
 
-            var statusSpan = document.getElementById('personStatus' + person.id);
-            statusSpan.className = 'tag ' + person.statusClass;
+            var icon = document.getElementById('personStatus' + person.id);
+            icon.className = 'fa-circle ' + person.statusIcon;
         }
 
         function printRoom(room) {
             var rooms = document.getElementById("roomList");
 
             var roomDiv = document.createElement("div");
-            roomDiv.classList.add('button');
+            roomDiv.classList.add('button', 'is-fullwidth');
             roomDiv.onclick = changeRoom;
             roomDiv.setAttribute("id", 'room' + room.id);
             roomDiv.innerHTML = room.name;
@@ -248,9 +245,31 @@
                 roomMembers.removeChild(roomMembers.firstChild);
             }
 
+            $('#people .is-info').removeClass('is-info');
             $('#roomList .is-info').removeClass('is-info');
             $('#room' + newRoom).addClass('is-info');
             changeRoomMessage(newRoom);
+        }
+
+        function changeToPrivateRoom(e) {
+            var otherUserId = e.currentTarget.id.replace('person', '');
+
+            // nuke messages
+            var messages = document.getElementById("messages");
+            while (messages.firstChild) {
+                messages.removeChild(messages.firstChild);
+            }
+
+            // nuke room members
+            var roomMembers = document.getElementById("roomMembers");
+            while (roomMembers.firstChild) {
+                roomMembers.removeChild(roomMembers.firstChild);
+            }
+
+            $('#people .is-info').removeClass('is-info');
+            $('#roomList .is-info').removeClass('is-info');
+            $('#person' + otherUserId).addClass('is-info');
+            changeToPrivateRoomMessage(otherUserId);
         }
     </script>
 </head>
@@ -278,8 +297,7 @@
                     <div id="roomList" class="has-text-centered">
 
                     </div>
-                </div>
-                <div class="box">
+                    <hr>
                     <h2 class="subtitle">People</h2>
                     <hr>
                     <div id="people" class="has-text-centered">

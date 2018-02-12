@@ -24,6 +24,12 @@ public class ChatRoom implements Serializable
     @Column(name = "direct_chat", nullable = false)
     private Boolean directChat;
 
+    @Column(name = "direct_chat_user_id1")
+    private Long directChatUserId1;
+
+    @Column(name = "direct_chat_user_id2")
+    private Long directChatUserId2;
+
     @Override
     public boolean equals(Object obj)
     {
@@ -56,6 +62,11 @@ public class ChatRoom implements Serializable
     public static ChatRoom getById(Long id)
     {
         return EOI.executeQueryOneResult("select * from chat_rooms where id=?", Arrays.asList(id));
+    }
+
+    public static ChatRoom getDirectChat(Long userId1, Long userId2)
+    {
+        return EOI.executeQueryOneResult("select * from chat_rooms where direct_chat=? and direct_chat_user_id1=? and direct_chat_user_id2=?", Arrays.asList(true, userId1, userId2));
     }
 
     // -------- Getters / Setters ----------
@@ -98,5 +109,25 @@ public class ChatRoom implements Serializable
     public void setDirectChat(Boolean directChat)
     {
         this.directChat = directChat;
+    }
+
+    public Long getDirectChatUserId1()
+    {
+        return directChatUserId1;
+    }
+
+    public void setDirectChatUserId1(Long directChatUserId1)
+    {
+        this.directChatUserId1 = directChatUserId1;
+    }
+
+    public Long getDirectChatUserId2()
+    {
+        return directChatUserId2;
+    }
+
+    public void setDirectChatUserId2(Long directChatUserId2)
+    {
+        this.directChatUserId2 = directChatUserId2;
     }
 }
