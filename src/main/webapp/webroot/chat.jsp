@@ -199,7 +199,7 @@
 
             var icon = document.createElement('i');
             icon.setAttribute("id", 'personStatus' + person.id);
-            icon.classList.add('fa-circle', person.statusIcon);
+            icon.classList.add('fa-circle', 'has-text-primary', person.statusIcon);
             statusSpan.appendChild(icon);
 
             var nameSpan = document.createElement('span');
@@ -213,7 +213,8 @@
             strong.innerHTML = person.name;
 
             var icon = document.getElementById('personStatus' + person.id);
-            icon.className = 'fa-circle ' + person.statusIcon;
+            // icon.className = 'fa-circle has-text-primary ' + person.statusIcon;
+            icon.setAttribute("data-prefix", person.statusIcon);
         }
 
         function printRoom(room) {
