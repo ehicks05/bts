@@ -292,42 +292,40 @@
     <div class="container">
         <div class="columns is-multiline is-centered">
             <div class="column is-one-fifth">
-                <div class="box">
-                    <h2 class="subtitle">Rooms</h2>
-                    <hr>
-                    <div id="roomList" class="has-text-centered">
+                <h2 class="subtitle">Rooms</h2>
+                <div id="roomList" class="has-text-centered">
 
-                    </div>
-                    <hr>
-                    <h2 class="subtitle">People</h2>
-                    <hr>
-                    <div id="people" class="has-text-centered">
+                </div>
+                <br>
+                <h2 class="subtitle">People</h2>
+                <div id="people" class="has-text-centered">
 
-                    </div>
                 </div>
             </div>
             <div class="column is-three-fifths">
-                <div class="box">
-                    <h2 class="subtitle">Messages</h2>
-                    <hr>
-                    <div id="messages" style="height:500px; overflow-y: auto;">
+                <h2 class="subtitle">Messages</h2>
+                <div id="messages" style="height:500px; overflow-y: auto;">
 
-                    </div>
-                    <hr>
+                </div>
 
-                    <div id="addMessageForm">
-                        <t:text id="fldContents" horizontal="false"/>
-                        <button class="button is-primary" onclick="formSubmit();">Submit</button>
+                <div id="addMessageForm" style="margin-top:5px;">
+
+                    <div class="field has-addons">
+                        <div class="control is-expanded">
+                            <input class="input" type="text" id="fldContents" name="fldContents" value="" />
+                        </div>
+                        <div class="control">
+                            <a class="button is-primary" onclick="formSubmit();">
+                                Submit
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="column is-one-fifth">
-                <div class="box">
-                    <h2 class="subtitle">Room Members</h2>
-                    <hr>
-                    <div id="roomMembers">
+                <h2 class="subtitle">Room Members</h2>
+                <div id="roomMembers">
 
-                    </div>
                 </div>
             </div>
         </div>
