@@ -6,7 +6,7 @@
 <jsp:useBean id="issueForm" type="net.ehicks.bts.beans.IssueForm" scope="request"/>
 <jsp:useBean id="searchResult" type="net.ehicks.bts.SearchResult" scope="request"/>
 
-<table id="filmTable" class="table is-striped is-narrow is-hoverable is-fullwidth">
+<table id="issueTable" class="table is-striped is-narrow is-hoverable is-fullwidth">
     <thead>
         <tr class="listheading">
             <t:sortableCell code="id" label="ID" style="text-align:right;" cssClass="has-text-right" searchForm="${issueForm}" />

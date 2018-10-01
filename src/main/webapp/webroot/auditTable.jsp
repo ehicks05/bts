@@ -7,7 +7,7 @@
 <jsp:useBean id="searchResult" type="net.ehicks.bts.SearchResult" scope="request"/>
 
 <div class="overflowTableContainer">
-    <table id="filmTable" style="width:100%;margin: 0 auto" class="table is-striped is-narrow is-hoverable is-fullwidth">
+    <table id="auditTable" style="width:100%;margin: 0 auto" class="table is-striped is-narrow is-hoverable is-fullwidth">
         <thead>
         <tr class="listheading">
             <t:sortableCell code="id" label="Audit ID" style="text-align:right;" searchForm="${auditForm}" />

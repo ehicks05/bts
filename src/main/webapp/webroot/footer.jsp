@@ -5,38 +5,24 @@
     <jsp:useBean id="userSession" type="net.ehicks.bts.UserSession" scope="session"/>
 </c:if>
 
-<%--<nav class="level">--%>
-    <%--<div class="container">--%>
-    <%--<hr>--%>
-        <%--<div class="level-item has-text-centered">--%>
-            <%--<nav class="breadcrumb is-centered" aria-label="breadcrumbs">--%>
-                <%--<ul>--%>
-                    <%--<li><a href="#" onclick="followBreadcrumbs('${param.tab1}')">${param.tab1}</a></li>--%>
-                    <%--<c:if test="${!empty param.tab2}">--%>
-                        <%--<li><a href="#" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}')">${param.tab2}</a></li>--%>
-                    <%--</c:if>--%>
-                    <%--<c:if test="${!empty param.tab3}">--%>
-                        <%--<li><a href="#" onclick="followBreadcrumbs('${param.tab1}','${param.tab2}','${param.tab3}')">${param.tab3}</a></li>--%>
-                    <%--</c:if>--%>
-                <%--</ul>--%>
-            <%--</nav>--%>
-        <%--</div>--%>
-    <%--</div>--%>
-<%--</nav>--%>
 <footer class="footer">
     <div class="container">
-        <div class="content has-text-centered">
-            <p><img src="${pageContext.request.contextPath}/images/bug_16.png"/>
-                &centerdot; <strong>${btsSystem.instanceName}</strong>
-            </p>
-            <p>
-                <strong>Puffin build <span title="${userSession.systemInfo.gitVersion}">${userSession.systemInfo.version}</span></strong> by <a href="http://ehicks.net">Eric Hicks</a>
-            </p>
-            <p>
-                <c:if test="${!empty sessionScope.userSession}">
-                    Page rendered in ${userSession.currentTimeMillis - userSession.enteredController} ms
-                </c:if>
-            </p>
+        <div class="columns">
+            <div class="column">
+                <p><img src="${pageContext.request.contextPath}/images/bug_16.png"/>
+                    &centerdot; <strong>${btsSystem.instanceName}</strong>
+                </p>
+            </div>
+            <div class="column has-text-right">
+                <p>
+                    Puffin build <span title="${userSession.systemInfo.gitVersion}">${userSession.systemInfo.version}</span> by <a href="http://ehicks.net">Eric Hicks</a>
+                </p>
+                <p>
+                    <c:if test="${!empty sessionScope.userSession}">
+                        <span title="Time from entering the controller to rendering this element.">${userSession.currentTimeMillis - userSession.enteredController} ms</span>
+                    </c:if>
+                </p>
+            </div>
         </div>
     </div>
 </footer>

@@ -215,12 +215,12 @@ public class IssueSearchHandler
         if (issueForm.getSortDirection().length() == 0) issueForm.setSortDirection("asc");
         if (issueForm.getPage().length() == 0) issueForm.setPage("1");
 
-        PSIngredients filmQuery = IssueForm.buildSQLQuery(issueForm, resultsPerPage);
-        String countVersionOfQuery = SQLGenerator.getCountVersionOfQuery(filmQuery.query);
+        PSIngredients query = IssueForm.buildSQLQuery(issueForm, resultsPerPage);
+        String countVersionOfQuery = SQLGenerator.getCountVersionOfQuery(query.query);
 
-        List countResult = EOI.executeQueryOneResult(countVersionOfQuery, filmQuery.args);
+        List countResult = EOI.executeQueryOneResult(countVersionOfQuery, query.args);
         long resultSize = (Long) countResult.get(0);
-        List<Object> filteredIssues = EOI.executeQuery(filmQuery.query, filmQuery.args);
+        List<Object> filteredIssues = EOI.executeQuery(query.query, query.args);
 
         return new SearchResult(issueForm.getPage(), filteredIssues, resultSize, resultsPerPage);
     }

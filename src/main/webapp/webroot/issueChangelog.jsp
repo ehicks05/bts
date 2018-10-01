@@ -5,7 +5,7 @@
 
 <jsp:useBean id="issueAudits" type="java.util.List<net.ehicks.bts.beans.IssueAudit>" scope="request"/>
 
-<table id="filmTable" class="table is-striped is-narrow is-hoverable is-fullwidth">
+<table id="issueAuditTable" class="table is-striped is-narrow is-hoverable is-fullwidth">
     <thead>
     <tr>
         <th>User</th>
