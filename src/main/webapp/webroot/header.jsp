@@ -14,13 +14,29 @@
             location.href = '${pageContext.request.contextPath}/view?tab1=issue&action=form&issueId=' + issueId;
     }
 
-    function followBreadcrumbs(tab1, tab2, tab3)
+    function showNotification(message, status)
     {
-        var tabs = '';
-        if (tab1) tabs += 'tab1=' + tab1;
-        if (tab2) tabs += '&tab2=' + tab2;
-        if (tab3) tabs += '&tab3=' + tab3;
-        location.href = '${pageContext.request.contextPath}/view?' + tabs + '&action=form';
+        var notification = document.querySelector('#server-response-notification');
+
+        if (status === 'success')
+        {
+            notification.className = 'notification is-success';
+            notification.innerHTML = '<button class="delete"></button>Success: ' + message;
+        }
+        if (status === 'error')
+        {
+            notification.className = 'notification is-danger';
+            notification.innerHTML = 'Failed: ' + message;
+        }
+        else
+        {
+            notification.className = 'notification is-info';
+            notification.innerHTML = message;
+        }
+
+        setTimeout(function () {
+            notification.className = 'notification is-hidden';
+        }, 3000);
     }
 
     function showResponseMessage()
@@ -34,7 +50,7 @@
         </c:if>
         if (message)
         {
-            alert(message);
+            showNotification(message, 'ok');
         }
     }
 
@@ -77,12 +93,21 @@
 
 </script>
 
+<c:if test="${!empty responseMessage}">
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column is-one-quarter">
+                <div id="server-response-notification" class="notification is-hidden" style="position: fixed;top:90%;left:90%;transform: translate(-50%, -50%);z-index: 10;">
+                    <button class="delete"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</c:if>
+
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="container">
         <div class="navbar-brand">
-            <%--<div class="navbar-item">--%>
-                <%--<span>${applicationScope['systemInfo'].appName}</span>--%>
-            <%--</div>--%>
             <div class="navbar-item">
                 <img src="${pageContext.request.contextPath}/images/puffin-text.png" alt="Puffin" />
             </div>
