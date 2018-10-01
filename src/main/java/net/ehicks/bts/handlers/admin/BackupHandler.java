@@ -12,10 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class BackupHandler
 {
@@ -28,7 +25,7 @@ public class BackupHandler
         File backupDir = new File(SystemInfo.INSTANCE.getBackupDirectory());
         List<File> backups = new ArrayList<>();
         if (backupDir.exists() && backupDir.isDirectory())
-            backups = Arrays.asList(backupDir.listFiles());
+            backups = new ArrayList<>(Arrays.asList(backupDir.listFiles()));
         backups.removeIf(file -> !file.getName().contains("bts"));
         Collections.reverse(backups);
         request.setAttribute("backups", backups);

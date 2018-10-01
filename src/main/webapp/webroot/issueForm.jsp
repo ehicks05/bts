@@ -194,7 +194,7 @@
         <div class="columns is-multiline is-centered">
             <div class="column">
                 <div class="box">
-                    <t:textToInputText tag="h1" clazz="title" id="fldTitle" text="${issue.title}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
+                    <t:textToInputText tag="h2" clazz="subtitle" id="fldTitle" text="${issue.title}" submitAction="/view?tab1=issue&action=update&issueId=${issue.id}"/>
 
                     <form name="frmSave" id="frmSave" method="post" action="${pageContext.request.contextPath}/view?tab1=modify&action=save">
                         <div class="">

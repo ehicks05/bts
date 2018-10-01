@@ -11,7 +11,8 @@
         <tr class="listheading">
             <t:sortableCell code="id" label="ID" style="text-align:right;" cssClass="has-text-right" searchForm="${issueForm}" />
             <t:sortableCell code="title" label="Title" searchForm="${issueForm}"/>
-            <t:sortableCell code="created_on" label="Created" style="text-align:right;" cssClass="has-text-right hideOnSmall" searchForm="${issueForm}" />
+            <t:sortableCell code="severity_id" label="Severity" searchForm="${issueForm}"/>
+            <t:sortableCell code="created_on" label="Age" style="text-align:right;" cssClass="has-text-right hideOnSmall" searchForm="${issueForm}" />
             <t:sortableCell code="last_updated_on" label="Updated" style="text-align:right;" cssClass="has-text-right hideOnSmall" searchForm="${issueForm}" />
         </tr>
     </thead>
@@ -25,7 +26,8 @@
             <td>
                 <a href="${pageContext.request.contextPath}/view?tab1=issue&action=form&issueId=${issue.id}">${issue.title}</a>
             </td>
-            <td class="has-text-right hideOnSmall"><fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yy" /></td>
+            <td>${issue.severity.name}</td>
+            <td class="has-text-right hideOnSmall" title="<fmt:formatDate value="${issue.createdOn}" pattern="dd/MMM/yy" />">${issue.timeSinceCreation}</td>
             <td class="has-text-right hideOnSmall"><fmt:formatDate value="${issue.lastUpdatedOn}" pattern="dd/MMM/yy" /></td>
         </tr>
     </c:forEach>

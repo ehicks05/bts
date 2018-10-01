@@ -445,9 +445,9 @@ public class Seeder
         Severity severity = new Severity();
         severity.setName("High");
         EOI.insert(severity, SystemTask.SEEDER);
-        severity.setName("Low");
+        severity.setName("Medium");
         EOI.insert(severity, SystemTask.SEEDER);
-        severity.setName("Blocker");
+        severity.setName("Low");
         EOI.insert(severity, SystemTask.SEEDER);
     }
 

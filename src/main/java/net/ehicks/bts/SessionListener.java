@@ -22,6 +22,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
     @Override
     public void sessionCreated(HttpSessionEvent se)
     {
+        log.info("!!!!!!!!!!! session created: {}", se.getSession().getId());
 
     }
 

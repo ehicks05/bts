@@ -28,9 +28,9 @@
         <div class="content has-text-centered">
             <p><img src="${pageContext.request.contextPath}/images/bug_16.png"/>
                 &centerdot; <strong>${btsSystem.instanceName}</strong>
-                &centerdot; <strong>Puffin</strong> by <a href="http://ehicks.net">Eric Hicks</a>
             </p>
-            <p>build <span title="${userSession.systemInfo.gitVersion}">${userSession.systemInfo.version}</span>
+            <p>
+                <strong>Puffin build <span title="${userSession.systemInfo.gitVersion}">${userSession.systemInfo.version}</span></strong> by <a href="http://ehicks.net">Eric Hicks</a>
             </p>
             <p>
                 <c:if test="${!empty sessionScope.userSession}">

@@ -97,6 +97,11 @@
                     <div class="panel-block">
                         <t:multiSelect id="assigneeIds" selectedValues="${issueForm.assigneeUserIdsAsList}" items="${users}" placeHolder="Assignees:"/>
                     </div>
+                    <div class="panel-block">
+                        <c:if test="${!empty issueForm.id && issueForm.id != 0}">
+                            <t:checkbox id="onDash" label="On Dashboard" checked="${issueForm.onDash}" />
+                        </c:if>
+                    </div>
 
                     <div class="panel-block">
                         <input type="submit" value="Search" class="button is-link is-outlined is-fullwidth" />
@@ -104,12 +109,6 @@
                     <div class="panel-block">
                         <button id="saveFilterButton" class="button is-link is-outlined is-fullwidth" disabled>
                             Save (Enter a filter name)
-                        </button>
-                    </div>
-                    <div class="panel-block">
-                        <c:set var="addToDashStatus" value="${empty issueForm.id || issueForm.id == 0 || issueForm.onDash ? 'disabled' : ''}"/>
-                        <button class="button is-link is-outlined is-fullwidth" onclick="addToDashboard('${issueForm.id}');" ${addToDashStatus}>
-                            Add to Dash
                         </button>
                     </div>
                 </nav>

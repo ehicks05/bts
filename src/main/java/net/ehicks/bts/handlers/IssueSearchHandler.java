@@ -135,6 +135,7 @@ public class IssueSearchHandler
         String assigneeIds      = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("assigneeIds")));
         Date createdOn          = Common.stringToDate(request.getParameter("createdOn"));
         Date lastUpdatedOn      = Common.stringToDate(request.getParameter("lastUpdatedOn"));
+        boolean onDash          = !Common.getSafeString(request.getParameter("onDash")).isEmpty();
 
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
 
@@ -154,7 +155,8 @@ public class IssueSearchHandler
         if (page == null || page.length() == 0)
             page = "1";
 
-        issueForm.updateFields(filterName, userSession.getUserId(), containsText, title, description, statusIds, severityIds, projectIds, groupIds, assigneeIds, createdOn, lastUpdatedOn);
+        issueForm.updateFields(filterName, userSession.getUserId(), containsText, title, description, statusIds, severityIds,
+                projectIds, groupIds, assigneeIds, createdOn, lastUpdatedOn, onDash);
 
         issueForm.setSortColumn(sortColumn);
         issueForm.setSortDirection(sortDirection);

@@ -93,7 +93,7 @@ public class IssueForm extends SearchForm implements Serializable
     }
 
     public void updateFields(String filterName, Long userId, String containsText, String title, String description, String statusIds,
-                     String severityIds, String projectIds, String groupIds, String assigneeUserIds, Date createdOn, Date lastUpdatedOn)
+                     String severityIds, String projectIds, String groupIds, String assigneeUserIds, Date createdOn, Date lastUpdatedOn, boolean onDash)
     {
         this.setFormName(filterName);
         this.userId = userId;
@@ -107,6 +107,7 @@ public class IssueForm extends SearchForm implements Serializable
         this.assigneeUserIds = assigneeUserIds;
         this.createdOn = createdOn;
         this.lastUpdatedOn = lastUpdatedOn;
+        this.onDash = onDash;
     }
 
     public static PSIngredients buildSQLQuery(IssueForm issueForm, long resultsPerPage)

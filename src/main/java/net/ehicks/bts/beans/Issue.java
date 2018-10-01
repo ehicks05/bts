@@ -5,6 +5,10 @@ import net.ehicks.eoi.EOI;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -122,6 +126,24 @@ public class Issue implements Serializable
         return Attachment.getByIssueId(id);
     }
 
+    public String getTimeSinceCreation()
+    {
+        LocalDateTime start = LocalDateTime.ofInstant(Instant.ofEpochMilli(this.getCreatedOn().getTime()), ZoneId.systemDefault());
+        LocalDateTime until = LocalDateTime.now();
+        
+        long days = ChronoUnit.DAYS.between(start, until);
+        long hours = ChronoUnit.HOURS.between(start, until);
+        long minutes = ChronoUnit.MINUTES.between(start, until);
+
+        if (days > 0)
+            return days + " days";
+        if (hours > 0)
+            return hours + " hours";
+        if (minutes > 0)
+            return minutes + " minutes";
+
+        return "<1 minute";
+    }
     // -------- Getters / Setters ----------
 
 

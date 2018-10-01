@@ -2,7 +2,7 @@
 
 <%@tag description="Checkbox with Label" pageEncoding="UTF-8" %>
 <%@attribute name="id" fragment="false" %>
-<%@attribute name="checked" fragment="false" %>
+<%@attribute name="checked" fragment="false" type="java.lang.Boolean" %>
 <%@attribute name="label" fragment="false" %>
 <%@attribute name="horizontal" fragment="false" required="false" %>
 
@@ -23,7 +23,7 @@
     </div>
     <div class="field-body">
         <div class="control">
-            <input class="checkbox" type="checkbox" id="${id}" name="${id}" checked="${value}">
+            <input class="checkbox" type="checkbox" id="${id}" name="${id}" ${checked ? "checked" : ""} />
         </div>
     </div>
 </div>
