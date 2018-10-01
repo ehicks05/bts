@@ -126,9 +126,23 @@ public class CommonIO
     public static byte[] getThumbnail(FileItem fileItem) throws IOException
     {
         BufferedImage srcImage = ImageIO.read(fileItem.getInputStream()); // Load image
-        Scalr.Mode mode = srcImage.getWidth() > srcImage.getHeight() ? Scalr.Mode.FIT_TO_WIDTH : Scalr.Mode.FIT_TO_HEIGHT;
-        BufferedImage scaledImage = Scalr.resize(srcImage, mode, 200, 200); // Scale image
         String formatName = getContentType(fileItem).replace("image/", "");
+        return getThumbnailHelper(srcImage, formatName);
+    }
+
+    public static byte[] getThumbnail(File file) throws IOException
+    {
+        BufferedImage srcImage = ImageIO.read(file); // Load image
+        String formatName = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+        return getThumbnailHelper(srcImage, formatName);
+    }
+
+    private static byte[] getThumbnailHelper(BufferedImage srcImage, String formatName) throws IOException
+    {
+        int targetWidth = Math.min(srcImage.getWidth(), 200);
+        int targetHeight = Math.min(srcImage.getHeight(), 200);
+        Scalr.Mode mode = srcImage.getWidth() > srcImage.getHeight() ? Scalr.Mode.FIT_TO_WIDTH : Scalr.Mode.FIT_TO_HEIGHT;
+        BufferedImage scaledImage = Scalr.resize(srcImage, mode, targetWidth, targetHeight); // Scale image
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ImageIO.write(scaledImage, formatName, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();

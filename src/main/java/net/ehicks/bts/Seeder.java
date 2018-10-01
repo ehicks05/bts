@@ -1,6 +1,7 @@
 package net.ehicks.bts;
 
 import net.ehicks.bts.beans.*;
+import net.ehicks.bts.util.CommonIO;
 import net.ehicks.bts.util.PasswordUtil;
 import net.ehicks.common.Timer;
 import net.ehicks.eoi.EOI;
@@ -321,7 +322,25 @@ public class Seeder
                         log.error(e.getMessage(), e);
                     }
 
+                    long thumbnailId = 0;
+                    if (img.getName().contains("png"))
+                    {
+                        byte[] scaledBytes = new byte[0];
+                        try
+                        {
+                            scaledBytes = CommonIO.getThumbnail(img);
+                        }
+                        catch (IOException e)
+                        {
+                            log.error(e.getMessage(), e);
+                        }
+
+                        DBFile thumbnail = new DBFile(img.getName(), scaledBytes);
+                        thumbnailId = EOI.insert(thumbnail, SystemTask.SEEDER);
+                    }
+
                     DBFile dbFile = new DBFile(img.getName(), content);
+                    dbFile.setThumbnailId(thumbnailId);
                     long dbFileId = EOI.insert(dbFile, SystemTask.SEEDER);
 
                     Attachment attachment = new Attachment(1L, dbFileId, 2L);
