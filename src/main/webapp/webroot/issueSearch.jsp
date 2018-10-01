@@ -67,7 +67,7 @@
                 <form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/view?tab1=search&action=search">
                 <nav class="panel">
                     <p class="panel-heading">
-                        <c:set var="formName" value="${fn:length(issueForm.formName) == 0 ? 'New Filter' : issueForm.formName}"/>
+                        <c:set var="formName" value="${issueForm.id == 0 || fn:length(issueForm.formName) == 0 ? 'New Filter' : issueForm.formName}"/>
                         Issue Filter: ${formName}
                     </p>
                     <div class="panel-block">
@@ -99,7 +99,7 @@
                     </div>
                     <div class="panel-block">
                         <c:if test="${!empty issueForm.id && issueForm.id != 0}">
-                            <t:checkbox id="onDash" label="On Dashboard" checked="${issueForm.onDash}" />
+                            <t:checkbox id="onDash" label="On Dashboard" checked="${issueForm.onDash}" horizontal="false" />
                         </c:if>
                     </div>
 

@@ -62,7 +62,10 @@ public class IssueSearchHandler
             issueForm = (IssueForm) request.getSession().getAttribute("issueForm");
 
         if (issueForm == null)
-            issueForm = new IssueForm();
+            {
+                issueForm = new IssueForm();
+                issueForm.setId(0L);
+            }
 
         // parse sorting fields
         String sortColumn = request.getParameter("sortColumn");
@@ -110,7 +113,10 @@ public class IssueSearchHandler
         Long issueFormId = Common.stringToLong(request.getParameter("filterId"));
         IssueForm issueForm = IssueForm.getById(issueFormId);
         if (issueForm == null)
+        {
             issueForm = new IssueForm();
+            issueForm.setId(0L);
+        }
 
         issueForm = updateIssueFormFromRequest(issueForm, request);
 

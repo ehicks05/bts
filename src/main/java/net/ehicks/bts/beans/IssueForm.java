@@ -272,6 +272,10 @@ public class IssueForm extends SearchForm implements Serializable
     {
         if (!(obj instanceof IssueForm)) return false;
         IssueForm that = (IssueForm) obj;
+
+        if (this.id == null || that.id == null)
+            return false;
+
         return this.id.equals(that.getId());
     }
 
