@@ -10,6 +10,7 @@
 <%@attribute name="horizontal" fragment="false" required="false" %>
 <%@attribute name="required" fragment="false" required="false" %>
 <%@attribute name="blankLabel" fragment="false" required="false" %>
+<%@attribute name="labelClass" fragment="false" required="false" %>
 <%@attribute name="submitAction" fragment="false" %>
 
 <c:set var="items" value="${ct:parseItemsForSelect(items)}" />
@@ -41,7 +42,7 @@
 </c:if>
 
 <div class="field ${isHorizontal}">
-    <div class="field-label">
+    <div class="field-label ${labelClass}">
         <label class="label">${label}</label>
     </div>
     <div class="field-body">

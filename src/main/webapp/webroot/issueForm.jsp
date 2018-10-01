@@ -508,8 +508,9 @@
                                         </div>
 
                                         <form id="frmNewComment" name="frmNewComment" method="post" action="${pageContext.request.contextPath}/view?tab1=issue&action=addComment&issueId=${issue.id}">
-                                            <t:textarea id="fldContent" label="Comment" placeholder="Write a comment here..." />
-                                            <t:basicSelect id="fldVisibility" label="Visibility" items="${groups}" blankLabel="Default" />
+                                            <br>
+                                            <t:textarea id="fldContent" label="Comment" placeholder="Write a comment here..." horizontal="false" labelClass="has-text-left"/>
+                                            <t:basicSelect id="fldVisibility" label="Visibility" items="${groups}" blankLabel="Default" horizontal="false" labelClass="has-text-left" />
 
                                             <input type="button" value="Add" id="submitAddComment" class="button is-primary"/>
                                         </form>

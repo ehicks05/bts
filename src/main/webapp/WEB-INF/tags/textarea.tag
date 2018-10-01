@@ -5,6 +5,7 @@
 <%@attribute name="id" fragment="false" %>
 <%@attribute name="value" fragment="false" required="false" %>
 <%@attribute name="label" fragment="false" %>
+<%@attribute name="labelClass" fragment="false" %>
 <%@attribute name="placeholder" fragment="false" required="false" %>
 <%@attribute name="horizontal" fragment="false" required="false"  %>
 <%@attribute name="required" fragment="false" required="false"  %>
@@ -33,7 +34,7 @@
 
 
 <div class="field ${isHorizontal}">
-    <div class="field-label">
+    <div class="field-label ${labelClass}">
         <label class="label">${label}</label>
     </div>
     <div class="field-body">
