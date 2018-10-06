@@ -218,6 +218,18 @@ public class AdminHandler
         return "/webroot/admin/emails.jsp";
     }
 
+    @Route(tab1 = "admin", tab2 = "email", tab3 = "preview", action = "form")
+    public static String previewEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        Long emailId = Common.stringToLong(request.getParameter("emailId"));
+        EmailMessage emailMessage = EmailMessage.getById(emailId);
+        if (emailMessage != null)
+            request.setAttribute("email", EmailMessage.getById(emailId));
+
+        return "/webroot/admin/previewEmail.jsp";
+    }
+
     @Route(tab1 = "admin", tab2 = "email", tab3 = "", action = "sendTest")
     public static void sendTestEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
     {

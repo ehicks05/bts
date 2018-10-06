@@ -40,52 +40,50 @@
 </section>
 
 <section class="section">
-    <div class="container">
-        <div class="columns is-multiline is-centered">
+    <div class="columns is-multiline is-centered">
 
-            <c:if test="${fn:length(dashBoardIssueForms) < 2}"><c:set var="cols" value="" /></c:if>
-            <c:if test="${fn:length(dashBoardIssueForms) == 2}"><c:set var="cols" value="is-half" /></c:if>
-            <c:if test="${fn:length(dashBoardIssueForms) > 2}"><c:set var="cols" value="is-half" /></c:if>
+        <c:if test="${fn:length(dashBoardIssueForms) < 2}"><c:set var="cols" value="" /></c:if>
+        <c:if test="${fn:length(dashBoardIssueForms) == 2}"><c:set var="cols" value="is-half" /></c:if>
+        <c:if test="${fn:length(dashBoardIssueForms) > 2}"><c:set var="cols" value="is-half" /></c:if>
 
-            <c:forEach var="issueForm" items="${dashBoardIssueForms}">
-                <c:set var="searchResult" value="${issueForm.searchResult}"/>
+        <c:forEach var="issueForm" items="${dashBoardIssueForms}">
+            <c:set var="searchResult" value="${issueForm.searchResult}"/>
 
-                <div class="column ${cols} has-text-centered">
-                    <div class="card">
-                        <header class="card-header">
-                            <p class="card-header-title">
-                                ${issueForm.formName}: ${searchResult.size} Issues
-                            </p>
-                            <a href="#" class="card-header-icon" aria-label="edit" onclick="modifySavedSearch(${issueForm.id})">
-                                <span class="icon">
-                                    <i class="fas fa-edit"></i>
-                                </span>
-                            </a>
-                            <a href="#" class="card-header-icon" aria-label="remove" onclick="confirmDelete(${issueForm.id})">
-                                <span class="icon">
-                                    <i class="fas fa-trash"></i>
-                                </span>
-                            </a>
-                        </header>
+            <div class="column ${cols} has-text-centered">
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title">
+                            ${issueForm.formName}: ${searchResult.size} Issues
+                        </p>
+                        <a href="#" class="card-header-icon" aria-label="edit" title="edit" onclick="modifySavedSearch(${issueForm.id})">
+                            <span class="icon">
+                                <i class="fas fa-edit"></i>
+                            </span>
+                        </a>
+                        <a href="#" class="card-header-icon" aria-label="remove from dashboard" title="remove from dashboard" onclick="confirmDelete(${issueForm.id})">
+                            <span class="icon">
+                                <i class="fas fa-trash"></i>
+                            </span>
+                        </a>
+                    </header>
 
-                        <div class="card-content">
-                            <div class="ajaxTableContainer">
-                                <c:set var="issueForm" value="${issueForm}" scope="request"/>
-                                <c:set var="searchResult" value="${searchResult}" scope="request"/>
-                                <jsp:include page="issueTable.jsp"/>
-                            </div>
+                    <div class="card-content">
+                        <div class="ajaxTableContainer">
+                            <c:set var="issueForm" value="${issueForm}" scope="request"/>
+                            <c:set var="searchResult" value="${searchResult}" scope="request"/>
+                            <jsp:include page="issueTable.jsp"/>
                         </div>
                     </div>
+                </div>
 
-                </div>
-            </c:forEach>
-            <c:if test="${empty dashBoardIssueForms}">
-                <div class="column is-one-third has-text-centered">
-                    <h1 class="title">No saved filters found</h1>
-                    <h2 class="subtitle">Add issue forms to your dashboard.</h2>
-                </div>
-            </c:if>
-        </div>
+            </div>
+        </c:forEach>
+        <c:if test="${empty dashBoardIssueForms}">
+            <div class="column is-one-third has-text-centered">
+                <h1 class="title">No saved filters found</h1>
+                <h2 class="subtitle">Add issue forms to your dashboard.</h2>
+            </div>
+        </c:if>
     </div>
 </section>
 

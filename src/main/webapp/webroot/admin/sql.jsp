@@ -57,9 +57,11 @@
                     <input id="runCommand" type="button" value="Run Command" class="button is-primary" />
                 </div>
                 <div>
-                    <ul>
+                    Tips:
+                    <ol>
                         <li>explain analyze select * from table</li>
-                    </ul>
+                        <li>select TABLE_NAME from information_schema.tables where table_type='TABLE' order by table_name</li>
+                    </ol>
                 </div>
             </div>
             <div class="column is-four-fifths">

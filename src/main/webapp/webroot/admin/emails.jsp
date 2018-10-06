@@ -67,8 +67,8 @@
                                     <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
                                 </label>
                             </td>
-                            <td class="has-text-right">${email.id}</td>
-                            <td  class="has-text-centered" title="${email.status}">
+                            <td class="has-text-right"><a href="${pageContext.request.contextPath}/view?tab1=admin&tab2=email&tab3=preview&action=form&emailId=${email.id}">${email.id}</a></td>
+                            <td class="has-text-centered" title="${email.status}">
                                 <i class="fas fa-${email.statusIcon}"></i>
                             </td>
                             <td class="has-text-right">${email.userId}</td>
