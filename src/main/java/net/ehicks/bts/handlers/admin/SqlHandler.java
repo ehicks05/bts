@@ -1,7 +1,7 @@
 package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.bts.routing.Route;
 import net.ehicks.bts.UserSession;
+import net.ehicks.bts.routing.Route;
 import net.ehicks.eoi.EOI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -32,12 +31,13 @@ public class SqlHandler
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         String commandsParam = request.getParameter("sqlCommand").trim();
+        boolean truncateResults = request.getParameter("truncateResults") != null;
         log.info("Received command from " + userSession.getUser() + " at ip " + userSession.getIpAddress() + ". ");
 
         List<PrintableSqlResult> printableSqlResults = new ArrayList<>();
 
         int i = 1;
-        for (String command : Arrays.asList(commandsParam.split(";")))
+        for (String command : commandsParam.split(";"))
         {
             command = command.trim();
             log.info("Command " + i++ + ": " + command.replaceAll("\r\n", " "));
@@ -49,7 +49,7 @@ public class SqlHandler
                 {
                     Map<String, List<Object>> printableResult = EOI.getPrintableResult(command);
                     List<Object> resultRows = printableResult.get("resultRows");
-                    if (resultRows.size() > 1000)
+                    if (truncateResults && resultRows.size() > 1000)
                     {
                         resultRows = resultRows.subList(0, 1000);
                         printableSqlResult.setTruncated(true);
@@ -58,7 +58,14 @@ public class SqlHandler
                     printableSqlResult.setColumnLabels(printableResult.get("columnLabels"));
                     printableSqlResult.setResultRows(resultRows);
                 }
-                if (command.toUpperCase().startsWith("CREATE") || command.toUpperCase().startsWith("DROP") || command.toUpperCase().startsWith("INSERT") || command.toUpperCase().startsWith("UPDATE") || command.toUpperCase().startsWith("DELETE"))
+
+                boolean mightUpdateRows = command.toUpperCase().startsWith("CREATE")
+                        || command.toUpperCase().startsWith("DROP")
+                        || command.toUpperCase().startsWith("INSERT")
+                        || command.toUpperCase().startsWith("UPDATE")
+                        || command.toUpperCase().startsWith("DELETE");
+                
+                if (mightUpdateRows)
                 {
                     Integer rowsUpdated = EOI.executeUpdate(command);
                     printableSqlResult.setRowsUpdated(rowsUpdated);
@@ -73,6 +80,7 @@ public class SqlHandler
             printableSqlResults.add(printableSqlResult);
         }
         request.getSession().setAttribute("sqlCommand", commandsParam);
+        request.getSession().setAttribute("truncateResults", truncateResults);
         request.getSession().setAttribute("resultSets", printableSqlResults);
 
         response.sendRedirect("view?tab1=admin&tab2=sql&action=form");

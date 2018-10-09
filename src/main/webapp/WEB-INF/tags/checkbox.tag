@@ -19,7 +19,7 @@
 
 <div class="field ${isHorizontal}">
     <div class="field-label">
-        <label class="label">${label}</label>
+        <label class="label" for="${id}">${label}</label>
     </div>
     <div class="field-body">
         <div class="control">
