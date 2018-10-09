@@ -56,7 +56,7 @@
                 <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">Sessions</h5>
 
-                    <table class="table">
+                    <table class="table is-narrow">
                         <tr>
                             <th colspan="3">Sessions: ${fn:length(userSessions)}</th>
                         </tr>
@@ -79,7 +79,7 @@
                 <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">System Info</h5>
 
-                    <table class="table">
+                    <table class="table is-narrow">
                         <thead>
                         <tr>
                             <th>Property</th>
@@ -100,18 +100,18 @@
                 <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">DB Info</h5>
 
-                    <table class="table">
+                    <table class="table is-narrow">
                         <thead>
                         <tr>
                             <th>Property</th>
-                            <th class="alignright">Value</th>
+                            <th class="has-text-right">Value</th>
                         </tr>
                         </thead>
                         <c:forEach var="info" items="${dbInfo}">
                             <c:if test="${fn:startsWith(info[0], 'info')}">
                                 <tr>
                                     <td>${info[0]}</td>
-                                    <td class="alignright">${info[1]}</td>
+                                    <td class="has-text-right">${info[1]}</td>
                                 </tr>
                             </c:if>
                         </c:forEach>
@@ -119,7 +119,7 @@
                             <c:forEach var="dbInfoItem" items="${dbInfoMap}">
                                 <tr>
                                     <td>${dbInfoItem.key}</td>
-                                    <td class="alignright">${dbInfoItem.value}</td>
+                                    <td class="has-text-right">${dbInfoItem.value}</td>
                                 </tr>
                             </c:forEach>
                         </c:if>
@@ -130,36 +130,36 @@
                 <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">Connection Info</h5>
 
-                    <table class="table">
+                    <table class="table is-narrow">
                         <thead>
                         <tr>
                             <th>Property</th>
-                            <th class="alignright">Value</th>
+                            <th class="has-text-right">Value</th>
                         </tr>
                         </thead>
                         <tr>
                             <td>Mode</td>
-                            <td class="alignright">${connectionInfo.dbMode}</td>
+                            <td class="has-text-right">${connectionInfo.dbMode}</td>
                         </tr>
                         <tr>
                             <td>Host</td>
-                            <td class="alignright">${connectionInfo.dbHost}</td>
+                            <td class="has-text-right">${connectionInfo.dbHost}</td>
                         </tr>
                         <tr>
                             <td>DB Name</td>
-                            <td class="alignright">${connectionInfo.dbName}</td>
+                            <td class="has-text-right">${connectionInfo.dbName}</td>
                         </tr>
                         <tr>
                             <td>Port</td>
-                            <td class="alignright">${connectionInfo.dbPort}</td>
+                            <td class="has-text-right">${connectionInfo.dbPort}</td>
                         </tr>
                         <tr>
                             <td>User</td>
-                            <td class="alignright">${connectionInfo.dbUser}</td>
+                            <td class="has-text-right">${connectionInfo.dbUser}</td>
                         </tr>
                         <tr>
                             <td>Pass</td>
-                            <td class="alignright">****</td>
+                            <td class="has-text-right">****</td>
                         </tr>
                     </table>
                 </div>
@@ -168,7 +168,7 @@
                 <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">DB Pool Info</h5>
 
-                    <table class="table">
+                    <table class="table is-narrow">
                         <thead>
                         <tr>
                             <th>Property</th>
@@ -189,7 +189,7 @@
                 <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">Runtime MXBean Arguments</h5>
 
-                    <table class="table">
+                    <table class="table is-narrow">
                         <thead>
                         <tr>
                             <th>Argument</th>
@@ -207,7 +207,7 @@
                 <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">Application Scope Vars</h5>
 
-                    <table class="table">
+                    <table class="table is-narrow">
                         <thead>
                         <tr>
                             <th>Key</th>

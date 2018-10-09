@@ -18,18 +18,10 @@ public class Startup
 {
     private static final Logger log = LoggerFactory.getLogger(Startup.class);
 
-    static void loadProperties(ServletContext servletContext)
+    static void loadProperties(ServletContext servletContext) throws IOException
     {
         Properties properties = new Properties();
-
-        try (InputStream input = servletContext.getResourceAsStream("/WEB-INF/bts.properties");)
-        {
-            properties.load(input);
-        }
-        catch (IOException e)
-        {
-            log.error(e.getMessage(), e);
-        }
+        properties.load(servletContext.getResourceAsStream("/WEB-INF/bts.properties"));
 
         SystemInfo.INSTANCE.setSystemStart(System.currentTimeMillis());
         SystemInfo.INSTANCE.setServletContext(servletContext);
@@ -55,18 +47,20 @@ public class Startup
         servletContext.setAttribute("systemInfo", SystemInfo.INSTANCE);
     }
 
-    static void loadVersionFile(ServletContext servletContext)
+    static void loadLoggingProperties(ServletContext servletContext) throws IOException
     {
         Properties properties = new Properties();
+        properties.load(servletContext.getResourceAsStream("/WEB-INF/classes/log4j.properties"));
 
-        try (InputStream input = servletContext.getResourceAsStream("/WEB-INF/version.txt");)
-        {
-            properties.load(input);
-        }
-        catch (IOException e)
-        {
-            log.error(e.getMessage(), e);
-        }
+        SystemInfo.INSTANCE.setLogDirectory(properties.getProperty("logDirectory"));
+
+        servletContext.setAttribute("systemInfo", SystemInfo.INSTANCE);
+    }
+
+    static void loadVersionFile(ServletContext servletContext) throws IOException
+    {
+        Properties properties = new Properties();
+        properties.load(servletContext.getResourceAsStream("/WEB-INF/version.txt"));
 
         SystemInfo.INSTANCE.setVersion(properties.getProperty("Version"));
         SystemInfo.INSTANCE.setGitVersion(properties.getProperty("Revision"));

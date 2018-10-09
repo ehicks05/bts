@@ -26,6 +26,7 @@ public class SystemInfo
     private long databaseCacheInKBs;
 
     private String backupDirectory = "";
+    private String logDirectory = "";
     private String overridePropertiesDirectory = "";
 
     private String version = "";
@@ -54,12 +55,6 @@ public class SystemInfo
         stats.put("Backup Directory", Paths.get(getBackupDirectory()).toFile().getCanonicalPath());
 
         return stats;
-    }
-
-    // actual configuration is in log4j.properties
-    public String getLogDirectory()
-    {
-        return "../logs/";
     }
 
     /** url, icon name, label, tab2 of the url */
@@ -216,6 +211,16 @@ public class SystemInfo
     public void setBackupDirectory(String backupDirectory)
     {
         this.backupDirectory = backupDirectory;
+    }
+
+    public String getLogDirectory()
+    {
+        return logDirectory;
+    }
+
+    public void setLogDirectory(String logDirectory)
+    {
+        this.logDirectory = logDirectory;
     }
 
     public String getOverridePropertiesDirectory()

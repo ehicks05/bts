@@ -31,46 +31,54 @@ public class Controller extends HttpServlet
     public void init() throws ServletException
     {
         log.info("BTS starting...");
-        Startup.loadProperties(getServletContext());
-        Startup.loadVersionFile(getServletContext());
-
-        EOI.init(SystemInfo.INSTANCE.getDbConnectionInfo());
-
-        Startup.loadDBMaps(getServletContext());
-
-        if (SystemInfo.INSTANCE.isDropCreateLoad())
+        try
         {
-            Startup.dropTables();
-            Startup.createTables();
+            Startup.loadProperties(getServletContext());
+            Startup.loadLoggingProperties(getServletContext());
+            Startup.loadVersionFile(getServletContext());
 
-            BtsSystem btsSystem = BtsSystem.getSystem();
-            if (btsSystem == null)
+            EOI.init(SystemInfo.INSTANCE.getDbConnectionInfo());
+
+            Startup.loadDBMaps(getServletContext());
+
+            if (SystemInfo.INSTANCE.isDropCreateLoad())
             {
-                btsSystem = new BtsSystem();
-                EOI.insert(btsSystem, SystemTask.STARTUP);
+                Startup.dropTables();
+                Startup.createTables();
+
+                BtsSystem btsSystem = BtsSystem.getSystem();
+                if (btsSystem == null)
+                {
+                    btsSystem = new BtsSystem();
+                    EOI.insert(btsSystem, SystemTask.STARTUP);
+                }
+
+                Seeder.createDemoData();
+            }
+            else
+            {
+                // run pre-migration sql script here
+                Startup.runSqlScripts();
+                // database migration here
+                Startup.migrateDb();
             }
 
-            Seeder.createDemoData();
+            Startup.loadOverrideProperties(SystemInfo.INSTANCE.getOverridePropertiesDirectory());
+
+            Router.loadRoutes();
+
+            BackupDbTask.scheduleTask();
+
+            ChatSessionHandler.init(); // todo: move this?
+
+            getServletContext().setAttribute("btsSystem", BtsSystem.getSystem());
+
+            log.info("BTS Controller.init done in {} ms", (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()));
         }
-        else
+        catch (IOException e)
         {
-            // run pre-migration sql script here
-            Startup.runSqlScripts();
-            // database migration here
-            Startup.migrateDb();
+            log.error(e.getMessage(), e);
         }
-
-        Startup.loadOverrideProperties(SystemInfo.INSTANCE.getOverridePropertiesDirectory());
-
-        Router.loadRoutes();
-
-        BackupDbTask.scheduleTask();
-
-        ChatSessionHandler.init(); // todo: move this?
-
-        getServletContext().setAttribute("btsSystem", BtsSystem.getSystem());
-
-        log.info("BTS Controller.init done in {} ms", (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()));
     }
 
     @Override
