@@ -22,7 +22,9 @@ public class LogHandler
     {
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
         File logsDir = new File(SystemInfo.INSTANCE.getLogDirectory());
-        List<File> logs = new ArrayList<>(Arrays.asList(logsDir.listFiles()));
+        File[] logsDirListing = logsDir.listFiles();
+        List<File> logs = logsDirListing == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(logsDirListing));
+        
         logs.removeIf(file -> !file.getName().contains("bts"));
         logs.sort((o1, o2) -> {
             if (o1.lastModified() == o2.lastModified()) return 0;

@@ -44,7 +44,7 @@
                     <tbody>
                         <c:forEach var="line" items="${lines}" varStatus="loop">
                             <tr style="background-color: ${threadToColorMap[line[1]]}">
-                                <td>${line[0]}</td>
+                                <td style="white-space: nowrap">${line[0]}</td>
                                 <td>${line[1]}</td>
                                 <td>${line[2]}</td>
                                 <td>${line[3]}</td>
