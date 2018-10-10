@@ -40,6 +40,9 @@ public class BackupDbTask
 
     public static void backupToZip()
     {
+        if (running)
+            return;
+        
         new Thread(() -> {
             try
             {

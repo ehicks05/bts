@@ -24,6 +24,7 @@
                 location.href="${pageContext.request.contextPath}/view?tab1=admin&tab2=backups&action=delete&backupName=" + name;
         }
 
+        var checkingInterval;
         if (document.readyState === "loading") {
             document.addEventListener("DOMContentLoaded", checkStatusWrapper);
         } else {  // `DOMContentLoaded` already fired
@@ -32,7 +33,8 @@
 
         function checkStatusWrapper()
         {
-            setInterval(checkStatus, 1000);
+            if (!checkingInterval)
+                checkingInterval = setInterval(checkStatus, 1000);
         }
 
         function checkStatus()
@@ -50,11 +52,13 @@
                     {
                         button.value = 'Create Backup';
                         button.disabled = false;
+                        clearInterval(checkingInterval);
                     }
                     else
                     {
                         button.value = 'Backup in Progress';
                         button.disabled = true;
+                        checkStatusWrapper();
                     }
                 });
         }
