@@ -2,6 +2,8 @@ package net.ehicks.bts.beans;
 
 
 import net.ehicks.eoi.EOI;
+import net.ehicks.eoi.Index;
+import net.ehicks.eoi.Indexes;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,6 +17,21 @@ import java.util.List;
 
 @Entity
 @Table(name = "issues")
+@Indexes({
+        @Index(sql = "CREATE INDEX IDX_ISSUE_TITLE ON ISSUES(title);"),
+        @Index(sql = "CREATE INDEX IDX_ISSUE_DESCRIPTION ON ISSUES(description);"),
+        @Index(sql = "CREATE INDEX TRGM_IDX_ISSUE_TITLE ON ISSUES USING gin (title gin_trgm_ops);"),
+        @Index(sql = "CREATE INDEX TRGM_IDX_ISSUE_DESCRIPTION ON ISSUES USING gin (description gin_trgm_ops);"),
+        @Index(sql = "CREATE INDEX IDX_ISSUE_GROUP_ID ON ISSUES(group_id);"),
+        @Index(sql = "CREATE INDEX IDX_ISSUE_ISSUE_TYPE_ID ON ISSUES(issue_type_id);"),
+        @Index(sql = "CREATE INDEX IDX_ISSUE_PROJECT_ID ON ISSUES(project_id);"),
+        @Index(sql = "CREATE INDEX IDX_ISSUE_ASSIGNEE_USER_ID ON ISSUES(assignee_user_id);"),
+        @Index(sql = "CREATE INDEX IDX_ISSUE_REPORTER_USER_ID ON ISSUES(reporter_user_id);"),
+        @Index(sql = "CREATE INDEX IDX_ISSUE_SEVERITY_ID ON ISSUES(severity_id);"),
+        @Index(sql = "CREATE INDEX IDX_ISSUE_CREATED_ON ON ISSUES(created_on);"),
+        @Index(sql = "CREATE INDEX IDX_ISSUE_LAST_UPDATED_ON ON ISSUES(last_updated_on);"),
+        @Index(sql = "CREATE INDEX IDX_ISSUE_STATUS_ID ON ISSUES(status_id);")
+})
 public class Issue implements Serializable
 {
     @Id

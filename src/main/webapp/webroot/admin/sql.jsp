@@ -52,7 +52,7 @@
             <div class="column is-four-fifths">
                 <form id="frmSqlCommand" name="frmSqlCommand" method="post" action="${pageContext.request.contextPath}/view?tab1=admin&tab2=sql&action=runCommand">
                     <textarea class="textarea" id="sqlCommand" name="sqlCommand" rows="5" cols="80" placeholder="Enter command...">${sessionScope.sqlCommand}</textarea>
-                    <t:checkbox id="truncateResults" checked="${sessionScope.truncateResults}" label="Truncate Results" />
+                    <t:checkbox id="truncateResults" checked="${!empty sessionScope.truncateResults ? sessionScope.truncateResults : true}" label="Truncate Results" />
                 </form>
 
                 <div>

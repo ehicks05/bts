@@ -40,6 +40,7 @@ See deployment for notes on how to deploy the project on a live system.
 3. Place DB driver jar file for H2 or Postgres in tomcat/lib (both should be in the war)
 4. Set up tomcat's server.xml (there is a server-sample.xml in project source code)
 5. Update DB connection info in bts.properties once war file is expanded
+6. Add Trigram extension: CREATE EXTENSION pg_trgm;
 
 ## Built With (partial listing)
 

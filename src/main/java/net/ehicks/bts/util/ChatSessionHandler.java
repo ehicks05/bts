@@ -1,5 +1,6 @@
 package net.ehicks.bts.util;
 
+import net.ehicks.bts.Seeder;
 import net.ehicks.bts.beans.*;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.AuditUser;
@@ -61,7 +62,7 @@ public class ChatSessionHandler
                         message.setUserId(userId);
                         message.setAuthor(user.getName());
                         message.setTimestamp(new Date());
-                        message.setContents(Comment.getAll().get(new Random().nextInt(Comment.getAll().size())).getContent());
+                        message.setContents(Seeder.getRandomLatinWords(new Random(), 32));
                         long messageId = EOI.insert(message, new AuditUser()
                         {
                             @Override

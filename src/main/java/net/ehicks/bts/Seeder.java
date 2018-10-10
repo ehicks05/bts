@@ -15,20 +15,34 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 
 public class Seeder
 {
     private static final Logger log = LoggerFactory.getLogger(Seeder.class);
 
-    private static int issueCount = (int) Math.pow(1_024, 0.7);
-    private static boolean useBatches = false;
+    private static int issueCount = (int) Math.pow(1_024, 2);
+    private static boolean useBatches = true;
 
     private static List<String> latin = Arrays.asList("annus", "ante meridiem", "aqua", "bene", "canis", "caput", "circus", "cogito",
             "corpus", "de facto", "deus", "ego", "equus", "ergo", "est", "hortus", "id", "in", "index", "iris", "latex",
             "legere", "librarium", "locus", "magnus", "mare", "mens", "murus", "musica", "nihil", "non", "nota", "novus",
             "opus", "orbus", "placebo", "post", "post meridian", "primus", "pro", "sanus", "solus", "sum", "tacete",
             "tempus", "terra", "urbs", "veni", "vici", "vidi");
+
+    public static String getRandomLatinWords(Random random, int maxLength)
+    {
+        StringBuilder content = new StringBuilder();
+        for (int j = 0; j < random.nextInt(maxLength); j++)
+        {
+            if (content.length() > 0)
+                content.append(" ");
+            content.append(latin.get(random.nextInt(latin.size())));
+        }
+
+        return content.toString();
+    }
 
     static void createDemoData()
     {
@@ -259,15 +273,7 @@ public class Seeder
                 comment.setIssueId(issueId);
                 comment.setCreatedByUserId((long) r.nextInt(users) + 1);
                 comment.setCreatedOn(new Date());
-
-                String content = "";
-                for (int j = 0; j < r.nextInt(32); j++)
-                {
-                    if (content.length() > 0)
-                        content += " " ;
-                    content += latin.get(r.nextInt(latin.size()));
-                }
-                comment.setContent(content);
+                comment.setContent(getRandomLatinWords(r, 32));
                 if (useBatches)
                     comments.add(comment);
                 else
@@ -378,11 +384,17 @@ public class Seeder
         if (useBatches)
             EOI.startTransaction();
 
+        AtomicLong start = new AtomicLong(System.currentTimeMillis());
+
         List<Issue> issues = new ArrayList<>();
         IntStream.range(0, issueCount).forEach(i ->
         {
-            if (i % (issueCount / 4) == 0)
+            if (System.currentTimeMillis() - start.get() > 10_000 || i % (issueCount / 4) == 0)
+            {
                 log.info("Issue " + i + " / " + issueCount);
+                if (System.currentTimeMillis() - start.get() > 10_000)
+                    start.set(System.currentTimeMillis());
+            }
             Issue issue = new Issue();
             long value = (long) r.nextInt(projects);
             issue.setProjectId(value > 0 ? value : 1);
@@ -415,13 +427,7 @@ public class Seeder
                 title += "...";
             issue.setTitle(title);
 
-            String description = "";
-            for (int j = 0; j < r.nextInt(32) + 1; j++)
-            {
-                if (description.length() > 0)
-                    description += " " ;
-                description += latin.get(r.nextInt(latin.size()));
-            }
+            String description = getRandomLatinWords(r, 32);
             issue.setDescription("<p>" + description + "</p>");
 
             Date createdOn = getRandomDateTime();
@@ -432,10 +438,10 @@ public class Seeder
             else
             {
                 long id = EOI.insert(issue, SystemTask.SEEDER);
-                issue = Issue.getById(id);
-
-                IssueAudit issueAudit = new IssueAudit(id, SystemTask.SEEDER, "added", issue.toString());
-                EOI.insert(issueAudit, SystemTask.SEEDER);
+//                issue = Issue.getById(id);
+//
+//                IssueAudit issueAudit = new IssueAudit(id, SystemTask.SEEDER, "added", issue.toString());
+//                EOI.insert(issueAudit, SystemTask.SEEDER);
             }
         });
 
@@ -443,6 +449,13 @@ public class Seeder
         {
             EOI.batchInsert(issues);
             EOI.commit();
+        }
+        else
+        {
+            Issue.getAll().forEach(issue -> {
+                IssueAudit issueAudit = new IssueAudit(issue.getId(), SystemTask.SEEDER, "added", issue.toString());
+                EOI.insert(issueAudit, SystemTask.SEEDER);
+            });
         }
     }
 

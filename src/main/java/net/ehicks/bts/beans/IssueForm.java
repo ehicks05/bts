@@ -159,8 +159,8 @@ public class IssueForm extends SearchForm implements Serializable
         {
             if (whereClause.length() > 0) whereClause += " and ";
             whereClause += "( ";
-            whereClause += " lower(title) like ? ";
-            whereClause += " or lower(description) like ? ";
+            whereClause += " title like ? ";
+            whereClause += " or description like ? ";
             whereClause += ") ";
             args.add("%" + issueForm.getContainsText().toLowerCase().replaceAll("\\*","%") + "%");
             args.add("%" + issueForm.getContainsText().toLowerCase().replaceAll("\\*","%") + "%");
@@ -169,14 +169,14 @@ public class IssueForm extends SearchForm implements Serializable
         if (issueForm.getTitle().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
-            whereClause += " lower(title) like ? ";
+            whereClause += " title like ? ";
             args.add("%" + issueForm.getTitle().toLowerCase().replaceAll("\\*","%") + "%");
         }
 
         if (issueForm.getDescription().length() > 0)
         {
             if (whereClause.length() > 0) whereClause += " and ";
-            whereClause += " lower(description) like ? ";
+            whereClause += " description like ? ";
             args.add("%" + issueForm.getDescription().toLowerCase().replaceAll("\\*","%") + "%");
         }
 
