@@ -23,6 +23,41 @@
             if (confirm('Are you sure?'))
                 location.href="${pageContext.request.contextPath}/view?tab1=admin&tab2=backups&action=delete&backupName=" + name;
         }
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", checkStatusWrapper);
+        } else {  // `DOMContentLoaded` already fired
+            checkStatusWrapper();
+        }
+
+        function checkStatusWrapper()
+        {
+            setInterval(checkStatus, 1000);
+        }
+
+        function checkStatus()
+        {
+            fetch("${pageContext.request.contextPath}/view?tab1=admin&tab2=backups&action=checkStatus")
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(myJson) {
+                    var isRunning = JSON.stringify(myJson);
+                    console.log(isRunning);
+
+                    var button = document.getElementById('create');
+                    if (isRunning === 'false')
+                    {
+                        button.value = 'Create Backup';
+                        button.disabled = false;
+                    }
+                    else
+                    {
+                        button.value = 'Backup in Progress';
+                        button.disabled = true;
+                    }
+                });
+        }
     </script>
 </head>
 <body>
@@ -78,7 +113,9 @@
                         </c:forEach>
                     </table>
 
-                    <input id="create" type="button" value="Create Backup" class="button is-primary" onclick="createBackup();"/>
+                    <c:set var="createBackupDisabled" value="${isRunning ? 'disabled' : ''}"/>
+                    <c:set var="createBackupText" value="${isRunning ? 'Backup in Progress' : 'Create Backup'}"/>
+                    <input id="create" type="button" value="${createBackupText}" ${createBackupDisabled} class="button is-primary" onclick="createBackup();"/>
                 </div>
             </div>
         </div>

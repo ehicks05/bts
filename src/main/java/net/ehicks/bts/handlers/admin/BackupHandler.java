@@ -1,6 +1,8 @@
 package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.bts.*;
+import net.ehicks.bts.BackupDbTask;
+import net.ehicks.bts.SystemInfo;
+import net.ehicks.bts.UserSession;
 import net.ehicks.bts.routing.Route;
 import net.ehicks.bts.util.CommonIO;
 import net.ehicks.common.Common;
@@ -12,7 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class BackupHandler
 {
@@ -29,6 +34,7 @@ public class BackupHandler
         backups.removeIf(file -> !file.getName().contains("bts"));
         Collections.reverse(backups);
         request.setAttribute("backups", backups);
+        request.setAttribute("isRunning", BackupDbTask.isRunning());
 
         return "/webroot/admin/backups.jsp";
     }
@@ -39,6 +45,12 @@ public class BackupHandler
         BackupDbTask.backupToZip();
 
         response.sendRedirect("view?tab1=admin&tab2=backups&action=form");
+    }
+
+    @Route(tab1 = "admin", tab2 = "backups", tab3 = "", action = "checkStatus")
+    public static void checkStatus(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    {
+        response.getOutputStream().print(BackupDbTask.isRunning());
     }
 
     @Route(tab1 = "admin", tab2 = "backups", tab3 = "", action = "delete")

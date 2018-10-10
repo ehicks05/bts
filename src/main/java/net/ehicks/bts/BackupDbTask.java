@@ -16,6 +16,7 @@ public class BackupDbTask
 {
     private static final Logger log = LoggerFactory.getLogger(BackupDbTask.class);
     private static final Scheduler scheduler = new Scheduler();
+    private static boolean running = false;
 
     public static Scheduler getScheduler()
     {
@@ -39,30 +40,46 @@ public class BackupDbTask
 
     public static void backupToZip()
     {
-        try
-        {
-            log.info("Starting BackupDbTask");
-            String backupPath = getBackupPath();
-            String zippedBackupPath = backupPath.substring(0, backupPath.lastIndexOf(".")) + ".zip";
-            new File(zippedBackupPath).delete();
-            
-            EOIBackup.backup(backupPath, SystemInfo.INSTANCE.getDbConnectionInfo());
-
-            try (InputStream inputStream = new BufferedInputStream(new FileInputStream(backupPath));
-                 ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(zippedBackupPath));)
+        new Thread(() -> {
+            try
             {
-                ZipEntry zipEntry = new ZipEntry(new File(backupPath).getName());
-                outputStream.putNextEntry(zipEntry);
+                running = true;
 
-                IOUtils.copy(inputStream, outputStream);
+                log.info("Starting BackupDbTask");
+
+                String backupPath = getBackupPath();
+                String zippedBackupPath = backupPath.substring(0, backupPath.lastIndexOf(".")) + ".zip";
+                new File(zippedBackupPath).delete();
+
+                EOIBackup.backup(backupPath, SystemInfo.INSTANCE.getDbConnectionInfo());
+
+                log.info("Starting BackupDbTask zip");
+                try (InputStream inputStream = new BufferedInputStream(new FileInputStream(backupPath));
+                     ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(zippedBackupPath));)
+                {
+                    ZipEntry zipEntry = new ZipEntry(new File(backupPath).getName());
+                    outputStream.putNextEntry(zipEntry);
+
+                    IOUtils.copy(inputStream, outputStream);
+                }
+                log.info("Finished BackupDbTask zip");
+
+                new File(backupPath).delete();
+                log.info("Finished BackupDbTask");
             }
+            catch (Exception e)
+            {
+                log.error(e.getMessage(), e);
+            }
+            finally
+            {
+                running = false;
+            }
+        }).start();
+    }
 
-            new File(backupPath).delete();
-            log.info("Finished BackupDbTask");
-        }
-        catch (Exception e)
-        {
-            log.error(e.getMessage(), e);
-        }
+    public static boolean isRunning()
+    {
+        return running;
     }
 }
