@@ -34,7 +34,8 @@ public class Seeder
     public static String getRandomLatinWords(Random random, int maxLength)
     {
         StringBuilder content = new StringBuilder();
-        for (int j = 0; j < random.nextInt(maxLength); j++)
+        int words = random.nextInt(maxLength) + 1;
+        for (int j = 0; j < words; j++)
         {
             if (content.length() > 0)
                 content.append(" ");

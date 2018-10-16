@@ -38,6 +38,7 @@ public class Controller extends HttpServlet
             Startup.loadVersionFile(getServletContext());
 
             EOI.init(SystemInfo.INSTANCE.getDbConnectionInfo());
+            EOI.setSlowQueryThreshold(10);
 
             Startup.loadDBMaps(getServletContext());
 
@@ -61,6 +62,8 @@ public class Controller extends HttpServlet
                 Startup.runSqlScripts();
                 // database migration here
                 Startup.migrateDb();
+
+                Startup.runStartupScripts();
             }
 
             Startup.loadOverrideProperties(SystemInfo.INSTANCE.getOverridePropertiesDirectory());
@@ -69,7 +72,7 @@ public class Controller extends HttpServlet
 
             BackupDbTask.scheduleTask();
 
-            ChatSessionHandler.init(); // todo: move this?
+//            ChatSessionHandler.init(); // todo: move this?
 
             getServletContext().setAttribute("btsSystem", BtsSystem.getSystem());
 

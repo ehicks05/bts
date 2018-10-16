@@ -1,6 +1,7 @@
 package net.ehicks.bts;
 
 import net.ehicks.bts.beans.BtsSystem;
+import net.ehicks.bts.beans.Issue;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.*;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.ZonedDateTime;
 import java.util.Properties;
+import java.util.Random;
 
 public class Startup
 {
@@ -156,5 +158,16 @@ public class Startup
     static void runSqlScripts()
     {
 
+    }
+
+    static void runStartupScripts()
+    {
+        new Thread(() -> {
+            long start = System.currentTimeMillis();
+
+            // put startup changes here
+
+            log.info("startup scripts took: {} ms", System.currentTimeMillis() - start);
+        }).start();
     }
 }

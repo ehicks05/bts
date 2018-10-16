@@ -4,7 +4,7 @@
 .overflowTableContainer {overflow-x: auto; padding: 1rem;}
 
 .js-example-basic-single {padding-right: 24px; width: 96%}
-.js-example-basic-multiple {padding-right: 24px; width: 100%}
+.js-example-basic-multiple {padding-right: 24px; width: 100%; visibility: hidden;}
 
 @media (max-width: 479px)
 {
