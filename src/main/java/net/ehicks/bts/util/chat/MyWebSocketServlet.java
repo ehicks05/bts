@@ -1,4 +1,4 @@
-package net.ehicks.bts.util;
+package net.ehicks.bts.util.chat;
 
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
@@ -13,7 +13,7 @@ public class MyWebSocketServlet extends WebSocketServlet
     @Override
     public void configure(WebSocketServletFactory factory)
     {
-        System.out.println("net.ehicks.bts.util.MyWebSocketServlet.configure");
+        System.out.println("net.ehicks.bts.util.chat.MyWebSocketServlet.configure");
         factory.getPolicy().setIdleTimeout(0 /* seconds */ * 1000 /* millis */);
         factory.setCreator(new MySessionSocketCreator());
         factory.register(ChatSocket.class);

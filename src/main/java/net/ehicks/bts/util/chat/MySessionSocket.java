@@ -1,4 +1,4 @@
-package net.ehicks.bts.util;
+package net.ehicks.bts.util.chat;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;

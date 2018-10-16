@@ -1,4 +1,4 @@
-package net.ehicks.bts.util;
+package net.ehicks.bts.util.chat;
 
 import net.ehicks.bts.SessionListener;
 import net.ehicks.bts.beans.ChatRoom;

@@ -3,7 +3,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
-<jsp:useBean id="tableSizes" type="java.util.Map<java.lang.String, java.util.List<java.lang.Object>>" scope="request"/>
+<jsp:useBean id="columnLabels" type="java.util.List<java.lang.Object>" scope="request"/>
+<jsp:useBean id="resultRows" type="java.util.List<java.lang.Object>" scope="request"/>
 
 <!DOCTYPE html>
 <html>
@@ -34,15 +35,15 @@
 
                     <table class="table is-narrow">
                         <tr>
-                            <c:forEach var="columnLabel" items="${tableSizes['columnLabels']}">
-                                <th>${columnLabel}</th>
+                            <c:forEach var="columnLabel" items="${columnLabels}">
+                                <th class="has-text-right">${columnLabel}</th>
                             </c:forEach>
                         </tr>
 
-                        <c:forEach var="resultRow" items="${tableSizes['resultRows']}">
+                        <c:forEach var="resultRow" items="${resultRows}">
                             <tr>
                                 <c:forEach var="resultCell" items="${resultRow}">
-                                    <td>${resultCell}</td>
+                                    <td class="has-text-right">${resultCell}</td>
                                 </c:forEach>
                             </tr>
                         </c:forEach>

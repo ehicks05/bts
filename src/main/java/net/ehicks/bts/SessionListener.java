@@ -1,7 +1,6 @@
 package net.ehicks.bts;
 
-import net.ehicks.bts.util.ChatSessionHandler;
-import org.eclipse.jetty.websocket.api.Session;
+import net.ehicks.bts.util.chat.ChatSessionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,13 +65,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
 //                        userSession.getRemoteIP(), userSession.getRemoteHost(), "", 0, "", "Logged off.", userSession.getUserAgent());
                 sessions.remove(userSession);
 
-                Session socketSession = ChatSessionHandler.userIdToSocketSession.get(userSession.getUserId());
-                if (socketSession != null)
-                {
-                    ChatSessionHandler.removeSession(socketSession, userSession.getUserId());
-    
-                    ChatSessionHandler.announceStatusChange(socketSession, userSession.getUserId());
-                }
+                ChatSessionHandler.handleSessionAttributeRemoved(userSession);
 
                 log.debug("removed {} from session", session.getId());
             }

@@ -1,7 +1,9 @@
-package net.ehicks.bts.util;
+package net.ehicks.bts.util.chat;
 
 import net.ehicks.bts.Seeder;
+import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.*;
+import net.ehicks.bts.util.SocketSessionInfo;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.AuditUser;
 import net.ehicks.eoi.EOI;
@@ -86,6 +88,16 @@ public class ChatSessionHandler
                 }
             }
         }.start();
+    }
+
+    public static void handleSessionAttributeRemoved(UserSession userSession)
+    {
+        Session socketSession = ChatSessionHandler.userIdToSocketSession.get(userSession.getUserId());
+        if (socketSession != null)
+        {
+            ChatSessionHandler.removeSession(socketSession, userSession.getUserId());
+            ChatSessionHandler.announceStatusChange(socketSession, userSession.getUserId());
+        }
     }
 
     public static void addSession(Session session, Long userId)
