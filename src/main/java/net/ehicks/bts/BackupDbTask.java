@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.zip.ZipEntry;
@@ -53,6 +55,8 @@ public class BackupDbTask
                 String backupPath = getBackupPath();
                 String zippedBackupPath = backupPath.substring(0, backupPath.lastIndexOf(".")) + ".zip";
                 new File(zippedBackupPath).delete();
+
+                Files.createDirectories(Paths.get(backupPath).getParent());
 
                 EOIBackup.backup(backupPath, SystemInfo.INSTANCE.getDbConnectionInfo());
 

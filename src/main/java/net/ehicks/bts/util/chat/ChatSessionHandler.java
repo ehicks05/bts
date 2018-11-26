@@ -7,12 +7,12 @@ import net.ehicks.bts.util.SocketSessionInfo;
 import net.ehicks.common.Common;
 import net.ehicks.eoi.AuditUser;
 import net.ehicks.eoi.EOI;
-import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.json.JsonObject;
 import javax.json.spi.JsonProvider;
+import javax.websocket.Session;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -150,7 +150,7 @@ public class ChatSessionHandler
     {
         try
         {
-            session.getRemote().sendString(message.toString());
+            session.getBasicRemote().sendText(message.toString());
         }
         catch (IOException ex)
         {

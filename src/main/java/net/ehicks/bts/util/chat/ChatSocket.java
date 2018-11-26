@@ -5,11 +5,6 @@ import net.ehicks.bts.beans.ChatRoom;
 import net.ehicks.bts.beans.ChatRoomMessage;
 import net.ehicks.bts.beans.User;
 import net.ehicks.eoi.EOI;
-import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
-import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,10 +12,12 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.servlet.http.HttpSession;
+import javax.websocket.*;
+import javax.websocket.server.ServerEndpoint;
 import java.io.StringReader;
 import java.util.Date;
 
-@WebSocket
+@ServerEndpoint(value = "/chat")
 public class ChatSocket
 {
     private static final Logger log = LoggerFactory.getLogger(ChatSocket.class);
@@ -28,17 +25,12 @@ public class ChatSocket
     private HttpSession httpSession;
     private Session wsSession;
 
-    public ChatSocket(HttpSession httpSession)
-    {
-        this.httpSession = httpSession;
-    }
-
-    @OnWebSocketMessage
+    @OnMessage
     public void onText(Session session, String message)
     {
         log.debug("Message received:" + message);
 
-        Long userId = SessionListener.getBySessionId(httpSession.getId()).getUserId();
+        Long userId = User.getByLogonId(session.getUserPrincipal().getName()).getId();
         try (JsonReader reader = Json.createReader(new StringReader(message)))
         {
             JsonObject jsonMessage = reader.readObject();
@@ -78,18 +70,18 @@ public class ChatSocket
         chatRoomMessage.setAuthor(User.getByUserId(userId).getLogonId());
         chatRoomMessage.setContents(jsonMessage.getString("contents"));
 
-        long messageId = EOI.insert(chatRoomMessage, SessionListener.getBySessionId(httpSession.getId()));
+        long messageId = EOI.insert(chatRoomMessage, SessionListener.getByUserId(User.getByLogonId(session.getUserPrincipal().getName()).getId()));
         chatRoomMessage = ChatRoomMessage.getById(messageId);
 
         ChatSessionHandler.addChatRoomMessage(chatRoomMessage);
     }
 
-    @OnWebSocketConnect
+    @OnOpen
     public void onConnect(Session session)
     {
         this.wsSession = session;
 
-        long userId = SessionListener.getBySessionId(httpSession.getId()).getUserId();
+        long userId = User.getByLogonId(session.getUserPrincipal().getName()).getId();
 
         ChatSessionHandler.addSession(session, userId);
 
@@ -98,18 +90,23 @@ public class ChatSocket
 
         ChatSessionHandler.announceStatusChange(session, userId);
 
-        log.debug(session.getRemoteAddress().getHostString() + " connected!");
+        log.debug(session.getId() + " connected!");
     }
 
-    @OnWebSocketClose
-    public void onClose(Session session, int status, String reason)
+    @OnClose
+    public void onClose(Session session)
     {
-        long userId = SessionListener.getBySessionId(httpSession.getId()).getUserId();
+        long userId = User.getByLogonId(session.getUserPrincipal().getName()).getId();
 
         ChatSessionHandler.removeSession(session, userId);
 
         ChatSessionHandler.announceStatusChange(session, userId);
 
-        log.debug(session.getRemoteAddress().getHostString() + " closed!");
+        log.debug(session.getBasicRemote().toString() + " closed!");
+    }
+
+    @OnError
+    public void onError(Session session, Throwable throwable) {
+        log.error(throwable.getMessage(), throwable);
     }
 }
