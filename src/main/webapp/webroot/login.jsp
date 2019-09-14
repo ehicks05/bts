@@ -126,9 +126,7 @@
                 </c:if>
 
                 <p class="has-text-grey">
-                    <a href="#" id="signUpButton">Sign Up</a> &nbsp;·&nbsp;
-                    <a href="">Forgot Password</a> &nbsp;·&nbsp;
-                    <a href="">Need Help?</a>
+                    Created by <a href="https://ehicks.net" style="text-decoration: underline">Eric Hicks</a>
                 </p>
             </div>
         </div>

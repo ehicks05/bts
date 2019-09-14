@@ -15,7 +15,7 @@
             </div>
             <div class="column has-text-right">
                 <p>
-                    Puffin build <span title="${userSession.systemInfo.gitVersion}">${userSession.systemInfo.version}</span> by <a href="http://ehicks.net">Eric Hicks</a>
+                    Puffin build <span title="${userSession.systemInfo.gitVersion}">${userSession.systemInfo.version}</span> by <a href="https://ehicks.net">Eric Hicks</a>
                 </p>
                 <p>
                     <c:if test="${!empty sessionScope.userSession}">

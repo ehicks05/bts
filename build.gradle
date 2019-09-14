@@ -19,10 +19,6 @@ dependencies {
     compile group: "com.github.ehicks05", name: "eoi",    version: "-SNAPSHOT", changing: true
     compile group: "com.github.ehicks05", name: "common", version: "-SNAPSHOT", changing: true
 
-//    compile files('c:/devtools/eoi-0.0.1-SNAPSHOT.jar'
-//            ,'c:/devtools/common-1.0-SNAPSHOT.jar'
-//    )
-
     implementation 'org.apache.commons:commons-email:1.5'
     implementation 'org.apache.commons:commons-lang3:3.8.1'
     implementation 'commons-io:commons-io:2.6'
