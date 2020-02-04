@@ -1,9 +1,10 @@
 plugins {
-    id 'com.github.ben-manes.versions' version '0.20.0'
+    id 'com.github.ben-manes.versions' version '0.27.0'
+    id "org.ajoberstar.grgit" version "4.0.1"
 }
 
 group 'net.ehicks'
-version '1.0-SNAPSHOT'
+version '1.0.0-' + grgit.head().abbreviatedId
 
 apply plugin: 'java'
 apply plugin: 'war'
@@ -65,3 +66,23 @@ configurations.all {
         cacheChangingModulesFor 0, 'seconds'
     }
 }
+
+// Task to create a version file based on git repo data
+import org.ajoberstar.grgit.*
+import java.time.ZonedDateTime
+
+task versionTxt()  {
+    doLast {
+        def separator = System.getProperty('line.separator')
+        Commit head = grgit.head()
+
+        def file = new File("$projectDir/src/main/webapp/WEB-INF/version.txt")
+        file << "Version: 0.0.${grgit.log().size()}$separator"
+        file << "Revision: ${head.id}$separator"
+        file << "Revision-Date: ${head.dateTime}$separator"
+        file << "Author: ${head.author.name} (${head.author.email})$separator"
+        file << "Build-Date: ${ZonedDateTime.now()}$separator"
+    }
+}
+
+tasks.war.dependsOn versionTxt

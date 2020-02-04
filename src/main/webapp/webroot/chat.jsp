@@ -12,7 +12,7 @@
     <jsp:include page="inc_title.jsp"/>
     <jsp:include page="inc_header.jsp"/>
     <script>
-        var socket = new WebSocket("ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/chat");
+        var socket = new WebSocket("wss://${pageContext.request.serverName}${pageContext.request.contextPath}/chat");
         socket.onmessage = onMessage;
 
         $(function () {
