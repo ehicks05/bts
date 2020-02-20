@@ -36,6 +36,7 @@ public class GlobalFilter implements Filter {
         try {
             req.setAttribute("requestStartTime", time);
             req.setAttribute("theme", btsSystemRepository.findFirstBy().getTheme());
+            req.setAttribute("siteName", btsSystemRepository.findFirstBy().getInstanceName());
             chain.doFilter(req, resp);
         } finally {
             time = System.currentTimeMillis() - time;

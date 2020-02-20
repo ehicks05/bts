@@ -1,1 +1,1 @@
-<title>${applicationScope['systemInfo'].appName}</title>
+<title>${siteName}</title>

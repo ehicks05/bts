@@ -18,8 +18,7 @@
             <div class="column has-text-right">
                 <p>
                     <a href="https://github.com/ehicks05/puffin">Puffin</a>
-                    version
-                    <a href="https://github.com/ehicks05/puffin/commit/${revision}" title="${revision}">${version}</a>
+                    <a href="https://github.com/ehicks05/puffin/commit/${revision}" title="${revision}">v${version}</a>
                     by <a href="https://ehicks.net">Eric Hicks</a>
                 </p>
                 <p>

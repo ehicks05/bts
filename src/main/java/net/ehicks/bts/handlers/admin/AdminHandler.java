@@ -1,13 +1,13 @@
 package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.bts.SessionListener;
-import net.ehicks.bts.model.UserSession;
 import net.ehicks.bts.beans.*;
 import net.ehicks.bts.mail.EmailAction;
 import net.ehicks.bts.mail.MailClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,10 +29,11 @@ public class AdminHandler
     private BtsSystemRepository btsSystemRepository;
     private MailClient mailClient;
     private EntityManager entityManager;
+    private SessionRegistry sessionRegistry;
 
     public AdminHandler(ProjectRepository projectRepository, GroupRepository groupRepository,
                         EmailEventRepository emailEventRepository, BtsSystemRepository btsSystemRepository,
-                        MailClient mailClient, EntityManager entityManager)
+                        MailClient mailClient, EntityManager entityManager, SessionRegistry sessionRegistry)
     {
         this.projectRepository = projectRepository;
         this.groupRepository = groupRepository;
@@ -40,6 +41,7 @@ public class AdminHandler
         this.btsSystemRepository = btsSystemRepository;
         this.mailClient = mailClient;
         this.entityManager = entityManager;
+        this.sessionRegistry = sessionRegistry;
     }
 
     @GetMapping("/admin/form")
@@ -85,13 +87,14 @@ public class AdminHandler
             dbInfoMap.put(headers.get(i), results[i] != null ? results[i].toString() : "");
         }
 
-        List<UserSession> userSessions = SessionListener.getSessions();
-        userSessions.sort(Comparator.comparing(UserSession::getLastActivity).reversed());
+        List<SessionInformation> sessions = new ArrayList<>();
+        sessionRegistry.getAllPrincipals()
+                .forEach(principal -> sessions.addAll(sessionRegistry.getAllSessions(principal, true)));
 
         return new ModelAndView("admin/systemInfo")
                 .addObject("dbInfo", dbInfo)
                 .addObject("dbInfoMap", dbInfoMap)
-                .addObject("userSessions", userSessions);
+                .addObject("sessions", sessions);
     }
 
     @GetMapping("/admin/projects/form")

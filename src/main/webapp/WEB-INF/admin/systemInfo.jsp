@@ -3,7 +3,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
-<jsp:useBean id="userSessions" type="java.util.List<net.ehicks.bts.model.UserSession>" scope="request"/>
 
 <!DOCTYPE html>
 <html>
@@ -20,18 +19,6 @@
             });
         });
     </script>
-    <style>
-        .flexContainer {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-        }
-        .flexItem {
-            overflow-x: auto;
-            margin: 10px;
-        }
-    </style>
 </head>
 <body>
 
@@ -50,24 +37,21 @@
 <section class="section">
     <div class="container">
         <div class="columns is-multiline is-centered">
-            <div class="column is-one-quarter">
+            <div class="column is-one-third">
                 <div class="box overflowTableContainer">
-                    <h5 class="subtitle is-5">Sessions</h5>
+                    <h5 class="subtitle is-5">Sessions (${fn:length(sessions)})</h5>
 
                     <table class="table is-narrow">
                         <tr>
-                            <th colspan="3">Sessions: ${fn:length(userSessions)}</th>
-                        </tr>
-                        <tr>
                             <th>Session Id</th>
-                            <th>Logon Id</th>
+                            <th>Username</th>
                             <th>Last Active</th>
                         </tr>
-                        <c:forEach var="userSesh" items="${userSessions}">
+                        <c:forEach var="session" items="${sessions}">
                             <tr>
-                                <td title="${userSesh.sessionId}">${fn:substring(userSesh.sessionId, 0, 4)}...</td>
-                                <td>${userSesh.logonId}</td>
-                                <td><fmt:formatDate value="${userSesh.lastActivity}" pattern="h:mm:ss a"/></td>
+                                <td title="${session.sessionId}">${fn:substring(session.sessionId, 0, 4)}...</td>
+                                <td>${session.principal.username}</td>
+                                <td><fmt:formatDate value="${session.lastRequest}" pattern="h:mm:ss a"/></td>
                             </tr>
                         </c:forEach>
                     </table>
