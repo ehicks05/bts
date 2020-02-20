@@ -1,4 +1,4 @@
-package net.ehicks.bts;
+package net.ehicks.bts.model;
 
 import java.util.ArrayList;
 import java.util.Collections;

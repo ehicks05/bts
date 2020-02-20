@@ -1,4 +1,4 @@
-package net.ehicks.bts;
+package net.ehicks.bts.model;
 
 import java.util.Collections;
 import java.util.Date;

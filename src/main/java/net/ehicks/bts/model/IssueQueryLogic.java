@@ -1,6 +1,5 @@
 package net.ehicks.bts.model;
 
-import net.ehicks.bts.SearchResult;
 import net.ehicks.bts.beans.*;
 import org.springframework.stereotype.Component;
 

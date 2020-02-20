@@ -1,7 +1,7 @@
 package net.ehicks.bts.beans
 
-import net.ehicks.bts.SearchForm
-import net.ehicks.bts.SearchResult
+import net.ehicks.bts.model.SearchForm
+import net.ehicks.bts.model.SearchResult
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.io.Serializable

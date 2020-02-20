@@ -5,7 +5,7 @@
 <%@attribute name="label" fragment="false" %>
 <%@attribute name="style" fragment="false" %>
 <%@attribute name="cssClass" fragment="false" %>
-<%@attribute name="searchForm" fragment="false" type="net.ehicks.bts.SearchForm" %>
+<%@attribute name="searchForm" fragment="false" type="net.ehicks.bts.model.SearchForm" %>
 
 <c:set var="sortableCellCounter" value="${requestScope.sortableCellCounter + 1}" scope="request"/>
 <c:if test="${sortableCellCounter == 1}">
@@ -21,7 +21,7 @@
     <c:if test="${searchForm.sortDirection == 'desc'}"><c:set var="newDirection" value="asc"/></c:if>
 </c:if>
 
-<th id="${code}${searchForm.id}" class="nowrap ${cssClass}" style="${style}"
+<th id="${code}${searchForm.id}" class="nowrap ${cssClass}" style="cursor: pointer; ${style}"
     onclick="ajaxItems(this.id, '${pageContext.servletConfig.servletContext.contextPath}', '${searchForm.endpoint}', '${searchForm.id}', '${searchForm.page}', '${code}', '${newDirection}');">
     ${label}
     <span>${sortIcon}</span>

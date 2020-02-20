@@ -1,7 +1,7 @@
 //package net.ehicks.bts.util.chat;
 //
 //import net.ehicks.bts.Seeder;
-//import net.ehicks.bts.UserSession;
+//import net.ehicks.bts.model.UserSession;
 //import net.ehicks.bts.beans.*;
 //import net.ehicks.bts.util.SocketSessionInfo;
 //import net.ehicks.common.Common;

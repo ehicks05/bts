@@ -1,7 +1,7 @@
 package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.bts.AuditForm;
-import net.ehicks.bts.SearchResult;
+import net.ehicks.bts.model.AuditForm;
+import net.ehicks.bts.model.SearchResult;
 import net.ehicks.bts.beans.Issue;
 import net.ehicks.bts.beans.IssueRepository;
 import net.ehicks.bts.model.AuditQueryLogic;

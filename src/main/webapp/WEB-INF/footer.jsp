@@ -5,6 +5,7 @@
 <spring:eval expression="@gitVersionProperties.version" var="version" />
 <spring:eval expression="@gitVersionProperties.revision" var="revision" />
 <spring:eval expression="@environment.getProperty('puffin.siteName')" var="siteName" />
+<jsp:useBean id="now" class="java.util.Date" />
 
 <footer class="footer">
     <div class="container">
@@ -22,8 +23,8 @@
                     by <a href="https://ehicks.net">Eric Hicks</a>
                 </p>
                 <p>
-                    <c:if test="${!empty sessionScope.userSession}">
-                        <span title="Time from entering the controller to rendering this element.">${userSession.currentTimeMillis - userSession.enteredController} ms</span>
+                    <c:if test="${!empty requestStartTime}">
+                        <span title="Time from entering the controller to rendering this element.">${now.time - requestStartTime} ms</span>
                     </c:if>
                 </p>
             </div>

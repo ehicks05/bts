@@ -2,7 +2,7 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib uri="http://sargue.net/jsptags/time" prefix="javatime" %>
 <jsp:useBean id="issueForm" type="net.ehicks.bts.beans.IssueForm" scope="request"/>
-<%--<jsp:useBean id="searchResult" type="net.ehicks.bts.SearchResult" scope="request"/>--%>
+<%--<jsp:useBean id="searchResult" type="net.ehicks.bts.model.SearchResult" scope="request"/>--%>
 
 <table id="issueTable" class="table is-striped is-narrow is-hoverable is-fullwidth">
     <thead>

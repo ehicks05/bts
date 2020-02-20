@@ -26,8 +26,7 @@ public class Startup
 
     public void start()
     {
-        log.info("BTS starting...");
-        SystemInfo.INSTANCE.setSystemStart(System.currentTimeMillis());
+        log.info("Puffin starting...");
 
         if (dropCreateLoad.toLowerCase().equals("true"))
         {
@@ -36,7 +35,5 @@ public class Startup
 
 //        DatabaseBackupTask.scheduleTask();
 //        ChatSessionHandler.init(); // todo: move this?
-
-        log.info("BTS Controller.init done in {} ms", (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()));
     }
 }

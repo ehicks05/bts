@@ -1,8 +1,7 @@
 package net.ehicks.bts.handlers.admin;
 
 import net.ehicks.bts.SessionListener;
-import net.ehicks.bts.SystemInfo;
-import net.ehicks.bts.UserSession;
+import net.ehicks.bts.model.UserSession;
 import net.ehicks.bts.beans.*;
 import net.ehicks.bts.mail.EmailAction;
 import net.ehicks.bts.mail.MailClient;
@@ -24,7 +23,6 @@ public class AdminHandler
 {
     private static final Logger log = LoggerFactory.getLogger(AdminHandler.class);
 
-    private IssueFormRepository issueFormRepository;
     private ProjectRepository projectRepository;
     private GroupRepository groupRepository;
     private EmailEventRepository emailEventRepository;
@@ -32,12 +30,10 @@ public class AdminHandler
     private MailClient mailClient;
     private EntityManager entityManager;
 
-    public AdminHandler(IssueFormRepository issueFormRepository,ProjectRepository projectRepository,
-                        GroupRepository groupRepository, EmailEventRepository emailEventRepository,
-                        BtsSystemRepository btsSystemRepository, MailClient mailClient,
-                        EntityManager entityManager)
+    public AdminHandler(ProjectRepository projectRepository, GroupRepository groupRepository,
+                        EmailEventRepository emailEventRepository, BtsSystemRepository btsSystemRepository,
+                        MailClient mailClient, EntityManager entityManager)
     {
-        this.issueFormRepository = issueFormRepository;
         this.projectRepository = projectRepository;
         this.groupRepository = groupRepository;
         this.emailEventRepository = emailEventRepository;
@@ -51,7 +47,24 @@ public class AdminHandler
     {
         return new ModelAndView("admin/overview")
                 .addObject("btsSystem", btsSystemRepository.findFirstBy())
-                .addObject("adminSubscreens", SystemInfo.INSTANCE.getAdminSubscreens());
+                .addObject("adminSubscreens", getAdminSubscreens());
+    }
+
+
+    /** url, icon name, label, tab2 of the url */
+    private List<List<String>> getAdminSubscreens()
+    {
+        return Arrays.asList(
+                Arrays.asList("/admin/system/modify/form", "server", "Manage System", "system"),
+                Arrays.asList("/admin/users/form", "user", "Manage Users", "users"),
+                Arrays.asList("/admin/groups/form", "users", "Manage Groups", "groups"),
+                Arrays.asList("/admin/projects/form", "folder", "Manage Projects", "projects"),
+                Arrays.asList("/admin/email/form", "envelope", "Manage Email", "email"),
+                Arrays.asList("/admin/backups/form", "cloud-upload-alt", "Backups", "backups"),
+                Arrays.asList("/admin/system/info/form", "chart-bar", "System Info", "system"),
+                Arrays.asList("/admin/dbInfo/form", "chart-bar", "Database Info", "dbInfo"),
+                Arrays.asList("/admin/audit/form", "history", "Audit Records", "audit")
+        );
     }
 
     @GetMapping("/admin/system/info/form")

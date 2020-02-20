@@ -4,18 +4,26 @@ Web-based bug tracker
 
 ## Feature Summary
 
-* Advanced search capabilities. Searches can be saved for later.
+* Advanced search capabilities. 
+  * Searches can be saved for later.
+  * Saved searches can be added to your dashboard.
 * Issues
   * Can be commented on
   * Can contain screenshots & attachments
   * Store a history of what has happened to the issue
 * User and group management
 * Customizable Email integration
+  * Flexible email subscription management
 * PDF reports
 * Comprehensive logging
 * Built-in database backups
 * Auditing
-* System monitoring
+
+##2020 Todo:
+- security, lock down access
+- do we need a modify subscription screen?
+- why do temporal indexes like 'created_on' in Issue.kt not work?
+- Consider react
 
 ## Getting Started
 
@@ -25,8 +33,7 @@ See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
-* Gradle
-* Tomcat 8
+* Java
 
 ### Installing
 
@@ -35,21 +42,15 @@ See deployment for notes on how to deploy the project on a live system.
 
 ## Deployment (WIP)
 
-1. Build war file with Gradle
-2. Copy war file to tomcat webapps directory
-3. Place DB driver jar file for H2 or Postgres in tomcat/lib (both should be in the war)
-4. Set up tomcat's server.xml (there is a server-sample.xml in project source code)
-5. Update DB connection info in bts.properties once war file is expanded
-6. To add Trigram extension run: CREATE EXTENSION pg_trgm;
+1. Edit DB connection info in application.properties
+2. Build war file with Gradle
+3. run with java -jar
 
 ## Built With (partial listing)
 
-* [EOI](https://github.com/ehicks05/eoi) - Object relational mapper
-* [Reflections](https://github.com/ronmamo/reflections) - Annotation scanning. Used to build URL 
-  to method handler mappings (AKA Routes)
+* [Spring Boot](https://spring.io/projects/spring-boot) - Application framework
 * [diffpatch](https://github.com/sksamuel/google-diff-match-patch) - Text diffing. Used to 
   create fancy-looking emails when the text of an issue or a comment is updated.
 * [Cron4J](http://www.sauronsoftware.it/projects/cron4j/index.php) - Job Scheduler
-* [Apache Commons Email](https://commons.apache.org/proper/commons-email/) - API for sending mail
 * [Apache PDFBox](https://pdfbox.apache.org/) - PDF creation
 * [Bulma](https://bulma.io/) - CSS framework

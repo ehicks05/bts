@@ -4,8 +4,8 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib uri="http://sargue.net/jsptags/time" prefix="javatime" %>
 
-<jsp:useBean id="auditForm" type="net.ehicks.bts.AuditForm" scope="request"/>
-<jsp:useBean id="searchResult" type="net.ehicks.bts.SearchResult<org.springframework.data.history.Revision<java.lang.Integer, net.ehicks.bts.beans.Issue>>" scope="request"/>
+<jsp:useBean id="auditForm" type="net.ehicks.bts.model.AuditForm" scope="request"/>
+<jsp:useBean id="searchResult" type="net.ehicks.bts.model.SearchResult<org.springframework.data.history.Revision<java.lang.Integer, net.ehicks.bts.beans.Issue>>" scope="request"/>
 
 <!DOCTYPE html>
 <html>

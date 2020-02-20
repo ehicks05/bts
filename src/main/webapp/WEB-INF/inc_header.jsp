@@ -32,11 +32,12 @@
 <%-- qTip2 --%>
 
 <%-- Bulma --%>
-<c:if test="${empty btsSystem.theme || btsSystem.theme eq 'default'}">
+<%--<c:set var="theme" value="${pageContext.servletContext.getAttribute('theme')}"/>--%>
+<c:if test="${empty theme || theme eq 'default'}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css" />
 </c:if>
-<c:if test="${!empty btsSystem.theme && !(btsSystem.theme eq 'default')}">
-    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/${btsSystem.theme}/bulmaswatch.min.css">
+<c:if test="${!empty theme && !(theme eq 'default')}">
+    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/${theme}/bulmaswatch.min.css">
 </c:if>
 <%-- Bulma --%>
 

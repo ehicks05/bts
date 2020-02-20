@@ -3,8 +3,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%@tag description="Paginator Tag" pageEncoding="UTF-8" %>
-<%@attribute name="searchForm" type="net.ehicks.bts.SearchForm" fragment="false" %>
-<%@attribute name="searchResult" type="net.ehicks.bts.SearchResult" fragment="false" %>
+<%@attribute name="searchForm" type="net.ehicks.bts.model.SearchForm" fragment="false" %>
+<%@attribute name="searchResult" type="net.ehicks.bts.model.SearchResult" fragment="false" %>
 
 <c:set var="paginatorCounter" value="${requestScope.paginatorCounter + 1}" scope="request"/>
 <c:if test="${paginatorCounter == 1}">

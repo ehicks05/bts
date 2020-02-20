@@ -1,20 +1,14 @@
 package net.ehicks.bts.model;
 
-import net.ehicks.bts.AuditForm;
-import net.ehicks.bts.SearchResult;
 import net.ehicks.bts.beans.Issue;
 import net.ehicks.bts.beans.IssueRepository;
-import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.envers.query.AuditEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.history.Revision;
-import org.springframework.data.history.Revisions;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 
 @Service
 public class AuditQueryLogic

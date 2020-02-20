@@ -1,5 +1,6 @@
 package net.ehicks.bts;
 
+import net.ehicks.bts.model.UserSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +94,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
     public static UserSession getByUserId(Long userId)
     {
         Optional<UserSession> optional = sessions.stream()
-                .filter(userSession -> userSession.getUserId().equals(userId))
+                .filter(userSession -> userSession.getUserId() == userId)
                 .findFirst();
         return optional.orElse(null);
     }

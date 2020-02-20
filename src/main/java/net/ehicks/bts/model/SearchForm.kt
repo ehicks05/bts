@@ -1,4 +1,4 @@
-package net.ehicks.bts
+package net.ehicks.bts.model
 
 abstract class SearchForm {
     open var id = 0L
