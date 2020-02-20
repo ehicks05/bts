@@ -3,7 +3,6 @@ package net.ehicks.bts.util;
 import be.quodlibet.boxable.BaseTable;
 import be.quodlibet.boxable.Cell;
 import be.quodlibet.boxable.Row;
-import net.ehicks.common.Timer;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -15,7 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -42,22 +43,17 @@ public class PdfCreator
             document.addPage(page);
 
             PDPageContentStream contentStream = new PDPageContentStream(document, page);
-            Timer timer = new Timer();
             addTable(document, page, header, data);
-            log.info(timer.printDuration("created table"));
 
             contentStream.close();
 
             int fontSize = 10;
             addHeader(document, header, fontSize);
             addFooter(document, footer, fontSize);
-            log.info(timer.printDuration("added header/footer"));
-
 
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             document.save(byteArrayOutputStream);
             document.close();
-            log.info(timer.printDuration("saved document to byte array"));
             return byteArrayOutputStream;
         }
         catch (IOException e)

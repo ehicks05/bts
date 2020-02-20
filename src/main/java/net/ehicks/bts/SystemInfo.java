@@ -2,7 +2,6 @@ package net.ehicks.bts;
 
 import net.ehicks.common.Common;
 
-import java.lang.management.ManagementFactory;
 import java.util.*;
 
 public class SystemInfo
@@ -14,11 +13,6 @@ public class SystemInfo
     public Date getSystemStartTime()
     {
         return new Date(systemStart);
-    }
-
-    public List<String> getRuntimeMXBeanArguments()
-    {
-        return ManagementFactory.getRuntimeMXBean().getInputArguments();
     }
 
     public Map<String, String> getStats()
@@ -33,15 +27,6 @@ public class SystemInfo
     }
 
     /** url, icon name, label, tab2 of the url */
-    public List<List<String>> getSettingsSubscreens()
-    {
-        return Arrays.asList(
-                Arrays.asList("/settings/savedSearches/form", "search", "Saved Searches", "savedSearches"),
-                Arrays.asList("/settings/subscriptions/form", "envelope", "Subscriptions", "subscriptions")
-        );
-    }
-
-    /** url, icon name, label, tab2 of the url */
     public List<List<String>> getAdminSubscreens()
     {
         return Arrays.asList(
@@ -53,8 +38,7 @@ public class SystemInfo
                 Arrays.asList("/admin/backups/form", "cloud-upload-alt", "Backups", "backups"),
                 Arrays.asList("/admin/system/info/form", "chart-bar", "System Info", "system"),
                 Arrays.asList("/admin/dbInfo/form", "chart-bar", "Database Info", "dbInfo"),
-                Arrays.asList("/admin/audit/form", "history", "Audit Records", "audit"),
-                Arrays.asList("/admin/sql/form", "database", "SQL", "sql")
+                Arrays.asList("/admin/audit/form", "history", "Audit Records", "audit")
         );
     }
 

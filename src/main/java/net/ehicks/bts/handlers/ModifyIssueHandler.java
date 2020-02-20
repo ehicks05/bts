@@ -1,9 +1,7 @@
 package net.ehicks.bts.handlers;
 
-import com.sksamuel.diffpatch.DiffMatchPatch;
-import net.ehicks.bts.mail.EmailAction;
-import net.ehicks.bts.mail.EmailEngine;
 import net.ehicks.bts.beans.*;
+import net.ehicks.bts.mail.EmailAction;
 import net.ehicks.bts.mail.MailClient;
 import net.ehicks.common.Common;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

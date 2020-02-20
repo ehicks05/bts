@@ -34,3 +34,4 @@
 - do we need a modify subscription screen?
 - can we reasonably recreate the 'response time' metric in the footer?
     - it should clock the time from request hitting the server, to leaving the server
+- why do temporal indexes like 'created_on' in Issue.kt not work?
