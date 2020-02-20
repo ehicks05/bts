@@ -1,44 +1,56 @@
 package net.ehicks.bts.handlers;
 
-import net.ehicks.bts.routing.Route;
-import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.IssueForm;
-import net.ehicks.common.Common;
-import net.ehicks.eoi.EOI;
+import net.ehicks.bts.beans.IssueFormRepository;
+import net.ehicks.bts.beans.IssueRepository;
+import net.ehicks.bts.beans.User;
+import net.ehicks.bts.model.IssueQueryLogic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.text.ParseException;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Controller
 public class DashboardHandler
 {
-    @Route(tab1 = "dashboard", tab2 = "", tab3 = "", action = "form")
-    public static String showDashboard(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    private static final Logger log = LoggerFactory.getLogger(DashboardHandler.class);
+
+    private IssueFormRepository issueFormRepository;
+    private IssueQueryLogic issueQueryLogic;
+
+    public DashboardHandler(IssueFormRepository issueFormRepository, IssueQueryLogic issueQueryLogic)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        List<IssueForm> issueForms = IssueForm.getByUserId(userSession.getUserId());
-        List<IssueForm> dashBoardIssueForms = issueForms.stream().filter(issueForm -> issueForm.getOnDash()).collect(Collectors.toList());
-
-        request.setAttribute("dashBoardIssueForms", dashBoardIssueForms);
-
-        return "/webroot/dashboard.jsp";
+        this.issueFormRepository = issueFormRepository;
+        this.issueQueryLogic = issueQueryLogic;
     }
 
-    @Route(tab1 = "dashboard", tab2 = "", tab3 = "", action = "remove")
-    public static void removeIssueForm(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/dashboard")
+    public ModelAndView showDashboard(@AuthenticationPrincipal User user)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        long id = Common.stringToLong(request.getParameter("issueFormId"));
-        IssueForm issueForm = IssueForm.getById(id);
-        if (issueForm != null)
-        {
-            issueForm.setOnDash(false);
-            EOI.update(issueForm, userSession);
-        }
+        List<IssueForm> dashBoardIssueForms = issueFormRepository
+                .findByUserIdAndOnDashTrue(user.getId());
 
-        response.sendRedirect("view?tab1=dashboard&action=form");
+        dashBoardIssueForms.forEach(issueForm -> issueForm.setSearchResult(issueQueryLogic.query(issueForm)));
+
+        return new ModelAndView("dashboard")
+                .addObject("dashBoardIssueForms", dashBoardIssueForms);
+    }
+
+    @GetMapping("/dashboard/remove")
+    public ModelAndView removeIssueForm(@RequestParam Long issueFormId)
+    {
+        issueFormRepository.findById(issueFormId).ifPresent(issueForm -> {
+            issueForm.setOnDash(false);
+            issueFormRepository.save(issueForm);
+        });
+
+        return new ModelAndView("redirect:/dashboard");
     }
 }

@@ -15,9 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +28,7 @@ public class PdfCreator
     private static final Logger log = LoggerFactory.getLogger(PdfCreator.class);
     private static PDFont HELVETICA = PDType1Font.HELVETICA;
 
-    public static File createPdf(String author, String header, String footer, List<List> data)
+    public static OutputStream createPdf(String author, String header, String footer, List<List<Object>> data)
     {
         try
         {
@@ -43,22 +44,21 @@ public class PdfCreator
             PDPageContentStream contentStream = new PDPageContentStream(document, page);
             Timer timer = new Timer();
             addTable(document, page, header, data);
-            timer.printDuration("created table");
+            log.info(timer.printDuration("created table"));
 
             contentStream.close();
 
             int fontSize = 10;
             addHeader(document, header, fontSize);
             addFooter(document, footer, fontSize);
-            timer.printDuration("added header/footer");
+            log.info(timer.printDuration("added header/footer"));
 
-            // Save the results and ensure that the document is properly closed:
-            File tempFile = File.createTempFile("userReport", "");
-            document.save(tempFile);
-            timer.printDuration("saved document");
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            document.save(byteArrayOutputStream);
             document.close();
-
-            return tempFile;
+            log.info(timer.printDuration("saved document to byte array"));
+            return byteArrayOutputStream;
         }
         catch (IOException e)
         {
@@ -68,7 +68,7 @@ public class PdfCreator
         return null;
     }
 
-    private static void addTable(PDDocument document, PDPage page, String title, List<List> data) throws IOException
+    private static void addTable(PDDocument document, PDPage page, String title, List<List<Object>> data) throws IOException
     {
         float height = page.getMediaBox().getHeight() - 60;
         BaseTable table = new BaseTable(height, height, 40, page.getMediaBox().getWidth() - 80, 40, document, page, true, true);
@@ -80,7 +80,7 @@ public class PdfCreator
         cell.setFont(PDType1Font.HELVETICA_BOLD);
         cell.setFillColor(headerColor);
         table.addHeaderRow(headerRow);
-        for (List dataRow : data)
+        for (List<Object> dataRow : data)
         {
             Row<PDPage> row = table.createRow(10f);
 
@@ -89,6 +89,7 @@ public class PdfCreator
                 String value = "";
                 if (dataCell instanceof String) value = (String) dataCell;
                 if (dataCell instanceof Date) value = ((Date)dataCell).toString();
+                if (dataCell instanceof LocalDateTime) value = ((LocalDateTime)dataCell).format(DateTimeFormatter.ISO_LOCAL_DATE) + " " + ((LocalDateTime)dataCell).format(DateTimeFormatter.ofPattern("hh:mma"));
                 if (dataCell instanceof Long) value = ((Long)dataCell).toString();
                 float width = (float)100 / dataRow.size();
                 cell = row.createCell(width, value);

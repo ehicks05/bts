@@ -1,74 +1,106 @@
 package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.bts.BackupDbTask;
-import net.ehicks.bts.SystemInfo;
-import net.ehicks.bts.UserSession;
-import net.ehicks.bts.routing.Route;
-import net.ehicks.bts.util.CommonIO;
-import net.ehicks.common.Common;
+import net.ehicks.bts.DatabaseBackupTask;
+import net.ehicks.bts.beans.BtsSystemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
+import java.io.FileInputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@Controller
 public class BackupHandler
 {
     private static final Logger log = LoggerFactory.getLogger(BackupHandler.class);
 
-    @Route(tab1 = "admin", tab2 = "backups", tab3 = "", action = "form")
-    public static String showBackups(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    private BtsSystemRepository btsSystemRepository;
+    private DatabaseBackupTask databaseBackupTask;
+
+    public BackupHandler(BtsSystemRepository btsSystemRepository, DatabaseBackupTask databaseBackupTask)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        File backupDir = new File(SystemInfo.INSTANCE.getBackupDirectory());
+        this.btsSystemRepository = btsSystemRepository;
+        this.databaseBackupTask = databaseBackupTask;
+    }
+
+    @GetMapping("/admin/backups/form")
+    public ModelAndView showBackups()
+    {
+        File backupDir = new File(btsSystemRepository.findFirstBy().getBackupDir());
         List<File> backups = new ArrayList<>();
         if (backupDir.exists() && backupDir.isDirectory())
             backups = new ArrayList<>(Arrays.asList(backupDir.listFiles()));
-        backups.removeIf(file -> !file.getName().contains("bts"));
+        backups.removeIf(file -> !file.isFile() && !file.getName().contains("bts"));
         Collections.reverse(backups);
-        request.setAttribute("backups", backups);
-        request.setAttribute("isRunning", BackupDbTask.isRunning());
 
-        return "/webroot/admin/backups.jsp";
+        return new ModelAndView("admin/backups")
+                .addObject("backupPath", Paths.get(btsSystemRepository.findFirstBy().getBackupDir()))
+                .addObject("backups", backups)
+                .addObject("isRunning", DatabaseBackupTask.isRunning());
     }
 
-    @Route(tab1 = "admin", tab2 = "backups", tab3 = "", action = "create")
-    public static void createBackup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/backups/create")
+    public ModelAndView createBackup()
     {
-        BackupDbTask.backupToZip();
+        databaseBackupTask.backupToZip();
 
-        response.sendRedirect("view?tab1=admin&tab2=backups&action=form");
+        return new ModelAndView("redirect:/admin/backups/form");
     }
 
-    @Route(tab1 = "admin", tab2 = "backups", tab3 = "", action = "checkStatus")
-    public static void checkStatus(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/backups/checkStatus")
+    @ResponseBody
+    public boolean checkStatus()
     {
-        response.getOutputStream().print(BackupDbTask.isRunning());
+        return DatabaseBackupTask.isRunning();
     }
 
-    @Route(tab1 = "admin", tab2 = "backups", tab3 = "", action = "delete")
-    public static void deleteBackup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/backups/delete")
+    public ModelAndView deleteBackup(@RequestParam String backupName)
     {
-        String backupName = Common.getSafeString(request.getParameter("backupName"));
-        File file = new File(SystemInfo.INSTANCE.getBackupDirectory() + backupName);
-        boolean result = file.delete();
-        response.sendRedirect("view?tab1=admin&tab2=backups&action=form");
+        Path backupPath = Paths.get(btsSystemRepository.findFirstBy().getBackupDir(), backupName);
+        boolean result = backupPath.toFile().delete();
+        return new ModelAndView("redirect:/admin/backups/form");
     }
 
-    @Route(tab1 = "admin", tab2 = "backups", tab3 = "", action = "viewBackup")
-    public static void viewBackup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/backups/viewBackup")
+    @ResponseBody
+    public ResponseEntity<byte[]> viewBackup(@RequestParam String backupName)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        String backupName = Common.getSafeString(request.getParameter("backupName"));
-        File file = new File(SystemInfo.INSTANCE.getBackupDirectory() + backupName);
+        try
+        {
+            Path backupPath = Paths.get(btsSystemRepository.findFirstBy().getBackupDir(), backupName);
+            byte[] output = new BufferedInputStream(new FileInputStream(backupPath.toFile())).readAllBytes();
 
-        CommonIO.sendFileInResponse(response, file, false);
+            ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
+                    .filename(backupPath.getFileName().toString()).build();
+
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentDisposition(contentDisposition);
+            
+            return ResponseEntity.ok()
+                    .headers(httpHeaders)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(output);
+        }
+        catch (Exception e)
+        {
+            log.error(e.getLocalizedMessage());
+        }
+        return ResponseEntity.unprocessableEntity().build();
     }
 }

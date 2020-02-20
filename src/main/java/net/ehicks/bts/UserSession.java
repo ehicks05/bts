@@ -1,11 +1,8 @@
 package net.ehicks.bts;
 
-import net.ehicks.bts.beans.User;
-import net.ehicks.eoi.AuditUser;
-
 import java.util.Date;
 
-public class UserSession implements AuditUser
+public class UserSession
 {
     private Long userId;
     private String logonId = "";
@@ -31,10 +28,10 @@ public class UserSession implements AuditUser
         return System.currentTimeMillis();
     }
 
-    public User getUser()
-    {
-        return User.getByUserId(userId);
-    }
+//    public User getUser()
+//    {
+//        return User.getByUserId(userId);
+//    }
 
     public Long getUserId()
     {

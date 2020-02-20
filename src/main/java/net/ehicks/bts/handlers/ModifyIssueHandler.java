@@ -1,344 +1,287 @@
 package net.ehicks.bts.handlers;
 
 import com.sksamuel.diffpatch.DiffMatchPatch;
-import net.ehicks.bts.*;
+import net.ehicks.bts.mail.EmailAction;
+import net.ehicks.bts.mail.EmailEngine;
 import net.ehicks.bts.beans.*;
-import net.ehicks.bts.routing.Route;
+import net.ehicks.bts.mail.MailClient;
 import net.ehicks.common.Common;
-import net.ehicks.eoi.EOI;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+@Controller
 public class ModifyIssueHandler
 {
-    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "form")
-    public static String showModifyIssue(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    private UserRepository userRepository;
+    private GroupRepository groupRepository;
+    private IssueTypeRepository issueTypeRepository;
+    private ProjectRepository projectRepository;
+    private StatusRepository statusRepository;
+    private SeverityRepository severityRepository;
+    private IssueRepository issueRepository;
+    private CommentRepository commentRepository;
+    private EmailEventRepository emailEventRepository;
+    private BtsSystemRepository btsSystemRepository;
+    private MailClient mailClient;
+
+    public ModifyIssueHandler(UserRepository userRepository, GroupRepository groupRepository,
+                              IssueTypeRepository issueTypeRepository, ProjectRepository projectRepository,
+                              StatusRepository statusRepository, SeverityRepository severityRepository,
+                              IssueRepository issueRepository, CommentRepository commentRepository,
+                              EmailEventRepository emailEventRepository, BtsSystemRepository btsSystemRepository,
+                              MailClient mailClient)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long issueId = Common.stringToLong(request.getParameter("issueId"));
-
-        if (Issue.getById(issueId) == null)
-            return "/webroot/error.jsp";
-        
-        // security
-        if (!userSession.getUser().hasAccess(Issue.getById(issueId)))
-            return "/webroot/error.jsp";
-
-        List<Comment> comments = Comment.getByIssueId(issueId);
-        retainVisibleComments(comments, (UserSession) request.getSession().getAttribute("userSession"));
-
-        request.setAttribute("issue", Issue.getById(issueId));
-        request.setAttribute("comments", comments);
-        request.setAttribute("watcherMaps", WatcherMap.getByIssueId(issueId));
-
-        List<User> potentialWatchers = User.getAll();
-        potentialWatchers.removeAll(WatcherMap.getWatchersForIssue(issueId));
-        request.setAttribute("potentialWatchers", potentialWatchers);
-
-        request.setAttribute("potentialAssignees", User.getAll());
-        request.setAttribute("potentialReporters", User.getAll());
-
-        return "/webroot/issueForm.jsp";
+        this.userRepository = userRepository;
+        this.groupRepository = groupRepository;
+        this.issueTypeRepository = issueTypeRepository;
+        this.projectRepository = projectRepository;
+        this.statusRepository = statusRepository;
+        this.severityRepository = severityRepository;
+        this.issueRepository = issueRepository;
+        this.commentRepository = commentRepository;
+        this.emailEventRepository = emailEventRepository;
+        this.btsSystemRepository = btsSystemRepository;
+        this.mailClient = mailClient;
     }
 
-    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "ajaxGetChangeLog")
-    public static String ajaxGetChangeLog(HttpServletRequest request, HttpServletResponse response) throws IOException
+    @GetMapping("/issue/form")
+    public ModelAndView showModifyIssue(@AuthenticationPrincipal User user, @RequestParam Long issueId)
     {
-        Long issueId = Common.stringToLong(request.getParameter("issueId"));
+        ModelAndView mav = new ModelAndView("issueForm");
+        issueRepository.findById(issueId).ifPresent(issue -> {
+            List<User> users = userRepository.findAll();
+            Set<Comment> comments = retainVisibleComments(issue.getComments(), user);
+            mav.addObject("issue", issue)
+                    .addObject("comments", comments)
+                    .addObject("potentialWatchers", users.stream().filter(aUser -> !issue.getWatchers().contains(aUser)).collect(Collectors.toList()))
+                    .addObject("potentialAssignees", users)
+                    .addObject("potentialReporters", users)
+                    .addObject("defaultAvatar", btsSystemRepository.findFirstBy().getDefaultAvatar())
+                    .addObject("projects", projectRepository.findAll())
+                    .addObject("groups", groupRepository.findAll())
+                    .addObject("severities", severityRepository.findAll())
+                    .addObject("statuses", statusRepository.findAll())
+                    .addObject("issueTypes", issueTypeRepository.findAll());
+        });
 
-        request.setAttribute("issueAudits", IssueAudit.getByIssueId(issueId));
-
-        return "/webroot/issueChangelog.jsp";
+        return mav;
     }
 
-    private static List<Comment> retainVisibleComments(List<Comment> comments, UserSession userSession)
+    @GetMapping("/issue/ajaxGetChangeLog")
+    public ModelAndView ajaxGetChangeLog(@RequestParam Long issueId)
     {
-        if (userSession.getUser().isAdmin() || userSession.getUser().isSupport())
+        // todo get audit info
+        return new ModelAndView("issueChangelog");
+    }
+
+    private Set<Comment> retainVisibleComments(Set<Comment> comments, User user)
+    {
+        if (user.isAdmin() || user.isSupport())
             return comments;
         else
         {
-            List<Group> userGroups = Group.getByUserId(userSession.getUserId());
-            List<Long> userGroupIds = userGroups.stream().map(Group::getId).collect(Collectors.toList());
-            for (Iterator<Comment> i = comments.iterator(); i.hasNext();)
-            {
-                Comment comment = i.next();
-                Long visibleToGroup = comment.getVisibleToGroupId();
-                if (visibleToGroup != 0 && !userGroupIds.contains(comment.getCreatedByUserId()))
-                    i.remove();
-            }
+            comments.removeIf(comment -> {
+                Group visibleToGroup = comment.getVisibleToGroup();
+                return visibleToGroup != null && !user.getGroups().contains(visibleToGroup);
+            });
             return comments;
         }
     }
 
-    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "create")
-    public static void createIssue(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    @GetMapping("/issue/create")
+    public ModelAndView createIssue(
+            @AuthenticationPrincipal User user,
+            @RequestParam Long createIssueProject,
+            @RequestParam Long createIssueGroup,
+            @RequestParam Long createIssueIssueType,
+            @RequestParam Long createIssueSeverity,
+            @RequestParam Long createIssueStatus,
+            @RequestParam String createIssueTitle,
+            @RequestParam String createIssueDescription
+    )
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-
-        Long projectId      = Common.stringToLong(request.getParameter("createIssueProject"));
-        Long groupId        = Common.stringToLong(request.getParameter("createIssueGroup"));
-        Long issueTypeId    = Common.stringToLong(request.getParameter("createIssueIssueType"));
-        Long severityId     = Common.stringToLong(request.getParameter("createIssueSeverity"));
-        Long statusId       = Common.stringToLong(request.getParameter("createIssueStatus"));
-        String title        = Common.getSafeString(request.getParameter("createIssueTitle"));
-        String description  = Common.getSafeString(request.getParameter("createIssueDescription"));
-
         Issue issue = new Issue();
-        issue.setReporterUserId(userSession.getUserId());
-        issue.setAssigneeUserId(userSession.getUserId());
-        issue.setProjectId(projectId);
-        issue.setGroupId(groupId);
-        issue.setIssueTypeId(issueTypeId);
-        issue.setSeverityId(severityId);
-        issue.setStatusId(statusId);
-        issue.setTitle(title);
-        issue.setDescription(description);
-        issue.setCreatedOn(new Date());
-        Long newIssueId = EOI.insert(issue, userSession);
-        issue = Issue.getById(newIssueId);
+        issue.setReporter(user);
+        issue.setAssignee(user);
+        issue.setProject(projectRepository.findById(createIssueProject).get());
+        issue.setGroup(groupRepository.findById(createIssueGroup).get());
+        issue.setIssueType(issueTypeRepository.findById(createIssueIssueType).get());
+        issue.setSeverity(severityRepository.findById(createIssueSeverity).get());
+        issue.setStatus(statusRepository.findById(createIssueStatus).get());
+        issue.setTitle(createIssueTitle);
+        issue.setDescription(createIssueDescription);
+        issue.setCreatedOn(LocalDateTime.now());
+        issue.getWatchers().add(user);
+        issue = issueRepository.save(issue);
 
-        WatcherMap watcherMap = new WatcherMap();
-        watcherMap.setIssueId(newIssueId);
-        watcherMap.setUserId(userSession.getUserId());
-        EOI.insert(watcherMap, userSession);
-
-        IssueAudit issueAudit = new IssueAudit(newIssueId, userSession, "added", issue.toString());
-        EOI.insert(issueAudit, userSession);
-
-        response.sendRedirect("view?tab1=issue&action=form&issueId=" + newIssueId);
+        return new ModelAndView("redirect:/issue/form?issueId=" + issue.getId());
     }
 
-    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "update")
-    public static void updateIssue(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    @PostMapping("/issue/update")
+    @ResponseBody
+    public String updateIssue(@RequestParam Long issueId, @RequestParam String fldFieldName, @RequestParam String fldFieldValue)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long issueId        = Common.stringToLong(request.getParameter("issueId"));
-        String fieldName    = Common.getSafeString(request.getParameter("fldFieldName"));
-        String fieldValue   = Common.getSafeString(request.getParameter("fldFieldValue"));
-
-        Long projectId      = !fieldName.equals("fldProject") ? 0 : Common.stringToLong(fieldValue);
-        Long issueTypeId    = !fieldName.equals("fldIssueType") ? 0 : Common.stringToLong(fieldValue);
-        Long statusId       = !fieldName.equals("fldStatus") ? 0 : Common.stringToLong(fieldValue);
-        Long severityId     = !fieldName.equals("fldSeverity") ? 0 : Common.stringToLong(fieldValue);
-        Long groupId        = !fieldName.equals("fldGroup") ? 0 : Common.stringToLong(fieldValue);
-        String title        = !fieldName.equals("fldTitle") ? "" : Common.getSafeString(fieldValue);
-        String description  = !fieldName.equals("fldDescription") ? "" : Common.getSafeString(fieldValue);
-        Long assigneeId     = !fieldName.equals("fldAssigneeId") ? 0 : Common.stringToLong(fieldValue);
-        Long reporterId     = !fieldName.equals("fldReporterId") ? 0 : Common.stringToLong(fieldValue);
+        Long projectId      = !fldFieldName.equals("fldProject") ? 0 : Common.stringToLong(fldFieldValue);
+        Long issueTypeId    = !fldFieldName.equals("fldIssueType") ? 0 : Common.stringToLong(fldFieldValue);
+        Long statusId       = !fldFieldName.equals("fldStatus") ? 0 : Common.stringToLong(fldFieldValue);
+        Long severityId     = !fldFieldName.equals("fldSeverity") ? 0 : Common.stringToLong(fldFieldValue);
+        Long groupId        = !fldFieldName.equals("fldGroup") ? 0 : Common.stringToLong(fldFieldValue);
+        String title        = !fldFieldName.equals("fldTitle") ? "" : Common.getSafeString(fldFieldValue);
+        String description  = !fldFieldName.equals("fldDescription") ? "" : Common.getSafeString(fldFieldValue);
+        Long assigneeId     = !fldFieldName.equals("fldAssigneeId") ? 0 : Common.stringToLong(fldFieldValue);
+        Long reporterId     = !fldFieldName.equals("fldReporterId") ? 0 : Common.stringToLong(fldFieldValue);
 
         String updateLog = "";
-        Issue issue = Issue.getById(issueId);
-        String oldValue = "";
-        String newValue = "";
+        Issue issue = issueRepository.findById(issueId).get();
         if (projectId != 0)
         {
-            oldValue = Project.getById(issue.getProjectId()).getName();
-            newValue = Project.getById(projectId).getName();
-
-            issue.setProjectId(projectId);
-            updateLog += "Project to " + Project.getById(projectId).getName();
+            issue.setProject(projectRepository.findById(projectId).get());
+            updateLog += "Project to " + issue.getProject().getName();
         }
         if (issueTypeId != 0)
         {
-            oldValue = IssueType.getById(issue.getIssueTypeId()).getName();
-            newValue = IssueType.getById(issueTypeId).getName();
-
-            issue.setIssueTypeId(issueTypeId);
-            updateLog += "Type to " + IssueType.getById(issueTypeId).getName();
+            issue.setIssueType(issueTypeRepository.findById(issueTypeId).get());
+            updateLog += "Type to " + issue.getIssueType().getName();
         }
         if (statusId != 0)
         {
-            oldValue = Status.getById(issue.getStatusId()).getName();
-            newValue = Status.getById(statusId).getName();
-
-            issue.setStatusId(statusId);
-            updateLog += "Status to " + Status.getById(statusId).getName();
+            issue.setStatus(statusRepository.findById(statusId).get());
+            updateLog += "Status to " + issue.getStatus().getName();
         }
         if (severityId != 0)
         {
-            oldValue = Severity.getById(issue.getSeverityId()).getName();
-            newValue = Severity.getById(severityId).getName();
-
-            issue.setSeverityId(severityId);
-            updateLog += "Severity to " + Severity.getById(severityId).getName();
+            issue.setSeverity(severityRepository.findById(severityId).get());
+            updateLog += "Severity to " + issue.getSeverity().getName();
         }
         if (groupId != 0)
         {
-            oldValue = Group.getById(issue.getGroupId()).getName();
-            newValue = Group.getById(groupId).getName();
-
-            issue.setGroupId(groupId);
-            updateLog += "Group to " + Group.getById(groupId).getName();
+            issue.setGroup(groupRepository.findById(groupId).get());
+            updateLog += "Group to " + issue.getGroup().getName();
         }
         if (title.length() != 0)
         {
-            oldValue = issue.getTitle();
-            newValue = title;
-
             issue.setTitle(title);
             updateLog += "Title";
         }
         if (description.length() != 0)
         {
-            oldValue = issue.getDescription();
-            newValue = description;
-
             issue.setDescription(description);
             updateLog += "Description";
         }
         if (assigneeId != 0)
         {
-            oldValue = issue.getAssignee().getLogonId();
-            newValue = User.getByUserId(assigneeId).getLogonId();
-
-            issue.setAssigneeUserId(assigneeId);
-            updateLog += "Assignee to " + User.getByUserId(assigneeId).getLogonId();
+            issue.setAssignee(userRepository.findById(assigneeId).get());
+            updateLog += "Assignee to " + issue.getAssignee().getUsername();
         }
         if (reporterId != 0)
         {
-            oldValue = issue.getReporter().getLogonId();
-            newValue = User.getByUserId(reporterId).getLogonId();
-
-            issue.setReporterUserId(reporterId);
-            updateLog += "Reporter to " + User.getByUserId(reporterId).getLogonId();
+            issue.setReporter(userRepository.findById(reporterId).get());
+            updateLog += "Reporter to " + issue.getReporter().getUsername();
         }
 
         if (updateLog.length() > 0)
-        {
-            issue.setLastUpdatedOn(new Date());
-        }
+            issue.setLastUpdatedOn(LocalDateTime.now());
 
-        EOI.update(issue, userSession);
+        issueRepository.save(issue);
 
-        IssueAudit issueAudit = new IssueAudit(issueId, userSession, "changed", issue.toString(), fieldName.replace("fld", ""), oldValue, newValue);
-        EOI.insert(issueAudit, userSession);
-
-        String toastMessage = "Updated " + updateLog;
-        response.getWriter().println(toastMessage);
+        return "Updated " + updateLog;
     }
 
-    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "addComment")
-    public static void addComment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    @PostMapping("/issue/addComment")
+    public ModelAndView addComment(@AuthenticationPrincipal User user, @RequestParam Long issueId,
+                                   @RequestParam String fldContent, @RequestParam Long fldVisibility)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        Issue issue = issueRepository.findById(issueId).get();
+        Group group = fldVisibility == null ? issue.getGroup() : groupRepository.findById(fldVisibility).get();
+        Comment comment = new Comment(0, issue, user, fldContent, group, LocalDateTime.now(), LocalDateTime.now());
+        comment = commentRepository.save(comment);
 
-        Long issueId    = Common.stringToLong(request.getParameter("issueId"));
-        String content  = Common.getSafeString(request.getParameter("fldContent"));
-        Long visibility = Common.stringToLong(request.getParameter("fldVisibility"));
+        EmailEvent emailEvent = new EmailEvent();
+        emailEvent.setUser(user);
+        emailEvent.setIssue(issue);
+        emailEvent.setActionId(EmailAction.ADD_COMMENT.getId());
+        emailEvent.setComment(comment);
+        emailEvent.setDescription(fldContent);
+        emailEvent = emailEventRepository.save(emailEvent);
 
-        Comment comment = new Comment();
-        comment.setIssueId(issueId);
-        comment.setCreatedByUserId(userSession.getUserId());
-        comment.setCreatedOn(new Date());
-        comment.setContent(content);
-        comment.setVisibleToGroupId(visibility);
-        long commentId = EOI.insert(comment, userSession);
-        comment = Comment.getById(commentId); // comment should now have id field populated
+        mailClient.prepareAndSend(emailEvent);
 
-        IssueAudit issueAudit = new IssueAudit(issueId, userSession, "added", comment.toString());
-        EOI.insert(issueAudit, userSession);
-
-        EmailMessage emailMessage = new EmailMessage();
-        emailMessage.setUserId(userSession.getUserId());
-        emailMessage.setIssueId(issueId);
-        emailMessage.setActionId(EmailAction.ADD_COMMENT.getId());
-        emailMessage.setCommentId(commentId);
-        emailMessage.setDescription(content);
-        long emailId = EOI.insert(emailMessage, userSession);
-        emailMessage = EmailMessage.getById(emailId);
-
-        EmailEngine.sendEmail(emailMessage);
-
-        response.sendRedirect("view?tab1=issue&action=form&issueId=" + issueId);
+        return new ModelAndView("redirect:/issue/form?issueId=" + issueId);
     }
 
-    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "updateComment")
-    public static void updateComment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    @PostMapping("/issue/updateComment")
+    @ResponseBody
+    public String updateComment(@AuthenticationPrincipal User user, @RequestParam Long commentId,
+                                      @RequestParam String fldFieldName, @RequestParam String fldFieldValue)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-
-        Long commentId        = Common.stringToLong(request.getParameter("commentId"));
-        Comment comment = Comment.getById(commentId);
-        if (!userSession.getUserId().equals(comment.getCreatedByUserId()))
+        Comment comment = commentRepository.findById(commentId).get();
+        if (user.getId() != comment.getAuthor().getId())
         {
             // url hack attempt?
-            return;
+            return "";
         }
-        
-        String fieldName    = Common.getSafeString(request.getParameter("fldFieldName"));
-        String fieldValue   = Common.getSafeString(request.getParameter("fldFieldValue"));
 
-        String content       = !fieldName.equals("fldContent" + commentId) ? "" : Common.getSafeString(fieldValue);
+        String content = !fldFieldName.equals("fldContent" + commentId) ? "" : Common.getSafeString(fldFieldValue);
 
         String previousContent = comment.getContent();
         if (content.length() != 0)
             comment.setContent(content);
 
+        String result = "";
         if (!content.equals(previousContent))
         {
-            comment.setLastUpdatedOn(new Date());
-            EOI.update(comment, userSession);
+            comment.setLastUpdatedOn(LocalDateTime.now());
+            commentRepository.save(comment);
 
-            String toastMessage = "Comment Updated";
-            response.getWriter().println(toastMessage);
-
-            IssueAudit issueAudit = new IssueAudit(comment.getIssueId(), userSession, "changed", comment.toString(), "content", previousContent, content);
-            EOI.insert(issueAudit, userSession);
+            result = "Comment Updated";
         }
 
-        DiffMatchPatch myDiff = new DiffMatchPatch();
-        LinkedList<DiffMatchPatch.Diff> diffs = myDiff.diff_main(previousContent, content);
-        myDiff.diff_cleanupSemantic(diffs);
-        String prettyDiff = myDiff.diff_prettyHtml(diffs);
+        EmailEvent emailEvent = new EmailEvent();
+        emailEvent.setUser(user);
+        emailEvent.setIssue(comment.getIssue());
+        emailEvent.setActionId(EmailAction.EDIT_COMMENT.getId());
+        emailEvent.setComment(comment);
+        emailEvent.setDescription("");
+        emailEvent.setPreviousValue(previousContent);
+        emailEvent.setNewValue(content);
+        emailEvent = emailEventRepository.save(emailEvent);
 
-        // todo this is for yahoo mail
-        prettyDiff = prettyDiff.replaceAll("<ins style=\"background:#e6ffe6;\">", "<u style=\"background:#e6ffe6;\">");
-        prettyDiff = prettyDiff.replaceAll("</ins>", "</u>");
-
-        EmailMessage emailMessage = new EmailMessage();
-        emailMessage.setUserId(userSession.getUserId());
-        emailMessage.setIssueId(comment.getIssueId());
-        emailMessage.setActionId(EmailAction.EDIT_COMMENT.getId());
-        emailMessage.setCommentId(commentId);
-        emailMessage.setDescription(prettyDiff);
-        long emailId = EOI.insert(emailMessage, userSession);
-        emailMessage = EmailMessage.getById(emailId);
-
-        EmailEngine.sendEmail(emailMessage);
+        mailClient.prepareAndSend(emailEvent);
+        return result;
     }
 
-    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "addWatcher")
-    public static void addWatcher(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    @GetMapping("/issue/addWatcher")
+    public ModelAndView addWatcher(@RequestParam Long issueId, @RequestParam Long userId)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        issueRepository.findById(issueId).ifPresent(issue ->
+                userRepository.findById(userId).ifPresent(user -> {
+                    issue.getWatchers().add(user);
+                    issueRepository.save(issue);
+                }));
 
-        Long issueId    = Common.stringToLong(request.getParameter("issueId"));
-        Long userId    = Common.stringToLong(request.getParameter("userId"));
-
-        WatcherMap watcherMap = new WatcherMap();
-        watcherMap.setIssueId(issueId);
-        watcherMap.setUserId(userId);
-        EOI.insert(watcherMap, userSession);
-
-        response.sendRedirect("view?tab1=issue&action=form&issueId=" + issueId);
+        return new ModelAndView("redirect:/issue/form?issueId=" + issueId);
     }
 
-    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "removeWatcher")
-    public static void removeWatcher(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    @GetMapping("/issue/removeWatcher")
+    public ModelAndView removeWatcher(@RequestParam Long issueId, @RequestParam Long userId)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        issueRepository.findById(issueId).ifPresent(issue ->
+                userRepository.findById(userId).ifPresent(user -> {
+                    issue.getWatchers().remove(user);
+                    issueRepository.save(issue);
+                }));
 
-        Long issueId    = Common.stringToLong(request.getParameter("issueId"));
-        Long watcherMapId    = Common.stringToLong(request.getParameter("watcherMapId"));
-
-        WatcherMap watcherMap = WatcherMap.getById(watcherMapId);
-        EOI.executeDelete(watcherMap, userSession);
-
-        response.sendRedirect("view?tab1=issue&action=form&issueId=" + issueId);
+        return new ModelAndView("redirect:/issue/form?issueId=" + issueId);
     }
 }

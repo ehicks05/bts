@@ -1,7 +1,6 @@
 package net.ehicks.bts;
 
 import net.ehicks.bts.routing.RouteDescription;
-import net.ehicks.bts.routing.Router;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +16,7 @@ import java.lang.reflect.Method;
 @WebServlet(value = "/signUp", loadOnStartup = 2)
 public class SignUpController extends HttpServlet
 {
-    private static final Logger log = LoggerFactory.getLogger(Controller.class);
+    private static final Logger log = LoggerFactory.getLogger(SignUpController.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -52,7 +51,7 @@ public class SignUpController extends HttpServlet
 
         // routing
         RouteDescription routeDescription = new RouteDescription(tab1, tab2, tab3, action);
-        Method handler = Router.getRouteMap().get(routeDescription);
+        Method handler = null;
         if (handler != null)
         {
             try
@@ -66,7 +65,7 @@ public class SignUpController extends HttpServlet
             catch (Exception e)
             {
                 log.error(e.getMessage(), e);
-                response.sendRedirect("view?tab1=dashboard&action=form");
+                response.sendRedirect("view?tab1=dashboard/form");
             }
         }
 

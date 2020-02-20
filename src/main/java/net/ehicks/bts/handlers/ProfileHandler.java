@@ -1,30 +1,44 @@
 package net.ehicks.bts.handlers;
 
-import net.ehicks.bts.routing.Route;
-import net.ehicks.bts.UserSession;
-import net.ehicks.bts.beans.User;
-import net.ehicks.common.Common;
+import net.ehicks.bts.beans.BtsSystemRepository;
+import net.ehicks.bts.beans.CommentRepository;
+import net.ehicks.bts.beans.UserRepository;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.text.ParseException;
-
+@Controller
 public class ProfileHandler
 {
-    @Route(tab1 = "profile", tab2 = "", tab3 = "", action = "form")
-    public static String showProfile(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    private UserRepository userRepository;
+    private CommentRepository commentRepository;
+    private BtsSystemRepository btsSystemRepository;
+
+    public ProfileHandler(UserRepository userRepository, CommentRepository commentRepository,
+                          BtsSystemRepository btsSystemRepository)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
+        this.btsSystemRepository = btsSystemRepository;
+    }
 
-        Long userId = Common.stringToLong(request.getParameter("userId"));
-        User user = User.getByUserId(userId);
+    @GetMapping("/profile/form")
+    public ModelAndView showProfile(@RequestParam Long profileUserId)
+    {
+        ModelAndView mav = new ModelAndView("profile");
+        userRepository.findById(profileUserId).ifPresent(profileUser -> {
 
-        if (!userId.equals(userSession.getUserId()) && !User.getAllVisible(userSession.getUserId()).contains(user))
-            return "/webroot/error.jsp";
+            //todo check access
+//            if (!userId.equals(userSession.getUserId()) &&
+//                    !User.getAllVisible(userSession.getUserId()).contains(user))
+//                return "/webroot/error.jsp";
+//
+            mav.addObject("user", profileUser);
+            mav.addObject("recentComments", commentRepository.findTop10ByAuthorOrderByCreatedOnDesc(profileUser));
+            mav.addObject("defaultAvatar", btsSystemRepository.findFirstBy().getDefaultAvatar());
+        });
 
-        request.setAttribute("user", user);
-
-        return "/webroot/profile.jsp";
+        return mav;
     }
 }

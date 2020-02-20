@@ -10,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
@@ -46,20 +47,6 @@ public class CommonIO
         response.setContentLength(Long.valueOf(file.length()).intValue());
 
         try (InputStream inputStream = new FileInputStream(file);
-             OutputStream outputStream = response.getOutputStream())
-        {
-            IOUtils.copy(inputStream, outputStream);
-        }
-    }
-
-    public static void sendFileInResponse(HttpServletResponse response, DBFile dbFile, boolean inline) throws IOException
-    {
-        response.setContentType(URLConnection.guessContentTypeFromName(dbFile.getName()));
-        String contentDisposition = inline ? "inline" : "attachment";
-        response.setHeader("Content-Disposition", String.format(contentDisposition + "; filename=%s", dbFile.getName()));
-        response.setContentLength(Long.valueOf(dbFile.getContent().length).intValue());
-
-        try (InputStream inputStream = new ByteArrayInputStream(dbFile.getContent());
              OutputStream outputStream = response.getOutputStream())
         {
             IOUtils.copy(inputStream, outputStream);
@@ -127,6 +114,13 @@ public class CommonIO
     {
         BufferedImage srcImage = ImageIO.read(fileItem.getInputStream()); // Load image
         String formatName = getContentType(fileItem).replace("image/", "");
+        return getThumbnailHelper(srcImage, formatName);
+    }
+
+    public static byte[] getThumbnail(MultipartFile file) throws IOException
+    {
+        BufferedImage srcImage = ImageIO.read(file.getInputStream()); // Load image
+        String formatName = file.getName().substring(file.getName().lastIndexOf(".") + 1);
         return getThumbnailHelper(srcImage, formatName);
     }
 

@@ -1,88 +1,120 @@
 package net.ehicks.bts.handlers.settings;
 
-import net.ehicks.bts.util.CommonIO;
+import net.ehicks.bts.beans.*;
 import net.ehicks.bts.util.PdfCreator;
-import net.ehicks.bts.routing.Route;
-import net.ehicks.bts.UserSession;
-import net.ehicks.bts.beans.Subscription;
-import net.ehicks.bts.beans.User;
-import net.ehicks.common.Common;
-import net.ehicks.eoi.EOI;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Controller
 public class SubscriptionHandler
 {
-    @Route(tab1 = "settings", tab2 = "subscriptions", tab3 = "", action = "form")
-    public static String showSubscriptions(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    private SubscriptionRepository subscriptionRepository;
+    private UserRepository userRepository;
+    private GroupRepository groupRepository;
+    private IssueTypeRepository issueTypeRepository;
+    private ProjectRepository projectRepository;
+    private StatusRepository statusRepository;
+    private SeverityRepository severityRepository;
+
+    public SubscriptionHandler(SubscriptionRepository subscriptionRepository, UserRepository userRepository,
+                               GroupRepository groupRepository, IssueTypeRepository issueTypeRepository,
+                               ProjectRepository projectRepository, StatusRepository statusRepository,
+                               SeverityRepository severityRepository)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-
-        request.setAttribute("subscriptions", Subscription.getByUserId(userSession.getUserId()));
-        request.setAttribute("users", User.getAllVisible(userSession.getUserId()));
-
-        return "/webroot/settings/subscriptions.jsp";
+        this.subscriptionRepository = subscriptionRepository;
+        this.userRepository = userRepository;
+        this.groupRepository = groupRepository;
+        this.issueTypeRepository = issueTypeRepository;
+        this.projectRepository = projectRepository;
+        this.statusRepository = statusRepository;
+        this.severityRepository = severityRepository;
     }
 
-    @Route(tab1 = "settings", tab2 = "subscriptions", tab3 = "", action = "add")
-    public static void addSubscription(HttpServletRequest request, HttpServletResponse response) throws IOException
+    @GetMapping("/settings/subscriptions/form")
+    public ModelAndView showSubscriptions(@AuthenticationPrincipal User user)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-
-        Subscription subscription = new Subscription();
-        subscription.setUserId(userSession.getUserId());
-        subscription = updateSubscriptionFromRequest(subscription, request);
-        EOI.insert(subscription, userSession);
-
-        response.sendRedirect("view?tab1=settings&tab2=subscriptions&action=form");
+        return new ModelAndView("settings/subscriptions")
+                .addObject("subscriptions", subscriptionRepository.findByUser_Id(user.getId()))
+                .addObject("projects", projectRepository.findAll())
+                .addObject("groups", groupRepository.findAll())
+                .addObject("severities", severityRepository.findAll())
+                .addObject("statuses", statusRepository.findAll())
+                .addObject("users", userRepository.findAll()); // todo: recreate 'User.findAllVisible' security
     }
 
-    @Route(tab1 = "settings", tab2 = "subscriptions", tab3 = "", action = "delete")
-    public static void deleteSubscription(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/settings/subscriptions/add")
+    public ModelAndView addSubscription(
+            @AuthenticationPrincipal User user,
+            @RequestParam List<Long> statusIds,
+            @RequestParam List<Long> severityIds,
+            @RequestParam List<Long> projectIds,
+            @RequestParam List<Long> groupIds,
+            @RequestParam List<Long> issueTypeIds,
+            @RequestParam List<Long> assigneeIds,
+            @RequestParam List<Long> reporterIds
+    )
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        Subscription subscription = new Subscription(0, user,
+                groupRepository.findByIdIn(groupIds),
+                issueTypeRepository.findByIdIn(issueTypeIds),
+                projectRepository.findByIdIn(projectIds),
+                userRepository.findByIdIn(assigneeIds),
+                userRepository.findByIdIn(reporterIds),
+                severityRepository.findByIdIn(severityIds),
+                statusRepository.findByIdIn(statusIds)
+        );
+        subscriptionRepository.save(subscription);
 
-        Long subscriptionId = Common.stringToLong(request.getParameter("subscriptionId"));
-        Subscription subscription = Subscription.getById(subscriptionId);
-        if (subscription != null)
-            EOI.executeDelete(subscription, userSession);
-
-        response.sendRedirect("view?tab1=settings&tab2=subscriptions&action=form");
+        return new ModelAndView("redirect:/settings/subscriptions/form");
     }
 
-    @Route(tab1 = "settings", tab2 = "subscriptions", tab3 = "", action = "print")
-    public static void printSubscriptions(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/settings/subscriptions/delete")
+    public ModelAndView deleteSubscription(@RequestParam Long subscriptionId)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        subscriptionRepository.findById(subscriptionId)
+                .ifPresent(subscription -> subscriptionRepository.delete(subscription));
 
-        List<List> subscriptionData = new ArrayList<>();
+        return new ModelAndView("redirect:/settings/subscriptions/form");
+    }
+
+    @GetMapping("/settings/subscriptions/print")
+    @ResponseBody
+    public ResponseEntity<byte[]> printSubscriptions(@AuthenticationPrincipal User user)
+    {
+        List<List<Object>> subscriptionData = new ArrayList<>();
         subscriptionData.add(Arrays.asList("Object Id", "User Id", "Description"));
-        for (Subscription subscription : Subscription.getByUserId(userSession.getUserId()))
-            subscriptionData.add(Arrays.asList(subscription.getId(), subscription.getUserId(), subscription.getDescription()));
-        File file = PdfCreator.createPdf("Me", "Subscription Report", "", subscriptionData);
+        subscriptionData.addAll(subsToPrintable(subscriptionRepository.findByUser_Id(user.getId())));
 
-        CommonIO.sendFileInResponse(response, file, true);
+        ByteArrayOutputStream outputStream = (ByteArrayOutputStream) PdfCreator.createPdf(user.getUsername(), "My Subscription Report", "", subscriptionData);
+
+        return outputStream != null
+                ? ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(outputStream.toByteArray())
+                : ResponseEntity.notFound().build();
     }
 
-    private static Subscription updateSubscriptionFromRequest(Subscription subscription, HttpServletRequest request)
+    private List<List<Object>> subsToPrintable(List<Subscription> subs)
     {
-        String statusIds        = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("statusIds")));
-        String severityIds      = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("severityIds")));
-        String projectIds       = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("projectIds")));
-        String groupIds         = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("groupIds")));
-        String assigneeIds      = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("assigneeIds")));
+        return subs.stream().map(this::toPrintable).collect(Collectors.toList());
+    }
 
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-
-        subscription.updateFields(userSession.getUserId(), statusIds, severityIds, projectIds, groupIds, assigneeIds);
-
-        return subscription;
+    private List<Object> toPrintable(Subscription subscription)
+    {
+        return Arrays.asList(subscription.getId(),
+                subscription.getUser().getId(),
+                subscription.getDescription());
     }
 }

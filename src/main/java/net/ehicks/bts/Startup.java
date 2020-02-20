@@ -1,173 +1,42 @@
 package net.ehicks.bts;
 
-import net.ehicks.bts.beans.BtsSystem;
-import net.ehicks.bts.beans.Issue;
-import net.ehicks.common.Common;
-import net.ehicks.eoi.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletContext;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.ZonedDateTime;
-import java.util.Properties;
-import java.util.Random;
-
+@Component
 public class Startup
 {
     private static final Logger log = LoggerFactory.getLogger(Startup.class);
 
-    static void loadProperties(ServletContext servletContext) throws IOException
-    {
-        Properties properties = new Properties();
-        properties.load(servletContext.getResourceAsStream("/WEB-INF/bts.properties"));
+    @Value("${puffin.dropCreateLoad:0}")
+    public String dropCreateLoad;
 
+    @Value("classpath:net/ehicks/bts/beans")
+    Resource beans;
+
+    private Seeder seeder;
+
+    public Startup(Seeder seeder)
+    {
+        this.seeder = seeder;
+    }
+
+    public void start()
+    {
+        log.info("BTS starting...");
         SystemInfo.INSTANCE.setSystemStart(System.currentTimeMillis());
-        SystemInfo.INSTANCE.setServletContext(servletContext);
 
-        SystemInfo.INSTANCE.setAppName(Common.getSafeString(properties.getProperty("appName")));
-        SystemInfo.INSTANCE.setDebugLevel(Common.stringToInt(properties.getProperty("debugLevel")));
-        SystemInfo.INSTANCE.setDropCreateLoad(properties.getProperty("dropCreateLoad").equals("true"));
-
-        SystemInfo.INSTANCE.setBackupDirectory(properties.getProperty("backupDirectory"));
-        SystemInfo.INSTANCE.setOverridePropertiesDirectory(properties.getProperty("overridePropertiesDirectory"));
-
-        ConnectionInfo dbConnectionInfo = new ConnectionInfo(Common.getSafeString(properties.getProperty("dbMode")),
-                Common.getSafeString(properties.getProperty("dbHost")),
-                Common.getSafeString(properties.getProperty("dbPort")),
-                Common.getSafeString(properties.getProperty("dbName")),
-                Common.getSafeString(properties.getProperty("dbUser")),
-                Common.getSafeString(properties.getProperty("dbPass")),
-                Common.getSafeString(properties.getProperty("h2DbCacheKBs")),
-                Common.getSafeString(properties.getProperty("pgDumpPath")),
-                Common.getSafeString(properties.getProperty("sqlserverServerInstance")));
-        SystemInfo.INSTANCE.setDbConnectionInfo(dbConnectionInfo);
-
-        servletContext.setAttribute("systemInfo", SystemInfo.INSTANCE);
-    }
-
-    static void loadLoggingProperties(ServletContext servletContext) throws IOException
-    {
-        Properties properties = new Properties();
-        properties.load(servletContext.getResourceAsStream("/WEB-INF/classes/log4j.properties"));
-
-        SystemInfo.INSTANCE.setLogDirectory(properties.getProperty("logDirectory"));
-
-        servletContext.setAttribute("systemInfo", SystemInfo.INSTANCE);
-    }
-
-    static void loadVersionFile(ServletContext servletContext) throws IOException
-    {
-        Properties properties = new Properties();
-        properties.load(servletContext.getResourceAsStream("/WEB-INF/version.txt"));
-
-        SystemInfo.INSTANCE.setVersion(properties.getProperty("Version"));
-        SystemInfo.INSTANCE.setGitVersion(properties.getProperty("Revision"));
-        SystemInfo.INSTANCE.setGitVersionDate(ZonedDateTime.parse(properties.getProperty("Revision-Date")));
-
-        servletContext.setAttribute("systemInfo", SystemInfo.INSTANCE);
-    }
-
-    static void loadOverrideProperties(String path)
-    {
-        File overridePropsFile = new File(path);
-        if (overridePropsFile.exists() && overridePropsFile.isFile())
+        if (dropCreateLoad.toLowerCase().equals("true"))
         {
-            Properties overrideProps = new Properties();
-
-            try (InputStream input = new FileInputStream(overridePropsFile);)
-            {
-                overrideProps.load(input);
-            }
-            catch (IOException e)
-            {
-                log.error(e.getMessage(), e);
-            }
-
-            BtsSystem btsSystem = BtsSystem.getSystem();
-
-            // only override email settings if they're not already in the DB.
-            if (btsSystem.getEmailHost().isEmpty()) btsSystem.setEmailHost(overrideProps.getProperty("emailHost"));
-            if (btsSystem.getEmailPort() == 0) btsSystem.setEmailPort(Common.stringToInt(overrideProps.getProperty("emailPort")));
-            if (btsSystem.getEmailUser().isEmpty()) btsSystem.setEmailUser(overrideProps.getProperty("emailUser"));
-            if (btsSystem.getEmailPassword().isEmpty()) btsSystem.setEmailPassword(overrideProps.getProperty("emailPassword"));
-            if (btsSystem.getEmailFromAddress().isEmpty()) btsSystem.setEmailFromAddress(overrideProps.getProperty("emailFromAddress"));
-            if (btsSystem.getEmailFromName().isEmpty()) btsSystem.setEmailFromName(overrideProps.getProperty("emailFromName"));
-
-            EOI.update(btsSystem, SystemTask.STARTUP);
+            seeder.createDemoData();
         }
-    }
 
-    static void loadDBMaps(ServletContext servletContext)
-    {
-        long subTaskStart = System.currentTimeMillis();
-        DBMap.loadDbMaps(servletContext.getRealPath("/WEB-INF/classes/net/ehicks/bts/beans"), "net.ehicks.bts.beans");
-        log.debug("Loaded DBMAPS in {} ms", (System.currentTimeMillis() - subTaskStart));
-    }
+//        DatabaseBackupTask.scheduleTask();
+//        ChatSessionHandler.init(); // todo: move this?
 
-    static void createTables()
-    {
-        long subTaskStart = System.currentTimeMillis();
-        int tablesCreated = 0;
-        for (DBMap dbMap : DBMap.dbMaps)
-            if (!EOI.isTableExists(dbMap.tableName))
-            {
-                String createTableStatement = SQLGenerator.getCreateTableStatement(dbMap);
-                EOI.executeUpdate(createTableStatement);
-                tablesCreated++;
-
-                for (String indexDefinition : dbMap.indexDefinitions)
-                    EOI.executeUpdate(indexDefinition);
-            }
-        log.info("Autocreated {}/{} tables in {} ms", tablesCreated, DBMap.dbMaps.size(), (System.currentTimeMillis() - subTaskStart));
-    }
-
-    static void dropTables()
-    {
-        long subTaskStart;
-        subTaskStart = System.currentTimeMillis();
-        int tablesDropped = 0;
-        for (DBMap dbMap : DBMap.dbMaps)
-        {
-            String tableName = dbMap.tableName;
-            try
-            {
-                if (EOI.isTableExists(tableName))
-                {
-                    log.debug("Dropping " + tableName + "...");
-                    EOI.executeUpdate("drop table " + tableName);
-                    tablesDropped++;
-                }
-            }
-            catch (Exception e)
-            {
-                log.error("didnt drop {}", tableName);
-            }
-        }
-        log.info("Dropped {}/{} existing tables in {} ms", tablesDropped, DBMap.dbMaps.size(), (System.currentTimeMillis() - subTaskStart));
-    }
-
-    static void migrateDb()
-    {
-        SQLMigrator.migrate(DBMap.dbMaps);
-    }
-
-    static void runSqlScripts()
-    {
-
-    }
-
-    static void runStartupScripts()
-    {
-        new Thread(() -> {
-            long start = System.currentTimeMillis();
-
-            // put startup changes here
-
-            log.info("startup scripts took: {} ms", System.currentTimeMillis() - start);
-        }).start();
+        log.info("BTS Controller.init done in {} ms", (System.currentTimeMillis() - SystemInfo.INSTANCE.getSystemStart()));
     }
 }

@@ -1,153 +1,120 @@
 package net.ehicks.bts.handlers;
 
-import net.ehicks.bts.SearchResult;
-import net.ehicks.bts.UserSession;
-import net.ehicks.bts.beans.IssueForm;
-import net.ehicks.bts.beans.User;
-import net.ehicks.bts.routing.Route;
-import net.ehicks.common.Common;
-import net.ehicks.eoi.EOI;
-import net.ehicks.eoi.PSIngredients;
-import net.ehicks.eoi.SQLGenerator;
+import net.ehicks.bts.beans.*;
+import net.ehicks.bts.model.IssueQueryLogic;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
+@Controller
 public class IssueSearchHandler
 {
-    @Route(tab1 = "search", tab2 = "", tab3 = "", action = "form")
-    public static String showIssues(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    IssueFormRepository issueFormRepository;
+    UserRepository userRepository;
+    GroupRepository groupRepository;
+    IssueTypeRepository issueTypeRepository;
+    ProjectRepository projectRepository;
+    StatusRepository statusRepository;
+    SeverityRepository severityRepository;
+    IssueQueryLogic issueQueryLogic;
+
+    public IssueSearchHandler(IssueFormRepository issueFormRepository, UserRepository userRepository,
+                              GroupRepository groupRepository, IssueTypeRepository issueTypeRepository,
+                              ProjectRepository projectRepository, StatusRepository statusRepository,
+                              SeverityRepository severityRepository, IssueQueryLogic issueQueryLogic)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-
-        Long issueFormId = Common.stringToLong(request.getParameter("issueFormId"));
-        IssueForm issueForm = IssueForm.getById(issueFormId);
-
-        // check the session
-        if (issueForm == null)
-            issueForm = (IssueForm) request.getSession().getAttribute("issueForm");
-
-        if (issueForm == null)
-        {
-            issueForm = new IssueForm();
-            issueForm.setUserId(userSession.getUserId());
-            issueForm = updateIssueFormFromRequest(issueForm, request);
-
-            request.getSession().setAttribute("issueForm", issueForm);
-        }
-
-        SearchResult searchResult = issueForm.getSearchResult();
-
-        request.setAttribute("users", User.getAllVisible(userSession.getUserId()));
-        request.setAttribute("issueForm", issueForm);
-        request.setAttribute("searchResult", searchResult);
-
-        return "/webroot/issueSearch.jsp";
+        this.issueFormRepository = issueFormRepository;
+        this.userRepository = userRepository;
+        this.groupRepository = groupRepository;
+        this.issueTypeRepository = issueTypeRepository;
+        this.projectRepository = projectRepository;
+        this.statusRepository = statusRepository;
+        this.severityRepository = severityRepository;
+        this.issueQueryLogic = issueQueryLogic;
     }
 
-    @Route(tab1 = "search", tab2 = "", tab3 = "", action = "ajaxGetPageOfResults")
-    public static void ajaxGetPageOfResults(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, ServletException
+    @GetMapping("/search/form")
+    public ModelAndView showIssues(@AuthenticationPrincipal User user,
+                                   Model model,
+                                   @RequestParam(required = false) Long issueFormId
+//                                  , @RequestParam(required = false) IssueForm issueForm
+    )
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long issueFormId = Common.stringToLong(request.getParameter("issueFormId"));
-        IssueForm issueForm = IssueForm.getById(issueFormId);
-
-        // check the session
-        if (issueForm == null)
-            issueForm = (IssueForm) request.getSession().getAttribute("issueForm");
+        IssueForm issueForm = (IssueForm)  model.getAttribute("issueForm");
+        if (issueForm == null && issueFormId != null)
+            issueForm = issueFormRepository.findById(issueFormId).orElse(null);
 
         if (issueForm == null)
-            {
-                issueForm = new IssueForm();
-                issueForm.setId(0L);
-            }
+            issueForm = new IssueForm(0, user);
+
+        issueForm.setSearchResult(issueQueryLogic.query(issueForm));
+        return getIssueSearchModel(issueForm);
+    }
+
+    @NotNull
+    private ModelAndView getIssueSearchModel(IssueForm issueForm)
+    {
+        // todo security: lock down some of these queries
+        return new ModelAndView("issueSearch")
+                .addObject("users", userRepository.findAll())
+                .addObject("issueForm", issueForm)
+                .addObject("projects", projectRepository.findAll())
+                .addObject("groups", groupRepository.findAll())
+                .addObject("severities", severityRepository.findAll())
+                .addObject("statuses", statusRepository.findAll())
+                .addObject("users", userRepository.findAll())
+                .addObject("issueTypes", issueTypeRepository.findAll());
+    }
+
+    private IssueForm updateIssueFormFromRequest(@AuthenticationPrincipal User user,
+                                                 @RequestParam(required = false) Long formId,
+                                                 @RequestParam String formName,
+                                                 @RequestParam String containsText,
+                                                 @RequestParam String title,
+                                                 @RequestParam String description,
+                                                 @RequestParam List<Long> statusIds,
+                                                 @RequestParam List<Long> severityIds,
+                                                 @RequestParam List<Long> projectIds,
+                                                 @RequestParam List<Long> groupIds,
+                                                 @RequestParam List<Long> issueTypeIds,
+                                                 @RequestParam List<Long> assigneeIds,
+                                                 @RequestParam List<Long> reporterIds,
+//                                                 @RequestParam LocalDateTime createdOn,
+//                                                 @RequestParam LocalDateTime lastUpdatedOn,
+                                                 @RequestParam Boolean onDash,
+                                                 @RequestParam String sortColumn,
+                                                 @RequestParam String sortDirection,
+                                                 @RequestParam Integer page
+                                                 )
+    {
+        IssueForm issueForm = formId == null ?
+                new IssueForm(user) : issueFormRepository.findById(formId).orElse(new IssueForm(user));
+
+        issueForm.setFormName(formName);
+        issueForm.setContainsText(containsText);
+        issueForm.setTitle(title);
+        issueForm.setDescription(description);
+        issueForm.setGroups(groupRepository.findByIdIn(groupIds));
+        issueForm.setIssueTypes(issueTypeRepository.findByIdIn(issueTypeIds));
+        issueForm.setProjects(projectRepository.findByIdIn(projectIds));
+        issueForm.setAssignees(userRepository.findByIdIn(assigneeIds));
+        issueForm.setReporters(userRepository.findByIdIn(reporterIds));
+        issueForm.setSeverities(severityRepository.findByIdIn(severityIds));
+        issueForm.setStatuses(statusRepository.findByIdIn(statusIds));
+//        issueForm.setLastUpdatedOn(lastUpdatedOn);
+        issueForm.setOnDash(onDash);
+        issueForm.setSortColumn(sortColumn);
+        issueForm.setSortDirection(sortDirection);
+        issueForm.setPage(String.valueOf(page));
 
         // parse sorting fields
-        String sortColumn = request.getParameter("sortColumn");
-        String sortDirection = request.getParameter("sortDirection");
-
-        // we must be doing a resort
-        if (sortColumn != null && sortDirection != null)
-        {
-            if (sortColumn.equals(issueForm.getSortColumn()))
-            {
-                if (sortDirection.equals("asc"))
-                    sortDirection = "desc";
-                else
-                    sortDirection = "asc";
-            }
-
-            issueForm.setSortColumn(sortColumn);
-            issueForm.setSortDirection(sortDirection);
-
-            // we want to persist sorting preferences
-            if (issueFormId > 0)
-                EOI.update(issueForm, userSession);
-        }
-
-        String page = request.getParameter("page");
-        if (page != null)
-            issueForm.setPage(page);
-
-        SearchResult searchResult = issueForm.getSearchResult();
-
-        request.setAttribute("issueForm", issueForm);
-        request.setAttribute("searchResult", searchResult);
-
-        if (issueFormId == 0)
-        {
-            request.getSession().setAttribute("issueForm", issueForm);
-            request.getSession().setAttribute("searchResult", searchResult);
-        }
-        request.getRequestDispatcher("/webroot/issueTable.jsp").forward(request, response);
-    }
-
-    @Route(tab1 = "search", tab2 = "", tab3 = "", action = "search")
-    public static void search(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
-    {
-        Long issueFormId = Common.stringToLong(request.getParameter("filterId"));
-        IssueForm issueForm = IssueForm.getById(issueFormId);
-        if (issueForm == null)
-        {
-            issueForm = new IssueForm();
-            issueForm.setId(0L);
-        }
-
-        issueForm = updateIssueFormFromRequest(issueForm, request);
-
-        if (issueFormId == 0)
-            request.getSession().setAttribute("issueForm", issueForm);
-        else
-            request.setAttribute("issueForm", issueForm);
-
-        response.sendRedirect("view?tab1=search&action=form&issueFormId=" + issueFormId);
-    }
-
-    private static IssueForm updateIssueFormFromRequest(IssueForm issueForm, HttpServletRequest request)
-    {
-        String filterName       = Common.getSafeString(request.getParameter("filterName"));
-        String containsText     = Common.getSafeString(request.getParameter("containsText"));
-        String title            = Common.getSafeString(request.getParameter("title"));
-        String description      = Common.getSafeString(request.getParameter("description"));
-        String statusIds        = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("statusIds")));
-        String severityIds      = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("severityIds")));
-        String projectIds       = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("projectIds")));
-        String groupIds         = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("groupIds")));
-        String assigneeIds      = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("assigneeIds")));
-        Date createdOn          = Common.stringToDate(request.getParameter("createdOn"));
-        Date lastUpdatedOn      = Common.stringToDate(request.getParameter("lastUpdatedOn"));
-        boolean onDash          = !Common.getSafeString(request.getParameter("onDash")).isEmpty();
-
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-
-        // parse sorting fields
-        String sortColumn = request.getParameter("sortColumn");
-        String sortDirection = request.getParameter("sortDirection");
         if (sortColumn == null)
         {
             sortColumn = "id";
@@ -157,71 +124,146 @@ public class IssueSearchHandler
         if (sortDirection == null)
             sortDirection = "asc";
 
-        String page = request.getParameter("page");
-        if (page == null || page.length() == 0)
-            page = "1";
-
-        issueForm.updateFields(filterName, userSession.getUserId(), containsText, title, description, statusIds, severityIds,
-                projectIds, groupIds, assigneeIds, createdOn, lastUpdatedOn, onDash);
+        if (page == null || page == 0)
+            page = 1;
 
         issueForm.setSortColumn(sortColumn);
         issueForm.setSortDirection(sortDirection);
-        issueForm.setPage(page);
+        issueForm.setPage(String.valueOf(page));
 
         return issueForm;
     }
 
-    @Route(tab1 = "search", tab2 = "", tab3 = "", action = "saveIssueForm")
-    public static void saveIssueForm(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    @GetMapping("/search/ajaxGetPageOfResults")
+    public ModelAndView ajaxGetPageOfResults(@AuthenticationPrincipal User user, @RequestParam Long issueFormId,
+                                             @RequestParam String sortColumn, @RequestParam String sortDirection,
+                                             @RequestParam(required = false) Integer page)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long issueFormId = Common.stringToLong(request.getParameter("filterId"));
-        IssueForm issueForm = IssueForm.getById(issueFormId);
-        if (issueForm == null)
+        IssueForm issueForm = issueFormRepository.findById(issueFormId).orElse(new IssueForm(0, user));
+
+        // we must be doing a resort
+        if (sortColumn != null && sortDirection != null)
         {
-            issueForm = new IssueForm();
-            issueForm = updateIssueFormFromRequest(issueForm, request);
-            issueFormId = EOI.insert(issueForm, userSession);
-        }
-        else
-        {
-            issueForm = updateIssueFormFromRequest(issueForm, request);
-            EOI.update(issueForm, userSession);
+            issueForm.setSortColumn(sortColumn);
+            issueForm.setSortDirection(sortDirection);
+
+            // we want to persist sorting preferences
+            if (issueFormId > 0)
+                issueFormRepository.save(issueForm);
         }
 
-        response.sendRedirect("view?tab1=search&action=form&issueFormId=" + issueFormId);
+        if (page != null)
+            issueForm.setPage(String.valueOf(page));
+
+        issueForm.setSearchResult(issueQueryLogic.query(issueForm));
+
+        return new ModelAndView("issueTable")
+                .addObject("issueForm", issueForm);
     }
 
-    @Route(tab1 = "search", tab2 = "", tab3 = "", action = "addToDashboard")
-    public static void addToDashboard(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @PostMapping("/search/search")
+    public ModelAndView search(RedirectAttributes redirectAttrs,
+                               @AuthenticationPrincipal User user,
+                               @RequestParam(required = false) Long formId,
+                               @RequestParam String formName,
+                               @RequestParam String containsText,
+//                               @RequestParam String title,
+//                               @RequestParam String description,
+                               @RequestParam(required = false) List<Long> groupIds,
+                               @RequestParam(required = false) List<Long> issueTypeIds,
+                               @RequestParam(required = false) List<Long> projectIds,
+                               @RequestParam(required = false) List<Long> assigneeIds,
+                               @RequestParam(required = false) List<Long> reporterIds,
+                               @RequestParam(required = false) List<Long> severityIds,
+                               @RequestParam(required = false) List<Long> statusIds,
+//                                                 @RequestParam LocalDateTime createdOn,
+//                                                 @RequestParam LocalDateTime lastUpdatedOn,
+                               @RequestParam(required = false) Boolean onDash,
+                               @RequestParam String sortColumn,
+                               @RequestParam String sortDirection,
+                               @RequestParam Integer page)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        long id = Common.stringToLong(request.getParameter("issueFormId"));
-        IssueForm issueForm = IssueForm.getById(id);
-        if (issueForm != null)
-        {
+        IssueForm issueForm = formId == null || formId == 0 ?
+                new IssueForm(user) : issueFormRepository.findById(formId).orElse(new IssueForm(user));
+
+        issueForm.setFormName(formName);
+        issueForm.setContainsText(containsText);
+//        issueForm.setTitle(title);
+//        issueForm.setDescription(description);
+        if (groupIds != null) issueForm.setGroups(groupRepository.findByIdIn(groupIds));
+        if (issueTypeIds != null) issueForm.setIssueTypes(issueTypeRepository.findByIdIn(issueTypeIds));
+        if (projectIds != null) issueForm.setProjects(projectRepository.findByIdIn(projectIds));
+        if (assigneeIds != null) issueForm.setAssignees(userRepository.findByIdIn(assigneeIds));
+        if (reporterIds != null) issueForm.setReporters(userRepository.findByIdIn(reporterIds));
+        if (severityIds != null) issueForm.setSeverities(severityRepository.findByIdIn(severityIds));
+        if (statusIds != null) issueForm.setStatuses(statusRepository.findByIdIn(statusIds));
+//        issueForm.setLastUpdatedOn(lastUpdatedOn);
+        if (onDash != null) issueForm.setOnDash(onDash);
+        issueForm.setSortColumn(sortColumn);
+        issueForm.setSortDirection(sortDirection);
+        issueForm.setPage(String.valueOf(page));
+
+        issueForm.setSearchResult(issueQueryLogic.query(issueForm));
+
+        redirectAttrs.addFlashAttribute("issueForm", issueForm);
+        return new ModelAndView("redirect:/search/form" + (formId != null && formId > 0 ? "?issueFormId=" + formId : ""));
+    }
+
+    @PostMapping("/search/saveIssueForm")
+    public ModelAndView saveIssueForm(@AuthenticationPrincipal User user,
+                                      @RequestParam(required = false) Long formId,
+                                      @RequestParam String formName,
+                                      @RequestParam String containsText,
+//                                      @RequestParam String title,
+//                                      @RequestParam String description,
+                                      @RequestParam(required = false) List<Long> groupIds,
+                                      @RequestParam(required = false) List<Long> issueTypeIds,
+                                      @RequestParam(required = false) List<Long> projectIds,
+                                      @RequestParam(required = false) List<Long> assigneeIds,
+                                      @RequestParam(required = false) List<Long> reporterIds,
+                                      @RequestParam(required = false) List<Long> severityIds,
+                                      @RequestParam(required = false) List<Long> statusIds,
+//                                                 @RequestParam LocalDateTime createdOn,
+//                                                 @RequestParam LocalDateTime lastUpdatedOn,
+                                      @RequestParam(required = false) Boolean onDash,
+                                      @RequestParam String sortColumn,
+                                      @RequestParam String sortDirection,
+                                      @RequestParam Integer page)
+    {
+        IssueForm issueForm = formId == null ?
+                new IssueForm(user) : issueFormRepository.findById(formId).orElse(new IssueForm(user));
+
+        issueForm.setFormName(formName);
+        issueForm.setContainsText(containsText);
+//        issueForm.setTitle(title);
+//        issueForm.setDescription(description);
+        if (groupIds != null) issueForm.setGroups(groupRepository.findByIdIn(groupIds));
+        if (issueTypeIds != null) issueForm.setIssueTypes(issueTypeRepository.findByIdIn(issueTypeIds));
+        if (projectIds != null) issueForm.setProjects(projectRepository.findByIdIn(projectIds));
+        if (assigneeIds != null) issueForm.setAssignees(userRepository.findByIdIn(assigneeIds));
+        if (reporterIds != null) issueForm.setReporters(userRepository.findByIdIn(reporterIds));
+        if (severityIds != null) issueForm.setSeverities(severityRepository.findByIdIn(severityIds));
+        if (statusIds != null) issueForm.setStatuses(statusRepository.findByIdIn(statusIds));
+//        issueForm.setLastUpdatedOn(lastUpdatedOn);
+        if (onDash != null) issueForm.setOnDash(onDash);
+        issueForm.setSortColumn(sortColumn);
+        issueForm.setSortDirection(sortDirection);
+        issueForm.setPage(String.valueOf(page));
+
+        issueFormRepository.save(issueForm);
+
+        return new ModelAndView("redirect:/search/form?issueFormId=" + issueForm.getId())
+                .addObject("issueForm", issueForm);
+    }
+
+    @GetMapping("/search/addToDashboard")
+    public ModelAndView addToDashboard(@RequestParam Long issueFormId)
+    {
+        issueFormRepository.findById(issueFormId).ifPresent(issueForm -> {
             issueForm.setOnDash(true);
-            EOI.update(issueForm, userSession);
-        }
+            issueFormRepository.save(issueForm);
+        });
 
-        response.sendRedirect("view?tab1=search&action=form&issueFormId=" + id);
-    }
-
-    public static SearchResult performSearch(IssueForm issueForm) throws ParseException, IOException
-    {
-        long resultsPerPage = 20;
-
-        if (issueForm.getSortColumn().length() == 0) issueForm.setSortColumn("id");
-        if (issueForm.getSortDirection().length() == 0) issueForm.setSortDirection("asc");
-        if (issueForm.getPage().length() == 0) issueForm.setPage("1");
-
-        PSIngredients query = IssueForm.buildSQLQuery(issueForm, resultsPerPage);
-        String countVersionOfQuery = SQLGenerator.getCountVersionOfQuery(query.query);
-
-        List countResult = EOI.executeQueryOneResult(countVersionOfQuery, query.args);
-        long resultSize = (Long) countResult.get(0);
-        List<Object> filteredIssues = EOI.executeQuery(query.query, query.args);
-
-        return new SearchResult(issueForm.getPage(), filteredIssues, resultSize, resultsPerPage);
+        return new ModelAndView("redirect:/search/form?issueFormId=" + issueFormId);
     }
 }

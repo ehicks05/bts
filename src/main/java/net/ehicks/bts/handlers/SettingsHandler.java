@@ -1,17 +1,15 @@
 package net.ehicks.bts.handlers;
 
-import net.ehicks.bts.routing.Route;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.text.ParseException;
-
+@Controller
 public class SettingsHandler
 {
-    @Route(tab1 = "settings", tab2 = "", tab3 = "", action = "form")
-    public static String showSettings(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/settings/form")
+    public ModelAndView showSettings()
     {
-        return "/webroot/settings.jsp";
+        return new ModelAndView("/webroot/settings.jsp");
     }
 }

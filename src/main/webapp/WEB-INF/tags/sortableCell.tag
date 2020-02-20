@@ -12,13 +12,17 @@
 
 </c:if>
 
+<c:set var="newDirection" value="asc"/>
 <c:if test="${code == searchForm.sortColumn}">
     <c:if test="${searchForm.sortDirection == 'asc'}"><c:set var="sortIcon" value="&#9650;"/></c:if>
     <c:if test="${searchForm.sortDirection == 'desc'}"><c:set var="sortIcon" value="&#9660;"/></c:if>
+
+    <c:if test="${searchForm.sortDirection == 'asc'}"><c:set var="newDirection" value="desc"/></c:if>
+    <c:if test="${searchForm.sortDirection == 'desc'}"><c:set var="newDirection" value="asc"/></c:if>
 </c:if>
 
 <th id="${code}${searchForm.id}" class="nowrap ${cssClass}" style="${style}"
-    onclick="ajaxItems(this.id, '${pageContext.servletConfig.servletContext.contextPath}', '${searchForm.endpoint}', '${searchForm.id}', 0, '${code}', '${searchForm.sortDirection}');">
+    onclick="ajaxItems(this.id, '${pageContext.servletConfig.servletContext.contextPath}', '${searchForm.endpoint}', '${searchForm.id}', '${searchForm.page}', '${code}', '${newDirection}');">
     ${label}
     <span>${sortIcon}</span>
 </th>

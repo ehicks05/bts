@@ -1,316 +1,232 @@
 package net.ehicks.bts.handlers.admin;
 
+import io.micrometer.core.instrument.Metrics;
 import net.ehicks.bts.*;
 import net.ehicks.bts.beans.*;
-import net.ehicks.bts.routing.Route;
-import net.ehicks.common.Common;
-import net.ehicks.eoi.ConnectionInfo;
-import net.ehicks.eoi.EOI;
-import net.ehicks.eoi.EOICache;
-import net.ehicks.eoi.Metrics;
+import net.ehicks.bts.mail.EmailAction;
+import net.ehicks.bts.mail.EmailEngine;
+import net.ehicks.bts.mail.MailClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.text.ParseException;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.*;
 
+@Controller
 public class AdminHandler
 {
     private static final Logger log = LoggerFactory.getLogger(AdminHandler.class);
 
-    @Route(tab1 = "admin", tab2 = "", tab3 = "", action = "form")
-    public static String showOverview(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    private IssueFormRepository issueFormRepository;
+    private ProjectRepository projectRepository;
+    private GroupRepository groupRepository;
+    private EmailEventRepository emailEventRepository;
+    private BtsSystemRepository btsSystemRepository;
+    private MailClient mailClient;
+    private EntityManager entityManager;
+
+    public AdminHandler(IssueFormRepository issueFormRepository,ProjectRepository projectRepository,
+                        GroupRepository groupRepository, EmailEventRepository emailEventRepository,
+                        BtsSystemRepository btsSystemRepository, MailClient mailClient,
+                        EntityManager entityManager)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        List<IssueForm> issueForms = IssueForm.getByUserId(userSession.getUserId());
-        request.setAttribute("issueForms", issueForms);
-
-        request.setAttribute("adminSubscreens", SystemInfo.INSTANCE.getAdminSubscreens());
-
-        return "/webroot/admin/overview.jsp";
+        this.issueFormRepository = issueFormRepository;
+        this.projectRepository = projectRepository;
+        this.groupRepository = groupRepository;
+        this.emailEventRepository = emailEventRepository;
+        this.btsSystemRepository = btsSystemRepository;
+        this.mailClient = mailClient;
+        this.entityManager = entityManager;
     }
 
-    @Route(tab1 = "admin", tab2 = "cache", tab3 = "", action = "form")
-    public static String showCacheInfo(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/form")
+    public ModelAndView showOverview(@AuthenticationPrincipal User user)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        request.setAttribute("size", EOICache.cache.size());
-        request.setAttribute("hits", EOICache.hits);
-        request.setAttribute("misses", EOICache.misses);
-        request.setAttribute("keyHitObjectMiss", EOICache.keyHitObjectMiss);
-
-        return "/webroot/admin/cacheInfo.jsp";
+        return new ModelAndView("admin/overview")
+                .addObject("btsSystem", btsSystemRepository.findFirstBy())
+                .addObject("adminSubscreens", SystemInfo.INSTANCE.getAdminSubscreens());
     }
 
-    @Route(tab1 = "admin", tab2 = "cache", tab3 = "", action = "clearCache")
-    public static void clearCache(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/system/info/form")
+    public ModelAndView showSystemInfo()
     {
-        EOICache.cache.clear();
-
-        response.sendRedirect("view?tab1=admin&tab2=cache&action=form");
-    }
-
-    @Route(tab1 = "admin", tab2 = "system", tab3 = "info", action = "form")
-    public static String showSystemInfo(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
-    {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        List<Object> dbInfo;
         Map<String, String> dbInfoMap = new LinkedHashMap<>();
-        if (SystemInfo.INSTANCE.getDbConnectionInfo().getDbMode().equals(ConnectionInfo.DbMode.POSTGRESQL.toString()))
+
+        Query query = entityManager.createNativeQuery("select * from pg_stat_database where datname='puffin'");
+        List<Object> dbInfo = query.getResultList();
+
+        Object[] results = (Object[]) dbInfo.get(0);
+        List<String> headers = Arrays.asList("datid","datname","numbackends","xact_commit",
+                "xact_rollback","blks_read","blks_hit","tup_returned","tup_fetched",
+                "tup_inserted","tup_updated","tup_deleted","conflicts","temp_files",
+                "temp_bytes","deadlocks","blk_read_time","blk_write_time","stats_reset");
+        for (int i = 0; i < headers.size(); i++)
         {
-            dbInfo = EOI.executeQuery("select * from pg_stat_database where datname='bts'");
-            Object[] results = (Object[]) dbInfo.get(0);
-            List<String> headers = Arrays.asList("datid","datname","numbackends","xact_commit","xact_rollback","blks_read",
-                    "blks_hit","tup_returned","tup_fetched","tup_inserted","tup_updated","tup_deleted","conflicts","temp_files",
-                    "temp_bytes","deadlocks","blk_read_time","blk_write_time","stats_reset");
-            for (int i = 0; i < headers.size(); i++)
-            {
-                dbInfoMap.put(headers.get(i), results[i].toString());
-            }
-            request.setAttribute("dbInfoMap", dbInfoMap);
+            dbInfoMap.put(headers.get(i), results[i] != null ? results[i].toString() : "");
         }
-        else
-            dbInfo = EOI.executeQuery("SELECT NAME, VALUE FROM INFORMATION_SCHEMA.SETTINGS");
-        
-        Map<String, String> cpInfo = Metrics.getMetrics();
-        request.setAttribute("dbInfo", dbInfo);
-        request.setAttribute("cpInfo", cpInfo);
-        request.setAttribute("connectionInfo", SystemInfo.INSTANCE.getDbConnectionInfo());
 
         List<UserSession> userSessions = SessionListener.getSessions();
         userSessions.sort(Comparator.comparing(UserSession::getLastActivity).reversed());
-        request.setAttribute("userSessions", userSessions);
 
-        return "/webroot/admin/systemInfo.jsp";
+        return new ModelAndView("admin/systemInfo")
+                .addObject("dbInfo", dbInfo)
+                .addObject("dbInfoMap", dbInfoMap)
+                .addObject("userSessions", userSessions);
     }
 
-    @Route(tab1 = "admin", tab2 = "projects", tab3 = "", action = "form")
-    public static String showManageProjects(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/projects/form")
+    public ModelAndView showManageProjects()
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        request.setAttribute("projects", Project.getAll());
-
-        return "/webroot/admin/projects.jsp";
+        return new ModelAndView("admin/projects")
+                        .addObject("projects", projectRepository.findAll());
     }
 
-    @Route(tab1 = "admin", tab2 = "projects", tab3 = "", action = "create")
-    public static void createProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @PostMapping("/admin/projects/create")
+    public ModelAndView createProject(@RequestParam String fldName, @RequestParam String fldPrefix)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        String name = Common.getSafeString(request.getParameter("fldName"));
-        String prefix = Common.getSafeString(request.getParameter("fldPrefix"));
-        Project project = new Project();
-        project.setName(name);
-        project.setPrefix(prefix);
-        long projectId = EOI.insert(project, userSession);
-
-        response.sendRedirect("view?tab1=admin&tab2=projects&action=form");
+        projectRepository.save(new Project(0, fldName, fldPrefix));
+        return new ModelAndView("redirect:/admin/projects/form");
     }
 
-    @Route(tab1 = "admin", tab2 = "projects", tab3 = "", action = "delete")
-    public static void deleteProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/projects/delete")
+    public ModelAndView deleteProject(@RequestParam Long projectId)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long projectId = Common.stringToLong(request.getParameter("projectId"));
-        Project project = Project.getById(projectId);
-        if (project != null)
-            EOI.executeDelete(project, userSession);
+        projectRepository.findById(projectId)
+                .ifPresent(project -> projectRepository.delete(project));
 
-        response.sendRedirect("view?tab1=admin&tab2=projects&action=form");
+        return new ModelAndView("redirect:/admin/projects/form");
     }
 
-    @Route(tab1 = "admin", tab2 = "projects", tab3 = "modify", action = "form")
-    public static String showModifyProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/projects/modify/form")
+    public ModelAndView showModifyProject(@RequestParam Long projectId)
     {
-        Long projectId = Common.stringToLong(request.getParameter("projectId"));
-        Project project = Project.getById(projectId);
-        request.setAttribute("project", project);
-
-        return "/webroot/admin/modifyProject.jsp";
+        return new ModelAndView("admin/modifyProject")
+                .addObject("project", projectRepository.findById(projectId).orElse(null));
     }
 
-    @Route(tab1 = "admin", tab2 = "projects", tab3 = "modify", action = "modify")
-    public static void modifyProject(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @PostMapping("/admin/projects/modify/modify")
+    public ModelAndView modifyProject(@RequestParam Long projectId, @RequestParam String name,
+                                      @RequestParam String prefix)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long projectId = Common.stringToLong(request.getParameter("projectId"));
-        Project project = Project.getById(projectId);
-        if (project != null)
-        {
-            String name = Common.getSafeString(request.getParameter("name"));
-            String prefix = Common.getSafeString(request.getParameter("prefix"));
-            project.setName(name);
+        projectRepository.findById(projectId).ifPresent(project -> {
             project.setPrefix(prefix);
-            EOI.update(project, userSession);
-        }
+            project.setName(name);
+            projectRepository.save(project);
+        });
 
-        response.sendRedirect("view?tab1=admin&tab2=projects&tab3=modify&action=form&projectId=" + projectId);
+        return new ModelAndView("redirect:/admin/projects/modify/form?projectId=" + projectId);
     }
 
-    @Route(tab1 = "admin", tab2 = "groups", tab3 = "", action = "form")
-    public static String showManageGroups(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/groups/form")
+    public ModelAndView showManageGroups()
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        request.setAttribute("groups", Group.getAll());
-
-        return "/webroot/admin/groups.jsp";
+        return new ModelAndView("admin/groups")
+                .addObject("groups", groupRepository.findAll());
     }
 
-    @Route(tab1 = "admin", tab2 = "groups", tab3 = "", action = "create")
-    public static void createGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @PostMapping("/admin/groups/create")
+    public ModelAndView createGroup(@RequestParam String fldName)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        String name = Common.getSafeString(request.getParameter("fldName"));
-        Group group = new Group();
-        group.setName(name);
-        long groupId = EOI.insert(group, userSession);
-
-        response.sendRedirect("view?tab1=admin&tab2=groups&action=form");
+        groupRepository.save(new Group(0, fldName, false, false));
+        return new ModelAndView("redirect:/admin/groups/form");
     }
 
-    @Route(tab1 = "admin", tab2 = "groups", tab3 = "", action = "delete")
-    public static void deleteGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/groups/delete")
+    public ModelAndView deleteGroup(@RequestParam Long groupId)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long groupId = Common.stringToLong(request.getParameter("groupId"));
-        Group group = Group.getById(groupId);
-        if (group != null)
-            EOI.executeDelete(group, userSession);
-
-        response.sendRedirect("view?tab1=admin&tab2=groups&action=form");
+        groupRepository.findById(groupId).ifPresent(group -> groupRepository.delete(group));
+        return new ModelAndView("redirect:/admin/groups/form");
     }
 
-    @Route(tab1 = "admin", tab2 = "groups", tab3 = "modify", action = "form")
-    public static String showModifyGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/groups/modify/form")
+    public ModelAndView showModifyGroup(@RequestParam Long groupId)
     {
-        Long groupId = Common.stringToLong(request.getParameter("groupId"));
-        Group group = Group.getById(groupId);
-        request.setAttribute("group", group);
-
-        return "/webroot/admin/modifyGroup.jsp";
+        return new ModelAndView("admin/modifyGroup")
+                .addObject("group", groupRepository.findById(groupId).orElse(null));
     }
 
-    @Route(tab1 = "admin", tab2 = "groups", tab3 = "modify", action = "modify")
-    public static void modifyGroup(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @PostMapping("/admin/groups/modify/modify")
+    public ModelAndView modifyGroup(@RequestParam Long groupId, @RequestParam String name)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long groupId = Common.stringToLong(request.getParameter("groupId"));
-        Group group = Group.getById(groupId);
-        if (group != null)
-        {
-            String name = Common.getSafeString(request.getParameter("name"));
+        groupRepository.findById(groupId).ifPresent(group -> {
             group.setName(name);
-            EOI.update(group, userSession);
-        }
+            groupRepository.save(group);
+        });
 
-        response.sendRedirect("view?tab1=admin&tab2=groups&tab3=modify&action=form&groupId=" + groupId);
+        return new ModelAndView("redirect:/admin/groups/modify/form?groupId=" + groupId);
     }
 
-    @Route(tab1 = "admin", tab2 = "email", tab3 = "", action = "form")
-    public static String showManageEmails(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/email/form")
+    public ModelAndView showManageEmails()
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        request.setAttribute("emails", EmailMessage.getAll());
-
-        return "/webroot/admin/emails.jsp";
+        return new ModelAndView("admin/emails")
+                .addObject("emails", emailEventRepository.findAll());
     }
 
-    @Route(tab1 = "admin", tab2 = "email", tab3 = "preview", action = "form")
-    public static String previewEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/email/preview/form")
+    public ModelAndView previewEmail(@RequestParam Long emailId)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long emailId = Common.stringToLong(request.getParameter("emailId"));
-        EmailMessage emailMessage = EmailMessage.getById(emailId);
-        if (emailMessage != null)
-            request.setAttribute("email", EmailMessage.getById(emailId));
-
-        return "/webroot/admin/previewEmail.jsp";
+        return new ModelAndView("admin/previewEmail")
+                .addObject("email", emailEventRepository.findById(emailId).orElse(null));
     }
 
-    @Route(tab1 = "admin", tab2 = "email", tab3 = "", action = "sendTest")
-    public static void sendTestEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @PostMapping("/admin/email/sendTest")
+    public ModelAndView sendTestEmail(@RequestParam String fldTo)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        String to = Common.getSafeString(request.getParameter("fldTo"));
-        EmailMessage emailMessage = new EmailMessage();
-        emailMessage.setActionId(EmailAction.TEST.getId());
-        emailMessage.setToAddress(to);
-        long emailId = EOI.insert(emailMessage, userSession);
-        emailMessage = EmailMessage.getById(emailId);
+        EmailEvent emailEvent = new EmailEvent();
+        emailEvent.setActionId(EmailAction.TEST.getId());
+        emailEvent.setToAddress(fldTo);
+        emailEvent = emailEventRepository.save(emailEvent);
 
-        EmailEngine.sendEmail(emailMessage);
+        mailClient.prepareAndSend(emailEvent);
 
-        response.sendRedirect("view?tab1=admin&tab2=email&action=form");
+        return new ModelAndView("redirect:/admin/email/form");
     }
 
-    @Route(tab1 = "admin", tab2 = "email", tab3 = "", action = "delete")
-    public static void deleteEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/email/delete")
+    public ModelAndView deleteEmail(@RequestParam Long emailId)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long emailId = Common.stringToLong(request.getParameter("emailId"));
-        EmailMessage emailMessage = EmailMessage.getById(emailId);
-        if (emailMessage != null)
-            EOI.executeDelete(emailMessage, userSession);
+        emailEventRepository.findById(emailId).ifPresent(emailMessage ->
+                emailEventRepository.delete(emailMessage));
 
-        response.sendRedirect("view?tab1=admin&tab2=email&action=form");
+        return new ModelAndView("redirect:/admin/email/form");
     }
 
-    @Route(tab1 = "admin", tab2 = "email", tab3 = "modify", action = "form")
-    public static String showModifyEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/system/modify/form")
+    public ModelAndView showModifySystem()
     {
-        request.setAttribute("btsSystem", BtsSystem.getSystem());
-
-        return "/webroot/admin/modifyEmail.jsp";
+        return new ModelAndView("admin/modifySystem")
+                .addObject("btsSystem", btsSystemRepository.findFirstBy())
+                .addObject("themes", Arrays.asList("default", "cosmo", "flatly", "journal", "lux",
+                        "pulse", "simplex", "superhero", "united", "yeti"));
     }
 
-    @Route(tab1 = "admin", tab2 = "email", tab3 = "modify", action = "modify")
-    public static void modifyEmail(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @PostMapping("/admin/system/modify/modify")
+    public ModelAndView modifySystem(
+            @RequestParam String instanceName,
+            @RequestParam String logonMessage,
+            @RequestParam Avatar defaultAvatar,
+            @RequestParam String theme,
+            @RequestParam String emailFromName,
+            @RequestParam String emailFromAddress
+            )
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        BtsSystem btsSystem = btsSystemRepository.findFirstBy();
+        btsSystem.setInstanceName(instanceName);
+        btsSystem.setLogonMessage(logonMessage);
+        btsSystem.setDefaultAvatar(defaultAvatar);
+        btsSystem.setTheme(theme);
+        btsSystem.setEmailFromName(emailFromName);
+        btsSystem.setEmailFromAddress(emailFromAddress);
+        btsSystemRepository.save(btsSystem);
 
-        BtsSystem btsSystem = BtsSystem.getSystem();
-        if (btsSystem != null)
-        {
-            btsSystem.setEmailHost(Common.getSafeString(request.getParameter("emailHost")));
-            btsSystem.setEmailUser(Common.getSafeString(request.getParameter("emailUser")));
-            btsSystem.setEmailPassword(Common.getSafeString(request.getParameter("emailPassword")));
-            btsSystem.setEmailPort(Common.stringToInt(request.getParameter("emailPort")));
-            btsSystem.setEmailFromAddress(Common.getSafeString(request.getParameter("emailFromAddress")));
-            btsSystem.setEmailFromName(Common.getSafeString(request.getParameter("emailFromName")));
-            EOI.update(btsSystem, userSession);
-        }
-
-        response.sendRedirect("view?tab1=admin&tab2=email&tab3=modify&action=form");
-    }
-
-    @Route(tab1 = "admin", tab2 = "system", tab3 = "modify", action = "form")
-    public static String showModifySystem(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
-    {
-        request.setAttribute("btsSystem", BtsSystem.getSystem());
-        request.setAttribute("themes", Arrays.asList("default","cosmo","flatly","journal","lux","pulse","simplex","superhero","united","yeti"));
-        return "/webroot/admin/modifySystem.jsp";
-    }
-
-    @Route(tab1 = "admin", tab2 = "system", tab3 = "modify", action = "modify")
-    public static void modifySystem(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
-    {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-
-        BtsSystem btsSystem = BtsSystem.getSystem();
-        if (btsSystem != null)
-        {
-            btsSystem.setInstanceName(Common.getSafeString(request.getParameter("instanceName")));
-            btsSystem.setLogonMessage(Common.getSafeString(request.getParameter("logonMessage")));
-            btsSystem.setDefaultAvatar(Common.stringToLong(request.getParameter("defaultAvatar")));
-            btsSystem.setTheme(Common.getSafeString(request.getParameter("theme")));
-            EOI.update(btsSystem, userSession);
-
-            request.getServletContext().setAttribute("btsSystem", BtsSystem.getSystem());
-        }
-
-        response.sendRedirect("view?tab1=admin&tab2=system&tab3=modify&action=form");
+        return new ModelAndView("redirect:/admin/system/modify/form");
     }
 }

@@ -1,8 +1,6 @@
 package net.ehicks.bts;
 
-import net.ehicks.eoi.AuditUser;
-
-public enum SystemTask implements AuditUser
+public enum SystemTask
 {
     SEEDER("SEEDER"),
     STARTUP("STARTUP"),
@@ -16,13 +14,11 @@ public enum SystemTask implements AuditUser
         this.id = id;
     }
 
-    @Override
     public String getId()
     {
         return id;
     }
 
-    @Override
     public String getIpAddress()
     {
         return "LOCALHOST";

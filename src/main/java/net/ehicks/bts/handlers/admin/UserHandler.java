@@ -1,231 +1,147 @@
 package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.bts.util.CommonIO;
-import net.ehicks.bts.util.PdfCreator;
-import net.ehicks.bts.routing.Route;
-import net.ehicks.bts.UserSession;
 import net.ehicks.bts.beans.*;
-import net.ehicks.bts.util.PasswordUtil;
-import net.ehicks.common.Common;
-import net.ehicks.eoi.EOI;
-import org.apache.commons.fileupload.FileItem;
+import net.ehicks.bts.security.PasswordEncoder;
+import net.ehicks.bts.util.PdfCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Controller
 public class UserHandler
 {
     private static final Logger log = LoggerFactory.getLogger(AdminHandler.class);
 
-    @Route(tab1 = "admin", tab2 = "users", tab3 = "", action = "form")
-    public static String showManageUsers(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
-    {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        request.setAttribute("users", User.getAll());
+    private UserRepository userRepository;
+    private GroupRepository groupRepository;
+    private ProjectRepository projectRepository;
+    private AvatarRepository avatarRepository;
+    private PasswordEncoder passwordEncoder;
+    private BtsSystemRepository btsSystemRepository;
 
-        return "/webroot/admin/users.jsp";
+    public UserHandler(UserRepository userRepository, GroupRepository groupRepository,
+                       ProjectRepository projectRepository, AvatarRepository avatarRepository,
+                       PasswordEncoder passwordEncoder, BtsSystemRepository btsSystemRepository)
+    {
+        this.userRepository = userRepository;
+        this.groupRepository = groupRepository;
+        this.projectRepository = projectRepository;
+        this.avatarRepository = avatarRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.btsSystemRepository = btsSystemRepository;
     }
 
-    @Route(tab1 = "admin", tab2 = "users", tab3 = "", action = "create")
-    public static void createUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/users/form")
+    public ModelAndView showManageUsers()
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        String logonId = Common.getSafeString(request.getParameter("fldLogonId"));
-        User user = new User();
-        user.setLogonId(logonId);
-        long userId = EOI.insert(user, userSession);
-
-        response.sendRedirect("view?tab1=admin&tab2=users&action=form");
+        return new ModelAndView("admin/users")
+                .addObject("users", userRepository.findAll());
     }
 
-    @Route(tab1 = "admin", tab2 = "users", tab3 = "", action = "delete")
-    public static void deleteUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @PostMapping("/admin/users/create")
+    public ModelAndView createUser(@RequestParam String username, @RequestParam String password,
+                                   @RequestParam String firstName, @RequestParam String lastName)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long userId = Common.stringToLong(request.getParameter("userId"));
-        User user = User.getByUserId(userId);
-        if (user != null)
-            EOI.executeDelete(user, userSession);
+        ModelAndView mav = new ModelAndView("redirect:/admin/users/form");
 
-        response.sendRedirect("view?tab1=admin&tab2=users&action=form");
+        if (userRepository.findByUsername(username).isPresent()) {
+            return mav;
+        }
+
+        userRepository.save(
+                new User(0, username, passwordEncoder.encoder().encode(password), firstName, lastName,
+                        btsSystemRepository.findFirstBy().getDefaultAvatar()));
+
+        return new ModelAndView("redirect:/admin/users/form");
     }
 
-    @Route(tab1 = "admin", tab2 = "users", tab3 = "", action = "print")
-    public static void printUsers(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/users/delete")
+    public ModelAndView deleteUser(@RequestParam Long userId)
     {
-        List<List> userData = new ArrayList<>();
+        userRepository.findById(userId).ifPresent(user -> userRepository.delete(user));
+        return new ModelAndView("redirect:/admin/users/form");
+    }
+
+    @GetMapping("/admin/users/print")
+    @ResponseBody
+    public ResponseEntity<byte[]> printUsers(@AuthenticationPrincipal User authUser)
+    {
+        List<List<Object>> userData = new ArrayList<>();
         userData.add(Arrays.asList("Object Id", "Logon Id", "Last", "First", "Created On"));
-        for (User user : User.getAll())
-            userData.add(Arrays.asList(user.getId(), user.getLogonId(), user.getLastName(), user.getFirstName(), user.getCreatedOn()));
-        File file = PdfCreator.createPdf("Me", "Users Report", "", userData);
 
-        CommonIO.sendFileInResponse(response, file, true);
+        for (User user : userRepository.findAll())
+            userData.add(Arrays.asList(user.getId(), user.getUsername(),
+                    user.getLastName(), user.getFirstName(), user.getCreatedOn()));
+
+        ByteArrayOutputStream outputStream = (ByteArrayOutputStream) PdfCreator.createPdf(authUser.getUsername(), "Users Report", "", userData);
+
+        return outputStream != null
+                ? ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(outputStream.toByteArray())
+                : ResponseEntity.notFound().build();
     }
 
-    @Route(tab1 = "admin", tab2 = "users", tab3 = "modify", action = "form")
-    public static String showModifyUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/users/modify/form")
+    public ModelAndView showModifyUser(@RequestParam Long userId)
     {
-        Long userId = Common.stringToLong(request.getParameter("userId"));
-        User user = User.getByUserId(userId);
-        request.setAttribute("user", user);
-        request.setAttribute("publicAvatars", Avatar.getAllPublic());
-
-        return "/webroot/admin/modifyUser.jsp";
+        List<Long> userProjects = projectRepository.findByUsers_Id(userId)
+                .stream().map(Project::getId).collect(Collectors.toList());
+        return new ModelAndView("admin/modifyUser")
+                .addObject("user", userRepository.findById(userId).get())
+                .addObject("groups", groupRepository.findAll())
+                .addObject("projects", projectRepository.findAll())
+                .addObject("userProjects", userProjects)
+                .addObject("publicAvatars", avatarRepository.findAllByPublicUseTrue());
     }
 
-    @Route(tab1 = "admin", tab2 = "users", tab3 = "modify", action = "modify")
-    public static void modifyUser(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @PostMapping("/admin/users/modify/modify")
+    public ModelAndView modifyUser(@RequestParam Long userId,
+                                   @RequestParam String logonId,
+//                                   @RequestParam Long avatarId,
+                                   @RequestParam String firstName,
+                                   @RequestParam String lastName,
+                                   @RequestParam Boolean enabled,
+                                   @RequestParam List<Long> groupIds,
+                                   @RequestParam List<Long> projectIds)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long userId = Common.stringToLong(request.getParameter("userId"));
-        User user = User.getByUserId(userId);
-        if (user != null)
-        {
-            String logonId = Common.getSafeString(request.getParameter("logonId"));
-            Long avatarId = Common.stringToLong(request.getParameter("avatarId"));
-            String firstName = Common.getSafeString(request.getParameter("firstName"));
-            String lastName = Common.getSafeString(request.getParameter("lastName"));
-            boolean enabled = request.getParameter("enabled") != null;
-            user.setLogonId(logonId);
-            if (avatarId > 0)
-                user.setAvatarId(avatarId);
+        userRepository.findById(userId).ifPresent(user -> {
+            user.setUsername(logonId);
             user.setFirstName(firstName);
             user.setLastName(lastName);
             user.setEnabled(enabled);
-            EOI.update(user, userSession);
+//            avatarRepository.findById(avatarId).ifPresent(user::setAvatar);
+            user.setGroups(groupRepository.findByIdIn(groupIds));
+            user.setProjects(projectRepository.findByIdIn(projectIds));
+            userRepository.save(user);
+        });
 
-            List<Long> selectedGroupIds = Arrays.stream(request.getParameterValues("groups")).map(Long::valueOf).collect(Collectors.toList());
-
-            // remove existing groups that weren't selected
-            for (GroupMap groupMap : GroupMap.getByUserId(userId))
-                if (!selectedGroupIds.contains(groupMap.getGroupId()))
-                    EOI.executeDelete(groupMap, userSession);
-            // add new groups that were selected but didn't already exist
-            for (Long groupId : selectedGroupIds)
-            {
-                GroupMap groupMap = GroupMap.getByUserIdAndGroupId(userId, groupId);
-                if (groupMap == null)
-                {
-                    groupMap = new GroupMap();
-                    groupMap.setUserId(user.getId());
-                    groupMap.setGroupId(groupId);
-                    EOI.insert(groupMap, userSession);
-                }
-            }
-
-            List<Long> selectedProjectIds = Arrays.stream(request.getParameterValues("projects")).map(Long::valueOf).collect(Collectors.toList());
-
-            // remove existing projects that weren't selected
-            for (ProjectMap projectMap : ProjectMap.getByUserId(userId))
-                if (!selectedProjectIds.contains(projectMap.getProjectId()))
-                    EOI.executeDelete(projectMap, userSession);
-            // add new projects that were selected but didn't already exist
-            for (Long projectId : selectedProjectIds)
-            {
-                ProjectMap projectMap = ProjectMap.getByUserIdAndProjectId(userId, projectId);
-                if (projectMap == null)
-                {
-                    projectMap = new ProjectMap();
-                    projectMap.setUserId(user.getId());
-                    projectMap.setProjectId(projectId);
-                    EOI.insert(projectMap, userSession);
-                }
-            }
-        }
-
-        response.sendRedirect("view?tab1=admin&tab2=users&tab3=modify&action=form&userId=" + userId);
+        return new ModelAndView("redirect:/admin/users/modify/form?userId=" + userId);
     }
 
-    @Route(tab1 = "admin", tab2 = "users", tab3 = "modify", action = "updateAvatar")
-    public static void updateAvatar(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @PostMapping("/admin/users/changePassword")
+    public ModelAndView changePassword(@RequestParam Long userId, @RequestParam String password)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long userId = Common.stringToLong(request.getParameter("userId"));
-        User user = User.getByUserId(userId);
-        if (user != null)
-        {
-            Long avatarId = Common.stringToLong(request.getParameter("fldAvatarId"));
-            if (avatarId > 0)
-            {
-                user.setAvatarId(avatarId);
-                EOI.update(user, userSession);
-            }
-        }
-
-        response.sendRedirect("view?tab1=admin&tab2=users&tab3=modify&action=form&userId=" + userId);
-    }
-
-    @Route(tab1 = "admin", tab2 = "users", tab3 = "modify", action = "uploadAvatar")
-    public static void uploadAvatar(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
-    {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        String userId = request.getParameter("userId");
-
-        String responseMessage = "";
-        long dbFileId = 0;
-
-        for (FileItem fileItem : CommonIO.getFilesFromRequest(request))
-        {
-            if (!CommonIO.isValidSize(fileItem))
-            {
-                responseMessage = "File size too large.";
-                continue;
-            }
-            if (!CommonIO.isImage(fileItem))
-            {
-                responseMessage = "Not an image.";
-                continue;
-            }
-
-            DBFile dbFile = new DBFile(CommonIO.getName(fileItem), fileItem.get());
-            dbFileId = EOI.insert(dbFile, userSession);
-        }
-
-        if (dbFileId > 0)
-        {
-            Avatar avatar = new Avatar();
-            avatar.setDbFileId(dbFileId);
-            avatar.setCreatedByUserId(userSession.getUserId());
-            avatar.setCreatedOn(new Date());
-            long avatarId = EOI.insert(avatar, userSession);
-
-            User user = User.getByUserId(Long.valueOf(userId));
-            user.setAvatarId(avatarId);
-            EOI.update(user, userSession);
-
-            responseMessage = "Avatar updated.";
-        }
-
-        request.getSession().setAttribute("responseMessage", responseMessage);
-        response.sendRedirect("view?tab1=admin&tab2=users&tab3=modify&action=form&userId=" + userId);
-    }
-
-    @Route(tab1 = "admin", tab2 = "users", tab3 = "", action = "changePassword")
-    public static void changePassword(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
-    {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long userId = Common.stringToLong(request.getParameter("userId"));
-        User user = User.getByUserId(userId);
-        if (user != null)
-        {
-            String password = Common.getSafeString(request.getParameter("password"));
+        userRepository.findById(userId).ifPresent(user -> {
             if (password.length() > 0)
             {
-                user.setPassword(PasswordUtil.digestPassword(password));
-                EOI.update(user, userSession);
+                user.setPassword(passwordEncoder.encoder().encode(password));
+                userRepository.save(user);
             }
-        }
+        });
 
-        response.sendRedirect("view?tab1=admin&tab2=users&tab3=modify&action=form&userId=" + userId);
+        return new ModelAndView("redirect:/admin/users/modify/form?userId=" + userId);
     }
 }

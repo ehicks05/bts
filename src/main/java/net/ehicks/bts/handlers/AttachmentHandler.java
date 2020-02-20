@@ -1,104 +1,80 @@
 package net.ehicks.bts.handlers;
 
-import net.ehicks.bts.util.CommonIO;
-import net.ehicks.bts.routing.Route;
-import net.ehicks.bts.UserSession;
+import kotlin.Pair;
 import net.ehicks.bts.beans.Attachment;
+import net.ehicks.bts.beans.AttachmentRepository;
 import net.ehicks.bts.beans.DBFile;
-import net.ehicks.bts.beans.Group;
-import net.ehicks.bts.beans.IssueAudit;
-import net.ehicks.bts.model.AttachmentLogic;
-import net.ehicks.common.Common;
-import net.ehicks.eoi.EOI;
-import org.apache.commons.fileupload.FileItem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.ehicks.bts.beans.IssueRepository;
+import net.ehicks.bts.model.DBFileLogic;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.text.ParseException;
+import java.time.LocalDateTime;
 
+@Controller
 public class AttachmentHandler
 {
-    private static final Logger log = LoggerFactory.getLogger(AttachmentHandler.class);
+    private DBFileLogic dbFileLogic;
+    private AttachmentRepository attachmentRepository;
+    private IssueRepository issueRepository;
 
-    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "retrieveAttachment")
-    public static void retrieveAttachment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    public AttachmentHandler(DBFileLogic dbFileLogic, AttachmentRepository attachmentRepository,
+                             IssueRepository issueRepository)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long attachmentId = Common.stringToLong(request.getParameter("attachmentId"));
-
-        Attachment attachment = Attachment.getById(attachmentId);
-        if (attachment != null)
-        {
-            Group issueGroup = attachment.getIssue().getGroup();
-            if (!Group.getAllVisible(userSession.getUserId()).contains(issueGroup))
-                return;
-
-            DBFile dbFile = attachment.getDbFile();
-
-            CommonIO.sendFileInResponse(response, dbFile, true);
-        }
+        this.dbFileLogic = dbFileLogic;
+        this.attachmentRepository = attachmentRepository;
+        this.issueRepository = issueRepository;
     }
 
-    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "addAttachment")
-    public static void addAttachment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    @GetMapping("/attachment/{id}")
+    @ResponseBody
+    public ResponseEntity<byte[]> getAttachment(@PathVariable Long id)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        String responseMessage = "";
-        Long issueId = Common.stringToLong(request.getParameter("issueId"));
-        long dbFileId = 0;
-
-        for (FileItem fileItem : CommonIO.getFilesFromRequest(request))
-        {
-            if (!CommonIO.isValidSize(fileItem))
-            {
-                responseMessage = "File size too large.";
-                continue;
-            }
-
-            String fileName = CommonIO.getName(fileItem);
-
-            long thumbnailId = 0;
-            if (CommonIO.isImage(fileItem))
-            {
-                byte[] scaledBytes = CommonIO.getThumbnail(fileItem);
-
-                DBFile thumbnail = new DBFile(fileName, scaledBytes);
-                thumbnailId = EOI.insert(thumbnail, userSession);
-            }
-
-            DBFile dbFile = new DBFile(fileName, fileItem.get());
-            dbFile.setThumbnailId(thumbnailId);
-            dbFileId = EOI.insert(dbFile, userSession);
-
-            responseMessage = "Attachment added.";
-        }
-
-        if (dbFileId > 0)
-        {
-            Attachment attachment = new Attachment(issueId, dbFileId, userSession.getUserId());
-            long attachmentId = EOI.insert(attachment, userSession);
-            attachment = Attachment.getById(attachmentId);
-
-            IssueAudit issueAudit = new IssueAudit(issueId, userSession, "added", attachment.toString());
-            EOI.insert(issueAudit, userSession);
-        }
-
-        request.getSession().setAttribute("responseMessage", responseMessage);
-        response.sendRedirect("view?tab1=issue&action=form&issueId=" + issueId);
+        // todo security - something about group access?
+        return attachmentRepository.findById(id).map(value -> ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(value.getDbFile().getMediaType()))
+                .body(value.getDbFile().getContent()))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @Route(tab1 = "issue", tab2 = "", tab3 = "", action = "deleteAttachment")
-    public static void deleteAttachment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException
+    @PostMapping("/issue/addAttachment")
+    public ModelAndView addAttachment(@RequestParam Long issueId, @RequestParam("fldFile") MultipartFile file)
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        Long issueId = Common.stringToLong(request.getParameter("issueId"));
-        Long attachmentId = Common.stringToLong(request.getParameter("attachmentId"));
+        Pair<DBFile, Exception> saveResult = dbFileLogic.saveDBFile(file);
+        DBFile dbFile = saveResult.getFirst();
+        Exception saveException = saveResult.getSecond();
 
-        AttachmentLogic.deleteAttachment(userSession, attachmentId);
+        if (dbFile != null && saveException == null)
+        {
+            String filename = file.getOriginalFilename() != null ? file.getOriginalFilename() : "unknown";
+            issueRepository.findById(issueId).ifPresent(issue ->
+                    attachmentRepository.save(new Attachment(0, filename, issue, dbFile, LocalDateTime.now()))
+            );
 
-        response.sendRedirect("view?tab1=issue&action=form&issueId=" + issueId);
+            return new ModelAndView("redirect:/issue/form?issueId=" + issueId)
+                    .addObject("responseMessage", "Attachment added.");
+        }
+
+        return new ModelAndView("redirect:/issue/form?issueId=" + issueId)
+                .addObject("responseMessage", "There was an error uploading attachment.");
+    }
+
+    @GetMapping("/issue/deleteAttachment")
+    public ModelAndView deleteAttachment(@RequestParam Long issueId, @RequestParam Long attachmentId)
+    {
+        attachmentRepository.findById(attachmentId).ifPresent(attachment -> {
+            // todo security: who has access
+//            if (!Security.hasAccess(userSession, attachment.getIssue().getGroup()))
+//                return;
+
+            attachmentRepository.delete(attachment);
+            dbFileLogic.deleteDBFile(attachment.getDbFile().getId());
+        });
+
+        return new ModelAndView("redirect:/issue/form?issueId=" + issueId);
     }
 }

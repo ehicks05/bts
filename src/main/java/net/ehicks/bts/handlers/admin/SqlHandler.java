@@ -1,43 +1,52 @@
 package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.bts.UserSession;
-import net.ehicks.bts.routing.Route;
-import net.ehicks.eoi.EOI;
+import net.ehicks.bts.beans.Group;
+import net.ehicks.bts.beans.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.text.ParseException;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Controller
 public class SqlHandler
 {
     private static final Logger log = LoggerFactory.getLogger(SqlHandler.class);
 
-    @Route(tab1 = "admin", tab2 = "sql", tab3 = "", action = "form")
-    public static String showSql(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
-    {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+    private EntityManager entityManager;
 
-        return "/webroot/admin/sql.jsp";
+    public SqlHandler(EntityManager entityManager)
+    {
+        this.entityManager = entityManager;
     }
 
-    @Route(tab1 = "admin", tab2 = "sql", tab3 = "", action = "runCommand")
-    public static void runSqlCommand(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException
+    @GetMapping("/admin/sql/form")
+    public ModelAndView showSql()
     {
-        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-        String commandsParam = request.getParameter("sqlCommand").trim();
-        boolean truncateResults = request.getParameter("truncateResults") != null;
-        log.info("Received command from " + userSession.getUser() + " at ip " + userSession.getIpAddress() + ". ");
+        return new ModelAndView("admin/sql");
+    }
+
+    @PostMapping("/admin/sql/runCommand")
+    public ModelAndView runSqlCommand(@AuthenticationPrincipal User user,
+                                      @RequestParam String sqlCommand,
+                                      @RequestParam Boolean truncateResults)
+    {
+        log.info("Received command from " + user.getUsername() + " at ip " + "todo" + ". ");
 
         List<PrintableSqlResult> printableSqlResults = new ArrayList<>();
 
         int i = 1;
-        for (String command : commandsParam.split(";"))
+        for (String command : sqlCommand.split(";"))
         {
             command = command.trim();
             log.info("Command " + i++ + ": " + command.replaceAll("\r\n", " "));
@@ -47,28 +56,29 @@ public class SqlHandler
             {
                 if (command.toUpperCase().startsWith("SELECT") || command.toUpperCase().startsWith("EXPLAIN"))
                 {
-                    Map<String, List<Object>> printableResult = EOI.getPrintableResult(command);
-                    List<Object> resultRows = printableResult.get("resultRows");
+                    TypedQuery<Group> query = entityManager.createQuery(command, Group.class);
+//                    Map<String, List<Object>> printableResult = EOI.getPrintableResult(command);
+                    List<Group> resultRows = query.getResultList();
                     if (truncateResults && resultRows.size() > 1000)
                     {
                         resultRows = resultRows.subList(0, 1000);
                         printableSqlResult.setTruncated(true);
                     }
 
-                    printableSqlResult.setColumnLabels(printableResult.get("columnLabels"));
-                    printableSqlResult.setResultRows(resultRows);
+//                    printableSqlResult.setColumnLabels(printableResult.get("columnLabels"));
+                    printableSqlResult.setResultRows((List) resultRows);
                 }
 
-                boolean mightUpdateRows = command.toUpperCase().startsWith("CREATE")
+                boolean isDML = command.toUpperCase().startsWith("CREATE")
                         || command.toUpperCase().startsWith("DROP")
                         || command.toUpperCase().startsWith("INSERT")
                         || command.toUpperCase().startsWith("UPDATE")
                         || command.toUpperCase().startsWith("DELETE");
-                
-                if (mightUpdateRows)
+
+                if (isDML)
                 {
-                    Integer rowsUpdated = EOI.executeUpdate(command);
-                    printableSqlResult.setRowsUpdated(rowsUpdated);
+//                    Integer rowsUpdated = EOI.executeUpdate(command);
+//                    printableSqlResult.setRowsUpdated(rowsUpdated);
                 }
             }
             catch (Exception e)
@@ -79,10 +89,10 @@ public class SqlHandler
 
             printableSqlResults.add(printableSqlResult);
         }
-        request.getSession().setAttribute("sqlCommand", commandsParam);
-        request.getSession().setAttribute("truncateResults", truncateResults);
-        request.getSession().setAttribute("resultSets", printableSqlResults);
 
-        response.sendRedirect("view?tab1=admin&tab2=sql&action=form");
+        return new ModelAndView("redirect:/admin/sql/form")
+                .addObject("sqlCommand", sqlCommand)
+                .addObject("truncateResults", truncateResults)
+                .addObject("resultSets", printableSqlResults);
     }
 }

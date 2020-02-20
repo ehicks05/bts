@@ -47,6 +47,7 @@ public class TagUtils
         return new SelectTagObject(value, text);
     }
 
+    @SuppressWarnings("unchecked")
     public static List<ISelectTagSupport> parseItemsForSelect(Object items)
     {
         if (items == null)
@@ -57,9 +58,9 @@ public class TagUtils
         }
         if (items instanceof List)
         {
-            List itemsList = (List) items;
+            List<Object> itemsList = (List<Object>) items;
             if (itemsList.size() == 0)
-                return itemsList;
+                return new ArrayList<>();
             if (itemsList.get(0) instanceof ISelectTagSupport)
                 return (List<ISelectTagSupport>) items;
             if (itemsList.get(0) instanceof String)

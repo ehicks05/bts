@@ -9,8 +9,10 @@ public class Security
 {
     public static boolean hasAccess(UserSession userSession, Group group)
     {
-        List<Group> allGroups = userSession.getUser().getAllGroups();
-        return allGroups.contains(Group.getByName("Admin"))
-                || allGroups.contains(group);
+//        List<Group> allGroups = userSession.getUser().getAllGroups();
+//        return allGroups.contains(Group.getByName("Admin"))
+//                || allGroups.contains(group);
+
+        return false;
     }
 }

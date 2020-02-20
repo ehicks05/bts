@@ -1,173 +1,279 @@
 package net.ehicks.bts;
 
+import kotlin.Pair;
 import net.ehicks.bts.beans.*;
+import net.ehicks.bts.security.PasswordEncoder;
 import net.ehicks.bts.util.CommonIO;
-import net.ehicks.bts.util.PasswordUtil;
 import net.ehicks.common.Timer;
-import net.ehicks.eoi.EOI;
+import org.hibernate.exception.SQLGrammarException;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
+@Component
 public class Seeder
 {
-    private static final Logger log = LoggerFactory.getLogger(Seeder.class);
+    private final Logger log = LoggerFactory.getLogger(Seeder.class);
 
-    private static int issueCount = (int) Math.pow(1_024, 2);
-    private static boolean useBatches = true;
+    private int issueCount = (int) Math.pow(1_024, 1.7);
+    private Random r = new Random();
 
-    private static List<String> latin = Arrays.asList("annus", "ante meridiem", "aqua", "bene", "canis", "caput", "circus", "cogito",
+    private List<String> latin = Arrays.asList("annus", "ante meridiem", "aqua", "bene", "canis", "caput", "circus", "cogito",
             "corpus", "de facto", "deus", "ego", "equus", "ergo", "est", "hortus", "id", "in", "index", "iris", "latex",
             "legere", "librarium", "locus", "magnus", "mare", "mens", "murus", "musica", "nihil", "non", "nota", "novus",
             "opus", "orbus", "placebo", "post", "post meridian", "primus", "pro", "sanus", "solus", "sum", "tacete",
             "tempus", "terra", "urbs", "veni", "vici", "vidi");
 
-    public static String getRandomLatinWords(Random random, int maxLength)
+    private SubscriptionRepository subscriptionRepository;
+    private UserRepository userRepository;
+    private GroupRepository groupRepository;
+    private IssueTypeRepository issueTypeRepository;
+    private ProjectRepository projectRepository;
+    private StatusRepository statusRepository;
+    private SeverityRepository severityRepository;
+    private BtsSystemRepository btsSystemRepository;
+    private IssueFormRepository issueFormRepository;
+    private DBFileRepository dbFileRepository;
+    private AvatarRepository avatarRepository;
+    private IssueRepository issueRepository;
+    private CommentRepository commentRepository;
+    private AttachmentRepository attachmentRepository;
+    private RoleRepository roleRepository;
+    private ChatRoomRepository chatRoomRepository;
+    private PasswordEncoder passwordEncoder;
+    private TikaService tikaService;
+    private EntityManager entityManager;
+    private EntityManagerFactory entityManagerFactory;
+
+    public Seeder(SubscriptionRepository subscriptionRepository, UserRepository userRepository, 
+                  GroupRepository groupRepository, IssueTypeRepository issueTypeRepository, 
+                  ProjectRepository projectRepository, StatusRepository statusRepository, 
+                  SeverityRepository severityRepository, BtsSystemRepository btsSystemRepository,
+                  IssueFormRepository issueFormRepository, DBFileRepository dbFileRepository,
+                  AvatarRepository avatarRepository, IssueRepository issueRepository,
+                  CommentRepository commentRepository, AttachmentRepository attachmentRepository,
+                  RoleRepository roleRepository, ChatRoomRepository chatRoomRepository,
+                  PasswordEncoder passwordEncoder, TikaService tikaService,
+                  EntityManager entityManager, EntityManagerFactory entityManagerFactory)
     {
-        StringBuilder content = new StringBuilder();
-        int words = random.nextInt(maxLength) + 1;
+        this.subscriptionRepository = subscriptionRepository;
+        this.userRepository = userRepository;
+        this.groupRepository = groupRepository;
+        this.issueTypeRepository = issueTypeRepository;
+        this.projectRepository = projectRepository;
+        this.statusRepository = statusRepository;
+        this.severityRepository = severityRepository;
+        this.btsSystemRepository = btsSystemRepository;
+        this.issueFormRepository = issueFormRepository;
+        this.dbFileRepository = dbFileRepository;
+        this.avatarRepository = avatarRepository;
+        this.issueRepository = issueRepository;
+        this.commentRepository = commentRepository;
+        this.attachmentRepository = attachmentRepository;
+        this.roleRepository = roleRepository;
+        this.chatRoomRepository = chatRoomRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.tikaService = tikaService;
+        this.entityManager = entityManager;
+        this.entityManagerFactory = entityManagerFactory;
+    }
+    
+    public String buildLatin(int maxLength)
+    {
+        StringBuilder sb = new StringBuilder();
+        int words = r.nextInt(maxLength) + 1;
         for (int j = 0; j < words; j++)
         {
-            if (content.length() > 0)
-                content.append(" ");
-            content.append(latin.get(random.nextInt(latin.size())));
+            if (sb.length() > 0)
+                sb.append(" ");
+            sb.append(latin.get(r.nextInt(latin.size())));
         }
 
-        return content.toString();
+        return sb.toString();
     }
 
-    static void createDemoData()
+    @Transactional
+    void install_PG_TRGM_Support()
+    {
+        try
+        {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            
+            Query query = entityManager.createNativeQuery("select count(*) from pg_extension where extname='pg_trgm';");
+            BigInteger result = (BigInteger) query.getSingleResult();
+            if (result == null || result.equals(BigInteger.ZERO))
+            {
+                log.info("installing extension pg_trgm...");
+                entityManager.getTransaction().begin();
+                query = entityManager.createNativeQuery("CREATE EXTENSION pg_trgm;");
+                query.executeUpdate();
+                entityManager.getTransaction().commit();
+            }
+            else
+                log.info("extension pg_trgm already installed.");
+        }
+        catch (SQLGrammarException e)
+        {
+            log.error(e.getLocalizedMessage());
+        }
+    }
+
+    void createDemoData()
     {
         log.info("Seeding dummy data");
         Timer timer = new Timer();
 
-        // use in production
-        createBtsSystem();
-        log.debug(timer.printDuration("createBtsSystem"));
+        install_PG_TRGM_Support();
+
+        // no dependencies
+
+        createDBFiles(); // use in production
+        log.info(timer.printDuration("createDBFiles"));
+
+        // some dependencies
+
+        createBtsSystem();  // use in production
+        log.info(timer.printDuration("createBtsSystem"));
+
+        createDefaultRoles();  // use in production
+        log.info(timer.printDuration("createDefaultRoles"));
 
         createUsers();
-        log.debug(timer.printDuration("createUsers"));
+        log.info(timer.printDuration("createUsers"));
 
         createGroups();
-        log.debug(timer.printDuration("createGroups"));
+        log.info(timer.printDuration("createGroups"));
 
         createGroupMaps();
-        log.debug(timer.printDuration("createGroupMaps"));
+        log.info(timer.printDuration("createGroupMaps"));
 
         createProjects();
-        log.debug(timer.printDuration("createProjects"));
+        log.info(timer.printDuration("createProjects"));
 
-        // use in production
-        createStatuses();
-        log.debug(timer.printDuration("createStatuses"));
+        createStatuses(); // use in production
+        log.info(timer.printDuration("createStatuses"));
 
-        // use in production
-        createSeverities();
-        log.debug(timer.printDuration("createSeverities"));
+        createSeverities(); // use in production
+        log.info(timer.printDuration("createSeverities"));
 
-        // use in production
-        createIssueTypes();
-        log.debug(timer.printDuration("createIssueTypes"));
+        createIssueTypes(); // use in production
+        log.info(timer.printDuration("createIssueTypes"));
 
         createProjectMaps();
-        log.debug(timer.printDuration("createProjectMaps"));
-
-        // use in production
-        createDBFiles();
-        log.debug(timer.printDuration("createDBFiles"));
+        log.info(timer.printDuration("createProjectMaps"));
 
         createIssues();
-        log.debug(timer.printDuration("createIssues"));
+        log.info(timer.printDuration("createIssues"));
 
         createAttachments();
-        log.debug(timer.printDuration("createAttachments"));
+        log.info(timer.printDuration("createAttachments"));
 
         createIssueForms();
-        log.debug(timer.printDuration("createIssueForms"));
+        log.info(timer.printDuration("createIssueForms"));
 
-        createWatcherMaps();
-        log.debug(timer.printDuration("createWatcherMaps"));
-
-        createComments();
-        log.debug(timer.printDuration("createComments"));
+//        createComments();
+//        log.info(timer.printDuration("createComments"));
 
         createSubscriptions();
-        log.debug(timer.printDuration("createSubscriptions"));
+        log.info(timer.printDuration("createSubscriptions"));
 
         createChatObjects();
-        log.debug(timer.printDuration("createSubscriptions"));
+        log.info(timer.printDuration("createChatObjects"));
+
+        createGIN_Indexes();
 
         log.info(timer.printDuration("Done seeding dummy data"));
     }
 
-    private static void createBtsSystem()
+    @Transactional
+    void createGIN_Indexes() {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        
+        entityManager.getTransaction().begin();
+        Query query = entityManager.createNativeQuery("CREATE INDEX TRGM_IDX_ISSUE_TITLE ON ISSUE USING gin (title gin_trgm_ops);");
+        query.executeUpdate();
+
+        query = entityManager.createNativeQuery("CREATE INDEX TRGM_IDX_ISSUE_DESCRIPTION ON ISSUE USING gin (description gin_trgm_ops);");
+        query.executeUpdate();
+        entityManager.getTransaction().commit();
+    }
+
+    private void createBtsSystem()
     {
-        BtsSystem btsSystem = BtsSystem.getSystem();
-        if (btsSystem == null)
-        {
-            btsSystem = new BtsSystem();
-            long id = EOI.insert(btsSystem, SystemTask.SEEDER);
-            btsSystem = BtsSystem.getById(id);
-        }
+        BtsSystem btsSystem;
+        if (btsSystemRepository.findAll().isEmpty())
+            btsSystem = new BtsSystem(0, "", "", avatarRepository.findByName("no_avatar.png"), "", "noreply@puffin.ehicks.net", "NO_REPLY");
+        else
+            btsSystem = btsSystemRepository.findFirstBy();
+        
         btsSystem.setInstanceName("BugCo Industries");
         btsSystem.setLogonMessage("<span>Welcome to Puffin Issue Tracker.<br>Please contact Eric for a demo.</span>");
         btsSystem.setTheme("default");
-
-        EOI.update(btsSystem, SystemTask.SEEDER);
+        btsSystemRepository.save(btsSystem);
     }
 
-    private static void createIssueForms()
+    private void createIssueForms()
     {
-        for (User user : User.getAll())
-        {
-            IssueForm issueForm = new IssueForm();
-            issueForm.setFormName("All Issues");
-            issueForm.setOnDash(true);
-            issueForm.setUserId(user.getId());
-            EOI.insert(issueForm, SystemTask.SEEDER);
+        userRepository.findAll().forEach(user -> {
+            IssueForm issueForm = new IssueForm(0, user, "All Issues", true);
+            issueFormRepository.save(issueForm);
 
-            issueForm.setFormName("Assigned To Me");
-            issueForm.setAssigneeUserIds(String.valueOf(user.getId()));
-            EOI.insert(issueForm, SystemTask.SEEDER);
+            issueForm = new IssueForm(0, user, "Assigned To Me", true);
+            issueForm.getAssignees().add(user);
+            issueFormRepository.save(issueForm);
 
-            if (user.getLogonId().equals("eric@test.com"))
+            if (user.getUsername().equals("eric@test.com"))
             {
-                issueForm.setFormName("Readington's Issues");
-                issueForm.setAssigneeUserIds("");
-                issueForm.setGroupIds(String.valueOf(Group.getByName("Readington").getId()));
-                EOI.insert(issueForm, SystemTask.SEEDER);
+                issueForm = new IssueForm(0, user, "Readington's Issues", true);
+                issueForm.getGroups().add(groupRepository.findByName("Readington"));
+                issueFormRepository.save(issueForm);
 
-                issueForm.setFormName("Issues with the word 'vici'");
-                issueForm.setGroupIds("");
+                issueForm = new IssueForm(0, user, "Issues with the word 'vici'", true);
                 issueForm.setContainsText("vici");
-                EOI.insert(issueForm, SystemTask.SEEDER);
+                issueFormRepository.save(issueForm);
 
-                issueForm.setFormName("Reopened Issues");
-                issueForm.setContainsText("");
-                issueForm.setStatusIds(String.valueOf(Status.getByName("Re-opened").getId()));
-                EOI.insert(issueForm, SystemTask.SEEDER);
+                issueForm = new IssueForm(0, user, "Reopened Issues", true);
+                issueForm.getStatuses().add(statusRepository.findByName("Re-opened"));
+                issueFormRepository.save(issueForm);
 
-                issueForm.setFormName("All Cinemang Issues");
-                issueForm.setStatusIds("");
-                issueForm.setProjectIds(String.valueOf(Project.getByName("Cinemang").getId()));
-                EOI.insert(issueForm, SystemTask.SEEDER);
+                issueForm = new IssueForm(0, user, "All Cinemang Issues", true);
+                issueForm.getProjects().add(projectRepository.findByName("Cinemang"));
+                issueFormRepository.save(issueForm);
             }
-        }
+        });
     }
 
-    private static void createDBFiles()
+    private void createDBFiles()
     {
-        File avatarDir = Paths.get(SystemInfo.INSTANCE.getServletContext().getRealPath("/images/avatars/png/")).toFile();
-        if (avatarDir.exists() && avatarDir.isDirectory())
+        File avatarDir = null;
+        try {
+            avatarDir = new ClassPathResource("/static/images/avatars/png/").getFile();
+        } catch (IOException e) {}
+
+        if (avatarDir != null && avatarDir.exists() && avatarDir.isDirectory())
         {
             List<File> avatars = Arrays.asList(avatarDir.listFiles());
             Collections.sort(avatars);
@@ -175,7 +281,7 @@ public class Seeder
             {
                 if (avatarFile.exists() && avatarFile.isFile())
                 {
-                    byte[] content = null;
+                    byte[] content = new byte[0];
                     try
                     {
                         content = Files.readAllBytes(avatarFile.toPath());
@@ -185,133 +291,79 @@ public class Seeder
                         log.error(e.getMessage(), e);
                     }
 
-                    DBFile dbFile = new DBFile(avatarFile.getName(), content);
-                    long dbFileId = EOI.insert(dbFile, SystemTask.SEEDER);
-
-                    Avatar avatar = new Avatar();
-                    avatar.setDbFileId(dbFileId);
-                    avatar.setPublicUse(true);
-                    avatar.setCreatedOn(new Date());
-                    long avatarId = EOI.insert(avatar, SystemTask.SEEDER);
-
-                    // set default avatar
-                    if (dbFile.getName().equals("no_avatar.png"))
-                    {
-                        BtsSystem btsSystem = BtsSystem.getSystem();
-                        btsSystem.setDefaultAvatar(avatarId);
-                        EOI.update(btsSystem, SystemTask.SEEDER);
-                    }
+                    DBFile dbFile = dbFileRepository.save(new DBFile(0, content, Arrays.hashCode(content), tikaService.detect(content, avatarFile.getName()), null));
+                    avatarRepository.save(new Avatar(0, avatarFile.getName(), dbFile, true));
                 }
             }
         }
     }
 
-    private static void createWatcherMaps()
+    private void createComments()
     {
-        List<User> users = User.getAll();
-        Random r = new Random();
-
-        if (useBatches)
-            EOI.startTransaction();
-
-        List<WatcherMap> watcherMaps = new ArrayList<>();
-        List<Issue> issues = Issue.getAll();
-        for (int issueIndex = 0; issueIndex < issues.size(); issueIndex++)
-        {
-            Issue issue = issues.get(issueIndex);
-            if (issueIndex % (issues.size() / 4) == 0)
-                log.info("WatcherMap for issue " + issueIndex + " / " + issues.size());
-
-            List<Integer> selectedUserIndexes = new ArrayList<>();
-            for (int i = 0; i < r.nextInt(3) + 1; i++)
-            {
-                int userIndex = r.nextInt(users.size());
-                if (!selectedUserIndexes.contains(userIndex))
-                    selectedUserIndexes.add(userIndex);
-            }
-
-            for (int userIndex : selectedUserIndexes)
-            {
-                WatcherMap watcherMap = new WatcherMap();
-                watcherMap.setUserId(users.get(userIndex).getId());
-                watcherMap.setIssueId(issue.getId());
-                if (useBatches)
-                    watcherMaps.add(watcherMap);
-                else
-                    EOI.insert(watcherMap, SystemTask.SEEDER);
-            }
-        }
-
-        if (useBatches)
-        {
-            EOI.batchInsert(watcherMaps);
-            EOI.commit();
-        }
-    }
-
-    private static void createComments()
-    {
-        Random r = new Random();
-        int users = User.getAll().size();
-
-        if (useBatches)
-            EOI.startTransaction();
+        List<User> users = userRepository.findAll();
         List<Comment> comments = new ArrayList<>();
-        List<Issue> issues = Issue.getAll();
-        for (int issueIndex = 0; issueIndex < issues.size(); issueIndex++)
-        {
-            Issue issue = issues.get(issueIndex);
-            long issueId = issue.getId();
-            if (issueId == 2)
-                continue;
 
-            if (issueIndex % (issues.size() / 4) == 0)
-                log.info("Comment for issue " + issueIndex + " / " + issues.size());
+        long count = issueRepository.count();
+        long pageSize = 1000;
+        long pages = (count / pageSize);
 
-            for (int i = 0; i < r.nextInt(8); i++)
+        AtomicLong start = new AtomicLong(System.currentTimeMillis());
+
+        AtomicLong issueIndex = new AtomicLong(0);
+        LongStream.range(0, pages).forEach(page -> {
+
+            Pageable pageable = PageRequest.of((int)page, (int)pageSize, Sort.by("id"));
+            List<Issue> issues = issueRepository.findAll(pageable).getContent();
+
+            for (Issue issue : issues)
             {
-                Comment comment = new Comment();
-                comment.setIssueId(issueId);
-                comment.setCreatedByUserId((long) r.nextInt(users) + 1);
-                comment.setCreatedOn(new Date());
-                comment.setContent(getRandomLatinWords(r, 32));
-                if (useBatches)
-                    comments.add(comment);
-                else
+                if (System.currentTimeMillis() - start.get() > 10_000)
                 {
-                    long id = EOI.insert(comment, SystemTask.SEEDER);
-                    comment = Comment.getById(id);
-                    
-                    IssueAudit issueAudit = new IssueAudit(issueId, SystemTask.SEEDER, "added", comment.toString());
-                    EOI.insert(issueAudit, SystemTask.SEEDER);
+                    start.set(System.currentTimeMillis());
+                    log.info("  creating comments for issue " + issueIndex.get() + "/" + issueCount + "...");
                 }
+
+                for (int i = 0; i < r.nextInt(8); i++)
+                    comments.add(new Comment(0, issue, users.get(r.nextInt(users.size())),
+                            buildLatin(32), issue.getGroup(), LocalDateTime.now(), LocalDateTime.now()));
+
+                if (comments.size() == 10_000) {
+                    commentRepository.saveAll(comments);
+                    comments.clear();
+                }
+                issueIndex.incrementAndGet();
             }
-        };
-        if (useBatches)
-        {
-            EOI.batchInsert(comments);
-            EOI.commit();
-        }
+        });
+
+        commentRepository.saveAll(comments);
     }
 
-    private static void createProjectMaps()
+    private void createProjectMaps()
     {
-        Random r = new Random();
-        for (User user : User.getAll())
-        {
-            long projectId = r.nextInt(Project.getAll().size()) + 1;
+        List<User> users = userRepository.findAll();
+        List<Project> projects = projectRepository.findAll();
 
-            ProjectMap projectMap = new ProjectMap();
-            projectMap.setUserId(user.getId());
-            projectMap.setProjectId(projectId);
-            EOI.insert(projectMap, SystemTask.SEEDER);
-        }
+        users.forEach(user -> {
+            Project project = projects.get(r.nextInt(projects.size()));
+
+            user.getProjects().add(project);
+            project.getUsers().add(user);
+
+            userRepository.save(user);
+            projectRepository.save(project);
+        });
     }
 
-    private static void createAttachments()
+    private void createAttachments()
     {
-        File imgDir = Paths.get(SystemInfo.INSTANCE.getServletContext().getRealPath("/images/mimetypes")).toFile();
-        if (imgDir.exists() && imgDir.isDirectory())
+        File imgDir = null;
+        try {
+            imgDir = new ClassPathResource("/static/images/mimetypes").getFile();
+        } catch (IOException e) {
+
+        }
+
+        if (imgDir != null && imgDir.exists() && imgDir.isDirectory())
         {
             List<File> images = Arrays.asList(imgDir.listFiles());
             Collections.sort(images);
@@ -319,7 +371,7 @@ public class Seeder
             {
                 if (img.exists() && img.isFile() && img.getName().contains("Adobe.png"))
                 {
-                    byte[] content = null;
+                    byte[] content = new byte[0];
                     try
                     {
                         content = Files.readAllBytes(img.toPath());
@@ -329,39 +381,29 @@ public class Seeder
                         log.error(e.getMessage(), e);
                     }
 
-                    long thumbnailId = 0;
-                    if (img.getName().contains("png"))
+                    byte[] scaledBytes = new byte[0];
+                    try
                     {
-                        byte[] scaledBytes = new byte[0];
-                        try
-                        {
-                            scaledBytes = CommonIO.getThumbnail(img);
-                        }
-                        catch (IOException e)
-                        {
-                            log.error(e.getMessage(), e);
-                        }
-
-                        DBFile thumbnail = new DBFile(img.getName(), scaledBytes);
-                        thumbnailId = EOI.insert(thumbnail, SystemTask.SEEDER);
+                        scaledBytes = CommonIO.getThumbnail(img);
+                    }
+                    catch (IOException e)
+                    {
+                        log.error(e.getMessage(), e);
                     }
 
-                    DBFile dbFile = new DBFile(img.getName(), content);
-                    dbFile.setThumbnailId(thumbnailId);
-                    long dbFileId = EOI.insert(dbFile, SystemTask.SEEDER);
+                    DBFile thumbnail = dbFileRepository.save(new DBFile(0, scaledBytes, Arrays.hashCode(scaledBytes), tikaService.detect(scaledBytes, img.getName()), null));
 
-                    Attachment attachment = new Attachment(1L, dbFileId, 2L);
-                    long id = EOI.insert(attachment, SystemTask.SEEDER);
-                    attachment = Attachment.getById(id);
+                    DBFile dbFile = new DBFile(0, content, Arrays.hashCode(content), tikaService.detect(content, img.getName()), thumbnail);
+                    dbFile = dbFileRepository.save(dbFile);
 
-                    IssueAudit issueAudit = new IssueAudit(1L, SystemTask.SEEDER, "added", attachment.toString());
-                    EOI.insert(issueAudit, SystemTask.SEEDER);
+                    Issue issue = issueRepository.findFirstByOrderById();
+                    attachmentRepository.save(new Attachment(0, img.getName(), issue, dbFile, LocalDateTime.now()));
                 }
             }
         }
     }
 
-    private static void createIssues()
+    private void createIssues()
     {
         List<String> adjectives = Arrays.asList("deactivated", "decommissioned", "ineffective", "ineffectual", "useless "+
                         "inoperable", "unusable", "unworkable arrested", "asleep", "dormant", "fallow", "idle", "inert",
@@ -372,347 +414,328 @@ public class Seeder
         List<String> questions = Arrays.asList("Is", "How come I'm getting", "Why is", "What's with the", "Fix this",
                 "Help with", "Problem regarding");
 
-        int projects = Project.getAll().size() + 1;
-        int groups = Group.getAll().size() + 1;
-        int assigneeUserIds = User.getAll().size() + 1;
-        int reporterUserIds = User.getAll().size() + 1;
-        int issueTypes = IssueType.getAll().size() + 1;
-        int severities = Severity.getAll().size() + 1;
-        int statuses = Status.getAll().size() + 1;
+        List<Comment> comments = new ArrayList<>();
 
-        Random r = new Random();
-
-        if (useBatches)
-            EOI.startTransaction();
-
-        AtomicLong start = new AtomicLong(System.currentTimeMillis());
+        List<Project> projects = projectRepository.findAll();
+        List<Group> groups = groupRepository.findAll();
+        List<User> users = userRepository.findAll();
+        List<IssueType> issueTypes = issueTypeRepository.findAll();
+        List<Severity> severities = severityRepository.findAll();
+        List<Status> statuses = statusRepository.findAll();
 
         List<Issue> issues = new ArrayList<>();
+        AtomicLong start = new AtomicLong(System.currentTimeMillis());
         IntStream.range(0, issueCount).forEach(i ->
         {
-            if (System.currentTimeMillis() - start.get() > 10_000 || i % (issueCount / 4) == 0)
+            if (System.currentTimeMillis() - start.get() > 5000)
             {
-                log.info("Issue " + i + " / " + issueCount);
-                if (System.currentTimeMillis() - start.get() > 10_000)
-                    start.set(System.currentTimeMillis());
+                start.set(System.currentTimeMillis());
+                log.info("  creating issue " + i + "/" + issueCount + "...");
             }
             Issue issue = new Issue();
-            long value = (long) r.nextInt(projects);
-            issue.setProjectId(value > 0 ? value : 1);
-            value = (long) r.nextInt(groups);
-            issue.setGroupId(value > 0 ? value : 1);
-            value = (long) r.nextInt(assigneeUserIds);
-            issue.setAssigneeUserId(value > 0 ? value : 1);
-            value = (long) r.nextInt(reporterUserIds);
-            issue.setReporterUserId(value > 0 ? value : 1);
-            value = (long) r.nextInt(issueTypes);
-            issue.setIssueTypeId(value > 0 ? value : 1);
-            value = (long) r.nextInt(severities);
-            issue.setSeverityId(value > 0 ? value : 1);
-            value = (long) r.nextInt(statuses);
-            issue.setStatusId(value > 0 ? value : 1);
+            issue.setTitle(buildIssueTitle(adjectives, nouns, questions));
+            issue.setDescription("<p>" + buildLatin(32) + "</p>");
+            issue.setCreatedOn(getRandomLocalDateTime(false));
+            issue.setLastUpdatedOn(issue.getCreatedOn());
+            issue.setGroup(groups.get(r.nextInt(groups.size())));
+            issue.setIssueType(issueTypes.get(r.nextInt(issueTypes.size())));
+            issue.setProject(projects.get(r.nextInt(projects.size())));
+            issue.setAssignee(users.get(r.nextInt(users.size())));
+            issue.setReporter(users.get(r.nextInt(users.size())));
+            issue.setSeverity(severities.get(r.nextInt(severities.size())));
+            issue.setStatus(statuses.get(r.nextInt(statuses.size())));
 
-            String noun = nouns.get(r.nextInt(nouns.size()));
-            String adjective = adjectives.get(r.nextInt(adjectives.size()));
-            String title = adjective + " " + noun;
+            issue.setWatchers(r.ints(3, 0, users.size())
+                    .mapToObj(users::get).collect(Collectors.toSet()));
 
-            if (r.nextBoolean())
-                title = questions.get(r.nextInt(questions.size())) + " " + title;
-            if (r.nextBoolean())
-                title = title.toUpperCase();
-            if (r.nextBoolean())
-                title += "!";
-            if (r.nextBoolean())
-                title += "?";
-            if (r.nextInt(5) <= 1)
-                title += "...";
-            issue.setTitle(title);
+            issues.add(issue);
+            if (issues.size() >= 10_000) {
+                issueRepository.saveAll(issues);
 
-            String description = getRandomLatinWords(r, 32);
-            issue.setDescription("<p>" + description + "</p>");
+                issues.forEach(savedIssue -> {
+                    for (int j = 0; j < r.nextInt(8); j++)
+                        comments.add(new Comment(0, savedIssue, users.get(r.nextInt(users.size())),
+                                buildLatin(32), savedIssue.getGroup(), LocalDateTime.now(), LocalDateTime.now()));
 
-            Date createdOn = getRandomDateTime();
-            issue.setCreatedOn(createdOn);
-            issue.setLastUpdatedOn(getRandomDateTimeForward(createdOn));
-            if (useBatches)
-                issues.add(issue);
-            else
-            {
-                long id = EOI.insert(issue, SystemTask.SEEDER);
-//                issue = Issue.getById(id);
-//
-//                IssueAudit issueAudit = new IssueAudit(id, SystemTask.SEEDER, "added", issue.toString());
-//                EOI.insert(issueAudit, SystemTask.SEEDER);
+                    if (comments.size() >= 10_000) {
+                        commentRepository.saveAll(comments);
+                        comments.clear();
+                    }
+                });
+
+                issues.clear();
             }
         });
 
-        if (useBatches)
-        {
-            EOI.batchInsert(issues);
-            EOI.commit();
-        }
-        else
-        {
-            Issue.getAll().forEach(issue -> {
-                IssueAudit issueAudit = new IssueAudit(issue.getId(), SystemTask.SEEDER, "added", issue.toString());
-                EOI.insert(issueAudit, SystemTask.SEEDER);
-            });
-        }
-    }
+        issueRepository.saveAll(issues);
 
-    private static void createIssueTypes()
-    {
-        IssueType issueType = new IssueType();
-        issueType.setName("Bug");
-        EOI.insert(issueType, SystemTask.SEEDER);
-        issueType.setName("New Feature");
-        EOI.insert(issueType, SystemTask.SEEDER);
-        issueType.setName("Question");
-        EOI.insert(issueType, SystemTask.SEEDER);
-        issueType.setName("Data Issue");
-        EOI.insert(issueType, SystemTask.SEEDER);
-    }
+        issues.forEach(savedIssue -> {
+            for (int j = 0; j < r.nextInt(8); j++)
+                comments.add(new Comment(0, savedIssue, users.get(r.nextInt(users.size())),
+                        buildLatin(32), savedIssue.getGroup(), LocalDateTime.now(), LocalDateTime.now()));
 
-    private static void createSeverities()
-    {
-        Severity severity = new Severity();
-        severity.setName("High");
-        EOI.insert(severity, SystemTask.SEEDER);
-        severity.setName("Medium");
-        EOI.insert(severity, SystemTask.SEEDER);
-        severity.setName("Low");
-        EOI.insert(severity, SystemTask.SEEDER);
-    }
-
-    private static void createStatuses()
-    {
-        Status status = new Status();
-        status.setName("Open");
-        EOI.insert(status, SystemTask.SEEDER);
-        status.setName("Closed");
-        EOI.insert(status, SystemTask.SEEDER);
-        status.setName("Re-opened");
-        EOI.insert(status, SystemTask.SEEDER);
-    }
-
-    private static void createProjects()
-    {
-        Project project = new Project();
-        project.setName("Genesis");
-        project.setPrefix("GS");
-        EOI.insert(project, SystemTask.SEEDER);
-        project.setName("SchoolFI");
-        project.setPrefix("SF");
-        EOI.insert(project, SystemTask.SEEDER);
-        project.setName("Cinemang");
-        project.setPrefix("CM");
-        EOI.insert(project, SystemTask.SEEDER);
-    }
-
-    private static void createGroupMaps()
-    {
-        Group support = Group.getByName("Support");
-        Group admin = Group.getByName("Admin");
-
-        List<Group> customerGroups = new ArrayList<>();
-        for (Group group : Group.getAll())
-            if (!group.getAdmin() && !group.getSupport())
-                customerGroups.add(group);
-
-        Random r = new Random();
-
-        for (User user : User.getAll())
-        {
-            GroupMap groupMap = new GroupMap();
-            groupMap.setUserId(user.getId());
-            if (user.getLogonId().equals("eric@test.com") || user.getLogonId().equals("steve@test.com"))
-                groupMap.setGroupId(admin.getId());
-            else if (user.getLogonId().equals("tupac@test.com"))
-                groupMap.setGroupId(support.getId());
-            else
-            {
-                // pick a random element in customerGroups
-                long groupId = customerGroups.get(r.nextInt(customerGroups.size())).getId();
-                groupMap.setGroupId(groupId);
+            if (comments.size() >= 10_000) {
+                commentRepository.saveAll(comments);
+                comments.clear();
             }
-            EOI.insert(groupMap, SystemTask.SEEDER);
-        }
+        });
+        commentRepository.saveAll(comments);
     }
 
-    private static void createGroups()
+    @NotNull
+    private String buildIssueTitle(List<String> adjectives, List<String> nouns, List<String> questions)
     {
-        Group group = new Group();
+        StringBuilder t = new StringBuilder();
+        t.append(adjectives.get(r.nextInt(adjectives.size())));
+        t.append(" ").append(nouns.get(r.nextInt(nouns.size())));
 
-        group.setName("Readington");
-        EOI.insert(group, SystemTask.SEEDER);
-        group.setName("Bridgewater");
-        EOI.insert(group, SystemTask.SEEDER);
-        group.setName("Califon");
-        EOI.insert(group, SystemTask.SEEDER);
-        group.setName("Flemington");
-        EOI.insert(group, SystemTask.SEEDER);
-
-        group.setName("Support");
-        group.setSupport(true);
-        EOI.insert(group, SystemTask.SEEDER);
-
-        group.setName("Admin");
-        group.setSupport(false);
-        group.setAdmin(true);
-        EOI.insert(group, SystemTask.SEEDER);
+        if (r.nextBoolean()) t.insert(0, questions.get(r.nextInt(questions.size())) + " ");
+        if (r.nextBoolean()) t.append("!");
+        if (r.nextBoolean()) t.append("?");
+        if (r.nextInt(5) <= 1) t.append("...");
+        return r.nextBoolean() ? t.toString().toUpperCase() : t.toString();
     }
 
-    private static void createUsers()
+    private void createIssueTypes()
     {
-        Map<String, List<String>> users = new LinkedHashMap<>();
-        users.put("eric@test.com", new ArrayList<>(Arrays.asList("eric", "2", "Eric", "Tester")));
-        users.put("steve@test.com", new ArrayList<>(Arrays.asList("steve", "15", "Steve", "Tester")));
-        users.put("tupac@test.com", new ArrayList<>(Arrays.asList("test", "3", "2", "Pac")));
-        users.put("bill@test.com", new ArrayList<>(Arrays.asList("test", "8", "Bill", "Smith")));
-        users.put("john@test.com", new ArrayList<>(Arrays.asList("test", "5", "John", "Doe")));
-        users.put("jane@test.com", new ArrayList<>(Arrays.asList("test", "10", "Jane", "Doe")));
+        Arrays.asList("Bug", "New Feature", "Question", "Data Issue")
+                .forEach(name -> issueTypeRepository.save(new IssueType(0, name)));
+    }
 
-        for (String key : users.keySet())
-        {
-            User user = new User();
-            user.setLogonId(key);
+    private void createSeverities()
+    {
+        Arrays.asList("High", "Medium", "Low")
+                .forEach(name -> severityRepository.save(new Severity(0, name)));
+    }
 
-            String rawPassword = users.get(key).get(0);
-            String password = PasswordUtil.digestPassword(rawPassword);
+    private void createStatuses()
+    {
+        Arrays.asList("Open", "Closed", "Re-opened")
+                .forEach(name -> statusRepository.save(new Status(0, name)));
+    }
 
-            user.setPassword(password);
-            user.setEnabled(true);
-            if (key.equals("bill@test.com"))
-                user.setEnabled(false);
-            user.setAvatarId(Long.valueOf(users.get(key).get(1)));
-            user.setFirstName(users.get(key).get(2));
-            user.setLastName(users.get(key).get(3));
-            user.setCreatedOn(new Date());
-            user.setUpdatedOn(new Date());
-            long userId = EOI.insert(user, SystemTask.SEEDER);
+    private void createProjects()
+    {
+        new ArrayList<>(Arrays.asList(
+                new Pair<>("Loon", "LO"),
+                new Pair<>("Puffin", "PU"),
+                new Pair<>("Cinemang", "CM"),
+                new Pair<>("TabHunter", "TH")
+        )).forEach(pair -> projectRepository.save(
+                new Project(0, pair.getFirst(), pair.getSecond())
+        ));
+    }
 
-            Role role = new Role();
-            role.setLogonId(user.getLogonId());
-            role.setUserId(userId);
-            role.setRoleName("user");
-            EOI.insert(role, SystemTask.SEEDER);
+    private void createGroupMaps()
+    {
+        Group admin = groupRepository.findByName("Admin");
+        Group support = groupRepository.findByName("Support");
+        List<Group> customerGroups = groupRepository.findAll();
+        customerGroups.remove(admin);
+        customerGroups.remove(support);
 
-            if (user.getLogonId().equals("eric@test.com"))
-            {
-                role.setRoleName("admin");
-                EOI.insert(role, SystemTask.SEEDER);
+        userRepository.findAll().forEach(user -> {
+            Group group;
+            switch (user.getUsername()) {
+                case "eric@test.com": group = admin; break;
+                case "steve@test.com": group = support; break;
+                default: group = customerGroups.get(r.nextInt(customerGroups.size()));
             }
+
+            user.getGroups().add(group);
+            group.getUsers().add(user);
+
+            userRepository.save(user);
+            groupRepository.save(group);
+        });
+    }
+
+    private void createGroups()
+    {
+        Arrays.asList("Readington", "Bridgewater", "Califon", "Flemington")
+                .forEach(name -> groupRepository.save(
+                        new Group(0, name, false, false)
+                ));
+
+        groupRepository.save(new Group(0, "Support", false, true));
+        groupRepository.save(new Group(0, "Admin", true, false));
+    }
+
+    public void createDefaultRoles()
+    {
+        if (roleRepository.count() > 0)
+            return;
+
+        Arrays.asList("ROLE_USER", "ROLE_ADMIN")
+                .forEach((r) -> {
+                    Role role = new Role();
+                    role.setRole(r);
+                    roleRepository.save(role);
+                });
+    }
+
+    private void createUsers()
+    {
+        List<List<String>> users = Arrays.asList(
+                Arrays.asList("eric@test.com", "eric", "Eric", "Tester"),
+                Arrays.asList("steve@test.com", "steve", "Steve", "Tester"),
+                Arrays.asList("tupac@test.com", "test", "2", "Pac"),
+                Arrays.asList("bill@test.com", "test", "Bill", "Smith"),
+                Arrays.asList("john@test.com", "test", "John", "Doe"),
+                Arrays.asList("jane@test.com", "test", "Jane", "Doe")
+        );
+
+        Role userRole = roleRepository.findByRole("ROLE_USER");
+        Role adminRole = roleRepository.findByRole("ROLE_ADMIN");
+
+        List<Avatar> avatars = avatarRepository.findAll();
+
+        for (List<String> userData : users)
+        {
+            String username = userData.get(0);
+            String rawPassword = userData.get(1);
+            String password = passwordEncoder.encoder().encode(rawPassword);
+            String first = userData.get(2);
+            String second = userData.get(3);
+            boolean enabled = !username.equals("bill@test.com");
+            Avatar avatar = avatars.get(r.nextInt(avatars.size()));
+
+            User user = new User(0, username, password,
+                    first, second, enabled, LocalDateTime.now(), avatar);
+
+            user.getRoles().add(userRole);
+            if (username.equals("eric@test.com"))
+            {
+                user.getRoles().add(adminRole);
+                adminRole.getUsers().add(user);
+                roleRepository.save(adminRole);
+            }
+            user = userRepository.save(user);
+
+            userRole.getUsers().add(user);
+            roleRepository.save(userRole);
         }
     }
 
-    private static void createSubscriptions()
+    private void createSubscriptions()
     {
-        User user = User.getByUserId(1L);
-        if (user != null)
-        {
-            List<Subscription> subs = Subscription.getByUserId(user.getId());
+        List<Project> projects = projectRepository.findAll();
+        List<Group> groups = groupRepository.findAll();
+        List<Status> statuses = statusRepository.findAll();
+        List<Severity> severities = severityRepository.findAll();
+
+        userRepository.findAll().forEach(user -> {
+            List<Subscription> subs = subscriptionRepository.findByUser_Id(user.getId());
             if (subs.size() == 0)
             {
-                Subscription sub = new Subscription();
-                sub.setUserId(user.getId());
-                sub.setProjectIds("1");
-                EOI.insert(sub, SystemTask.SEEDER);
+                Subscription sub = new Subscription(user);
+                sub.getProjects().add(projects.get(r.nextInt(projects.size())));
+                subscriptionRepository.save(sub);
 
-                sub = new Subscription();
-                sub.setUserId(user.getId());
-                sub.setGroupIds("1,2");
-                EOI.insert(sub, SystemTask.SEEDER);
+                sub = new Subscription(user);
+                sub.getGroups().add(groups.get(r.nextInt(groups.size())));
+                sub.getGroups().add(groups.get(r.nextInt(groups.size())));
+                subscriptionRepository.save(sub);
 
-                sub = new Subscription();
-                sub.setUserId(user.getId());
-                sub.setSeverityIds("1");
-                sub.setStatusIds("1,3");
-                EOI.insert(sub, SystemTask.SEEDER);
+                sub = new Subscription(user);
+                sub.getSeverities().add(severities.get(r.nextInt(severities.size())));;
+                sub.getStatuses().add(statuses.get(r.nextInt(statuses.size())));
+                sub.getStatuses().add(statuses.get(r.nextInt(statuses.size())));
+                subscriptionRepository.save(sub);
             }
-        }
+        });
     }
 
-    private static void createChatObjects()
+    private void createChatObjects()
     {
-        User user = User.getByUserId(1L);
-        if (user != null)
-        {
-            List<ChatRoom> rooms = ChatRoom.getAll();
+        userRepository.findById(1L).ifPresent(user -> {
+            List<ChatRoom> rooms = chatRoomRepository.findAll();
             if (rooms.size() == 0)
             {
                 ChatRoom room = new ChatRoom();
                 room.setName("General");
-                room.setGroupId(1L);
+                room.setGroup(groupRepository.findById(1L).get());
                 room.setDirectChat(false);
-                EOI.insert(room, SystemTask.SEEDER);
+                chatRoomRepository.save(room);
 
                 room = new ChatRoom();
                 room.setName("Troubleshooting");
-                room.setGroupId(1L);
+                room.setGroup(groupRepository.findById(1L).get());
                 room.setDirectChat(false);
-                EOI.insert(room, SystemTask.SEEDER);
+                chatRoomRepository.save(room);
 
                 room = new ChatRoom();
                 room.setName("Off Topic");
-                room.setGroupId(1L);
+                room.setGroup(groupRepository.findById(1L).get());
                 room.setDirectChat(false);
-                EOI.insert(room, SystemTask.SEEDER);
+                chatRoomRepository.save(room);
 
-                ChatRoomUserMap chatRoomUserMap = new ChatRoomUserMap();
-                chatRoomUserMap.setRoomId(1L);
-                chatRoomUserMap.setUserId(1L);
-                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
-
-                chatRoomUserMap = new ChatRoomUserMap();
-                chatRoomUserMap.setRoomId(1L);
-                chatRoomUserMap.setUserId(2L);
-                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
-
-                chatRoomUserMap = new ChatRoomUserMap();
-                chatRoomUserMap.setRoomId(1L);
-                chatRoomUserMap.setUserId(3L);
-                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
-
-                chatRoomUserMap = new ChatRoomUserMap();
-                chatRoomUserMap.setRoomId(1L);
-                chatRoomUserMap.setUserId(4L);
-                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
-
-                chatRoomUserMap = new ChatRoomUserMap();
-                chatRoomUserMap.setRoomId(2L);
-                chatRoomUserMap.setUserId(1L);
-                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
-
-                chatRoomUserMap = new ChatRoomUserMap();
-                chatRoomUserMap.setRoomId(2L);
-                chatRoomUserMap.setUserId(2L);
-                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
-
-                chatRoomUserMap = new ChatRoomUserMap();
-                chatRoomUserMap.setRoomId(3L);
-                chatRoomUserMap.setUserId(1L);
-                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
-
-                ChatRoomMessage chatRoomMessage = new ChatRoomMessage();
-                chatRoomMessage.setRoomId(1L);
-                chatRoomMessage.setUserId(1L);
-                chatRoomMessage.setAuthor("eric");
-                chatRoomMessage.setContents("Welcome to room 1");
-                chatRoomMessage.setTimestamp(new Date());
-                EOI.insert(chatRoomMessage, SystemTask.SEEDER);
-
-                chatRoomMessage = new ChatRoomMessage();
-                chatRoomMessage.setRoomId(2L);
-                chatRoomMessage.setUserId(1L);
-                chatRoomMessage.setAuthor("eric");
-                chatRoomMessage.setContents("Welcome to room 2");
-                chatRoomMessage.setTimestamp(new Date());
-                EOI.insert(chatRoomMessage, SystemTask.SEEDER);
+//                ChatRoomUserMap chatRoomUserMap = new ChatRoomUserMap();
+//                chatRoomUserMap.setRoomId(1L);
+//                chatRoomUserMap.setUserId(1L);
+//                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
+//
+//                chatRoomUserMap = new ChatRoomUserMap();
+//                chatRoomUserMap.setRoomId(1L);
+//                chatRoomUserMap.setUserId(2L);
+//                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
+//
+//                chatRoomUserMap = new ChatRoomUserMap();
+//                chatRoomUserMap.setRoomId(1L);
+//                chatRoomUserMap.setUserId(3L);
+//                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
+//
+//                chatRoomUserMap = new ChatRoomUserMap();
+//                chatRoomUserMap.setRoomId(1L);
+//                chatRoomUserMap.setUserId(4L);
+//                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
+//
+//                chatRoomUserMap = new ChatRoomUserMap();
+//                chatRoomUserMap.setRoomId(2L);
+//                chatRoomUserMap.setUserId(1L);
+//                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
+//
+//                chatRoomUserMap = new ChatRoomUserMap();
+//                chatRoomUserMap.setRoomId(2L);
+//                chatRoomUserMap.setUserId(2L);
+//                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
+//
+//                chatRoomUserMap = new ChatRoomUserMap();
+//                chatRoomUserMap.setRoomId(3L);
+//                chatRoomUserMap.setUserId(1L);
+//                EOI.insert(chatRoomUserMap, SystemTask.SEEDER);
+//
+//                ChatRoomMessage chatRoomMessage = new ChatRoomMessage();
+//                chatRoomMessage.setRoomId(1L);
+//                chatRoomMessage.setUserId(1L);
+//                chatRoomMessage.setAuthor("eric");
+//                chatRoomMessage.setContents("Welcome to room 1");
+//                chatRoomMessage.setTimestamp(new Date());
+//                EOI.insert(chatRoomMessage, SystemTask.SEEDER);
+//
+//                chatRoomMessage = new ChatRoomMessage();
+//                chatRoomMessage.setRoomId(2L);
+//                chatRoomMessage.setUserId(1L);
+//                chatRoomMessage.setAuthor("eric");
+//                chatRoomMessage.setContents("Welcome to room 2");
+//                chatRoomMessage.setTimestamp(new Date());
+//                EOI.insert(chatRoomMessage, SystemTask.SEEDER);
             }
-        }
+        });
     }
 
-    private static Date getRandomDateTime()
+    public static LocalDateTime getRandomLocalDateTime(boolean future) {
+        long firstCommit = LocalDateTime.of(2016, 7, 11, 20, 42).toEpochSecond(ZoneOffset.UTC);
+        long now = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+        long yearFromNow = LocalDateTime.now().plusYears(1).toEpochSecond(ZoneOffset.UTC);
+        long random = ThreadLocalRandom
+                .current()
+                .nextLong(future ? now : firstCommit, future ? yearFromNow : now);
+
+        return LocalDateTime.ofEpochSecond(random, 0, ZoneOffset.UTC);
+    }
+
+    private Date getRandomDateTime()
     {
         LocalDateTime ldt = LocalDateTime.now();
         Random r = new Random();
@@ -724,7 +747,7 @@ public class Seeder
         return Date.from(createdOnLdt.atZone(ZoneId.systemDefault()).toInstant());
     }
 
-    private static Date getRandomDateTimeForward(Date ldt)
+    private Date getRandomDateTimeForward(Date ldt)
     {
         Random r = new Random();
         LocalDateTime createdOnLdt = LocalDateTime.ofInstant(ldt.toInstant(), ZoneId.systemDefault())

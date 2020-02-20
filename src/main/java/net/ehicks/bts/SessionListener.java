@@ -1,6 +1,5 @@
 package net.ehicks.bts;
 
-import net.ehicks.bts.util.chat.ChatSessionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +13,7 @@ import java.util.Optional;
 @WebListener
 public class SessionListener implements HttpSessionListener, HttpSessionAttributeListener
 {
-    private static final Logger log = LoggerFactory.getLogger(Controller.class);
+    private static final Logger log = LoggerFactory.getLogger(SessionListener.class);
 
     private static List<UserSession> sessions = Collections.synchronizedList(new ArrayList<>());
 
@@ -65,7 +64,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
 //                        userSession.getRemoteIP(), userSession.getRemoteHost(), "", 0, "", "Logged off.", userSession.getUserAgent());
                 sessions.remove(userSession);
 
-                ChatSessionHandler.handleSessionAttributeRemoved(userSession);
+//                ChatSessionHandler.handleSessionAttributeRemoved(userSession);
 
                 log.debug("removed {} from session", session.getId());
             }
