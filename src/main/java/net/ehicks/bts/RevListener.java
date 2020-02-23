@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RevListener implements RevisionListener {
     public void newRevision(Object revisionEntity) {
-        RevisionInfo revisionInfo = (RevisionInfo) revisionEntity;
+        MyRevisionEntity myRevisionEntity = (MyRevisionEntity) revisionEntity;
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = "";
@@ -24,6 +24,6 @@ public class RevListener implements RevisionListener {
             username = String.valueOf(user.getId());
         }
 
-        revisionInfo.setUsername(username);
+        myRevisionEntity.setUsername(username);
     }
 }

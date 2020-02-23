@@ -427,7 +427,7 @@ public class Seeder
         AtomicLong start = new AtomicLong(System.currentTimeMillis());
         IntStream.range(0, issueCount).forEach(i ->
         {
-            if (System.currentTimeMillis() - start.get() > 5000)
+            if (System.currentTimeMillis() - start.get() > 1000)
             {
                 start.set(System.currentTimeMillis());
                 log.info("  creating issue " + i + "/" + issueCount + "...");
@@ -449,7 +449,7 @@ public class Seeder
                     .mapToObj(users::get).collect(Collectors.toSet()));
 
             issues.add(issue);
-            if (issues.size() >= 10_000) {
+            if (issues.size() >= 1_000) {
                 issueRepository.saveAll(issues);
 
                 issues.forEach(savedIssue -> {
@@ -457,7 +457,7 @@ public class Seeder
                         comments.add(new Comment(0, savedIssue, users.get(r.nextInt(users.size())),
                                 buildLatin(32), savedIssue.getGroup(), LocalDateTime.now(), LocalDateTime.now()));
 
-                    if (comments.size() >= 10_000) {
+                    if (comments.size() >= 1_000) {
                         commentRepository.saveAll(comments);
                         comments.clear();
                     }
@@ -474,7 +474,7 @@ public class Seeder
                 comments.add(new Comment(0, savedIssue, users.get(r.nextInt(users.size())),
                         buildLatin(32), savedIssue.getGroup(), LocalDateTime.now(), LocalDateTime.now()));
 
-            if (comments.size() >= 10_000) {
+            if (comments.size() >= 1_000) {
                 commentRepository.saveAll(comments);
                 comments.clear();
             }

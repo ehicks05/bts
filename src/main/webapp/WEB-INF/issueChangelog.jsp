@@ -2,32 +2,31 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
-
-<jsp:useBean id="issueAudits" type="java.util.List<net.ehicks.bts.beans.IssueAudit>" scope="request"/>
+<%@ taglib uri="http://sargue.net/jsptags/time" prefix="javatime" %>
 
 <table id="issueAuditTable" class="table is-striped is-narrow is-hoverable is-fullwidth">
     <thead>
     <tr>
-        <th>User</th>
-        <th>Event Time</th>
-        <th>Event Type</th>
-        <th>Object Key</th>
-        <th>Field Name</th>
-        <th>Old Value</th>
-        <th>New Value</th>
+        <th>Changed By</th>
+        <th class="has-text-right">Date</th>
+        <th>Issue</th>
+        <th>Fields Changed</th>
+<%--        <th>Field Name</th>--%>
+<%--        <th>Old Value</th>--%>
+<%--        <th>New Value</th>--%>
     </tr>
     </thead>
 
     <tbody id="myTBody">
-    <c:forEach var="audit" items="${issueAudits}" varStatus="loop">
+    <c:forEach var="issueAudit" items="${issueAudits}" varStatus="loop">
         <tr>
-            <td>${audit.userName}</td>
-            <td class="has-text-right"><fmt:formatDate value="${audit.eventTime}" pattern="dd/MMM/yy hh:mm a" /></td>
-            <td>${audit.eventType}</td>
-            <td>${audit.objectKey}</td>
-            <td>${audit.fieldName}</td>
-            <td>${audit.oldValue}</td>
-            <td>${audit.newValue}</td>
+            <td>${issueAudit.myRevisionEntity.username}</td>
+            <td class="has-text-right"><fmt:formatDate value="${issueAudit.myRevisionEntity.revisionDate}" pattern="dd/MMM/yy hh:mm a" /></td>
+            <td>${issueAudit.after.project.prefix}-${issueAudit.after.id}</td>
+            <td>${issueAudit.changedProperties}</td>
+<%--            <td>${issueAudit.fieldName}</td>--%>
+<%--            <td>${issueAudit.oldValue}</td>--%>
+<%--            <td>${issueAudit.newValue}</td>--%>
         </tr>
     </c:forEach>
     </tbody>

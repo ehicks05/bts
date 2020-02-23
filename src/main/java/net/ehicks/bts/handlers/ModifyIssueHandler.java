@@ -1,9 +1,15 @@
 package net.ehicks.bts.handlers;
 
+import net.ehicks.bts.MyRevisionEntity;
 import net.ehicks.bts.beans.*;
 import net.ehicks.bts.mail.EmailAction;
 import net.ehicks.bts.mail.MailClient;
+import net.ehicks.bts.model.IssueAudit;
 import net.ehicks.common.Common;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.DefaultRevisionEntity;
+import org.hibernate.envers.RevisionType;
+import org.hibernate.envers.query.AuditEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -31,13 +37,14 @@ public class ModifyIssueHandler
     private EmailEventRepository emailEventRepository;
     private BtsSystemRepository btsSystemRepository;
     private MailClient mailClient;
+    private EntityManager entityManager;
 
     public ModifyIssueHandler(UserRepository userRepository, GroupRepository groupRepository,
                               IssueTypeRepository issueTypeRepository, ProjectRepository projectRepository,
                               StatusRepository statusRepository, SeverityRepository severityRepository,
                               IssueRepository issueRepository, CommentRepository commentRepository,
                               EmailEventRepository emailEventRepository, BtsSystemRepository btsSystemRepository,
-                              MailClient mailClient)
+                              MailClient mailClient, EntityManager entityManager)
     {
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
@@ -50,6 +57,7 @@ public class ModifyIssueHandler
         this.emailEventRepository = emailEventRepository;
         this.btsSystemRepository = btsSystemRepository;
         this.mailClient = mailClient;
+        this.entityManager = entityManager;
     }
 
     @GetMapping("/issue/form")
@@ -76,10 +84,32 @@ public class ModifyIssueHandler
     }
 
     @GetMapping("/issue/ajaxGetChangeLog")
+    @ResponseBody
     public ModelAndView ajaxGetChangeLog(@RequestParam Long issueId)
     {
         // todo get audit info
-        return new ModelAndView("issueChangelog");
+
+        List<IssueAudit> issueAudits = new ArrayList<>();
+
+        List<Object[]> revisions = (List<Object[]>) AuditReaderFactory.get(entityManager).createQuery()
+                .forRevisionsOfEntityWithChanges(Issue.class, true)
+                .add(AuditEntity.id().eq(issueId))
+                .addOrder(AuditEntity.revisionNumber().asc())
+                .getResultList();
+
+        Issue previous = null;
+        for (Object[] revision : revisions)
+        {
+            DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) revision[1];
+            MyRevisionEntity myRevisionEntity = AuditReaderFactory.get(entityManager).findRevision(MyRevisionEntity.class, revisionEntity.getId());
+
+            User user = userRepository.findByUsername(myRevisionEntity.getUsername()).orElse(null);
+            issueAudits.add(new IssueAudit(user, previous, (Issue) revision[0], myRevisionEntity, (RevisionType) revision[2], (HashSet<String>) revision[3]));
+            previous = (Issue) revision[0];
+        }
+
+        return new ModelAndView("issueChangelog")
+                .addObject("issueAudits", issueAudits);
     }
 
     private Set<Comment> retainVisibleComments(Set<Comment> comments, User user)
@@ -96,7 +126,7 @@ public class ModifyIssueHandler
         }
     }
 
-    @GetMapping("/issue/create")
+    @PostMapping("/issue/create")
     public ModelAndView createIssue(
             @AuthenticationPrincipal User user,
             @RequestParam Long createIssueProject,
@@ -108,17 +138,15 @@ public class ModifyIssueHandler
             @RequestParam String createIssueDescription
     )
     {
-        Issue issue = new Issue();
-        issue.setReporter(user);
-        issue.setAssignee(user);
-        issue.setProject(projectRepository.findById(createIssueProject).get());
-        issue.setGroup(groupRepository.findById(createIssueGroup).get());
-        issue.setIssueType(issueTypeRepository.findById(createIssueIssueType).get());
-        issue.setSeverity(severityRepository.findById(createIssueSeverity).get());
-        issue.setStatus(statusRepository.findById(createIssueStatus).get());
-        issue.setTitle(createIssueTitle);
-        issue.setDescription(createIssueDescription);
-        issue.setCreatedOn(LocalDateTime.now());
+        Issue issue = new Issue(0, createIssueTitle, createIssueDescription,
+                groupRepository.findById(createIssueGroup).get(),
+                issueTypeRepository.findById(createIssueIssueType).get(),
+                projectRepository.findById(createIssueProject).get(),
+                user,
+                user,
+                severityRepository.findById(createIssueSeverity).get(),
+                statusRepository.findById(createIssueStatus).get()
+                );
         issue.getWatchers().add(user);
         issue = issueRepository.save(issue);
 

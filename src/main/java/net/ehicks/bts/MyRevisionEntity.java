@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 
 @Entity
 @RevisionEntity(value = RevListener.class)
-public class RevisionInfo extends DefaultRevisionEntity {
+public class MyRevisionEntity extends DefaultRevisionEntity {
     private String username;
 
     public String getUsername() { return username; }
