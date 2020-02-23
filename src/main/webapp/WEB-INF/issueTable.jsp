@@ -19,7 +19,7 @@
     <c:forEach var="issue" items="${issueForm.searchResult.searchResults}" varStatus="loop">
         <tr>
             <td class="has-text-right">
-                <a href="${pageContext.request.contextPath}/issue/form?issueId=${issue.id}">${issue.id}</a>
+                <a href="${pageContext.request.contextPath}/issue/form?issueId=${issue.id}">${issue.project.prefix}-${issue.id}</a>
             </td>
             <td>
                 <a href="${pageContext.request.contextPath}/issue/form?issueId=${issue.id}">${issue.title}</a>
