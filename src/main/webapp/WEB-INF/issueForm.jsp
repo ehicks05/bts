@@ -102,7 +102,7 @@
         function addWatcher(elementId, issueId)
         {
             var userId = $('#' + elementId).val();
-            location.href = "${pageContext.request.contextPath}/issue/addWatcher?issueId=${issue.id}&profileUserId=" + userId;
+            location.href = "${pageContext.request.contextPath}/issue/addWatcher?issueId=${issue.id}&userId=" + userId;
         }
 
         function deleteAttachment(attachmentId)
@@ -253,7 +253,7 @@
                 <div class="box">
                     <h2 class="subtitle">People</h2>
 
-                    <table class="table">
+                    <table class="table is-narrow">
                         <tr>
                             <td>Assignee:</td>
                             <td>
@@ -277,14 +277,16 @@
                             </td>
                         </tr>
                     </table>
-                    <hr>
-                    <table>
+                    <table class="table is-narrow">
                         <tr>
                             <td style="padding: 0 8px;vertical-align: top;">Watchers:</td>
                             <td>
                                 <c:if test="${!empty issue.watchers}">
                                     <a id="showWatchers" style="cursor: pointer">
-                                        View</a>
+                                    <span class="tag">
+                                      ${issue.watchers.size()}
+                                    </span>
+                                    </a>
 
                                     <div class="watchersDiv" style="display: none;">
                                         <table class="table">

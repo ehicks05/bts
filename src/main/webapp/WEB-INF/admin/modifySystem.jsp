@@ -42,7 +42,14 @@
                     <t:text id="emailFromAddress" label="Email 'From' Address" value="${btsSystem.emailFromAddress}"/>
                     <t:text id="emailFromName" label="Email 'From' Name" value="${btsSystem.emailFromName}"/>
 
-                    <input id="saveSystemButton" type="submit" value="Save" class="button is-primary" />
+                    <div class="field is-horizontal">
+                        <div class="field-label"></div>
+                        <div class="field-body">
+                            <div class="control">
+                                <input id="saveSystemButton" type="submit" value="Save" class="button is-primary" />
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
