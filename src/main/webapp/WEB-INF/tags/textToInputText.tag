@@ -7,9 +7,14 @@
 <%@attribute name="submitAction" fragment="false" %>
 <%@attribute name="tag" fragment="false" %>
 <%@attribute name="clazz" fragment="false" %>
+<%@attribute name="style" fragment="false" %>
+<%@attribute name="editableClass" fragment="false" %>
 
 <c:if test="${empty tag}">
     <c:set var="tag" value="div"/>
+</c:if>
+<c:if test="${empty editableClass}">
+    <c:set var="editableClass" value="editable"/>
 </c:if>
 
 <c:set var="textToInputTextCounter" value="${requestScope.textToInputTextCounter + 1}" scope="request"/>
@@ -21,7 +26,7 @@
     </script>
 </c:if>
 
-<${tag} contenteditable="true" id="${id}" class="editable ${clazz}">${text}</${tag}>
+<${tag} style="${style}" contenteditable="true" id="${id}" class="${editableClass} ${clazz}">${text}</${tag}>
 <script>
     CKEDITOR.inline( '${id}', {
         on: {

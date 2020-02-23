@@ -27,14 +27,14 @@ import javax.persistence.*
     Index(name = "IDX_ISSUE_STATUS_ID", columnList = "status_id")
 ])
 @Audited(withModifiedFlag = true)
-data class Issue(
+data class Issue @JvmOverloads constructor(
         @Id @GeneratedValue(strategy = GenerationType.AUTO)
         var id: Long = 0,
         @Column(length = 2000)
         var title: String = "",
         @Column(length=10485760)
         var description: String = "",
-        var createdOn: LocalDateTime,
+        var createdOn: LocalDateTime = LocalDateTime.now(),
         @LastModifiedDate
         var lastUpdatedOn: LocalDateTime = LocalDateTime.now(),
 
@@ -45,7 +45,7 @@ data class Issue(
         @ManyToOne var reporter: User,
         @ManyToOne var severity: Severity,
         @ManyToOne var status: Status,
-        
+
         @ManyToMany
         @JoinTable(name = "issue_watcher",
                 joinColumns = [JoinColumn(name = "issue_id")],

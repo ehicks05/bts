@@ -11,6 +11,7 @@
         </header>
         <section class="modal-card-body">
             <form id="frmCreateIssue" name="frmCreateIssue" method="post" action="${pageContext.request.contextPath}/issue/create">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <t:text        id="createIssueTitle" label="Title" required="true" />
                 <t:text        id="createIssueDescription" label="Description" required="true" />
                 <t:basicSelect id="createIssueProject" label="Project" items="${projects}" required="true" />
