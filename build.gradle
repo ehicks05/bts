@@ -71,6 +71,7 @@ dependencies {
 
     implementation group: "com.github.ehicks05", name: "common", version: "-SNAPSHOT", changing: true
     implementation 'org.apache.commons:commons-lang3:3.9'
+    implementation group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
 
     implementation 'org.apache.pdfbox:pdfbox:2.0.18'
     implementation 'com.github.dhorions:boxable:1.5'

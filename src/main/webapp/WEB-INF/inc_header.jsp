@@ -32,7 +32,6 @@
 <%-- qTip2 --%>
 
 <%-- Bulma --%>
-<%--<c:set var="theme" value="${pageContext.servletContext.getAttribute('theme')}"/>--%>
 <c:if test="${empty theme || theme eq 'default'}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css" />
 </c:if>
@@ -42,11 +41,9 @@
 <%-- Bulma --%>
 
 <%-- Font Awesome --%>
-<%--<script defer src="https://use.fontawesome.com/releases/v5.0.4/js/all.js"></script>--%>
 <script src="https://kit.fontawesome.com/eb9542ee7f.js" crossorigin="anonymous"></script>
 <%-- Font Awesome --%>
 
-<link rel="shortcut icon" href="${pageContext.request.contextPath}/images/puffin.png">
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/bts.css" media="screen" />
 <script src="${pageContext.request.contextPath}/js/util.js"></script>
 <script src="${pageContext.request.contextPath}/js/ajaxUtil.js"></script>

@@ -85,12 +85,9 @@
             ["/admin/projects/form", "folder", "Manage Projects", "projects"],
             ["/admin/email/form", "envelope", "Manage Email", "email"],
             ["/admin/backups/form", "cloud-upload-alt", "Backups", "backups"],
-            // ["/admin/logs/form", "file-alt", "Logs", "logs"],
-            // ["/admin/cache/form", "microchip", "Cache Info", "cache"],
             ["/admin/system/info/form", "chart-bar", "System Info", "system"],
             ["/admin/dbInfo/form", "chart-bar", "Database Info", "dbInfo"],
-            ["/admin/audit/form", "history", "Audit Records", "audit"],
-            ["/admin/sql/form", "database", "SQL", "sql"]
+            ["/admin/audit/form", "history", "Audit Records", "audit"]
         ];
         container = $('#adminSubscreensContainer');
         adminSubscreens.forEach(subscreen => {

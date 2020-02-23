@@ -21,11 +21,6 @@
                     <a href="https://github.com/ehicks05/puffin/commit/${revision}" title="${revision}">v${version}</a>
                     by <a href="https://ehicks.net">Eric Hicks</a>
                 </p>
-                <p>
-                    <c:if test="${!empty requestStartTime}">
-                        <span title="Time from entering the controller to rendering this element.">${now.time - requestStartTime} ms</span>
-                    </c:if>
-                </p>
             </div>
         </div>
     </div>

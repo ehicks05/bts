@@ -49,7 +49,7 @@
         <c:forEach var="issueForm" items="${dashBoardIssueForms}">
             <c:set var="searchResult" value="${issueForm.searchResult}"/>
 
-            <div class="column ${cols} has-text-centered">
+            <div class="column is-half-desktop is-half-widescreen is-half-fullhd has-text-centered">
                 <div class="card">
                     <header class="card-header">
                         <p class="card-header-title">

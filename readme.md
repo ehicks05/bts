@@ -1,4 +1,4 @@
-# BTS
+# Puffin
 
 Web-based bug tracker
 
@@ -21,6 +21,7 @@ Web-based bug tracker
 
 ##2020 Todo:
 - security, lock down access
+- get auditing screens working again
 - do we need a modify subscription screen?
 - why do temporal indexes like 'created_on' in Issue.kt not work?
 - Consider react

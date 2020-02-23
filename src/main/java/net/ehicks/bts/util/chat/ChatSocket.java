@@ -1,10 +1,8 @@
 //package net.ehicks.bts.util.chat;
 //
-//import net.ehicks.bts.SessionListener;
 //import net.ehicks.bts.beans.ChatRoom;
 //import net.ehicks.bts.beans.ChatRoomMessage;
 //import net.ehicks.bts.beans.User;
-//import net.ehicks.eoi.EOI;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 //

@@ -24,13 +24,6 @@ public class AuditQueryLogic
 
     public SearchResult<Revision<Integer, Issue>> query(AuditForm searchForm)
     {
-//        List results = AuditReaderFactory.get( entityManager ).createQuery()
-//                .forRevisionsOfEntityWithChanges( Issue.class, true )
-//                .add( AuditEntity.id().eq( searchForm.getIssueId() ) )
-//                .addOrder( AuditEntity.revisionNumber().asc() )
-//                .getResultList();
-
-
 //        Revisions<Integer, Issue> allRevisions = issueRepository.findRevisions(searchForm.getIssueId());
 
         int page = Integer.parseInt(searchForm.getPage());

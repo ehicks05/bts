@@ -8,6 +8,6 @@ public class ChatHandler
     @GetMapping("/chat/form")
     public ModelAndView showProfile()
     {
-        return new ModelAndView("/webroot/chat.jsp");
+        return new ModelAndView("chat");
     }
 }

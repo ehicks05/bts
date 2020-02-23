@@ -245,7 +245,7 @@ public class IssueSearchHandler
         if (severityIds != null) issueForm.setSeverities(severityRepository.findByIdIn(severityIds));
         if (statusIds != null) issueForm.setStatuses(statusRepository.findByIdIn(statusIds));
 //        issueForm.setLastUpdatedOn(lastUpdatedOn);
-        if (onDash != null) issueForm.setOnDash(onDash);
+        issueForm.setOnDash(onDash != null);
         issueForm.setSortColumn(sortColumn);
         issueForm.setSortDirection(sortDirection);
         issueForm.setPage(String.valueOf(page));
