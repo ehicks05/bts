@@ -55,14 +55,14 @@
                         <p class="card-header-title">
                             ${issueForm.formName}: ${searchResult.size} Issues
                         </p>
-                        <a href="#" class="card-header-icon" aria-label="edit" title="edit" onclick="modifySavedSearch(${issueForm.id})">
+                        <a href="#" class="card-header-icon" aria-label="edit" title="Edit" onclick="modifySavedSearch(${issueForm.id})">
                             <span class="icon">
                                 <i class="fas fa-edit"></i>
                             </span>
                         </a>
                         <a href="#" class="card-header-icon" aria-label="remove from dashboard" title="remove from dashboard" onclick="confirmDelete(${issueForm.id})">
                             <span class="icon">
-                                <i class="fas fa-trash"></i>
+                                <i class="fas fa-thumbtack"></i>
                             </span>
                         </a>
                     </header>

@@ -36,7 +36,7 @@
 
 <c:if test="${horizontal}">
     <div class="field is-horizontal">
-        <div class="field-label">
+        <div class="field-label is-normal">
             <label class="label">${label}</label>
         </div>
         <div class="field-body">

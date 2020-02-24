@@ -41,7 +41,7 @@
                 <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">Sessions (${fn:length(sessions)})</h5>
 
-                    <table class="table is-narrow">
+                    <table class="table is-narrow is-fullwidth">
                         <tr>
                             <th>Session Id</th>
                             <th>Username</th>
@@ -61,7 +61,7 @@
                 <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">DB Info</h5>
 
-                    <table class="table is-narrow">
+                    <table class="table is-narrow is-fullwidth">
                         <thead>
                         <tr>
                             <th>Property</th>

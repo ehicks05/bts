@@ -338,11 +338,11 @@
                                     <div class="media-content">
                                         <div class="content">
                                             <div>
-                                                <strong class="hasTooltip">
+                                                <span class="hasTooltip">
                                                     <a href="${pageContext.request.contextPath}/profile/form?profileUserId=${comment.author.id}">
                                                             ${comment.author.name}
                                                     </a>
-                                                </strong>
+                                                </span>
                                                 <div style="display: none;">
                                                     <table>
                                                         <tr>
@@ -390,7 +390,7 @@
                             </c:forEach>
 
                             <c:set var="principal" value="${pageContext.request.userPrincipal.principal}" />
-                            <article class="media">
+                            <article id="newCommentArticle" class="media is-hidden">
                                 <figure class="media-left">
                                     <p class="image is-32x32">
                                         <img src="${pageContext.request.contextPath}/avatar/${principal.avatar.id}">
@@ -404,10 +404,14 @@
                                             <t:basicSelect id="fldVisibility" label="Visibility" items="${groups}" blankLabel="Default" horizontal="false" labelClass="has-text-left" />
 
                                             <input type="button" value="Add" id="submitAddComment" class="button is-primary is-small"/>
+                                            <input type="button" value="Cancel" id="cancelAddComment" class="button is-small" onclick="toggleAddComment()"/>
                                         </form>
                                     </div>
                                 </div>
                             </article>
+
+                            <br />
+                            <input type="button" value="Comment" id="showAddComment" class="button is-small" onclick="toggleAddComment()"/>
                         </div>
 
                         <div class="" data-content="2">
@@ -583,6 +587,11 @@
             }
         };
     });
+
+    function toggleAddComment() {
+        $('#showAddComment').toggleClass('is-hidden');
+        $('#newCommentArticle').toggleClass('is-hidden');
+    }
 
     $(function () {
         var addAttachmentDialog = $('#addAttachmentDialog');

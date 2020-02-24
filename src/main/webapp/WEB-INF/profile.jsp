@@ -35,9 +35,9 @@
     <div class="container">
         <div class="columns is-multiline is-centered">
             <div class="column is-one-third">
-                <h3 class="subtitle is-3">Details</h3>
+                <h2 class="issueSubheading">Details</h2>
 
-                <table class="table">
+                <table class="table is-narrow">
                     <tr>
                         <td>Username:</td>
                         <td>${user.username}</td>
@@ -87,7 +87,7 @@
                 </table>
             </div>
             <div class="column">
-                <h3 class="subtitle is-3">Activity</h3>
+                <h2 class="issueSubheading">Activity</h2>
 
                 <c:forEach var="comment" items="${recentComments}">
                     <article class="media">
@@ -99,9 +99,9 @@
                         <div class="media-content">
                             <div class="content">
                                 <div>
-                                    <strong class="hasTooltip">
+                                    <span class="hasTooltip">
                                         ${comment.author.name}
-                                    </strong>
+                                    </span>
                                     <div style="display: none;">
                                         <table>
                                             <tr>

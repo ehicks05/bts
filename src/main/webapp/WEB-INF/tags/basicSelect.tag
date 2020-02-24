@@ -39,10 +39,11 @@
 </c:if>
 <c:if test="${empty horizontal || horizontal}">
     <c:set var="isHorizontal" value="is-horizontal" />
+    <c:set var="fieldLabelNormal" value="is-normal" />
 </c:if>
 
 <div class="field ${isHorizontal}">
-    <div class="field-label ${labelClass}">
+    <div class="field-label ${fieldLabelNormal} ${labelClass}">
         <label class="label">${label}</label>
     </div>
     <div class="field-body">

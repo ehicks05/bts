@@ -33,7 +33,7 @@
                 <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">Table Sizes</h5>
 
-                    <table class="table is-narrow">
+                    <table class="table is-narrow is-fullwidth">
                         <tr>
                             <c:forEach var="columnLabel" items="${columnLabels}">
                                 <th class="has-text-right">${columnLabel}</th>
