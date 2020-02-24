@@ -214,9 +214,6 @@
                 <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/profile/form?profileUserId=${pageContext.request.userPrincipal.principal.id}">
                     Profile
                 </a>
-                <a class="navbar-item ${statusClass}" href="${pageContext.request.contextPath}/chat/form">
-                    Chat
-                </a>
             </div>
             <div class="navbar-end">
                 <a class="navbar-item" onclick="document.getElementById('logoutForm').submit();">

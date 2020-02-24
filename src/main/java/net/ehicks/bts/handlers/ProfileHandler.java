@@ -35,7 +35,7 @@ public class ProfileHandler
 //                return "/webroot/error.jsp";
 //
             mav.addObject("user", profileUser);
-            mav.addObject("recentComments", commentRepository.findTop10ByAuthorOrderByCreatedOnDesc(profileUser));
+            mav.addObject("recentComments", commentRepository.findTop10ByAuthorOrderByCreatedOnDescIdDesc(profileUser));
             mav.addObject("defaultAvatar", btsSystemRepository.findFirstBy().getDefaultAvatar());
         });
 

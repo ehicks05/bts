@@ -26,5 +26,5 @@ data class Comment(
 
 @Repository
 interface CommentRepository : JpaRepository<Comment, Long> {
-    fun findTop10ByAuthorOrderByCreatedOnDesc(author: User): List<Comment>
+    fun findTop10ByAuthorOrderByCreatedOnDescIdDesc(author: User): List<Comment>
 }

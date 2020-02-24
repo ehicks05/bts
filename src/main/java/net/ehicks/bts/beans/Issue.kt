@@ -55,7 +55,7 @@ data class Issue @JvmOverloads constructor(
     @OneToMany(mappedBy = "issue")
     var attachments: Set<Attachment> = HashSet()
     @OneToMany(mappedBy = "issue")
-    @OrderBy("createdOn asc")
+    @OrderBy("createdOn, id asc")
     var comments: Set<Comment> = HashSet()
 
     fun getTimeSinceCreation(): String {

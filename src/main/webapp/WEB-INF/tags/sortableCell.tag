@@ -24,7 +24,10 @@
 <th id="${code}${searchForm.id}" class="nowrap ${cssClass}" style="cursor: pointer; ${style}"
     onclick="ajaxItems(this.id, '${pageContext.servletConfig.servletContext.contextPath}', '${searchForm.endpoint}', '${searchForm.id}', '${searchForm.page}', '${code}', '${newDirection}');">
     ${label}
-    <span class="icon">
-      <i class="fas fa-${sortIcon}"></i>
-    </span>
+    
+    <c:if test="${!empty sortIcon}">
+        <span class="icon">
+          <i class="fas fa-${sortIcon}"></i>
+        </span>
+    </c:if>
 </th>
