@@ -470,7 +470,7 @@
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        <a class="icon is-medium" href="${pageContext.request.contextPath}/issue/removeWatcher?issueId=${issue.id}&profileUserId=${watcher.id}">
+                                                        <a class="icon is-medium" href="${pageContext.request.contextPath}/issue/removeWatcher?issueId=${issue.id}&userId=${watcher.id}">
                                                             <span><i class="fas fa-trash fa-lg"></i></span>
                                                         </a>
                                                     </td>

@@ -14,8 +14,8 @@ data class Attachment(
         val id: Long = 0,
 
         var name: String = "",
-        @ManyToOne val issue: Issue,
-        @ManyToOne val dbFile: DBFile,
+        @ManyToOne(fetch = FetchType.LAZY) val issue: Issue,
+        @ManyToOne(fetch = FetchType.LAZY) val dbFile: DBFile,
         @CreatedDate
         val createdOn: LocalDateTime
 ) {

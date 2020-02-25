@@ -12,10 +12,6 @@ import javax.persistence.*
 
 @Entity
 @Table(indexes = [
-//    Index(name = "TRGM_IDX_ISSUE_TITLE", columnList = "title gin_trgm_ops"),
-//    Index(name = "TRGM_IDX_ISSUE_DESCRIPTION", columnList = "description gin_trgm_ops"),
-//    Index(name = "IDX_ISSUE_CREATED_ON", columnList = "created_on"),
-//    Index(name = "IDX_ISSUE_LAST_UPDATED_ON", columnList = "last_updated_on"),
     Index(name = "IDX_ISSUE_TITLE", columnList = "title"),
     Index(name = "IDX_ISSUE_DESCRIPTION", columnList = "description"),
     Index(name = "IDX_ISSUE_GROUP_ID", columnList = "group_id"),
@@ -38,13 +34,13 @@ data class Issue @JvmOverloads constructor(
         @LastModifiedDate
         var lastUpdatedOn: LocalDateTime = LocalDateTime.now(),
 
-        @ManyToOne var group: Group,
-        @ManyToOne var issueType: IssueType,
-        @ManyToOne var project: Project,
-        @ManyToOne var assignee: User,
-        @ManyToOne var reporter: User,
-        @ManyToOne var severity: Severity,
-        @ManyToOne var status: Status,
+        @ManyToOne(fetch = FetchType.LAZY) var group: Group,
+        @ManyToOne(fetch = FetchType.LAZY) var issueType: IssueType,
+        @ManyToOne(fetch = FetchType.LAZY) var project: Project,
+        @ManyToOne(fetch = FetchType.LAZY) var assignee: User,
+        @ManyToOne(fetch = FetchType.LAZY) var reporter: User,
+        @ManyToOne(fetch = FetchType.LAZY) var severity: Severity,
+        @ManyToOne(fetch = FetchType.LAZY) var status: Status,
 
         @ManyToMany
         @JoinTable(name = "issue_watcher",

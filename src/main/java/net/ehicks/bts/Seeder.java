@@ -39,7 +39,7 @@ public class Seeder
 {
     private final Logger log = LoggerFactory.getLogger(Seeder.class);
 
-    private int issueCount = (int) Math.pow(1_024, 1.7);
+    private int issueCount = (int) Math.pow(1_024, 1.5);
     private Random r = new Random();
 
     private List<String> latin = Arrays.asList("annus", "ante meridiem", "aqua", "bene", "canis", "caput", "circus", "cogito",
@@ -186,12 +186,6 @@ public class Seeder
         createProjectMaps();
         log.info(timer.printDuration("createProjectMaps"));
 
-        createIssues();
-        log.info(timer.printDuration("createIssues"));
-
-        createAttachments();
-        log.info(timer.printDuration("createAttachments"));
-
         createIssueForms();
         log.info(timer.printDuration("createIssueForms"));
 
@@ -204,13 +198,19 @@ public class Seeder
         createChatObjects();
         log.info(timer.printDuration("createChatObjects"));
 
-        createGIN_Indexes();
+        createIssues();
+        log.info(timer.printDuration("createIssues"));
+
+        createAttachments();
+        log.info(timer.printDuration("createAttachments"));
+
+        createAdditionalIssueIndexes();
 
         log.info(timer.printDuration("Done seeding dummy data"));
     }
 
     @Transactional
-    void createGIN_Indexes() {
+    void createAdditionalIssueIndexes() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         entityManager.getTransaction().begin();
@@ -219,6 +219,13 @@ public class Seeder
 
         query = entityManager.createNativeQuery("CREATE INDEX TRGM_IDX_ISSUE_DESCRIPTION ON ISSUE USING gin (description gin_trgm_ops);");
         query.executeUpdate();
+
+        query = entityManager.createNativeQuery("CREATE INDEX IDX_ISSUE_CREATED_ON ON ISSUE (created_on);");
+        query.executeUpdate();
+
+        query = entityManager.createNativeQuery("CREATE INDEX IDX_ISSUE_LAST_UPDATED_ON ON ISSUE (last_updated_on);");
+        query.executeUpdate();
+
         entityManager.getTransaction().commit();
     }
 
@@ -450,15 +457,16 @@ public class Seeder
                     .mapToObj(users::get).collect(Collectors.toSet()));
 
             issues.add(issue);
-            if (issues.size() >= 1_000) {
+            if (issues.size() >= 100) {
                 issueRepository.saveAll(issues);
 
                 issues.forEach(savedIssue -> {
-                    for (int j = 0; j < r.nextInt(8); j++)
-                        comments.add(new Comment(0, savedIssue, users.get(r.nextInt(users.size())),
-                                buildLatin(32), savedIssue.getGroup(), LocalDateTime.now(), LocalDateTime.now()));
+                    if (r.nextDouble() > .9) // create comments on 1/10 issues
+                        for (int j = 0; j < r.nextInt(3) + 1; j++) // create 1-3 comments
+                            comments.add(new Comment(0, savedIssue, users.get(r.nextInt(users.size())),
+                                    buildLatin(32), savedIssue.getGroup(), LocalDateTime.now(), LocalDateTime.now()));
 
-                    if (comments.size() >= 1_000) {
+                    if (comments.size() >= 100) {
                         commentRepository.saveAll(comments);
                         comments.clear();
                     }
@@ -475,7 +483,7 @@ public class Seeder
                 comments.add(new Comment(0, savedIssue, users.get(r.nextInt(users.size())),
                         buildLatin(32), savedIssue.getGroup(), LocalDateTime.now(), LocalDateTime.now()));
 
-            if (comments.size() >= 1_000) {
+            if (comments.size() >= 100) {
                 commentRepository.saveAll(comments);
                 comments.clear();
             }

@@ -12,7 +12,7 @@ data class Avatar @JvmOverloads constructor(
         @Id @GeneratedValue(strategy = GenerationType.AUTO)
         var id: Long = 0,
         var name: String = "",
-        @OneToOne var dbFile: DBFile = DBFile(),
+        @OneToOne(fetch = FetchType.LAZY) var dbFile: DBFile = DBFile(),
         var publicUse: Boolean = false
 ) : ISelectTagSupport {
     override fun getText(): String {

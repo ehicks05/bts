@@ -30,15 +30,15 @@ data class User @JvmOverloads constructor(
         @LastModifiedDate
         var lastUpdatedOn: LocalDateTime = LocalDateTime.now(),
 
-        @ManyToOne var avatar: Avatar,
+        @ManyToOne(fetch = FetchType.LAZY) var avatar: Avatar,
 
-        @ManyToMany(fetch = FetchType.EAGER)
+        @ManyToMany
         @JoinTable(name = "user_projects",
                 joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
                 inverseJoinColumns = [JoinColumn(name = "project_id", referencedColumnName = "id")])
         var projects: Set<Project> = HashSet(),
 
-        @ManyToMany(fetch = FetchType.EAGER)
+        @ManyToMany
         @JoinTable(name = "user_groups",
         joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
         inverseJoinColumns = [JoinColumn(name = "group_id", referencedColumnName = "id")])

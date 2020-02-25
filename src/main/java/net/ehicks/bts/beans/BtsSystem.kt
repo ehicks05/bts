@@ -10,7 +10,7 @@ data class BtsSystem @JvmOverloads constructor(
         var id: Long = 0,
         var instanceName: String = "",
         var logonMessage: String = "",
-        @OneToOne var defaultAvatar: Avatar = Avatar(),
+        @OneToOne(fetch = FetchType.LAZY) var defaultAvatar: Avatar = Avatar(),
         var theme: String = "",
         var emailFromAddress: String = "",
         var emailFromName: String = "noreply",

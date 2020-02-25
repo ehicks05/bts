@@ -15,7 +15,7 @@ data class DBFile @JvmOverloads constructor(
         val content: ByteArray = ByteArray(0),
         val hash: Int = 0,
         val mediaType: String = "",
-        @OneToOne val thumbnail: DBFile? = null
+        @OneToOne(fetch = FetchType.LAZY) val thumbnail: DBFile? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
