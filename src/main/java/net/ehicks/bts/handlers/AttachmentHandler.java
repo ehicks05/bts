@@ -32,13 +32,29 @@ public class AttachmentHandler
 
     @GetMapping("/attachment/{id}")
     @ResponseBody
-    public ResponseEntity<byte[]> getAttachment(@PathVariable Long id)
+    public ResponseEntity<byte[]> getAttachment(@PathVariable Long id, @RequestParam(required = false) Boolean thumbnail)
     {
         // todo security - something about group access?
-        return attachmentRepository.findById(id).map(value -> ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(value.getDbFile().getMediaType()))
-                .body(value.getDbFile().getContent()))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+
+        Attachment attachment = attachmentRepository.findById(id).orElse(null);
+        if (attachment != null)
+        {
+            DBFile dbFile = attachment.getDbFile();
+            MediaType mediaType = MediaType.parseMediaType(dbFile.getMediaType());
+
+            byte[] content = null;
+            if (thumbnail != null && thumbnail && dbFile.getThumbnail() != null)
+                content = dbFile.getThumbnail().getContent();
+            if (thumbnail == null || !thumbnail)
+                content = dbFile.getContent();
+
+            if (content != null)
+                return ResponseEntity.ok()
+                        .contentType(mediaType)
+                        .body(content);
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/issue/addAttachment")

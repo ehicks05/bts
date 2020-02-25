@@ -20,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -384,7 +385,7 @@ public class Seeder
                     byte[] scaledBytes = new byte[0];
                     try
                     {
-                        scaledBytes = CommonIO.getThumbnail(img);
+                        scaledBytes = CommonIO.getThumbnail(new FileInputStream(img));
                     }
                     catch (IOException e)
                     {

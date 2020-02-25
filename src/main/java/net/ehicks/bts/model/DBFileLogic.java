@@ -45,7 +45,7 @@ public class DBFileLogic
             DBFile thumbnail = null;
             if (mediaType.toLowerCase().startsWith("image")) // todo be more restrictive of image mediatypes?
             {
-                byte[] scaledBytes = CommonIO.getThumbnail(file);
+                byte[] scaledBytes = CommonIO.getThumbnail(file.getInputStream());
                 thumbnail = new DBFile(0, scaledBytes, Arrays.hashCode(scaledBytes), mediaType, null);
                 thumbnail = dbFileRepository.save(thumbnail);
             }

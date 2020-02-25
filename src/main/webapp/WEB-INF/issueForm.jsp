@@ -120,7 +120,7 @@
 
         function deleteAttachment(attachmentId)
         {
-            if (confirm('Are you sure?'))
+            if (confirm('Are you sure you want to delete this attachment?'))
                 location.href="${pageContext.request.contextPath}/issue/deleteAttachment?issueId=${issue.id}&attachmentId=" + attachmentId;
         }
 
@@ -269,12 +269,16 @@
                             <c:if test="${!empty attachment.dbFile.thumbnail}">
                                 <div class="column is-narrow">
                                     <div class="">
+                                            <figure class="image is-128x128">
+                                        <div class="delete" style="position: absolute; top: 8px; right: 8px;"
+                                             onclick="deleteAttachment('${attachment.id}');"></div>
                                         <a target="_blank" href="${pageContext.request.contextPath}/attachment/${attachment.id}" title="${attachment.name}">
-                                            <figure class="image is-64x64">
-                                                <img src="${pageContext.request.contextPath}/attachment/${attachment.id}"
+                                                <img class="is-pulled-right" style="max-height: 100%; width: auto;" src="${pageContext.request.contextPath}/attachment/${attachment.id}?thumbnail=true"
                                                      title="${attachment.name}" alt="${attachment.name}">
-                                            </figure>
+<%--                                                <div class="delete" style="position: absolute; top: 8px; right: 8px"--%>
+<%--                                                   onclick="deleteAttachment('${attachment.id}');"></div>--%>
                                         </a>
+                                            </figure>
                                     </div>
                                 </div>
                             </c:if>
@@ -300,11 +304,7 @@
                                         <span><javatime:format value="${attachment.createdOn}" style="MS" /></span>
                                     </td>
                                     <td>
-                                        <a href="#" aria-label="delete" onclick="deleteAttachment('${attachment.id}');">
-                                            <span class="icon">
-                                                <i class="fas fa-trash" aria-hidden="true"></i>
-                                            </span>
-                                        </a>
+                                        <span class="delete" onclick="deleteAttachment('${attachment.id}');">
                                     </td>
                                 </tr>
                             </c:if>
