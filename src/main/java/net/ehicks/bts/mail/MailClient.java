@@ -87,6 +87,21 @@ public class MailClient {
         }
     }
 
+    public void prepareAndSendTest(String toAddress) {
+        MimeMessagePreparator messagePreparator = mimeMessage -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+            messageHelper.setFrom(btsSystemRepository.findFirstBy().getEmailFromAddress());
+            messageHelper.setTo(toAddress);
+            messageHelper.setSubject("Test Message");
+            messageHelper.setText("Mail works");
+        };
+        try {
+            taskExecutor.execute(new EmailSender(mailSender, messagePreparator));
+        } catch (MailException e) {
+            log.error(e.getLocalizedMessage());
+        }
+    }
+
     private String[] determineRecipients(EmailEvent emailEvent)
     {
         Set<String> recipients = new HashSet<>();
@@ -119,11 +134,6 @@ public class MailClient {
                 if (addIt)
                     recipients.add(subscription.getUser().getUsername());
             }
-        }
-
-        if (emailEvent.getActionId() == EmailAction.TEST.getId())
-        {
-            recipients.add(emailEvent.getToAddress());
         }
 
         String[] recipientArray = new String[recipients.size()];

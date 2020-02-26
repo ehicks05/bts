@@ -52,7 +52,6 @@
                         <th class="has-text-right">issueId</th>
                         <th class="has-text-right">commentId</th>
                         <th>description</th>
-                        <th>hardcoded to address</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -72,7 +71,6 @@
                             <td class="has-text-right">${email.issue.id}</td>
                             <td class="has-text-right">${email.comment.id}</td>
                             <td>${email.description}</td>
-                            <td>${email.toAddress}</td>
                             <td><a onclick="deleteEmail('${email.id}');"><i class="fas fa-trash"></i></a></td>
                         </tr>
                     </c:forEach>

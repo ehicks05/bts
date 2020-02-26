@@ -16,7 +16,6 @@ data class EmailEvent(
         var actionId: Long,
         var status: String = "CREATED",
         var description: String = "",
-        var toAddress: String = "",
         var previousValue: String = "",
         var newValue: String = ""
 
@@ -45,8 +44,6 @@ data class EmailEvent(
         if (actionId == EmailAction.ADD_COMMENT.id || actionId == EmailAction.EDIT_COMMENT.id) {
             return user.username + verb + issue?.project?.prefix + "-" + issue?.id + " " + issue?.title
         }
-        if (actionId == EmailAction.TEST.id)
-            return "Test Email"
 
         return ""
     }

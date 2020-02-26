@@ -51,7 +51,6 @@
                 <th class="has-text-right">Object Id</th>
                 <th class="has-text-centered">Status</th>
                 <th class="has-text-right">User Who Caused the Action</th>
-                <th>To</th>
                 <th>action</th>
                 <th class="has-text-right">issueId</th>
                 <th class="has-text-right">commentId</th>
@@ -63,7 +62,6 @@
                     <i class="fas fa-${email.statusIcon}"></i>
                 </td>
                 <td class="has-text-right">${email.user.id}</td>
-                <td>${email.toAddress}</td>
                 <td>${email.emailAction.verb}</td>
                 <td class="has-text-right">${email.issue.id}</td>
                 <td class="has-text-right">${email.comment.id}</td>

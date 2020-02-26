@@ -28,7 +28,7 @@ public class MailContentBuilder {
         Long actionId = emailEvent.getActionId();
         LinkedList<DiffMatchPatch.Diff> diffs = null;
 
-        String emailContext = "http://localhost:8080/bts"; // todo figure this out
+        String emailContext = "http://localhost:8080/"; // todo figure this out
 
         String titleLink = "";
         String titleText = "";
@@ -49,14 +49,6 @@ public class MailContentBuilder {
                 diffs = myDiff.diff_main(emailEvent.getPreviousValue(), emailEvent.getNewValue());
                 myDiff.diff_cleanupSemantic(diffs);
             }
-        }
-        if (actionId == EmailAction.TEST.getId())
-        {
-            titleLink = emailContext;
-            titleText = "Test Email";
-            userAvatarSource = "";
-            h3Text = "This is a test email.";
-            description = "Sent from bts...";
         }
 
         Context context = new Context();

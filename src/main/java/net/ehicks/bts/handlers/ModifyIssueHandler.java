@@ -10,6 +10,8 @@ import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.RevisionType;
 import org.hibernate.envers.query.AuditEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,8 @@ import java.util.stream.Collectors;
 @Controller
 public class ModifyIssueHandler
 {
+    private static final Logger log = LoggerFactory.getLogger(ModifyIssueHandler.class);
+
     private UserRepository userRepository;
     private GroupRepository groupRepository;
     private IssueTypeRepository issueTypeRepository;

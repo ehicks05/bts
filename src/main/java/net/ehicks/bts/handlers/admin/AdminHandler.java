@@ -196,12 +196,7 @@ public class AdminHandler
     @PostMapping("/admin/email/sendTest")
     public ModelAndView sendTestEmail(@RequestParam String fldTo)
     {
-        EmailEvent emailEvent = new EmailEvent();
-        emailEvent.setActionId(EmailAction.TEST.getId());
-        emailEvent.setToAddress(fldTo);
-        emailEvent = emailEventRepository.save(emailEvent);
-
-        mailClient.prepareAndSend(emailEvent);
+        mailClient.prepareAndSendTest(fldTo);
 
         return new ModelAndView("redirect:/admin/email/form");
     }

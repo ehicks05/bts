@@ -5,8 +5,7 @@ public enum EmailAction
     CREATE_ISSUE(1, "created an issue"),
     UPDATE_ISSUE(2, "updated an issue"),
     ADD_COMMENT(3, "created a comment"),
-    EDIT_COMMENT(4, "edited a comment"),
-    TEST(5, "sent a test email");
+    EDIT_COMMENT(4, "edited a comment");
 
     private long id;
     private String verb = "";
