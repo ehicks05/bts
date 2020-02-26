@@ -81,6 +81,7 @@
             });
         });
 
+        let timeout;
         function update(fieldName, fieldValue, url)
         {
             url = '${pageContext.request.contextPath}' + url;
@@ -104,9 +105,10 @@
                     notification.innerHTML = 'Failed: ' + data;
                 }
 
-                setTimeout(function () {
+                clearTimeout(timeout);
+                timeout = setTimeout(function () {
                     notification.className = 'notification is-hidden';
-                }, 3000);
+                }, 10000);
 
                 return textStatus;
             });
@@ -198,17 +200,11 @@
     </div>
 </section>
 
-<div class="container">
-    <div class="columns is-multiline is-centered">
-        <div class="column is-one-quarter">
-            <div id="ajax-update-notification" class="notification is-hidden" style="position: absolute;z-index: 10;">
-                <button class="delete"></button>
-            </div>
-        </div>
-    </div>
+<div id="ajax-update-notification" class="notification is-hidden" style="position: fixed; bottom: 0; right: 1rem; z-index: 10;">
+    <button class="delete"></button>
 </div>
 
-<section class="">
+<section class="section" style="padding:16px;">
     <div class="container">
         <div class="columns is-multiline is-centered">
             <div class="column">
@@ -306,7 +302,7 @@
                                         <span><javatime:format value="${attachment.createdOn}" style="MS" /></span>
                                     </td>
                                     <td>
-                                        <span class="delete" onclick="deleteAttachment('${attachment.id}');">
+                                        <span class="delete" onclick="deleteAttachment('${attachment.id}');"></span>
                                     </td>
                                 </tr>
                             </c:if>
@@ -549,7 +545,6 @@
         </div>
     </div>
 </section>
-<br />
 
 <div id="addAttachmentDialog" class="modal">
     <div class="modal-background"></div>
