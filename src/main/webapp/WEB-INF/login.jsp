@@ -77,7 +77,7 @@
                     <form id="frmLogin" method="POST" action="${pageContext.request.contextPath}/login">
                         <div class="field">
                             <div class="control">
-                                <input class="input is-medium" type="email" placeholder="Your Email" autofocus="" id="username" name="username">
+                                <input class="input is-medium" type="email" placeholder="Your Email" autofocus="true" id="username" name="username">
                             </div>
                         </div>
 

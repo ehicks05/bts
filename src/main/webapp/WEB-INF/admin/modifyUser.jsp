@@ -159,7 +159,8 @@
                 <div class="columns is-multiline is-centered is-gapless">
                     <c:forEach var="avatar" items="${publicAvatars}">
                         <c:set var="borderColor" value="${user.avatar.id eq avatar.id ? '#4488FF' : '#FFF'}" />
-                        <div id="avatar${avatar.id}" class="column is-one-fifth has-text-centered" style="border: 6px solid ${borderColor}; border-radius: 5px;" onclick="selectAvatar(this.id, '${avatar.id}');">
+                        <div id="avatar${avatar.id}" class="column is-one-fifth has-text-centered"
+                             style="border: 6px solid ${borderColor}; border-radius: 5px;" onclick="selectAvatar(this.id, '${avatar.id}');">
                             <div class="box has-text-centered" title="${avatar.name}">
                                 <figure class="image is-64x64 has-text-centered">
                                     <img src="${pageContext.request.contextPath}/avatar/${avatar.id}"/>
@@ -184,13 +185,13 @@
             </script>
             <hr>
             <h5 class="subtitle is-5">Upload Avatar:</h5>
-            <form id="frmUploadAvatar" name="frmUploadAvatar" enctype="multipart/form-data" method="post" action="${pageContext.request.contextPath}/admin/users/modify/uploadAvatar?userId=${user.id}">
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <form id="frmUploadAvatar" name="frmUploadAvatar" enctype="multipart/form-data"
+                  method="post" action="${pageContext.request.contextPath}/admin/users/modify/uploadAvatar?userId=${user.id}&${_csrf.parameterName}=${_csrf.token}">
                 <div class="field has-addons">
 
                     <div class="file has-name is-fullwidth">
                         <label class="file-label">
-                            <input class="file-input" type="file" id="fldFile" name="fldFile" required>
+                            <input class="file-input" type="file" id="file" name="file" required>
                             <span class="file-cta">
                                 <span class="file-icon">
                                     <i class="fas fa-upload"></i>

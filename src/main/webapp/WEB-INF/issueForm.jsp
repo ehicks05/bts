@@ -190,7 +190,8 @@
     <div class="hero-body">
         <div class="container">
             <h1 class="title">
-                <t:textToInputText tag="p" style="display:inline;" editableClass="editableHero" clazz="title" id="fldTitle" text="${issue.title}" submitAction="/issue/update?issueId=${issue.id}"/>
+                <t:textToInputText tag="p" style="display:inline;" editableClass="editableHero" clazz="title"
+                                   id="fldTitle" text="${issue.title}" submitAction="/issue/update?issueId=${issue.id}"/>
             </h1>
             <h3 class="subtitle">${issue.project.prefix}-${issue.id}</h3>
         </div>
@@ -273,7 +274,8 @@
                                         <div class="delete" style="position: absolute; top: 8px; right: 8px;"
                                              onclick="deleteAttachment('${attachment.id}');"></div>
                                         <a target="_blank" href="${pageContext.request.contextPath}/attachment/${attachment.id}" title="${attachment.name}">
-                                                <img class="is-pulled-right" style="max-height: 100%; width: auto;" src="${pageContext.request.contextPath}/attachment/${attachment.id}?thumbnail=true"
+                                                <img class="is-pulled-right" style="max-height: 100%; width: auto;"
+                                                     src="${pageContext.request.contextPath}/attachment/${attachment.id}?thumbnail=true"
                                                      title="${attachment.name}" alt="${attachment.name}">
 <%--                                                <div class="delete" style="position: absolute; top: 8px; right: 8px"--%>
 <%--                                                   onclick="deleteAttachment('${attachment.id}');"></div>--%>
@@ -362,7 +364,8 @@
 
                                                 <br>
                                                 <c:if test="${comment.author.id == pageContext.request.userPrincipal.principal.id}">
-                                                    <t:textToInputText id="fldContent${comment.id}" text="${comment.content}" submitAction="/issue/updateComment?commentId=${comment.id}"/>
+                                                    <t:textToInputText id="fldContent${comment.id}" text="${comment.content}"
+                                                                       submitAction="/issue/updateComment?commentId=${comment.id}"/>
                                                 </c:if>
                                                 <c:if test="${comment.author.id != pageContext.request.userPrincipal.principal.id}">
                                                     <c:out value="${comment.content}"/>
@@ -398,10 +401,12 @@
                                 </figure>
                                 <div class="media-content">
                                     <div class="content">
-                                        <form id="frmNewComment" name="frmNewComment" method="post" action="${pageContext.request.contextPath}/issue/addComment?issueId=${issue.id}">
+                                        <form id="frmNewComment" name="frmNewComment" method="post"
+                                              action="${pageContext.request.contextPath}/issue/addComment?issueId=${issue.id}">
                                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                             <t:textarea id="fldContent" label="Comment" placeholder="Write a comment here..." horizontal="false" labelClass="has-text-left"/>
-                                            <t:basicSelect id="fldVisibility" label="Visibility" items="${groups}" blankLabel="Default" horizontal="false" labelClass="has-text-left" />
+                                            <t:basicSelect id="fldVisibility" label="Visibility" items="${groups}" blankLabel="Default" horizontal="false"
+                                                           labelClass="has-text-left" />
 
                                             <input type="button" value="Add" id="submitAddComment" class="button is-primary is-small"/>
                                             <input type="button" value="Cancel" id="cancelAddComment" class="button is-small" onclick="toggleAddComment()"/>
@@ -432,7 +437,8 @@
                             <td>
                                 <c:if test="${!empty issue.assignee}">
                                     <a href="${pageContext.request.contextPath}/profile/form?profileUserId=${issue.assignee.id}">
-                                        <img src="${pageContext.request.contextPath}/avatar/${issue.assignee.avatar.id}" class="image" style="display:inline; height:24px;margin-right: 4px;border-radius: 3px;">
+                                        <img src="${pageContext.request.contextPath}/avatar/${issue.assignee.avatar.id}" class="image"
+                                             style="display:inline; height:24px;margin-right: 4px;border-radius: 3px;">
                                     </a>
 
                                     <t:textToSelect id="fldAssigneeId" value="${issue.assignee.id}" text="${issue.assignee.name}" items="${potentialAssignees}"
@@ -466,11 +472,13 @@
                                                 <tr>
                                                     <td>
                                                         <a style="" href="${pageContext.request.contextPath}/profile/form?profileUserId=${watcher.id}">
-                                                            <img src="${pageContext.request.contextPath}/avatar/${watcher.avatar.id}" style="height:24px;margin-right: 4px;border-radius: 3px;">${watcher.name}
+                                                            <img src="${pageContext.request.contextPath}/avatar/${watcher.avatar.id}"
+                                                                 style="height:24px;margin-right: 4px;border-radius: 3px;">${watcher.name}
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        <a class="icon is-medium" href="${pageContext.request.contextPath}/issue/removeWatcher?issueId=${issue.id}&userId=${watcher.id}">
+                                                        <a class="icon is-medium"
+                                                           href="${pageContext.request.contextPath}/issue/removeWatcher?issueId=${issue.id}&userId=${watcher.id}">
                                                             <span><i class="fas fa-trash fa-lg"></i></span>
                                                         </a>
                                                     </td>
@@ -551,7 +559,8 @@
             <button class="delete" aria-label="close"></button>
         </header>
         <section class="modal-card-body">
-            <form id="frmAddAttachment" name="frmAddAttachment" enctype="multipart/form-data" method="post" action="${pageContext.request.contextPath}/issue/addAttachment?issueId=${issue.id}&${_csrf.parameterName}=${_csrf.token}">
+            <form id="frmAddAttachment" name="frmAddAttachment" enctype="multipart/form-data" method="post"
+                  action="${pageContext.request.contextPath}/issue/addAttachment?issueId=${issue.id}&${_csrf.parameterName}=${_csrf.token}">
                 <div class="file has-name">
                     <label class="file-label">
                         <input class="file-input" type="file" id="fldFile" name="fldFile" required>
