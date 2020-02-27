@@ -1,14 +1,8 @@
 package net.ehicks.bts.handlers;
 
-import net.ehicks.bts.MyRevisionEntity;
 import net.ehicks.bts.beans.*;
 import net.ehicks.bts.mail.MailClient;
-import net.ehicks.bts.model.IssueAudit;
 import net.ehicks.common.Common;
-import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.envers.DefaultRevisionEntity;
-import org.hibernate.envers.RevisionType;
-import org.hibernate.envers.query.AuditEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,8 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -93,29 +85,10 @@ public class ModifyIssueHandler
     @ResponseBody
     public ModelAndView ajaxGetChangeLog(@RequestParam Long issueId)
     {
-        // todo get audit info
-
-        List<IssueAudit> issueAudits = new ArrayList<>();
-
-        List<Object[]> revisions = (List<Object[]>) AuditReaderFactory.get(entityManager).createQuery()
-                .forRevisionsOfEntityWithChanges(Issue.class, true)
-                .add(AuditEntity.id().eq(issueId))
-                .addOrder(AuditEntity.revisionNumber().asc())
-                .getResultList();
-
-        Issue previous = null;
-        for (Object[] revision : revisions)
-        {
-            DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) revision[1];
-            MyRevisionEntity myRevisionEntity = AuditReaderFactory.get(entityManager).findRevision(MyRevisionEntity.class, revisionEntity.getId());
-
-            User user = userRepository.findByUsername(myRevisionEntity.getUsername()).orElse(null);
-            issueAudits.add(new IssueAudit(user, previous, (Issue) revision[0], myRevisionEntity, (RevisionType) revision[2], (HashSet<String>) revision[3]));
-            previous = (Issue) revision[0];
-        }
+        List<IssueEvent> issueEvents = issueEventRepository.findByIssueId(issueId);
 
         return new ModelAndView("issueChangelog")
-                .addObject("issueAudits", issueAudits);
+                .addObject("issueEvents", issueEvents);
     }
 
     private Set<Comment> retainVisibleComments(Set<Comment> comments, User user)

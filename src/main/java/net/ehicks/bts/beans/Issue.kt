@@ -62,6 +62,9 @@ data class Issue @JvmOverloads constructor(
         return getTimeSince(lastUpdatedOn)
     }
 
+    val key: String
+        get() = project.prefix + "-" + id
+
     private fun getTimeSince(since: LocalDateTime): String {
         val now: LocalDateTime = LocalDateTime.now()
         val chronos = ChronoUnit.values()
