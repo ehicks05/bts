@@ -26,7 +26,7 @@ public class MvcConfig implements WebMvcConfigurer
     public void addInterceptors(InterceptorRegistry registry)
     {
         registry.addInterceptor(new GlobalInterceptor(globalDataLoader))
-                .addPathPatterns("/dashboard/*", "/issue/*", "/admin/*", "/profile/*", "/search/*", "/settings/*");
+                .addPathPatterns("/dashboard/**", "/issue/**", "/admin/**", "/profile/**", "/search/**", "/settings/**");
     }
 
     @Override
