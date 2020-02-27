@@ -1,7 +1,7 @@
 package net.ehicks.bts.mail;
 
 import com.sksamuel.diffpatch.DiffMatchPatch;
-import net.ehicks.bts.beans.EmailEvent;
+import net.ehicks.bts.beans.IssueEvent;
 import net.ehicks.bts.beans.EventType;
 import net.ehicks.bts.beans.Issue;
 import net.ehicks.bts.beans.User;
@@ -21,10 +21,10 @@ public class MailContentBuilder {
         this.templateEngine = templateEngine;
     }
 
-    public String buildContent(EmailEvent emailEvent) {
-        User user = emailEvent.getUser();
-        Issue issue = emailEvent.getIssue();
-        EventType eventType = emailEvent.getEventType();
+    public String buildContent(IssueEvent issueEvent) {
+        User user = issueEvent.getUser();
+        Issue issue = issueEvent.getIssue();
+        EventType eventType = issueEvent.getEventType();
 
         String emailContext = "http://localhost:8082"; // todo figure this out
 
@@ -33,27 +33,27 @@ public class MailContentBuilder {
         String userAvatarSource = emailContext + "/avatar/" + user.getAvatar().getId();
         String userProfileLink = emailContext + "/profile/form?profileUserId=" + user.getId();
         String userProfileText = user.getUsername();
-        String summary = eventType.getVerb() + " " + emailEvent.getPropertyName() + ":";
+        String summary = eventType.getVerb() + " " + issueEvent.getPropertyName() + ":";
 
         LinkedList<DiffMatchPatch.Diff> diffs = new LinkedList<>();
         if (eventType == EventType.ADD)
-            diffs.add(new DiffMatchPatch.Diff(DiffMatchPatch.Operation.INSERT, emailEvent.getNewValue()));
+            diffs.add(new DiffMatchPatch.Diff(DiffMatchPatch.Operation.INSERT, issueEvent.getNewValue()));
         if (eventType == EventType.UPDATE)
         {
-            if (Arrays.asList("title", "description", "comment").contains(emailEvent.getPropertyName()))
+            if (Arrays.asList("title", "description", "comment").contains(issueEvent.getPropertyName()))
             {
                 DiffMatchPatch myDiff = new DiffMatchPatch();
-                diffs = myDiff.diff_main(emailEvent.getOldValue(), emailEvent.getNewValue());
+                diffs = myDiff.diff_main(issueEvent.getOldValue(), issueEvent.getNewValue());
                 myDiff.diff_cleanupSemantic(diffs);
             }
             else
             {
-                diffs.add(new DiffMatchPatch.Diff(DiffMatchPatch.Operation.DELETE, emailEvent.getOldValue()));
-                diffs.add(new DiffMatchPatch.Diff(DiffMatchPatch.Operation.INSERT, emailEvent.getNewValue()));
+                diffs.add(new DiffMatchPatch.Diff(DiffMatchPatch.Operation.DELETE, issueEvent.getOldValue()));
+                diffs.add(new DiffMatchPatch.Diff(DiffMatchPatch.Operation.INSERT, issueEvent.getNewValue()));
             }
         }
         if (eventType == EventType.REMOVE)
-            diffs.add(new DiffMatchPatch.Diff(DiffMatchPatch.Operation.DELETE, emailEvent.getOldValue()));
+            diffs.add(new DiffMatchPatch.Diff(DiffMatchPatch.Operation.DELETE, issueEvent.getOldValue()));
 
         Context context = new Context();
         context.setVariable("titleLink", titleLink);

@@ -1,7 +1,6 @@
 package net.ehicks.bts.handlers.admin;
 
 import net.ehicks.bts.beans.*;
-import net.ehicks.bts.mail.EmailAction;
 import net.ehicks.bts.mail.MailClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,19 +24,19 @@ public class AdminHandler
 
     private ProjectRepository projectRepository;
     private GroupRepository groupRepository;
-    private EmailEventRepository emailEventRepository;
+    private IssueEventRepository issueEventRepository;
     private BtsSystemRepository btsSystemRepository;
     private MailClient mailClient;
     private EntityManager entityManager;
     private SessionRegistry sessionRegistry;
 
     public AdminHandler(ProjectRepository projectRepository, GroupRepository groupRepository,
-                        EmailEventRepository emailEventRepository, BtsSystemRepository btsSystemRepository,
+                        IssueEventRepository issueEventRepository, BtsSystemRepository btsSystemRepository,
                         MailClient mailClient, EntityManager entityManager, SessionRegistry sessionRegistry)
     {
         this.projectRepository = projectRepository;
         this.groupRepository = groupRepository;
-        this.emailEventRepository = emailEventRepository;
+        this.issueEventRepository = issueEventRepository;
         this.btsSystemRepository = btsSystemRepository;
         this.mailClient = mailClient;
         this.entityManager = entityManager;
@@ -183,14 +182,14 @@ public class AdminHandler
     public ModelAndView showManageEmails()
     {
         return new ModelAndView("admin/emails")
-                .addObject("emails", emailEventRepository.findAll());
+                .addObject("emails", issueEventRepository.findAll());
     }
 
     @GetMapping("/admin/email/preview/form")
     public ModelAndView previewEmail(@RequestParam Long emailId)
     {
         return new ModelAndView("admin/previewEmail")
-                .addObject("email", emailEventRepository.findById(emailId).orElse(null));
+                .addObject("email", issueEventRepository.findById(emailId).orElse(null));
     }
 
     @PostMapping("/admin/email/sendTest")
@@ -204,8 +203,8 @@ public class AdminHandler
     @GetMapping("/admin/email/delete")
     public ModelAndView deleteEmail(@RequestParam Long emailId)
     {
-        emailEventRepository.findById(emailId).ifPresent(emailMessage ->
-                emailEventRepository.delete(emailMessage));
+        issueEventRepository.findById(emailId).ifPresent(emailMessage ->
+                issueEventRepository.delete(emailMessage));
 
         return new ModelAndView("redirect:/admin/email/form");
     }

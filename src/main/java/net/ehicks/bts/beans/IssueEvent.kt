@@ -13,7 +13,7 @@ enum class EventType(val verb: String) {
 }
 
 @Entity
-data class EmailEvent @JvmOverloads constructor(
+data class IssueEvent @JvmOverloads constructor(
         @Id @GeneratedValue(strategy = GenerationType.AUTO)
         var id: Long = 0,
         @ManyToOne var user: User,
@@ -52,4 +52,4 @@ data class EmailEvent @JvmOverloads constructor(
 }
 
 @Repository
-interface EmailEventRepository : JpaRepository<EmailEvent, Long>
+interface IssueEventRepository : JpaRepository<IssueEvent, Long>

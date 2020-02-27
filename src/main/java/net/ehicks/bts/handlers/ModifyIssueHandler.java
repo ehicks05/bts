@@ -40,7 +40,7 @@ public class ModifyIssueHandler
     private SeverityRepository severityRepository;
     private IssueRepository issueRepository;
     private CommentRepository commentRepository;
-    private EmailEventRepository emailEventRepository;
+    private IssueEventRepository issueEventRepository;
     private BtsSystemRepository btsSystemRepository;
     private MailClient mailClient;
     private EntityManager entityManager;
@@ -49,7 +49,7 @@ public class ModifyIssueHandler
                               IssueTypeRepository issueTypeRepository, ProjectRepository projectRepository,
                               StatusRepository statusRepository, SeverityRepository severityRepository,
                               IssueRepository issueRepository, CommentRepository commentRepository,
-                              EmailEventRepository emailEventRepository, BtsSystemRepository btsSystemRepository,
+                              IssueEventRepository issueEventRepository, BtsSystemRepository btsSystemRepository,
                               MailClient mailClient, EntityManager entityManager)
     {
         this.userRepository = userRepository;
@@ -60,7 +60,7 @@ public class ModifyIssueHandler
         this.severityRepository = severityRepository;
         this.issueRepository = issueRepository;
         this.commentRepository = commentRepository;
-        this.emailEventRepository = emailEventRepository;
+        this.issueEventRepository = issueEventRepository;
         this.btsSystemRepository = btsSystemRepository;
         this.mailClient = mailClient;
         this.entityManager = entityManager;
@@ -262,10 +262,10 @@ public class ModifyIssueHandler
 //        Diff diff = javers.compare(oldIssue, issue);
         issueRepository.save(issue);
 
-        EmailEvent emailEvent = emailEventRepository.save(new EmailEvent(0, user, issue, EventType.UPDATE,
+        IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, issue, EventType.UPDATE,
                 propertyName, oldValue, newValue));
 
-        mailClient.prepareAndSend(emailEvent);
+        mailClient.prepareAndSend(issueEvent);
 
         return "Updated " + updateLog;
     }
@@ -279,10 +279,10 @@ public class ModifyIssueHandler
         Comment comment = new Comment(0, issue, user, fldContent, group, LocalDateTime.now(), LocalDateTime.now());
         comment = commentRepository.save(comment);
 
-        EmailEvent emailEvent = emailEventRepository.save(new EmailEvent(0, user, issue, EventType.ADD,
+        IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, issue, EventType.ADD,
                 "comment", "", fldContent, comment));
 
-        mailClient.prepareAndSend(emailEvent);
+        mailClient.prepareAndSend(issueEvent);
 
         return new ModelAndView("redirect:/issue/form?issueId=" + issueId);
     }
@@ -314,10 +314,10 @@ public class ModifyIssueHandler
             result = "Comment Updated";
         }
 
-        EmailEvent emailEvent = emailEventRepository.save(new EmailEvent(0, user, comment.getIssue(), EventType.UPDATE,
+        IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, comment.getIssue(), EventType.UPDATE,
                 "comment", oldContent, content, comment));
 
-        mailClient.prepareAndSend(emailEvent);
+        mailClient.prepareAndSend(issueEvent);
         return result;
     }
 

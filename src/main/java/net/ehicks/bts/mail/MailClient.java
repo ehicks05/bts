@@ -22,18 +22,18 @@ public class MailClient {
     private MailContentBuilder mailContentBuilder;
     private SubscriptionRepository subscriptionRepository;
     private BtsSystemRepository btsSystemRepository;
-    private EmailEventRepository emailEventRepository;
+    private IssueEventRepository issueEventRepository;
 
     public MailClient(JavaMailSender mailSender, TaskExecutor taskExecutor, MailContentBuilder mailContentBuilder,
                       SubscriptionRepository subscriptionRepository, BtsSystemRepository btsSystemRepository,
-                      EmailEventRepository emailEventRepository)
+                      IssueEventRepository issueEventRepository)
     {
         this.mailSender = mailSender;
         this.taskExecutor = taskExecutor;
         this.mailContentBuilder = mailContentBuilder;
         this.subscriptionRepository = subscriptionRepository;
         this.btsSystemRepository = btsSystemRepository;
-        this.emailEventRepository = emailEventRepository;
+        this.issueEventRepository = issueEventRepository;
     }
 
     private static class EmailSender implements Runnable
@@ -53,37 +53,37 @@ public class MailClient {
         }
     }
 
-    public void prepareAndSend(EmailEvent emailEvent) {
+    public void prepareAndSend(IssueEvent issueEvent) {
         BtsSystem btsSystem = btsSystemRepository.findFirstBy();
 
-        String[] recipients = determineRecipients(emailEvent);
+        String[] recipients = determineRecipients(issueEvent);
         if (recipients.length > 0)
-            emailEvent.setStatus("WAITING");
+            issueEvent.setStatus("WAITING");
         else
-            emailEvent.setStatus("FAILED");
-        emailEventRepository.save(emailEvent);
+            issueEvent.setStatus("FAILED");
+        issueEventRepository.save(issueEvent);
 
         if (recipients.length == 0)
             return;
 
-        String content = mailContentBuilder.buildContent(emailEvent);
+        String content = mailContentBuilder.buildContent(issueEvent);
 
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom(btsSystem.getEmailFromAddress());
             messageHelper.setTo(recipients);
-            messageHelper.setSubject(emailEvent.getSubject());
+            messageHelper.setSubject(issueEvent.getSubject());
             messageHelper.setText(content, true);
         };
         try {
             taskExecutor.execute(new EmailSender(mailSender, messagePreparator));
 //            mailSender.send(messagePreparator);
-            emailEvent.setStatus("SENT");
-            emailEventRepository.save(emailEvent);
+            issueEvent.setStatus("SENT");
+            issueEventRepository.save(issueEvent);
         } catch (MailException e) {
             log.error(e.getLocalizedMessage());
-            emailEvent.setStatus("FAILED");
-            emailEventRepository.save(emailEvent);
+            issueEvent.setStatus("FAILED");
+            issueEventRepository.save(issueEvent);
         }
     }
 
@@ -102,13 +102,13 @@ public class MailClient {
         }
     }
 
-    private String[] determineRecipients(EmailEvent emailEvent)
+    private String[] determineRecipients(IssueEvent issueEvent)
     {
         Set<String> recipients = new HashSet<>();
 
-        if (emailEvent.getIssue() != null || emailEvent.getComment() != null)
+        if (issueEvent.getIssue() != null || issueEvent.getComment() != null)
         {
-            Issue issue = emailEvent.getIssue();
+            Issue issue = issueEvent.getIssue();
             recipients.add(issue.getReporter().getUsername());
             recipients.add(issue.getAssignee().getUsername());
             for (User watcher : issue.getWatchers())
