@@ -1,13 +1,12 @@
 package net.ehicks.bts.handlers;
 
 import kotlin.Pair;
-import net.ehicks.bts.beans.Attachment;
-import net.ehicks.bts.beans.AttachmentRepository;
-import net.ehicks.bts.beans.DBFile;
-import net.ehicks.bts.beans.IssueRepository;
+import net.ehicks.bts.beans.*;
+import net.ehicks.bts.mail.MailClient;
 import net.ehicks.bts.model.DBFileLogic;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,13 +20,18 @@ public class AttachmentHandler
     private DBFileLogic dbFileLogic;
     private AttachmentRepository attachmentRepository;
     private IssueRepository issueRepository;
+    private IssueEventRepository issueEventRepository;
+    private MailClient mailClient;
 
     public AttachmentHandler(DBFileLogic dbFileLogic, AttachmentRepository attachmentRepository,
-                             IssueRepository issueRepository)
+                             IssueRepository issueRepository, IssueEventRepository issueEventRepository,
+                             MailClient mailClient)
     {
         this.dbFileLogic = dbFileLogic;
         this.attachmentRepository = attachmentRepository;
         this.issueRepository = issueRepository;
+        this.issueEventRepository = issueEventRepository;
+        this.mailClient = mailClient;
     }
 
     @GetMapping("/attachment/{id}")
@@ -58,7 +62,7 @@ public class AttachmentHandler
     }
 
     @PostMapping("/issue/addAttachment")
-    public ModelAndView addAttachment(@RequestParam Long issueId, @RequestParam("fldFile") MultipartFile file)
+    public ModelAndView addAttachment(@AuthenticationPrincipal User user, @RequestParam Long issueId, @RequestParam("fldFile") MultipartFile file)
     {
         Pair<DBFile, Exception> saveResult = dbFileLogic.saveDBFile(file);
         DBFile dbFile = saveResult.getFirst();
@@ -67,9 +71,11 @@ public class AttachmentHandler
         if (dbFile != null && saveException == null)
         {
             String filename = file.getOriginalFilename() != null ? file.getOriginalFilename() : "unknown";
-            issueRepository.findById(issueId).ifPresent(issue ->
-                    attachmentRepository.save(new Attachment(0, filename, issue, dbFile, LocalDateTime.now()))
-            );
+            issueRepository.findById(issueId).ifPresent(issue -> {
+                attachmentRepository.save(new Attachment(0, filename, issue, dbFile, LocalDateTime.now()));
+                IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, issue, EventType.ADD, "attachment", "", filename));
+                mailClient.prepareAndSend(issueEvent);
+            });
 
             return new ModelAndView("redirect:/issue/form?issueId=" + issueId)
                     .addObject("responseMessage", "Attachment added.");
@@ -80,15 +86,19 @@ public class AttachmentHandler
     }
 
     @GetMapping("/issue/deleteAttachment")
-    public ModelAndView deleteAttachment(@RequestParam Long issueId, @RequestParam Long attachmentId)
+    public ModelAndView deleteAttachment(@AuthenticationPrincipal User user, @RequestParam Long issueId, @RequestParam Long attachmentId)
     {
-        attachmentRepository.findById(attachmentId).ifPresent(attachment -> {
-            // todo security: who has access
+        issueRepository.findById(issueId).ifPresent(issue -> {
+            attachmentRepository.findById(attachmentId).ifPresent(attachment -> {
+                // todo security: who has access
 //            if (!Security.hasAccess(userSession, attachment.getIssue().getGroup()))
 //                return;
 
-            attachmentRepository.delete(attachment);
-            dbFileLogic.deleteDBFile(attachment.getDbFile().getId());
+                attachmentRepository.delete(attachment);
+                dbFileLogic.deleteDBFile(attachment.getDbFile().getId());
+                IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, issue, EventType.REMOVE, "attachment", attachment.getName()));
+                mailClient.prepareAndSend(issueEvent);
+            });
         });
 
         return new ModelAndView("redirect:/issue/form?issueId=" + issueId);

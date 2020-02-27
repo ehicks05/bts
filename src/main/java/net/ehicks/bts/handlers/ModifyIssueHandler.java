@@ -295,24 +295,30 @@ public class ModifyIssueHandler
     }
 
     @GetMapping("/issue/addWatcher")
-    public ModelAndView addWatcher(@RequestParam Long issueId, @RequestParam Long userId)
+    public ModelAndView addWatcher(@AuthenticationPrincipal User user, @RequestParam Long issueId, @RequestParam Long userId)
     {
         issueRepository.findById(issueId).ifPresent(issue ->
-                userRepository.findById(userId).ifPresent(user -> {
-                    issue.getWatchers().add(user);
+                userRepository.findById(userId).ifPresent(watcher -> {
+                    issue.getWatchers().add(watcher);
                     issueRepository.save(issue);
+
+                    IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, issue, EventType.ADD, "watcher", "", watcher.getUsername()));
+                    mailClient.prepareAndSend(issueEvent);
                 }));
 
         return new ModelAndView("redirect:/issue/form?issueId=" + issueId);
     }
 
     @GetMapping("/issue/removeWatcher")
-    public ModelAndView removeWatcher(@RequestParam Long issueId, @RequestParam Long userId)
+    public ModelAndView removeWatcher(@AuthenticationPrincipal User user, @RequestParam Long issueId, @RequestParam Long userId)
     {
         issueRepository.findById(issueId).ifPresent(issue ->
-                userRepository.findById(userId).ifPresent(user -> {
-                    issue.getWatchers().remove(user);
+                userRepository.findById(userId).ifPresent(watcher -> {
+                    issue.getWatchers().remove(watcher);
                     issueRepository.save(issue);
+
+                    IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, issue, EventType.REMOVE, "watcher", watcher.getUsername()));
+                    mailClient.prepareAndSend(issueEvent);
                 }));
 
         return new ModelAndView("redirect:/issue/form?issueId=" + issueId);
