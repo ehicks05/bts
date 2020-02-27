@@ -2,7 +2,6 @@ package net.ehicks.bts.handlers;
 
 import net.ehicks.bts.MyRevisionEntity;
 import net.ehicks.bts.beans.*;
-import net.ehicks.bts.mail.EmailAction;
 import net.ehicks.bts.mail.MailClient;
 import net.ehicks.bts.model.IssueAudit;
 import net.ehicks.common.Common;
@@ -22,7 +21,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -159,7 +161,8 @@ public class ModifyIssueHandler
 
     @PostMapping("/issue/update")
     @ResponseBody
-    public String updateIssue(@RequestParam Long issueId, @RequestParam String fldFieldName, @RequestParam String fldFieldValue)
+    public String updateIssue(@AuthenticationPrincipal User user, @RequestParam Long issueId,
+                              @RequestParam String fldFieldName, @RequestParam String fldFieldValue)
     {
         Long projectId      = !fldFieldName.equals("fldProject") ? 0 : Common.stringToLong(fldFieldValue);
         Long issueTypeId    = !fldFieldName.equals("fldIssueType") ? 0 : Common.stringToLong(fldFieldValue);
@@ -173,56 +176,96 @@ public class ModifyIssueHandler
 
         String updateLog = "";
         Issue issue = issueRepository.findById(issueId).get();
+//        Issue oldIssue = new Issue();
+//        BeanUtils.copyProperties(issue, oldIssue);
+
+        String propertyName = "";
+        String oldValue = "";
+        String newValue = "";
+
         if (projectId != 0)
         {
+            propertyName = "project";
+            oldValue = issue.getProject().getName();
             issue.setProject(projectRepository.findById(projectId).get());
+            newValue = issue.getProject().getName();
             updateLog += "Project to " + issue.getProject().getName();
         }
         if (issueTypeId != 0)
         {
+            propertyName = "issue type";
+            oldValue = issue.getIssueType().getName();
             issue.setIssueType(issueTypeRepository.findById(issueTypeId).get());
+            newValue = issue.getIssueType().getName();
             updateLog += "Type to " + issue.getIssueType().getName();
         }
         if (statusId != 0)
         {
+            propertyName = "status";
+            oldValue = issue.getStatus().getName();
             issue.setStatus(statusRepository.findById(statusId).get());
+            newValue = issue.getStatus().getName();
             updateLog += "Status to " + issue.getStatus().getName();
         }
         if (severityId != 0)
         {
+            propertyName = "severity";
+            oldValue = issue.getSeverity().getName();
             issue.setSeverity(severityRepository.findById(severityId).get());
+            newValue = issue.getSeverity().getName();
             updateLog += "Severity to " + issue.getSeverity().getName();
         }
         if (groupId != 0)
         {
+            propertyName = "group";
+            oldValue = issue.getGroup().getName();
             issue.setGroup(groupRepository.findById(groupId).get());
+            newValue = issue.getGroup().getName();
             updateLog += "Group to " + issue.getGroup().getName();
         }
         if (title.length() != 0)
         {
+            propertyName = "title";
+            oldValue = issue.getTitle();
             issue.setTitle(title);
+            newValue = issue.getTitle();
             updateLog += "Title";
         }
         if (description.length() != 0)
         {
+            propertyName = "description";
+            oldValue = issue.getDescription();
             issue.setDescription(description);
+            newValue = issue.getDescription();
             updateLog += "Description";
         }
         if (assigneeId != 0)
         {
+            propertyName = "assignee";
+            oldValue = issue.getAssignee().getName();
             issue.setAssignee(userRepository.findById(assigneeId).get());
+            newValue = issue.getAssignee().getName();
             updateLog += "Assignee to " + issue.getAssignee().getUsername();
         }
         if (reporterId != 0)
         {
+            propertyName = "reporter";
+            oldValue = issue.getReporter().getName();
             issue.setReporter(userRepository.findById(reporterId).get());
+            newValue = issue.getReporter().getName();
             updateLog += "Reporter to " + issue.getReporter().getUsername();
         }
 
         if (updateLog.length() > 0)
             issue.setLastUpdatedOn(LocalDateTime.now());
 
+//        Diff diff = javers.compare(oldIssue, issue);
         issueRepository.save(issue);
+
+        EmailEvent emailEvent = emailEventRepository.save(new EmailEvent(0, user, issue, EventType.UPDATE,
+                propertyName, oldValue, newValue));
+
+        mailClient.prepareAndSend(emailEvent);
 
         return "Updated " + updateLog;
     }
@@ -236,13 +279,8 @@ public class ModifyIssueHandler
         Comment comment = new Comment(0, issue, user, fldContent, group, LocalDateTime.now(), LocalDateTime.now());
         comment = commentRepository.save(comment);
 
-        EmailEvent emailEvent = new EmailEvent();
-        emailEvent.setUser(user);
-        emailEvent.setIssue(issue);
-        emailEvent.setActionId(EmailAction.ADD_COMMENT.getId());
-        emailEvent.setComment(comment);
-        emailEvent.setDescription(fldContent);
-        emailEvent = emailEventRepository.save(emailEvent);
+        EmailEvent emailEvent = emailEventRepository.save(new EmailEvent(0, user, issue, EventType.ADD,
+                "comment", "", fldContent, comment));
 
         mailClient.prepareAndSend(emailEvent);
 
@@ -263,12 +301,12 @@ public class ModifyIssueHandler
 
         String content = !fldFieldName.equals("fldContent" + commentId) ? "" : Common.getSafeString(fldFieldValue);
 
-        String previousContent = comment.getContent();
+        String oldContent = comment.getContent();
         if (content.length() != 0)
             comment.setContent(content);
 
         String result = "";
-        if (!content.equals(previousContent))
+        if (!content.equals(oldContent))
         {
             comment.setLastUpdatedOn(LocalDateTime.now());
             commentRepository.save(comment);
@@ -276,15 +314,8 @@ public class ModifyIssueHandler
             result = "Comment Updated";
         }
 
-        EmailEvent emailEvent = new EmailEvent();
-        emailEvent.setUser(user);
-        emailEvent.setIssue(comment.getIssue());
-        emailEvent.setActionId(EmailAction.EDIT_COMMENT.getId());
-        emailEvent.setComment(comment);
-        emailEvent.setDescription("");
-        emailEvent.setPreviousValue(previousContent);
-        emailEvent.setNewValue(content);
-        emailEvent = emailEventRepository.save(emailEvent);
+        EmailEvent emailEvent = emailEventRepository.save(new EmailEvent(0, user, comment.getIssue(), EventType.UPDATE,
+                "comment", oldContent, content, comment));
 
         mailClient.prepareAndSend(emailEvent);
         return result;

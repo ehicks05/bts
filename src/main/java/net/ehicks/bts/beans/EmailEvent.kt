@@ -1,29 +1,37 @@
 package net.ehicks.bts.beans
 
-import net.ehicks.bts.mail.EmailAction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.io.Serializable
+import java.time.LocalDateTime
 import javax.persistence.*
 
+enum class EventType(val verb: String) {
+    ADD("added"),
+    UPDATE("updated"),
+    REMOVE("removed")
+}
+
 @Entity
-data class EmailEvent(
+data class EmailEvent @JvmOverloads constructor(
         @Id @GeneratedValue(strategy = GenerationType.AUTO)
         var id: Long = 0,
         @ManyToOne var user: User,
-        @ManyToOne var issue: Issue?,
-        @ManyToOne var comment: Comment?,
-        var actionId: Long,
-        var status: String = "CREATED",
+        @ManyToOne var issue: Issue,
+
+        @Enumerated(EnumType.STRING)
+        var eventType: EventType,
+        var propertyName: String = "",
+
+        var oldValue: String = "",
+        var newValue: String = "",
+
+        @ManyToOne var comment: Comment? = null,
+        var createdOn: LocalDateTime = LocalDateTime.now(),
         var description: String = "",
-        var previousValue: String = "",
-        var newValue: String = ""
+        var status: String = "CREATED"
 
 ) : Serializable {
-    fun getEmailAction(): EmailAction {
-        return EmailAction.getById(actionId)
-    }
-
     fun getStatusIcon(): String {
         val statusToIcon = mapOf(
                 Pair("CREATED", "hourglass-start has-text-info"),
@@ -35,22 +43,12 @@ data class EmailEvent(
     }
 
     fun getSubject(): String {
-        val verb = if (actionId == EmailAction.ADD_COMMENT.id)
-            " added a comment to "
-        else if (actionId == EmailAction.EDIT_COMMENT.id)
-            " edited a comment on "
-        else ""
-
-        if (actionId == EmailAction.ADD_COMMENT.id || actionId == EmailAction.EDIT_COMMENT.id) {
-            return user.username + verb + issue?.project?.prefix + "-" + issue?.id + " " + issue?.title
-        }
-
-        return ""
+        val verb = "${propertyName.capitalizeWords()} ${eventType.verb.capitalize()}"
+        val issueId = issue.project.prefix + "-" + issue.id
+        return "$verb ($issueId): ${issue.title}"
     }
 
-    fun getBody(): String {
-        return "todo"
-    }
+    fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
 }
 
 @Repository

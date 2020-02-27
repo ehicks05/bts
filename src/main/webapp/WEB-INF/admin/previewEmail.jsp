@@ -62,7 +62,7 @@
                     <i class="fas fa-${email.statusIcon}"></i>
                 </td>
                 <td class="has-text-right">${email.user.id}</td>
-                <td>${email.emailAction.verb}</td>
+                <td>${email.eventType.verb}</td>
                 <td class="has-text-right">${email.issue.id}</td>
                 <td class="has-text-right">${email.comment.id}</td>
             </tr>

@@ -2,15 +2,15 @@ package net.ehicks.bts.mail;
 
 import com.sksamuel.diffpatch.DiffMatchPatch;
 import net.ehicks.bts.beans.EmailEvent;
+import net.ehicks.bts.beans.EventType;
 import net.ehicks.bts.beans.Issue;
 import net.ehicks.bts.beans.User;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
 @Service
 public class MailContentBuilder {
@@ -24,39 +24,44 @@ public class MailContentBuilder {
     public String buildContent(EmailEvent emailEvent) {
         User user = emailEvent.getUser();
         Issue issue = emailEvent.getIssue();
-        String description = emailEvent.getDescription();
-        Long actionId = emailEvent.getActionId();
-        LinkedList<DiffMatchPatch.Diff> diffs = null;
+        EventType eventType = emailEvent.getEventType();
 
-        String emailContext = "http://localhost:8080/"; // todo figure this out
+        String emailContext = "http://localhost:8082"; // todo figure this out
 
-        String titleLink = "";
-        String titleText = "";
-        String userAvatarSource = "";
-        String h3Text = "";
-        String verb = EmailAction.getById(actionId).getVerb();
+        String titleLink = emailContext + "/issue/form?issueId=" + issue.getId();
+        String titleText = issue.getProject().getPrefix() + "-" + issue.getId() + " " + issue.getTitle();
+        String userAvatarSource = emailContext + "/avatar/" + user.getAvatar().getId();
+        String userProfileLink = emailContext + "/profile/form?profileUserId=" + user.getId();
+        String userProfileText = user.getUsername();
+        String summary = eventType.getVerb() + " " + emailEvent.getPropertyName() + ":";
 
-        if (actionId == EmailAction.ADD_COMMENT.getId() || actionId == EmailAction.EDIT_COMMENT.getId())
+        LinkedList<DiffMatchPatch.Diff> diffs = new LinkedList<>();
+        if (eventType == EventType.ADD)
+            diffs.add(new DiffMatchPatch.Diff(DiffMatchPatch.Operation.INSERT, emailEvent.getNewValue()));
+        if (eventType == EventType.UPDATE)
         {
-            titleLink = emailContext + "/issue/form&issueId=" + issue.getId();
-            titleText = issue.getProject().getPrefix() + "-" + issue.getId() + " " + issue.getTitle();
-            userAvatarSource = emailContext + "/avatar/" + user.getAvatar().getId();
-            h3Text = user.getUsername() + " " + verb + ".";
-
-            if (actionId == EmailAction.EDIT_COMMENT.getId())
+            if (Arrays.asList("title", "description", "comment").contains(emailEvent.getPropertyName()))
             {
                 DiffMatchPatch myDiff = new DiffMatchPatch();
-                diffs = myDiff.diff_main(emailEvent.getPreviousValue(), emailEvent.getNewValue());
+                diffs = myDiff.diff_main(emailEvent.getOldValue(), emailEvent.getNewValue());
                 myDiff.diff_cleanupSemantic(diffs);
             }
+            else
+            {
+                diffs.add(new DiffMatchPatch.Diff(DiffMatchPatch.Operation.DELETE, emailEvent.getOldValue()));
+                diffs.add(new DiffMatchPatch.Diff(DiffMatchPatch.Operation.INSERT, emailEvent.getNewValue()));
+            }
         }
+        if (eventType == EventType.REMOVE)
+            diffs.add(new DiffMatchPatch.Diff(DiffMatchPatch.Operation.DELETE, emailEvent.getOldValue()));
 
         Context context = new Context();
         context.setVariable("titleLink", titleLink);
         context.setVariable("titleText", titleText);
         context.setVariable("userAvatarSource", userAvatarSource);
-        context.setVariable("h3Text", h3Text);
-        context.setVariable("description", description);
+        context.setVariable("userProfileLink", userProfileLink);
+        context.setVariable("userProfileText", userProfileText);
+        context.setVariable("summary", summary);
         context.setVariable("diffs", diffs);
 
         return templateEngine.process("mailTemplate", context);
