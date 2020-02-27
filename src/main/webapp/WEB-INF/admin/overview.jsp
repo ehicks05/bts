@@ -26,9 +26,9 @@
 
 <section class="section">
     <div class="container">
-        <div class="columns is-multiline is-mobile is-centered is-gapless">
+        <div class="columns is-multiline is-mobile is-centered is-vcentered">
             <c:forEach var="adminSubscreen" items="${adminSubscreens}">
-                <div class="column has-text-centered">
+                <div class="column has-text-centered is-narrow">
                     <a href="${adminSubscreen[0]}">
                         <div class="box has-text-link">
                             <span class="icon is-large">

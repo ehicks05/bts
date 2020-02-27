@@ -423,7 +423,7 @@
                     </div>
                 </div>
             </div>
-            <div class="column is-one-third">
+            <div class="column is-narrow">
                 <div class="box">
                     <h2 class="issueSubheading">People</h2>
 

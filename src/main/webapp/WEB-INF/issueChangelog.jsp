@@ -9,6 +9,7 @@
         <th class="has-text-right">Date</th>
         <th>Changed By</th>
         <th>Issue</th>
+        <th>Action</th>
         <th>Fields Changed</th>
         <th>Description</th>
     </tr>
@@ -20,6 +21,7 @@
             <td class="has-text-right" style="white-space: nowrap;"><javatime:format value="${issueEvent.createdOn}" style="MS"/></td>
             <td>${issueEvent.user.username}</td>
             <td style="white-space: nowrap;">${issueEvent.issue.key}</td>
+            <td>${issueEvent.eventType}</td>
             <td>${issueEvent.propertyName}</td>
             <td>
                 <c:forEach var="diff" items="${issueEvent.renderMap.diffs}">
