@@ -29,7 +29,6 @@ data class IssueEvent @JvmOverloads constructor(
 
         @ManyToOne var comment: Comment? = null,
         var createdOn: LocalDateTime = LocalDateTime.now(),
-        var description: String = "",
         var status: String = "CREATED"
 
 ) : Serializable {

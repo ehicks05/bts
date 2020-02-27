@@ -35,7 +35,7 @@
             <div class="column">
                 <form id="frmProject" method="post" action="${pageContext.request.contextPath}/admin/system/modify/modify">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                    <t:text id="instanceName" label="Instance Name" value="${btsSystem.instanceName}" />
+                    <t:text id="siteName" label="Site Name" value="${btsSystem.siteName}" />
                     <t:textarea id="logonMessage" label="Logon Message" value="${btsSystem.logonMessage}" rich="true"/>
                     <t:text id="defaultAvatar" label="Default Avatar" value="${btsSystem.defaultAvatar.id}"/>
                     <t:basicSelect id="theme" label="Theme" items="${themes}" value="${btsSystem.theme}"/>

@@ -10,7 +10,7 @@
         <th>Changed By</th>
         <th>Issue</th>
         <th>Action</th>
-        <th>Fields Changed</th>
+        <th>Property</th>
         <th>Description</th>
     </tr>
     </thead>
@@ -18,7 +18,7 @@
     <tbody id="myTBody">
     <c:forEach var="issueEvent" items="${issueEvents}" varStatus="loop">
         <tr>
-            <td class="has-text-right" style="white-space: nowrap;"><javatime:format value="${issueEvent.createdOn}" style="MS"/></td>
+            <td class="has-text-right" style="white-space: nowrap;"><javatime:format value="${issueEvent.createdOn}" style="SS"/></td>
             <td>${issueEvent.user.username}</td>
             <td style="white-space: nowrap;">${issueEvent.issue.key}</td>
             <td>${issueEvent.eventType}</td>

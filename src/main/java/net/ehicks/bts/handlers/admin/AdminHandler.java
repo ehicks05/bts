@@ -220,7 +220,7 @@ public class AdminHandler
 
     @PostMapping("/admin/system/modify/modify")
     public ModelAndView modifySystem(
-            @RequestParam String instanceName,
+            @RequestParam String siteName,
             @RequestParam String logonMessage,
             @RequestParam Avatar defaultAvatar,
             @RequestParam String theme,
@@ -229,7 +229,7 @@ public class AdminHandler
             )
     {
         BtsSystem btsSystem = btsSystemRepository.findFirstBy();
-        btsSystem.setInstanceName(instanceName);
+        btsSystem.setSiteName(siteName);
         btsSystem.setLogonMessage(logonMessage);
         btsSystem.setDefaultAvatar(defaultAvatar);
         btsSystem.setTheme(theme);

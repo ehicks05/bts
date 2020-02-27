@@ -1,1 +1,1 @@
-<title>${siteName}</title>
+<title>${btsSystem.siteName}</title>

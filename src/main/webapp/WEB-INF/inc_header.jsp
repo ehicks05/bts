@@ -3,9 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<c:if test="${!empty btsSystem}">
-    <jsp:useBean id="btsSystem" type="net.ehicks.bts.beans.BtsSystem" scope="request"/>
-</c:if>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="utf-8" />
@@ -32,10 +29,10 @@
 <%-- qTip2 --%>
 
 <%-- Bulma --%>
-<c:if test="${empty theme || theme eq 'default'}">
+<c:if test="${empty btsSystem.theme || btsSystem.theme eq 'default'}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css" />
 </c:if>
-<c:if test="${!empty theme && !(theme eq 'default')}">
+<c:if test="${!empty btsSystem.theme && !(btsSystem.theme eq 'default')}">
     <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/${theme}/bulmaswatch.min.css">
 </c:if>
 <%-- Bulma --%>

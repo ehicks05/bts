@@ -117,24 +117,27 @@ public class Seeder
     }
 
     @Transactional
-    void install_PG_TRGM_Support()
+    void installExtensions()
     {
         try
         {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
-            
-            Query query = entityManager.createNativeQuery("select count(*) from pg_extension where extname='pg_trgm';");
-            BigInteger result = (BigInteger) query.getSingleResult();
-            if (result == null || result.equals(BigInteger.ZERO))
-            {
-                log.info("installing extension pg_trgm...");
-                entityManager.getTransaction().begin();
-                query = entityManager.createNativeQuery("CREATE EXTENSION pg_trgm;");
-                query.executeUpdate();
-                entityManager.getTransaction().commit();
-            }
-            else
-                log.info("extension pg_trgm already installed.");
+
+            Arrays.asList("pg_trgm", "pg_stat_statements")
+                    .forEach(extension -> {
+                        Query query = entityManager.createNativeQuery("select count(*) from pg_extension where extname='" + extension + "';");
+                        BigInteger result = (BigInteger) query.getSingleResult();
+                        if (result == null || result.equals(BigInteger.ZERO))
+                        {
+                            log.info("installing extension " + extension + "...");
+                            entityManager.getTransaction().begin();
+                            query = entityManager.createNativeQuery("CREATE EXTENSION " + extension + ";");
+                            query.executeUpdate();
+                            entityManager.getTransaction().commit();
+                        }
+                        else
+                            log.info("extension " + extension + " already installed.");
+                    });
         }
         catch (SQLGrammarException e)
         {
@@ -147,32 +150,12 @@ public class Seeder
         log.info("Seeding dummy data");
         Timer timer = new Timer();
 
-        install_PG_TRGM_Support();
+        installExtensions();
 
         // no dependencies
 
-        createDBFiles(); // use in production
+        createDBFilesAndAvatars(); // use in production
         log.info(timer.printDuration("createDBFiles"));
-
-        // some dependencies
-
-        createBtsSystem();  // use in production
-        log.info(timer.printDuration("createBtsSystem"));
-
-        createDefaultRoles();  // use in production
-        log.info(timer.printDuration("createDefaultRoles"));
-
-        createUsers();
-        log.info(timer.printDuration("createUsers"));
-
-        createGroups();
-        log.info(timer.printDuration("createGroups"));
-
-        createGroupMaps();
-        log.info(timer.printDuration("createGroupMaps"));
-
-        createProjects();
-        log.info(timer.printDuration("createProjects"));
 
         createStatuses(); // use in production
         log.info(timer.printDuration("createStatuses"));
@@ -183,14 +166,31 @@ public class Seeder
         createIssueTypes(); // use in production
         log.info(timer.printDuration("createIssueTypes"));
 
+        createDefaultRoles();  // use in production
+        log.info(timer.printDuration("createDefaultRoles"));
+
+        createProjects();
+        log.info(timer.printDuration("createProjects"));
+
+        // some dependencies
+
+        createBtsSystem();  // use in production
+        log.info(timer.printDuration("createBtsSystem"));
+
+        createUsers();
+        log.info(timer.printDuration("createUsers"));
+
+        createGroups();
+        log.info(timer.printDuration("createGroups"));
+
+        createGroupMaps();
+        log.info(timer.printDuration("createGroupMaps"));
+
         createProjectMaps();
         log.info(timer.printDuration("createProjectMaps"));
 
         createIssueForms();
         log.info(timer.printDuration("createIssueForms"));
-
-//        createComments();
-//        log.info(timer.printDuration("createComments"));
 
         createSubscriptions();
         log.info(timer.printDuration("createSubscriptions"));
@@ -237,7 +237,7 @@ public class Seeder
         else
             btsSystem = btsSystemRepository.findFirstBy();
         
-        btsSystem.setInstanceName("BugCo Industries");
+        btsSystem.setSiteName("BugCo Industries");
         btsSystem.setLogonMessage("<span>Welcome to Puffin Issue Tracker.<br>Please contact Eric for a demo.</span>");
         btsSystem.setTheme("default");
         btsSystemRepository.save(btsSystem);
@@ -274,7 +274,7 @@ public class Seeder
         });
     }
 
-    private void createDBFiles()
+    private void createDBFilesAndAvatars()
     {
         File avatarDir = null;
         try {

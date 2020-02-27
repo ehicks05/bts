@@ -63,8 +63,8 @@ public class IssueSearchHandler
     {
         // todo security: lock down some of these queries
         return new ModelAndView("issueSearch")
-                .addObject("users", userRepository.findAll())
                 .addObject("issueForm", issueForm)
+                .addObject("users", userRepository.findAll())
                 .addObject("projects", projectRepository.findAll())
                 .addObject("groups", groupRepository.findAll())
                 .addObject("severities", severityRepository.findAll())
