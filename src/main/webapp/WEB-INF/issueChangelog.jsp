@@ -17,9 +17,9 @@
     <tbody id="myTBody">
     <c:forEach var="issueEvent" items="${issueEvents}" varStatus="loop">
         <tr>
-            <td class="has-text-right"><javatime:format value="${issueEvent.createdOn}" style="MS"/></td>
+            <td class="has-text-right" style="white-space: nowrap;"><javatime:format value="${issueEvent.createdOn}" style="MS"/></td>
             <td>${issueEvent.user.username}</td>
-            <td>${issueEvent.issue.key}</td>
+            <td style="white-space: nowrap;">${issueEvent.issue.key}</td>
             <td>${issueEvent.propertyName}</td>
             <td>
                 <c:forEach var="diff" items="${issueEvent.renderMap.diffs}">

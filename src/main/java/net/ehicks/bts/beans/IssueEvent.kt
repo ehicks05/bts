@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.io.Serializable
 import java.time.LocalDateTime
-import java.util.*
 import javax.persistence.*
 
 enum class EventType(val verb: String) {
@@ -62,7 +61,7 @@ data class IssueEvent @JvmOverloads constructor(
         val userProfileText = user.username
         val summary = eventType.verb + " " + propertyName + ":"
 
-        val diffs = LinkedList<Diff>()
+        val diffs = mutableListOf<Diff>()
         if (eventType === EventType.ADD) diffs.add(Diff(DiffMatchPatch.Operation.INSERT, newValue))
         if (eventType === EventType.UPDATE) {
             if (listOf("title", "description", "comment").contains(propertyName)) {
@@ -96,7 +95,7 @@ class RenderMap(
         val userProfileLink: String,
         val userProfileText: String,
         val summary: String,
-        val diffs: LinkedList<Diff>
+        val diffs: List<Diff>
 )
 
 class Diff(
