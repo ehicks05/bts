@@ -201,7 +201,7 @@
                                 </span>
                             </span>
                             <span id="uploadAvatarFilename" class="file-name">
-                                
+                                No File Selected
                             </span>
                         </label>
                     </div>

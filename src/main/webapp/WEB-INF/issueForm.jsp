@@ -568,7 +568,7 @@
                             </span>
                         </span>
                         <span id="uploadFilename" class="file-name">
-
+                            No File Selected
                         </span>
                     </label>
                 </div>
