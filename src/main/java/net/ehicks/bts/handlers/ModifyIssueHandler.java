@@ -247,15 +247,23 @@ public class ModifyIssueHandler
     public ModelAndView addComment(@AuthenticationPrincipal User user, @RequestParam Long issueId,
                                    @RequestParam String fldContent, @RequestParam Long fldVisibility)
     {
-        Issue issue = issueRepository.findById(issueId).get();
-        Group group = fldVisibility == null ? issue.getGroup() : groupRepository.findById(fldVisibility).get();
-        Comment comment = new Comment(0, issue, user, fldContent, group, LocalDateTime.now(), LocalDateTime.now());
-        comment = commentRepository.save(comment);
+        issueRepository.findById(issueId).ifPresent(issue -> {
+            Group group = fldVisibility == null ? issue.getGroup() : groupRepository.findById(fldVisibility).orElse(null);
+            if (group == null)
+                return;
 
-        IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, issue, EventType.ADD,
-                "comment", "", fldContent, comment));
+            // access control
+            if (user.isAdmin() || user.getGroups().contains(group))
+            {
+                Comment comment = new Comment(0, issue, user, fldContent, group, LocalDateTime.now(), LocalDateTime.now());
+                comment = commentRepository.save(comment);
 
-        mailClient.prepareAndSend(issueEvent);
+                IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, issue, EventType.ADD,
+                        "comment", "", fldContent, comment));
+
+                mailClient.prepareAndSend(issueEvent);
+            }
+        });
 
         return new ModelAndView("redirect:/issue/form?issueId=" + issueId);
     }
@@ -265,33 +273,59 @@ public class ModifyIssueHandler
     public String updateComment(@AuthenticationPrincipal User user, @RequestParam Long commentId,
                                       @RequestParam String fldFieldName, @RequestParam String fldFieldValue)
     {
-        Comment comment = commentRepository.findById(commentId).get();
-        if (user.getId() != comment.getAuthor().getId())
-        {
-            // url hack attempt?
-            return "";
-        }
+        StringBuilder result = new StringBuilder();
+        commentRepository.findById(commentId).ifPresent(comment -> {
 
-        String content = !fldFieldName.equals("fldContent" + commentId) ? "" : Common.getSafeString(fldFieldValue);
+            // access control
+            if (user.isAdmin() || user.getId() != comment.getAuthor().getId())
+            {
+                return;
+            }
 
-        String oldContent = comment.getContent();
-        if (content.length() != 0)
-            comment.setContent(content);
+            String content = !fldFieldName.equals("fldContent" + commentId) ? "" : Common.getSafeString(fldFieldValue);
 
-        String result = "";
-        if (!content.equals(oldContent))
-        {
-            comment.setLastUpdatedOn(LocalDateTime.now());
-            commentRepository.save(comment);
+            String oldContent = comment.getContent();
+            if (content.length() != 0)
+                comment.setContent(content);
 
-            result = "Comment Updated";
-        }
+            if (!content.equals(oldContent))
+            {
+                comment.setLastUpdatedOn(LocalDateTime.now());
+                commentRepository.save(comment);
 
-        IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, comment.getIssue(), EventType.UPDATE,
-                "comment", oldContent, content, comment));
+                IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, comment.getIssue(), EventType.UPDATE,
+                        "comment", oldContent, content, comment));
 
-        mailClient.prepareAndSend(issueEvent);
-        return result;
+                mailClient.prepareAndSend(issueEvent);
+
+                result.append("Comment Updated");
+            }
+        });
+
+        return result.toString();
+    }
+
+    @PostMapping("/issue/removeComment")
+    public ModelAndView removeComment(@AuthenticationPrincipal User user, @RequestParam Long issueId,
+                                      @RequestParam Long commentId)
+    {
+        issueRepository.findById(issueId).ifPresent(issue -> {
+            commentRepository.findById(commentId).ifPresent(comment -> {
+
+                // access control
+                if (user.isAdmin() || user.getId() == comment.getAuthor().getId())
+                {
+                    commentRepository.delete(comment);
+
+                    IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, issue, EventType.REMOVE,
+                            "comment", comment.getContent(), "", comment));
+
+                    mailClient.prepareAndSend(issueEvent);
+                }
+            });
+        });
+
+        return new ModelAndView("redirect:/issue/form?issueId=" + issueId);
     }
 
     @GetMapping("/issue/addWatcher")
