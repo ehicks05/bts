@@ -106,7 +106,7 @@ public class MailClient {
     {
         Set<String> recipients = new HashSet<>();
 
-        if (issueEvent.getIssue() != null || issueEvent.getComment() != null)
+        if (issueEvent.getIssue() != null)
         {
             Issue issue = issueEvent.getIssue();
             recipients.add(issue.getReporter().getUsername());

@@ -27,7 +27,7 @@ data class IssueEvent @JvmOverloads constructor(
         var oldValue: String = "",
         var newValue: String = "",
 
-        @ManyToOne var comment: Comment? = null,
+        var commentId: Long? = null,
         var createdOn: LocalDateTime = LocalDateTime.now(),
         var status: String = "CREATED"
 

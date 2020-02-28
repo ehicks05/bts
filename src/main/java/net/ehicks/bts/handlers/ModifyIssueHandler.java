@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,7 +60,7 @@ public class ModifyIssueHandler
     }
 
     @GetMapping("/issue/form")
-    public ModelAndView showModifyIssue(@AuthenticationPrincipal User user, @RequestParam Long issueId)
+    public ModelAndView showModifyIssue(@AuthenticationPrincipal User user, @RequestParam Long issueId, Model model)
     {
         ModelAndView mav = new ModelAndView("issueForm");
         issueRepository.findById(issueId).ifPresent(issue -> {
@@ -259,7 +260,7 @@ public class ModifyIssueHandler
                 comment = commentRepository.save(comment);
 
                 IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, issue, EventType.ADD,
-                        "comment", "", fldContent, comment));
+                        "comment", "", fldContent, comment.getId()));
 
                 mailClient.prepareAndSend(issueEvent);
             }
@@ -294,7 +295,7 @@ public class ModifyIssueHandler
                 commentRepository.save(comment);
 
                 IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, comment.getIssue(), EventType.UPDATE,
-                        "comment", oldContent, content, comment));
+                        "comment", oldContent, content, comment.getId()));
 
                 mailClient.prepareAndSend(issueEvent);
 
@@ -318,7 +319,7 @@ public class ModifyIssueHandler
                     commentRepository.delete(comment);
 
                     IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, issue, EventType.REMOVE,
-                            "comment", comment.getContent(), "", comment));
+                            "comment", comment.getContent(), ""));
 
                     mailClient.prepareAndSend(issueEvent);
                 }

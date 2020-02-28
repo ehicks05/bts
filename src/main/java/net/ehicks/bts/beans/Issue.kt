@@ -49,6 +49,7 @@ data class Issue @JvmOverloads constructor(
         var watchers: Set<User> = HashSet()
 ) : Serializable {
     @OneToMany(mappedBy = "issue")
+    @OrderBy("createdOn, id asc")
     var attachments: Set<Attachment> = HashSet()
     @OneToMany(mappedBy = "issue")
     @OrderBy("createdOn, id asc")

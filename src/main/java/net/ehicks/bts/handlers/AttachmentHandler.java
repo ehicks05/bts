@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 
@@ -62,7 +63,8 @@ public class AttachmentHandler
     }
 
     @PostMapping("/issue/addAttachment")
-    public ModelAndView addAttachment(@AuthenticationPrincipal User user, @RequestParam Long issueId, @RequestParam("fldFile") MultipartFile file)
+    public ModelAndView addAttachment(RedirectAttributes redirectAttrs, @AuthenticationPrincipal User user,
+                                      @RequestParam Long issueId, @RequestParam("fldFile") MultipartFile file)
     {
         Pair<DBFile, Exception> saveResult = dbFileLogic.saveDBFile(file);
         DBFile dbFile = saveResult.getFirst();
@@ -72,32 +74,33 @@ public class AttachmentHandler
         {
             String filename = file.getOriginalFilename() != null ? file.getOriginalFilename() : "unknown";
             issueRepository.findById(issueId).ifPresent(issue -> {
-                attachmentRepository.save(new Attachment(0, filename, issue, dbFile, LocalDateTime.now()));
+                attachmentRepository.save(new Attachment(0, filename, issue, dbFile, LocalDateTime.now(), user));
                 IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, issue, EventType.ADD, "attachment", "", filename));
                 mailClient.prepareAndSend(issueEvent);
             });
 
-            return new ModelAndView("redirect:/issue/form?issueId=" + issueId)
-                    .addObject("responseMessage", "Attachment added.");
+            redirectAttrs.addFlashAttribute("responseMessage", "Attachment added.");
+            return new ModelAndView("redirect:/issue/form?issueId=" + issueId);
         }
 
-        return new ModelAndView("redirect:/issue/form?issueId=" + issueId)
-                .addObject("responseMessage", "There was an error uploading attachment.");
+        redirectAttrs.addFlashAttribute("responseMessage", "There was an error uploading attachment.");
+        return new ModelAndView("redirect:/issue/form?issueId=" + issueId);
     }
 
     @GetMapping("/issue/deleteAttachment")
-    public ModelAndView deleteAttachment(@AuthenticationPrincipal User user, @RequestParam Long issueId, @RequestParam Long attachmentId)
+    public ModelAndView deleteAttachment(RedirectAttributes redirectAttrs, @AuthenticationPrincipal User user,
+                                         @RequestParam Long issueId, @RequestParam Long attachmentId)
     {
         issueRepository.findById(issueId).ifPresent(issue -> {
             attachmentRepository.findById(attachmentId).ifPresent(attachment -> {
-                // todo security: who has access
-//            if (!Security.hasAccess(userSession, attachment.getIssue().getGroup()))
-//                return;
-
-                attachmentRepository.delete(attachment);
-                dbFileLogic.deleteDBFile(attachment.getDbFile().getId());
-                IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, issue, EventType.REMOVE, "attachment", attachment.getName()));
-                mailClient.prepareAndSend(issueEvent);
+                if (user.isAdmin() || user.getId() == attachment.getCreatedBy().getId())
+                {
+                    attachmentRepository.delete(attachment);
+                    dbFileLogic.deleteDBFile(attachment.getDbFile().getId());
+                    IssueEvent issueEvent = issueEventRepository.save(new IssueEvent(0, user, issue, EventType.REMOVE, "attachment", attachment.getName()));
+                    mailClient.prepareAndSend(issueEvent);
+                    redirectAttrs.addFlashAttribute("responseMessage", "Attachment removed.");
+                }
             });
         });
 

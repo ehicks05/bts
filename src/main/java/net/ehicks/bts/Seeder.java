@@ -405,7 +405,7 @@ public class Seeder
                     dbFile = dbFileRepository.save(dbFile);
 
                     Issue issue = issueRepository.findFirstByOrderById();
-                    attachmentRepository.save(new Attachment(0, img.getName(), issue, dbFile, LocalDateTime.now()));
+                    attachmentRepository.save(new Attachment(0, img.getName(), issue, dbFile, LocalDateTime.now(), null));
                 }
             }
         }

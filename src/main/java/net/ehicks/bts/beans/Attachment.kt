@@ -17,7 +17,8 @@ data class Attachment(
         @ManyToOne(fetch = FetchType.LAZY) val issue: Issue,
         @ManyToOne(fetch = FetchType.LAZY) val dbFile: DBFile,
         @CreatedDate
-        val createdOn: LocalDateTime
+        val createdOn: LocalDateTime,
+        @ManyToOne(fetch = FetchType.LAZY) val createdBy: User?
 ) {
     fun getShortName(): String {
         return if (name.length > 32) name.substring(0, 26) else name
