@@ -34,17 +34,25 @@ public class GlobalDataLoader
 
     public Map<String, Object> loadData()
     {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Map<String, Object> model = new HashMap<>();
-        model.put("btsSystem", btsSystemRepository.findFirstBy());
-        model.put("users", userRepository.findAll());
-        model.put("projects", projectRepository.findAll());
-        model.put("groups", groupRepository.findAll());
-
         // not sensitive
         model.put("severities", severityRepository.findAll());
         model.put("statuses", statusRepository.findAll());
         model.put("issueTypes", issueTypeRepository.findAll());
+        model.put("projects", projectRepository.findAll());
+
+        // todo what in btsSystem is public vs sensitive?
+        model.put("btsSystem", btsSystemRepository.findFirstBy());
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user.isAdmin()) {
+            model.put("users", userRepository.findAll());
+            model.put("groups", groupRepository.findAll());
+        }
+        else {
+            model.put("users", userRepository.findByGroupsIn(user.getGroups()));
+            model.put("groups", groupRepository.findAllById(user.getGroupIds()));
+        }
 
         return model;
     }

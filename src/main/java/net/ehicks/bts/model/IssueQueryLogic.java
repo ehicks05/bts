@@ -27,6 +27,15 @@ public class IssueQueryLogic
 
         List<Predicate> predicates = new ArrayList<>();
 
+        // group-based access control
+        if (!issueForm.getUser().isAdmin())
+        {
+            Path<Group> path = root.get("group");
+            List<Long> userGroupIds = issueForm.getUser().getGroups().stream().map(Group::getId).collect(Collectors.toList());
+            Predicate inClause = path.in(userGroupIds);
+            predicates.add(inClause);
+        }
+
         if (issueForm.getIssue() != null)
             predicates.add(cb.equal(root.get("id"), issueForm.getIssue().getId()));
         if (issueForm.getContainsText().length() > 0)

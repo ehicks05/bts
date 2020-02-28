@@ -106,4 +106,5 @@ interface UserRepository : JpaRepository<User, Long> {
     fun findByUsername(username: String): Optional<User>
     fun findAllByOrderById(): List<User>
     fun findByIdIn(ids: List<Long>): Set<User>
+    fun findByGroupsIn(ids: Set<Group>): Set<User>
 }
