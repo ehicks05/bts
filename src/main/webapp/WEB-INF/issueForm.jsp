@@ -81,7 +81,6 @@
             });
         });
 
-        let timeout;
         function update(fieldName, fieldValue, url)
         {
             url = '${pageContext.request.contextPath}' + url;
@@ -92,23 +91,7 @@
                 if (!data)
                     return 'ok';
                 
-                var notification = document.querySelector('#ajax-update-notification');
-
-                if (textStatus === 'success')
-                {
-                    notification.className = 'notification is-success';
-                    notification.innerHTML = '<button class="delete"></button>Success: ' + data;
-                }
-                else
-                {
-                    notification.className = 'notification is-danger';
-                    notification.innerHTML = 'Failed: ' + data;
-                }
-
-                clearTimeout(timeout);
-                timeout = setTimeout(function () {
-                    notification.className = 'notification is-hidden';
-                }, 10000);
+                 displayNotification(textStatus, data);
 
                 return textStatus;
             });
@@ -199,10 +182,6 @@
         </div>
     </div>
 </section>
-
-<div id="ajax-update-notification" class="notification is-hidden" style="position: fixed; bottom: 0; right: 1rem; z-index: 10;">
-    <button class="delete"></button>
-</div>
 
 <section class="section" style="padding:16px;">
     <div class="container">
@@ -382,7 +361,17 @@
                                             </span>
                                         </c:if>
                                         <c:if test="${comment.author.id == pageContext.request.userPrincipal.principal.id}">
-                                            <button class="delete"></button>
+                                            <form id="comment${comment.id}" method="post" action="${pageContext.request.contextPath}/issue/removeComment?issueId=${issue.id}&commentId=${comment.id}">
+                                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                                <span class="delete" onclick="removeComment(${comment.id})"> </span>
+                                            </form>
+                                            <script>
+                                                function removeComment(commentId)
+                                                {
+                                                    if (confirm('Are you sure you want to delete this comment?'))
+                                                        $('#comment' + commentId).submit();
+                                                }
+                                            </script>
                                         </c:if>
                                     </div>
                                 </article>

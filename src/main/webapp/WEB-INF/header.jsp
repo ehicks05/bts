@@ -8,49 +8,39 @@
             location.href = '${pageContext.request.contextPath}/issue/form?issueId=' + issueId;
     }
 
-    function showNotification(message, status)
+    let timeout;
+    function displayNotification(status, message)
     {
-        var notification = document.querySelector('#server-response-notification');
+        const notification = document.querySelector('#update-notification');
+        notification.innerHTML = '<button class="delete"></button>' + message;
 
         if (status === 'success')
-        {
             notification.className = 'notification is-success';
-            notification.innerHTML = '<button class="delete"></button>Success: ' + message;
-        }
-        if (status === 'error')
-        {
+        else if (status === 'error')
             notification.className = 'notification is-danger';
-            notification.innerHTML = 'Failed: ' + message;
-        }
         else
-        {
             notification.className = 'notification is-info';
-            notification.innerHTML = message;
-        }
 
-        setTimeout(function () {
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
             notification.className = 'notification is-hidden';
-        }, 3000);
+        }, 10000);
     }
 
-    function showResponseMessage()
+    function checkForResponseMessage()
     {
         var message;
-        <c:if test="${!empty sessionScope.responseMessage}">
-            message = '${sessionScope.responseMessage}';
-        </c:if>
         <c:if test="${!empty requestScope.responseMessage}">
             message = '${requestScope.responseMessage}';
         </c:if>
+
         if (message)
         {
-            showNotification(message, 'ok');
+            displayNotification('ok', message);
         }
     }
 
-    var contextPath = window.location.host;
-
-    $(showResponseMessage);
+    $(checkForResponseMessage);
     $(function () {
         $('#fldGoToIssue').on('keypress', function (e) {
             document.getElementById('goToIssueButton').disabled = false;
@@ -131,18 +121,6 @@
     });
 
 </script>
-
-<c:if test="${!empty responseMessage}">
-    <div class="container">
-        <div class="columns is-multiline is-centered">
-            <div class="column is-one-quarter">
-                <div id="server-response-notification" class="notification is-hidden" style="position: fixed;top:90%;left:90%;transform: translate(-50%, -50%);z-index: 10;">
-                    <button class="delete"></button>
-                </div>
-            </div>
-        </div>
-    </div>
-</c:if>
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="container">
@@ -229,4 +207,6 @@
     </div>
 </nav>
 
-<c:remove var="responseMessage" scope="session" />
+<div id="update-notification" class="notification is-hidden" style="position: fixed; bottom: 0; right: 1rem; z-index: 10;">
+    <button class="delete"></button>
+</div>
