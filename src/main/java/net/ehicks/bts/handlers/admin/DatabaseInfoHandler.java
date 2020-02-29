@@ -9,9 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class DatabaseInfoHandler
@@ -38,7 +36,8 @@ public class DatabaseInfoHandler
                 "  ) a order by total_bytes desc;";
         Query query = entityManager.createNativeQuery(queryString);
 
-        List<Object> columnLabels = Arrays.asList("oid", " table_schema", "table_name", "row_estimate", "total_bytes", "index_bytes", "toast_bytes", "table_bytes");
+        List<Object> columnLabels = Arrays.asList("oid", " table_schema", "table_name", "row_estimate", "total_bytes",
+                "index_bytes", "toast_bytes", "table_bytes");
         List<Object> resultRows = query.getResultList();
 
         for (Object columnLabel : columnLabels)

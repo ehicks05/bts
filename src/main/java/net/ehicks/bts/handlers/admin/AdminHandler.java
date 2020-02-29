@@ -22,20 +22,15 @@ public class AdminHandler
 {
     private static final Logger log = LoggerFactory.getLogger(AdminHandler.class);
 
-    private ProjectRepository projectRepository;
-    private GroupRepository groupRepository;
     private IssueEventRepository issueEventRepository;
     private BtsSystemRepository btsSystemRepository;
     private MailClient mailClient;
     private EntityManager entityManager;
     private SessionRegistry sessionRegistry;
 
-    public AdminHandler(ProjectRepository projectRepository, GroupRepository groupRepository,
-                        IssueEventRepository issueEventRepository, BtsSystemRepository btsSystemRepository,
+    public AdminHandler(IssueEventRepository issueEventRepository, BtsSystemRepository btsSystemRepository,
                         MailClient mailClient, EntityManager entityManager, SessionRegistry sessionRegistry)
     {
-        this.projectRepository = projectRepository;
-        this.groupRepository = groupRepository;
         this.issueEventRepository = issueEventRepository;
         this.btsSystemRepository = btsSystemRepository;
         this.mailClient = mailClient;
@@ -94,88 +89,6 @@ public class AdminHandler
                 .addObject("dbInfo", dbInfo)
                 .addObject("dbInfoMap", dbInfoMap)
                 .addObject("sessions", sessions);
-    }
-
-    @GetMapping("/admin/projects/form")
-    public ModelAndView showManageProjects()
-    {
-        return new ModelAndView("admin/projects")
-                        .addObject("projects", projectRepository.findAll());
-    }
-
-    @PostMapping("/admin/projects/create")
-    public ModelAndView createProject(@RequestParam String fldName, @RequestParam String fldPrefix)
-    {
-        projectRepository.save(new Project(0, fldName, fldPrefix));
-        return new ModelAndView("redirect:/admin/projects/form");
-    }
-
-    @GetMapping("/admin/projects/delete")
-    public ModelAndView deleteProject(@RequestParam Long projectId)
-    {
-        projectRepository.findById(projectId)
-                .ifPresent(project -> projectRepository.delete(project));
-
-        return new ModelAndView("redirect:/admin/projects/form");
-    }
-
-    @GetMapping("/admin/projects/modify/form")
-    public ModelAndView showModifyProject(@RequestParam Long projectId)
-    {
-        return new ModelAndView("admin/modifyProject")
-                .addObject("project", projectRepository.findById(projectId).orElse(null));
-    }
-
-    @PostMapping("/admin/projects/modify/modify")
-    public ModelAndView modifyProject(@RequestParam Long projectId, @RequestParam String name,
-                                      @RequestParam String prefix)
-    {
-        projectRepository.findById(projectId).ifPresent(project -> {
-            project.setPrefix(prefix);
-            project.setName(name);
-            projectRepository.save(project);
-        });
-
-        return new ModelAndView("redirect:/admin/projects/modify/form?projectId=" + projectId);
-    }
-
-    @GetMapping("/admin/groups/form")
-    public ModelAndView showManageGroups()
-    {
-        return new ModelAndView("admin/groups")
-                .addObject("groups", groupRepository.findAll());
-    }
-
-    @PostMapping("/admin/groups/create")
-    public ModelAndView createGroup(@RequestParam String fldName)
-    {
-        groupRepository.save(new Group(0, fldName, false, false));
-        return new ModelAndView("redirect:/admin/groups/form");
-    }
-
-    @GetMapping("/admin/groups/delete")
-    public ModelAndView deleteGroup(@RequestParam Long groupId)
-    {
-        groupRepository.findById(groupId).ifPresent(group -> groupRepository.delete(group));
-        return new ModelAndView("redirect:/admin/groups/form");
-    }
-
-    @GetMapping("/admin/groups/modify/form")
-    public ModelAndView showModifyGroup(@RequestParam Long groupId)
-    {
-        return new ModelAndView("admin/modifyGroup")
-                .addObject("group", groupRepository.findById(groupId).orElse(null));
-    }
-
-    @PostMapping("/admin/groups/modify/modify")
-    public ModelAndView modifyGroup(@RequestParam Long groupId, @RequestParam String name)
-    {
-        groupRepository.findById(groupId).ifPresent(group -> {
-            group.setName(name);
-            groupRepository.save(group);
-        });
-
-        return new ModelAndView("redirect:/admin/groups/modify/form?groupId=" + groupId);
     }
 
     @GetMapping("/admin/email/form")
