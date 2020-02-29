@@ -1,10 +1,10 @@
 package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.bts.model.AuditForm;
-import net.ehicks.bts.model.SearchResult;
 import net.ehicks.bts.beans.Issue;
 import net.ehicks.bts.beans.IssueRepository;
+import net.ehicks.bts.model.AuditForm;
 import net.ehicks.bts.model.AuditQueryLogic;
+import net.ehicks.bts.model.SearchResult;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

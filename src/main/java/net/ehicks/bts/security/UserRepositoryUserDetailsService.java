@@ -1,6 +1,5 @@
 package net.ehicks.bts.security;
 
-import net.ehicks.bts.beans.User;
 import net.ehicks.bts.beans.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

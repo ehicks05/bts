@@ -8,7 +8,6 @@ import java.io.Serializable
 import java.util.*
 import javax.persistence.*
 import kotlin.collections.HashSet
-import kotlin.jvm.Transient
 
 @Entity
 data class IssueForm @JvmOverloads constructor(

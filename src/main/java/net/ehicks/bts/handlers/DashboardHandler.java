@@ -2,7 +2,6 @@ package net.ehicks.bts.handlers;
 
 import net.ehicks.bts.beans.IssueForm;
 import net.ehicks.bts.beans.IssueFormRepository;
-import net.ehicks.bts.beans.IssueRepository;
 import net.ehicks.bts.beans.User;
 import net.ehicks.bts.model.IssueQueryLogic;
 import org.slf4j.Logger;
@@ -13,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.util.List;
 
 @Controller

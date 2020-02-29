@@ -1,6 +1,5 @@
 package net.ehicks.bts.handlers;
 
-import net.ehicks.bts.beans.Avatar;
 import net.ehicks.bts.beans.BtsSystem;
 import net.ehicks.bts.beans.BtsSystemRepository;
 import net.ehicks.bts.beans.UserRepository;
