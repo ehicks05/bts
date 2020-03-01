@@ -68,5 +68,6 @@
         .select2-search input { color: #dbdbdb; background-color: #000; }
         .select2-results { background-color: #000; }
         .select2-dropdown {border-color: rgb(54, 54, 54);}
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {background-color: rgb(54, 54, 54);}
     }
 </style>
