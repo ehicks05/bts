@@ -4,6 +4,7 @@ import net.ehicks.bts.ISelectTagSupport
 import org.hibernate.envers.Audited
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import java.io.Serializable
 import javax.persistence.*
 
 @Entity
@@ -14,7 +15,7 @@ data class Avatar @JvmOverloads constructor(
         var name: String = "",
         @OneToOne(fetch = FetchType.LAZY) var dbFile: DBFile = DBFile(),
         var publicUse: Boolean = false
-) : ISelectTagSupport {
+) : ISelectTagSupport, Serializable {
     override fun getText(): String {
         return name
     }

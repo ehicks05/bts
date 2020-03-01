@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Repository
+import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
@@ -47,7 +48,7 @@ data class User @JvmOverloads constructor(
 //        @OneToMany(mappedBy = "author")
 //        var comments: Set<Comment> = HashSet()
 
-): UserDetails, ISelectTagSupport, Named {
+): Serializable, UserDetails, ISelectTagSupport, Named {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],

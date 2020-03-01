@@ -4,6 +4,7 @@ import net.ehicks.common.Common
 import org.hibernate.envers.Audited
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import java.io.Serializable
 import java.util.*
 import javax.persistence.*
 
@@ -16,7 +17,7 @@ data class DBFile @JvmOverloads constructor(
         val hash: Int = 0,
         val mediaType: String = "",
         @OneToOne(fetch = FetchType.LAZY) val thumbnail: DBFile? = null
-) {
+) : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
