@@ -1,8 +1,4 @@
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
-<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="utf-8" />
@@ -35,6 +31,7 @@
 <c:if test="${!empty btsSystem.theme && !(btsSystem.theme eq 'default')}">
     <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/${theme}/bulmaswatch.min.css">
 </c:if>
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/bulma-prefers-dark" />
 <%-- Bulma --%>
 
 <%-- Font Awesome --%>
@@ -44,3 +41,32 @@
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/bts.css" media="screen" />
 <script src="${pageContext.request.contextPath}/js/util.js"></script>
 <script src="${pageContext.request.contextPath}/js/ajaxUtil.js"></script>
+
+<style>
+    @media(prefers-color-scheme: dark)
+    {
+        .select > select {
+            border-color: #363636 !important;
+            background-color: #0a0a0a !important;
+            color: #dbdbdb !important;
+        }
+
+        .invertable {
+            filter: invert(100%);
+        }
+
+        .select2-container--default .select2-selection--single{
+            background-color: #000;
+        }
+
+        .select2-container--default .select2-selection--multiple{
+            background-color: #000;
+            border-color: rgb(54, 54, 54);
+        }
+
+        .select2-search { background-color: #000; }
+        .select2-search input { color: #dbdbdb; background-color: #000; }
+        .select2-results { background-color: #000; }
+        .select2-dropdown {border-color: rgb(54, 54, 54);}
+    }
+</style>
