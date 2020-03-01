@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css" />
 </c:if>
 <c:if test="${!empty btsSystem.theme && !(btsSystem.theme eq 'default')}">
-    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/${theme}/bulmaswatch.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch@0.6.2/${btsSystem.theme}/bulmaswatch.min.css">
 </c:if>
 <link rel="stylesheet" type="text/css" href="https://unpkg.com/bulma-prefers-dark" />
 <%-- Bulma --%>
@@ -45,6 +45,8 @@
 <style>
     @media(prefers-color-scheme: dark)
     {
+        .editable:hover {background-color: rgb(54, 54, 54);}
+
         .select > select {
             border-color: #363636 !important;
             background-color: #0a0a0a !important;

@@ -47,6 +47,12 @@
         .hero.is-success {
             background: #F2F6FA;
         }
+        @media(prefers-color-scheme: dark)
+        {
+            .hero.is-success {
+                background: #222;
+            }
+        }
         /*.avatar {*/
             /*margin-top: -70px;*/
             /*padding-bottom: 20px;*/
@@ -72,7 +78,7 @@
                 <p class="subtitle has-text-grey">Please login to proceed.</p>
                 <div class="box">
                     <figure class="avatar">
-                        <img src="${pageContext.request.contextPath}/images/puffin-text.png" style="width: 128px">
+                        <img src="${pageContext.request.contextPath}/images/puffin-text.png" style="width: 128px" class="invertable">
                     </figure>
                     <form id="frmLogin" method="POST" action="${pageContext.request.contextPath}/login">
                         <div class="field">

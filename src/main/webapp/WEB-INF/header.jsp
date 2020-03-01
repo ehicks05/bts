@@ -141,7 +141,7 @@
                 <div class="navbar-item">
                     <a class="button" id="createIssueButton">
                         <span class="icon has-text-primary">
-                          <i class="fas fa-plus-square"></i>
+                          <i class="fas fa-plus"></i>
                         </span>
                         <span>Create Issue</span>
                     </a>
