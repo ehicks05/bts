@@ -15,11 +15,9 @@ data class IssueForm @JvmOverloads constructor(
         override var id: Long = 0,
 
         @ManyToOne var user: User,
-        var formName: String = "",
+        var formName: String = "New Form",
         var onDash: Boolean = false,
         var containsText: String = "",
-        var title: String = "",
-        var description: String = "",
         @ManyToOne var issue: Issue? = null,
 
         @ManyToMany
@@ -69,7 +67,8 @@ data class IssueForm @JvmOverloads constructor(
         get() = "/search/ajaxGetPageOfResults"
 
     @Transient
-    var searchResult: SearchResult<Issue> = SearchResult(Collections.emptyList(), 0, 20, "1")
+    var searchResult: SearchResult<Issue> =
+            SearchResult(Collections.emptyList(), 0, 20, "1")
 
     fun getProjectIds(): List<Long> {return projects.map { it.getId() }}
     fun getGroupIds(): List<Long> {return groups.map { it.getId() }}

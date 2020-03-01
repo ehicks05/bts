@@ -46,7 +46,7 @@
     @media(prefers-color-scheme: dark)
     {
         .editable:hover {background-color: rgb(54, 54, 54);}
-
+        .modal-card-body {background-color: rgb(54, 54, 54);}
         .select > select {
             border-color: #363636 !important;
             background-color: #0a0a0a !important;

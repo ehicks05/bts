@@ -51,7 +51,7 @@
                         <th>action</th>
                         <th class="has-text-right">issueId</th>
                         <th class="has-text-right">commentId</th>
-                        <th>description</th>
+<%--                        <th>description</th>--%>
                         <th></th>
                     </tr>
                     </thead>
@@ -67,10 +67,10 @@
                                 <i class="fas fa-${email.statusIcon}"></i>
                             </td>
                             <td class="has-text-right">${email.user.id}</td>
-                            <td>${email.emailAction.verb}</td>
+                            <td>${email.eventType.verb}</td>
                             <td class="has-text-right">${email.issue.id}</td>
-                            <td class="has-text-right">${email.comment.id}</td>
-                            <td>${email.description}</td>
+                            <td class="has-text-right">${email.commentId}</td>
+<%--                            <td>${email.description}</td>--%>
                             <td><a onclick="deleteEmail('${email.id}');"><i class="fas fa-trash"></i></a></td>
                         </tr>
                     </c:forEach>

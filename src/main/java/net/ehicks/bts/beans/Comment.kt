@@ -3,6 +3,7 @@ package net.ehicks.bts.beans
 import org.hibernate.envers.Audited
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import java.io.Serializable
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -22,7 +23,7 @@ data class Comment(
         @OneToOne var visibleToGroup: Group,
         var createdOn: LocalDateTime = LocalDateTime.now(),
         var lastUpdatedOn: LocalDateTime = LocalDateTime.now()
-)
+): Serializable
 
 @Repository
 interface CommentRepository : JpaRepository<Comment, Long> {

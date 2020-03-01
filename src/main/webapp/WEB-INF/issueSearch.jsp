@@ -64,56 +64,63 @@
     <div class="container">
         <div class="columns is-multiline is-centered">
             <div class="column is-one-fifth">
-                <form:form name="frmFilter" id="frmFilter" method="post" action="${pageContext.request.contextPath}/search/search" modelAttribute="issueForm" >
+                <form:form name="frmFilter" id="frmFilter" method="post"
+                           action="${pageContext.request.contextPath}/search/search" modelAttribute="issueForm" >
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                    <input type="hidden" name="formId" id="formId" value="${issueForm.id}"/>
+                    <form:hidden path="user" />
+                    <input type="hidden" name="sortColumn" id="sortColumn" value="${issueForm.sortColumn}"/>
+                    <input type="hidden" name="sortDirection" id="sortDirection" value="${issueForm.sortDirection}"/>
+                    <input type="hidden" name="page" id="page" value="${issueForm.page}"/>
+                    <input type="hidden" name="id" id="id" value="${issueForm.id}"/>
 
                     <nav class="panel">
-                    <p class="panel-heading">
-                        <c:set var="formName" value="${issueForm.id == 0 || fn:length(issueForm.formName) == 0 ? 'New Form' : issueForm.formName}"/>
-                        Issue Filter: ${formName}
-                    </p>
-                    <div class="panel-block">
-                        <input type="hidden" name="sortColumn" id="sortColumn" value="${issueForm.sortColumn}"/>
-                        <input type="hidden" name="sortDirection" id="sortDirection" value="${issueForm.sortDirection}"/>
-                        <input type="hidden" name="page" id="page" value="${issueForm.page}"/>
-                        <input type="hidden" name="id" id="id" value="${issueForm.id}"/>
+                        <p class="panel-heading">
+                            Issue Filter: ${issueForm.formName}
+                        </p>
+                        <div class="panel-block">
+                            <t:text isSpring="true" id="formName" label="Form Name" value="${issueForm.formName}" horizontal="false" />
+                        </div>
+                        <div class="panel-block">
+                            <t:text isSpring="true" id="containsText" label="Contains Text" value="${issueForm.containsText}" horizontal="false" />
+                        </div>
+                        <div class="panel-block">
+                            <t:multiSelect isSpring="true" id="groups" selectedValues="${issueForm.groups}" items="${groups}" placeHolder="Groups:"/>
+                        </div>
+                        <div class="panel-block">
+                            <t:multiSelect isSpring="true" id="issueTypes" selectedValues="${issueForm.issueTypes}" items="${issueTypes}" placeHolder="Issue Types:"/>
+                        </div>
+                        <div class="panel-block">
+                            <t:multiSelect isSpring="true" id="projects" selectedValues="${issueForm.projects}" items="${projects}" placeHolder="Projects:"/>
+                        </div>
+                        <div class="panel-block">
+                            <t:multiSelect isSpring="true" id="assignees" selectedValues="${issueForm.assignees}" items="${users}" placeHolder="Assignees:"/>
+                        </div>
+                        <div class="panel-block">
+                            <t:multiSelect isSpring="true" id="reporters" selectedValues="${issueForm.reporters}" items="${users}" placeHolder="Reporters:"/>
+                        </div>
+                        <div class="panel-block">
+                            <t:multiSelect isSpring="true" id="severities" selectedValues="${issueForm.severities}" items="${severities}" placeHolder="Severities:"/>
+                        </div>
+                        <div class="panel-block">
+                            <t:multiSelect isSpring="true" id="statuses" selectedValues="${issueForm.statuses}" items="${statuses}" placeHolder="Statuses:"/>
+                        </div>
 
-                        <t:text id="formName" label="Form Name" value="${issueForm.formName}" horizontal="false" />
-                    </div>
-                    <div class="panel-block">
-                        <t:text id="containsText" label="Contains Text" value="${issueForm.containsText}" horizontal="false" />
-                    </div>
-                    <div class="panel-block">
-                        <t:multiSelect id="projectIds" selectedValues="${issueForm.projectIds}" items="${projects}" placeHolder="Projects:"/>
-                    </div>
-                    <div class="panel-block">
-                        <t:multiSelect id="groupIds" selectedValues="${issueForm.groupIds}" items="${groups}" placeHolder="Groups:"/>
-                    </div>
-                    <div class="panel-block">
-                        <t:multiSelect id="severityIds" selectedValues="${issueForm.severityIds}" items="${severities}" placeHolder="Severities:"/>
-                    </div>
-                    <div class="panel-block">
-                        <t:multiSelect id="statusIds" selectedValues="${issueForm.statusIds}" items="${statuses}" placeHolder="Statuses:"/>
-                    </div>
-                    <div class="panel-block">
-                        <t:multiSelect id="assigneeIds" selectedValues="${issueForm.assigneeIds}" items="${users}" placeHolder="Assignees:"/>
-                    </div>
-                    <div class="panel-block">
-                        <c:if test="${!empty issueForm.id && issueForm.id != 0}">
-                            <t:checkbox id="onDash" label="On Dashboard" checked="${issueForm.onDash}" horizontal="false" />
-                        </c:if>
-                    </div>
+                        <div class="panel-block">
+                            <c:if test="${empty issueForm.id || issueForm.id == 0}">
+                                <c:set var="disabled" value="true"/>
+                            </c:if>
+                            <t:checkbox isSpring="true" id="onDash" label="On Dashboard" checked="${issueForm.onDash}" horizontal="false" />
+                        </div>
 
-                    <div class="panel-block">
-                        <input type="submit" value="Search" class="button is-link is-outlined is-fullwidth" />
-                    </div>
-                    <div class="panel-block">
-                        <button id="saveFilterButton" class="button is-link is-outlined is-fullwidth" disabled>
-                            Save (Enter a filter name)
-                        </button>
-                    </div>
-                </nav>
+                        <div class="panel-block">
+                            <input type="submit" value="Search" class="button is-link is-outlined is-fullwidth" />
+                        </div>
+                        <div class="panel-block">
+                            <button id="saveFilterButton" class="button is-link is-outlined is-fullwidth" disabled>
+                                Save (Enter a filter name)
+                            </button>
+                        </div>
+                    </nav>
                 </form:form>
             </div>
             <div class="column has-text-centered">
