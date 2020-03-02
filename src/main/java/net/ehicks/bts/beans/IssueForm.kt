@@ -81,5 +81,5 @@ data class IssueForm @JvmOverloads constructor(
 @Repository
 interface IssueFormRepository : JpaRepository<IssueForm, Long> {
     fun findByUserId(userId: Long): List<IssueForm>
-    fun findByUserIdAndOnDashTrue(userId: Long): List<IssueForm>
+    fun findByUserIdAndOnDashTrueOrderById(userId: Long): List<IssueForm>
 }

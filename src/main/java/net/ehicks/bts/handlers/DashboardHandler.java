@@ -32,7 +32,7 @@ public class DashboardHandler
     public ModelAndView showDashboard(@AuthenticationPrincipal User user)
     {
         List<IssueForm> dashBoardIssueForms = issueFormRepository
-                .findByUserIdAndOnDashTrue(user.getId());
+                .findByUserIdAndOnDashTrueOrderById(user.getId());
 
         dashBoardIssueForms.forEach(issueForm -> issueForm.setSearchResult(issueQueryLogic.query(issueForm)));
 
