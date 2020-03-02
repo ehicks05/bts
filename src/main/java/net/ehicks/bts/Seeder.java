@@ -431,6 +431,7 @@ public class Seeder
                 "Help with", "Problem regarding");
 
         List<Comment> comments = new ArrayList<>();
+        List<IssueEvent> issueEvents = new ArrayList<>();
 
         List<Project> projects = projectRepository.findAll();
         List<Group> groups = groupRepository.findAll();
@@ -468,7 +469,7 @@ public class Seeder
             if (issues.size() >= 100) {
                 issueRepository.saveAll(issues);
 
-                issues.forEach(savedIssue -> makeComments(comments, users, savedIssue));
+                issues.forEach(savedIssue -> makeComments(savedIssue, users, comments, issueEvents));
 
                 issues.clear();
             }
@@ -476,11 +477,11 @@ public class Seeder
 
         issueRepository.saveAll(issues);
 
-        issues.forEach(savedIssue -> makeComments(comments, users, savedIssue));
+        issues.forEach(savedIssue -> makeComments(savedIssue, users, comments, issueEvents));
         commentRepository.saveAll(comments);
     }
 
-    private void makeComments(List<Comment> comments, List<User> users, Issue savedIssue)
+    private void makeComments(Issue savedIssue, List<User> users, List<Comment> comments, List<IssueEvent> issueEvents)
     {
         if (r.nextDouble() < .1) // create comments on 1/10 issues
             for (int j = 0; j < r.nextInt(3) + 1; j++) // create 1-3 comments
@@ -489,12 +490,15 @@ public class Seeder
                         buildLatin(32), savedIssue.getGroup(), LocalDateTime.now(), LocalDateTime.now());
                 comments.add(comment);
 
-                issueEventRepository.save(new IssueEvent(0, comment.getAuthor(), savedIssue, EventType.ADD, "comment", "", comment.getContent()));
+                issueEvents.add(new IssueEvent(0, comment.getAuthor(), savedIssue, EventType.ADD, "comment", "", comment.getContent()));
             }
 
         if (comments.size() >= 100) {
             commentRepository.saveAll(comments);
             comments.clear();
+
+            issueEventRepository.saveAll(issueEvents);
+            issueEvents.clear();
         }
     }
 
