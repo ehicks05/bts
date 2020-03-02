@@ -57,7 +57,7 @@ dependencies {
     implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
     implementation 'de.codecentric:spring-boot-admin-starter-client:2.2.2'
     
-    implementation 'org.springframework.session:spring-session-jdbc'
+//    implementation 'org.springframework.session:spring-session-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 //    implementation 'org.ehcache:ehcache:3.8.1'

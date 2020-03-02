@@ -278,7 +278,8 @@ public class ModifyIssueHandler
         commentRepository.findById(commentId).ifPresent(comment -> {
 
             // access control
-            if (user.isAdmin() || user.getId() != comment.getAuthor().getId())
+            boolean access = user.isAdmin() || user.getId() != comment.getAuthor().getId();
+            if (!access)
             {
                 return;
             }

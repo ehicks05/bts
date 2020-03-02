@@ -28,7 +28,7 @@ data class IssueEvent @JvmOverloads constructor(
         var newValue: String = "",
 
         var commentId: Long? = null,
-        var createdOn: LocalDateTime = LocalDateTime.now(),
+        var eventDate: LocalDateTime = LocalDateTime.now(),
         var status: String = "CREATED"
 
 ) : Serializable {

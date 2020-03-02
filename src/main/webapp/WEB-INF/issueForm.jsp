@@ -1,3 +1,4 @@
+<%@ page trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
@@ -336,7 +337,12 @@
                                                 </div>
 
                                                 on <javatime:format value="${comment.createdOn}" style="MS" />
-
+                                                <c:if test="${!empty comment.lastUpdatedOn && comment.createdOn != comment.lastUpdatedOn}">
+                                                    <javatime:format value="${comment.lastUpdatedOn}" style="SS" var="commentLastUpdated"/>
+                                                    <span class="icon is-small" title="Edited ${commentLastUpdated}">
+                                                        *
+                                                    </span>
+                                                </c:if>
                                                 <br>
                                                 <c:if test="${comment.author.id == pageContext.request.userPrincipal.principal.id}">
                                                     <t:textToInputText id="fldContent${comment.id}" text="${comment.content}"
@@ -350,11 +356,6 @@
                                     </div>
 
                                     <div class="media-right">
-                                        <c:if test="${!empty comment.lastUpdatedOn && comment.createdOn != comment.lastUpdatedOn}">
-                                            <span class="icon is-small" title="Edited ${comment.lastUpdatedOn}">
-                                                <i class="fas fa-edit"></i>
-                                            </span>
-                                        </c:if>
                                         <c:if test="${comment.visibleToGroup.id != comment.issue.group.id}">
                                             <span class="icon is-small has-text-danger" title="Visible to ${comment.visibleToGroup.name}">
                                                 <i class="fas fa-user-secret"></i>

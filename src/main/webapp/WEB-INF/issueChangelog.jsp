@@ -16,9 +16,11 @@
     </thead>
 
     <tbody id="myTBody">
-    <c:forEach var="issueEvent" items="${issueEvents}" varStatus="loop">
+    <c:forEach var="issueEvent" items="${issueEvents}">
         <tr>
-            <td class="has-text-right" style="white-space: nowrap;"><javatime:format value="${issueEvent.createdOn}" style="SS"/></td>
+            <td class="has-text-right" style="white-space: nowrap;">
+                <javatime:format value="${issueEvent.eventDate}" style="SS"/>
+            </td>
             <td>${issueEvent.user.username}</td>
             <td style="white-space: nowrap;">${issueEvent.issue.key}</td>
             <td>${issueEvent.eventType}</td>

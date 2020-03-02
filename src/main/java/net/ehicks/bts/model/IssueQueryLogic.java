@@ -36,8 +36,6 @@ public class IssueQueryLogic
             predicates.add(inClause);
         }
 
-        if (issueForm.getIssue() != null)
-            predicates.add(cb.equal(root.get("id"), issueForm.getIssue().getId()));
         if (issueForm.getContainsText().length() > 0)
         {
             Predicate titleClause = cb.like(root.get("title"), "%" + issueForm.getContainsText().toLowerCase() + "%");

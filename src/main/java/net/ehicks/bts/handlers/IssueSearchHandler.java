@@ -44,7 +44,6 @@ public class IssueSearchHandler
 
         issueForm.setSearchResult(issueQueryLogic.query(issueForm));
 
-        // todo security: lock down some of these queries
         return new ModelAndView("issueSearch")
                 .addObject("issueForm", issueForm);
     }

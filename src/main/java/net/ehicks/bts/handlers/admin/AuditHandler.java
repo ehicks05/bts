@@ -1,140 +1,106 @@
 package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.bts.beans.Issue;
-import net.ehicks.bts.beans.IssueRepository;
-import net.ehicks.bts.model.AuditForm;
+import net.ehicks.bts.beans.IssueEventForm;
+import net.ehicks.bts.beans.IssueEventFormRepository;
+import net.ehicks.bts.beans.User;
 import net.ehicks.bts.model.AuditQueryLogic;
-import net.ehicks.bts.model.SearchResult;
-import org.springframework.data.history.Revision;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class AuditHandler
 {
-    IssueRepository issueRepository;
+    IssueEventFormRepository issueEventFormRepository;
     AuditQueryLogic auditQueryLogic;
 
-    public AuditHandler(IssueRepository issueRepository, AuditQueryLogic auditQueryLogic)
+    public AuditHandler(IssueEventFormRepository issueEventFormRepository, AuditQueryLogic auditQueryLogic)
     {
-        this.issueRepository = issueRepository;
+        this.issueEventFormRepository = issueEventFormRepository;
         this.auditQueryLogic = auditQueryLogic;
     }
 
     @GetMapping("/admin/audit/form")
-    public ModelAndView showAuditRecords()
+    public ModelAndView showAuditRecords(@AuthenticationPrincipal User user,
+                                         Model model,
+                                         @RequestParam(required = false) Long issueEventFormId)
     {
-        AuditForm<Revision<Integer, Issue>> auditForm = new AuditForm<>();
-        auditForm.setIssueId(138L);
-        SearchResult<Revision<Integer, Issue>> searchResult = auditQueryLogic.query(auditForm);
+        IssueEventForm issueEventForm = (IssueEventForm) model.getAttribute("searchForm");
+        if (issueEventForm == null && issueEventFormId != null)
+            issueEventForm = issueEventFormRepository.findById(issueEventFormId).orElse(null);
 
-        auditForm.setSearchResult(searchResult);
+        // access control
+        if (issueEventForm != null && issueEventForm.getUser().getId() != user.getId())
+            return new ModelAndView("error");
+
+        if (issueEventForm == null)
+            issueEventForm = new IssueEventForm(0, user, null, null);
+
+        issueEventForm.setSearchResult(auditQueryLogic.query(issueEventForm));
+
         return new ModelAndView("admin/audit")
-                .addObject("auditForm", auditForm)
-                .addObject("searchResult", searchResult);
-    }
-
-    @GetMapping("/admin/audit/search")
-    public ModelAndView search()
-    {
-        return new ModelAndView("redirect:/admin/audit/form")
-//                .addObject("auditForm", auditForm)
-                ;
+                .addObject("searchForm", issueEventForm);
     }
 
     @GetMapping("/admin/audit/ajaxGetPageOfResults")
-    public ModelAndView ajaxGetPageOfResults()
+    public ModelAndView ajaxGetPageOfResults(@AuthenticationPrincipal User user, @RequestParam Long issueFormId,
+                                             @RequestParam String sortColumn, @RequestParam String sortDirection,
+                                             @RequestParam(required = false) Integer page)
     {
-//        AuditForm auditForm = (AuditForm) request.getSession().getAttribute("auditForm");
-//        if (auditForm == null)
-//            auditForm = new AuditForm();
-//
-//        // parse sorting fields
-//        String sortColumn = request.getParameter("sortColumn");
-//        String sortDirection = request.getParameter("sortDirection");
-//
-//        // we must be doing a resort
-//        if (sortColumn != null && sortDirection != null)
-//        {
-//            if (sortColumn.equals(auditForm.getSortColumn()))
-//            {
-//                if (sortDirection.equals("asc"))
-//                    sortDirection = "desc";
-//                else
-//                    sortDirection = "asc";
-//            }
-//
-//            auditForm.setSortColumn(sortColumn);
-//            auditForm.setSortDirection(sortDirection);
-//        }
-//
-//        String page = request.getParameter("page");
-//        if (page != null)
-//            auditForm.setPage(page);
-//
-//        SearchResult searchResult = auditForm.getSearchResult();
-//
-//        request.setAttribute("auditForm", auditForm);
-//        request.setAttribute("searchResult", searchResult);
-//
-//        request.getSession().setAttribute("auditForm", auditForm);
-//        request.getSession().setAttribute("searchResult", searchResult);
-//
-        return new ModelAndView("auditTable");
-    }
+        IssueEventForm issueEventForm = issueEventFormRepository.findById(issueFormId)
+                .orElse(new IssueEventForm(0, user, null, null));
 
-    private AuditForm updateAuditFormFromRequest(AuditForm auditForm, HttpServletRequest request)
-    {
-        Long issueId    = Long.parseLong(request.getParameter("issueId"));
-//        String fieldName    = Common.getSafeString(request.getParameter("fieldName"));
-//        Date fromEventTime  = Common.stringToDate(request.getParameter("fromEventTime"));
-//        Date toEventTime    = Common.stringToDate(request.getParameter("toEventTime"));
-//        String eventType    = Common.arrayToString(Common.getSafeStringArray(request.getParameterValues("eventType")));
-
-        // parse sorting fields
-        String sortColumn = request.getParameter("sortColumn");
-        String sortDirection = request.getParameter("sortDirection");
-        if (sortColumn == null)
+        // we must be doing a resort
+        if (sortColumn != null && sortDirection != null)
         {
-            sortColumn = "event_time";
-            sortDirection = "desc";
+            issueEventForm.setSortColumn(sortColumn);
+            issueEventForm.setSortDirection(sortDirection);
+
+            // we want to persist sorting preferences
+            if (issueFormId > 0)
+                issueEventFormRepository.save(issueEventForm);
         }
 
-        if (sortDirection == null)
-            sortDirection = "asc";
+        if (page != null)
+            issueEventForm.setPage(String.valueOf(page));
 
-        String page = request.getParameter("page");
-        if (page == null || page.length() == 0)
-            page = "1";
+        issueEventForm.setSearchResult(auditQueryLogic.query(issueEventForm));
 
-//        auditForm.updateFields(issueId, fieldName, fromEventTime, toEventTime, eventType);
-
-        auditForm.setSortColumn(sortColumn);
-        auditForm.setSortDirection(sortDirection);
-        auditForm.setPage(page);
-
-        return auditForm;
+        return new ModelAndView("auditTable")
+                .addObject("searchForm", issueEventForm);
     }
 
-    public SearchResult performSearch(AuditForm auditForm)
+    @PostMapping("/admin/audit/search")
+    public ModelAndView search(RedirectAttributes redirectAttrs,
+                               @AuthenticationPrincipal User user,
+                               @ModelAttribute IssueEventForm issueEventForm)
     {
-        long resultsPerPage = 20;
+        if (issueEventForm.getUser().getId() != user.getId())
+            return new ModelAndView("error");
 
-        if (auditForm.getSortColumn().length() == 0) auditForm.setSortColumn("id");
-        if (auditForm.getSortDirection().length() == 0) auditForm.setSortDirection("asc");
-        if (auditForm.getPage().length() == 0) auditForm.setPage("1");
+        String query = "";
+        if (issueEventForm.getId() != 0)
+            query = "?issueEventFormId=" + issueEventForm.getId();
 
-//        PSIngredients auditQuery = auditForm.buildSQLQuery(auditForm, resultsPerPage);
-//        String countVersionOfQuery = SQLGenerator.getCountVersionOfQuery(auditQuery.query);
-//
-//        List countResult = EOI.executeQueryOneResult(countVersionOfQuery, auditQuery.args);
-//        long resultSize = (Long) countResult.get(0);
-//        List<Object> filteredAudits = EOI.executeQuery(auditQuery.query, auditQuery.args);
-//
-//        return new SearchResult(auditForm.getPage(), filteredAudits, resultSize, resultsPerPage);
-        return null;
+
+        redirectAttrs.addFlashAttribute("searchForm", issueEventForm);
+        return new ModelAndView("redirect:/admin/audit/form" + query);
+    }
+
+    @PostMapping("/admin/audit/saveIssueEventForm")
+    public ModelAndView saveIssueEventForm(@AuthenticationPrincipal User user,
+                                           @ModelAttribute IssueEventForm issueEventForm)
+    {
+        if (issueEventForm.getUser().getId() == user.getId())
+            issueEventFormRepository.save(issueEventForm);
+
+        return new ModelAndView("redirect:/admin/audit/form?issueFormId=" + issueEventForm.getId())
+                .addObject("issueForm", issueEventForm);
     }
 }

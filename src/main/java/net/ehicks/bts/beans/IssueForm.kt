@@ -18,7 +18,6 @@ data class IssueForm @JvmOverloads constructor(
         var formName: String = "New Form",
         var onDash: Boolean = false,
         var containsText: String = "",
-        @ManyToOne var issue: Issue? = null,
 
         @ManyToMany
         @JoinTable(name = "issue_form_group",
@@ -60,8 +59,10 @@ data class IssueForm @JvmOverloads constructor(
         @JoinTable(name = "issue_form_status",
                 joinColumns = [JoinColumn(name = "issue_form_id")],
                 inverseJoinColumns = [JoinColumn(name = "status_id")])
-        var statuses: Set<Status> = HashSet()
+        var statuses: Set<Status> = HashSet(),
 
+        override var sortColumn: String = "id",
+        override var sortDirection: String = "asc"
 ) : SearchForm(), Serializable {
     override val endpoint: String
         get() = "/search/ajaxGetPageOfResults"
