@@ -66,8 +66,8 @@ public class Seeder
     private ChatRoomRepository chatRoomRepository;
     private PasswordEncoder passwordEncoder;
     private TikaService tikaService;
-    private EntityManager entityManager;
     private EntityManagerFactory entityManagerFactory;
+    private IssueEventRepository issueEventRepository;
 
     public Seeder(SubscriptionRepository subscriptionRepository, UserRepository userRepository, 
                   GroupRepository groupRepository, IssueTypeRepository issueTypeRepository, 
@@ -78,7 +78,7 @@ public class Seeder
                   CommentRepository commentRepository, AttachmentRepository attachmentRepository,
                   RoleRepository roleRepository, ChatRoomRepository chatRoomRepository,
                   PasswordEncoder passwordEncoder, TikaService tikaService,
-                  EntityManager entityManager, EntityManagerFactory entityManagerFactory)
+                  EntityManagerFactory entityManagerFactory, IssueEventRepository issueEventRepository)
     {
         this.subscriptionRepository = subscriptionRepository;
         this.userRepository = userRepository;
@@ -98,8 +98,8 @@ public class Seeder
         this.chatRoomRepository = chatRoomRepository;
         this.passwordEncoder = passwordEncoder;
         this.tikaService = tikaService;
-        this.entityManager = entityManager;
         this.entityManagerFactory = entityManagerFactory;
+        this.issueEventRepository = issueEventRepository;
     }
     
     public String buildLatin(int maxLength)
@@ -145,8 +145,14 @@ public class Seeder
         }
     }
 
-    void createDemoData()
+    void seed(boolean dropCreateLoad)
     {
+        if (!dropCreateLoad)
+            return;
+        
+        if (issueRepository.count() != 0)
+            return;
+
         log.info("Seeding dummy data");
         Timer timer = new Timer();
 
@@ -405,7 +411,9 @@ public class Seeder
                     dbFile = dbFileRepository.save(dbFile);
 
                     Issue issue = issueRepository.findFirstByOrderById();
-                    attachmentRepository.save(new Attachment(0, img.getName(), issue, dbFile, LocalDateTime.now(), null));
+                    attachmentRepository.save(new Attachment(0, img.getName(), issue, dbFile, LocalDateTime.now(), issue.getReporter()));
+
+                    issueEventRepository.save(new IssueEvent(0, issue.getReporter(), issue, EventType.ADD, "attachment", "", img.getName()));
                 }
             }
         }
@@ -460,17 +468,7 @@ public class Seeder
             if (issues.size() >= 100) {
                 issueRepository.saveAll(issues);
 
-                issues.forEach(savedIssue -> {
-                    if (r.nextDouble() > .9) // create comments on 1/10 issues
-                        for (int j = 0; j < r.nextInt(3) + 1; j++) // create 1-3 comments
-                            comments.add(new Comment(0, savedIssue, users.get(r.nextInt(users.size())),
-                                    buildLatin(32), savedIssue.getGroup(), LocalDateTime.now(), LocalDateTime.now()));
-
-                    if (comments.size() >= 100) {
-                        commentRepository.saveAll(comments);
-                        comments.clear();
-                    }
-                });
+                issues.forEach(savedIssue -> makeComments(comments, users, savedIssue));
 
                 issues.clear();
             }
@@ -478,17 +476,26 @@ public class Seeder
 
         issueRepository.saveAll(issues);
 
-        issues.forEach(savedIssue -> {
-            for (int j = 0; j < r.nextInt(8); j++)
-                comments.add(new Comment(0, savedIssue, users.get(r.nextInt(users.size())),
-                        buildLatin(32), savedIssue.getGroup(), LocalDateTime.now(), LocalDateTime.now()));
-
-            if (comments.size() >= 100) {
-                commentRepository.saveAll(comments);
-                comments.clear();
-            }
-        });
+        issues.forEach(savedIssue -> makeComments(comments, users, savedIssue));
         commentRepository.saveAll(comments);
+    }
+
+    private void makeComments(List<Comment> comments, List<User> users, Issue savedIssue)
+    {
+        if (r.nextDouble() < .1) // create comments on 1/10 issues
+            for (int j = 0; j < r.nextInt(3) + 1; j++) // create 1-3 comments
+            {
+                Comment comment = new Comment(0, savedIssue, users.get(r.nextInt(users.size())),
+                        buildLatin(32), savedIssue.getGroup(), LocalDateTime.now(), LocalDateTime.now());
+                comments.add(comment);
+
+                issueEventRepository.save(new IssueEvent(0, comment.getAuthor(), savedIssue, EventType.ADD, "comment", "", comment.getContent()));
+            }
+
+        if (comments.size() >= 100) {
+            commentRepository.saveAll(comments);
+            comments.clear();
+        }
     }
 
     @NotNull

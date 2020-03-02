@@ -3,7 +3,6 @@ package net.ehicks.bts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,9 +12,6 @@ public class Startup
 
     @Value("${puffin.dropCreateLoad:0}")
     public String dropCreateLoad;
-
-    @Value("classpath:net/ehicks/bts/beans")
-    Resource beans;
 
     private Seeder seeder;
 
@@ -28,11 +24,7 @@ public class Startup
     {
         log.info("Puffin starting...");
 
-        if (dropCreateLoad.toLowerCase().equals("true"))
-        {
-            seeder.createDemoData();
-        }
-
+        seeder.seed(dropCreateLoad.toLowerCase().equals("true"));
 //        DatabaseBackupTask.scheduleTask();
 //        ChatSessionHandler.init(); // todo: move this?
     }
