@@ -2,6 +2,7 @@ package net.ehicks.bts.handlers;
 
 import net.ehicks.bts.beans.*;
 import net.ehicks.bts.mail.MailClient;
+import net.ehicks.bts.model.AuditQueryLogic;
 import net.ehicks.common.Common;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,14 +37,14 @@ public class ModifyIssueHandler
     private IssueEventRepository issueEventRepository;
     private BtsSystemRepository btsSystemRepository;
     private MailClient mailClient;
-    private EntityManager entityManager;
+    private AuditQueryLogic auditQueryLogic;
 
     public ModifyIssueHandler(UserRepository userRepository, GroupRepository groupRepository,
                               IssueTypeRepository issueTypeRepository, ProjectRepository projectRepository,
                               StatusRepository statusRepository, SeverityRepository severityRepository,
                               IssueRepository issueRepository, CommentRepository commentRepository,
                               IssueEventRepository issueEventRepository, BtsSystemRepository btsSystemRepository,
-                              MailClient mailClient, EntityManager entityManager)
+                              MailClient mailClient, EntityManager entityManager, AuditQueryLogic auditQueryLogic)
     {
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
@@ -56,7 +57,7 @@ public class ModifyIssueHandler
         this.issueEventRepository = issueEventRepository;
         this.btsSystemRepository = btsSystemRepository;
         this.mailClient = mailClient;
-        this.entityManager = entityManager;
+        this.auditQueryLogic = auditQueryLogic;
     }
 
     @GetMapping("/issue/form")
@@ -71,12 +72,8 @@ public class ModifyIssueHandler
                     .addObject("potentialWatchers", users.stream().filter(aUser -> !issue.getWatchers().contains(aUser)).collect(Collectors.toList()))
                     .addObject("potentialAssignees", users)
                     .addObject("potentialReporters", users)
-                    .addObject("defaultAvatar", btsSystemRepository.findFirstBy().getDefaultAvatar())
-                    .addObject("projects", projectRepository.findAll())
                     .addObject("groups", groupRepository.findAll())
-                    .addObject("severities", severityRepository.findAll())
-                    .addObject("statuses", statusRepository.findAll())
-                    .addObject("issueTypes", issueTypeRepository.findAll());
+                    .addObject("searchForm", new IssueEventForm(0, user, issueId));
         });
 
         return mav;
@@ -84,12 +81,27 @@ public class ModifyIssueHandler
 
     @GetMapping("/issue/ajaxGetChangeLog")
     @ResponseBody
-    public ModelAndView ajaxGetChangeLog(@RequestParam Long issueId)
+    public ModelAndView ajaxGetChangeLog(@AuthenticationPrincipal User user, @RequestParam Long issueId,
+                                         @RequestParam(required = false) String sortColumn,
+                                         @RequestParam(required = false) String sortDirection,
+                                         @RequestParam(required = false) Integer page)
     {
-        List<IssueEvent> issueEvents = issueEventRepository.findByIssueId(issueId);
+        IssueEventForm issueEventForm = new IssueEventForm(0, user, issueId);
 
-        return new ModelAndView("issueChangelog")
-                .addObject("issueEvents", issueEvents);
+        // we must be doing a resort
+        if (sortColumn != null && sortDirection != null)
+        {
+            issueEventForm.setSortColumn(sortColumn);
+            issueEventForm.setSortDirection(sortDirection);
+        }
+
+        if (page != null)
+            issueEventForm.setPage(String.valueOf(page));
+
+        issueEventForm.setSearchResult(auditQueryLogic.query(issueEventForm));
+
+        return new ModelAndView("auditTable")
+                .addObject("searchForm", issueEventForm);
     }
 
     private Set<Comment> retainVisibleComments(Set<Comment> comments, User user)

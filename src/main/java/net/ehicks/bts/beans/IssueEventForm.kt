@@ -15,10 +15,10 @@ data class IssueEventForm @JvmOverloads constructor(
         override var id: Long = 0,
 
         @ManyToOne(fetch = FetchType.LAZY) var user: User,
+        var issueId: Long? = null,
         var formName: String = "New Form",
         var onDash: Boolean = false,
         var propertyName: String = "",
-        var issueId: Long? = null,
         @ManyToOne(fetch = FetchType.LAZY) var eventUser: User? = null,
         var fromEventDate: LocalDateTime? = null,
         var toEventDate: LocalDateTime? = null,
