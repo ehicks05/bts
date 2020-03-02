@@ -1,5 +1,6 @@
 package net.ehicks.bts.handlers.admin;
 
+import net.ehicks.bts.beans.EventType;
 import net.ehicks.bts.beans.IssueEventForm;
 import net.ehicks.bts.beans.IssueEventFormRepository;
 import net.ehicks.bts.beans.User;
@@ -40,12 +41,13 @@ public class AuditHandler
             return new ModelAndView("error");
 
         if (issueEventForm == null)
-            issueEventForm = new IssueEventForm(0, user, null, null);
+            issueEventForm = new IssueEventForm(0, user);
 
         issueEventForm.setSearchResult(auditQueryLogic.query(issueEventForm));
 
         return new ModelAndView("admin/audit")
-                .addObject("searchForm", issueEventForm);
+                .addObject("searchForm", issueEventForm)
+                .addObject("eventTypes", EventType.values());
     }
 
     @GetMapping("/admin/audit/ajaxGetPageOfResults")
@@ -54,7 +56,7 @@ public class AuditHandler
                                              @RequestParam(required = false) Integer page)
     {
         IssueEventForm issueEventForm = issueEventFormRepository.findById(issueFormId)
-                .orElse(new IssueEventForm(0, user, null, null));
+                .orElse(new IssueEventForm(0, user));
 
         // we must be doing a resort
         if (sortColumn != null && sortDirection != null)

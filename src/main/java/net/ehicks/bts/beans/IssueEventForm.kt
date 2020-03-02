@@ -20,9 +20,9 @@ data class IssueEventForm @JvmOverloads constructor(
         var propertyName: String = "",
         var issueId: Long? = null,
         @ManyToOne(fetch = FetchType.LAZY) var eventUser: User? = null,
-        var fromEventDate: LocalDateTime?,
-        var toEventDate: LocalDateTime?,
-        
+        var fromEventDate: LocalDateTime? = null,
+        var toEventDate: LocalDateTime? = null,
+
         override var sortColumn: String = "eventDate",
         override var sortDirection: String = "desc"
 ) : SearchForm(), Serializable {

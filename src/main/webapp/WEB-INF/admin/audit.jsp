@@ -58,15 +58,6 @@
                             <t:text isSpring="true" id="toEventDate" label="To Event Time" value="${toEvent}" horizontal="false" />
                         </div>
 
-<%--                        <div class="panel-block">--%>
-<%--                            <div class="field">--%>
-<%--                                <label class="label" for="eventType">Event Type</label>--%>
-<%--                                <div class="control">--%>
-<%--                                    <t:multiSelect id="eventType" selectedValues="${searchForm.eventType}" items="INSERT,UPDATE,DELETE" placeHolder=""/>--%>
-<%--                                </div>--%>
-<%--                            </div>--%>
-<%--                        </div>--%>
-
                         <div class="panel-block">
                             <input type="submit" value="Search" class="button is-link is-outlined is-fullwidth" />
                         </div>
