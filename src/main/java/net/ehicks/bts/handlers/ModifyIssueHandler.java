@@ -67,13 +67,16 @@ public class ModifyIssueHandler
         issueRepository.findById(issueId).ifPresent(issue -> {
             List<User> users = userRepository.findAll();
             Set<Comment> comments = retainVisibleComments(issue.getComments(), user);
+            IssueEventForm searchForm = new IssueEventForm(0, user, issueId);
+            searchForm.setEndpoint("/issue/ajaxGetChangeLog?issueId=" + issueId);
+
             mav.addObject("issue", issue)
                     .addObject("comments", comments)
                     .addObject("potentialWatchers", users.stream().filter(aUser -> !issue.getWatchers().contains(aUser)).collect(Collectors.toList()))
                     .addObject("potentialAssignees", users)
                     .addObject("potentialReporters", users)
                     .addObject("groups", groupRepository.findAll())
-                    .addObject("searchForm", new IssueEventForm(0, user, issueId));
+                    .addObject("searchForm", searchForm);
         });
 
         return mav;
@@ -87,6 +90,7 @@ public class ModifyIssueHandler
                                          @RequestParam(required = false) Integer page)
     {
         IssueEventForm issueEventForm = new IssueEventForm(0, user, issueId);
+        issueEventForm.setEndpoint("/issue/ajaxGetChangeLog?issueId=" + issueId);
 
         // we must be doing a resort
         if (sortColumn != null && sortDirection != null)

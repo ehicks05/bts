@@ -64,18 +64,11 @@ data class IssueForm @JvmOverloads constructor(
         override var sortColumn: String = "id",
         override var sortDirection: String = "asc"
 ) : SearchForm(), Serializable {
-    override val endpoint: String
-        get() = "/search/ajaxGetPageOfResults"
+    override var endpoint: String = "/search/ajaxGetPageOfResults"
 
     @Transient
     var searchResult: SearchResult<Issue> =
             SearchResult(Collections.emptyList(), 0, 20, "1")
-
-    fun getProjectIds(): List<Long> {return projects.map { it.getId() }}
-    fun getGroupIds(): List<Long> {return groups.map { it.getId() }}
-    fun getSeverityIds(): List<Long> {return severities.map { it.getId() }}
-    fun getStatusIds(): List<Long> {return statuses.map { it.getId() }}
-    fun getAssigneeIds(): List<Long> {return assignees.map { it.getId() }}
 }
 
 @Repository

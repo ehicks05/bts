@@ -368,7 +368,7 @@
                         <div class="" data-content="2">
                             <div class="ajaxTableContainer">
                                <div id="changelog" style="min-height: 500px;">
-                                    <jsp:include page="auditTable.jsp"/>
+                                   <jsp:include page="auditTable.jsp"/>
                                </div>
                             </div>
                         </div>

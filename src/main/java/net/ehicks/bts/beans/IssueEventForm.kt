@@ -26,8 +26,7 @@ data class IssueEventForm @JvmOverloads constructor(
         override var sortColumn: String = "eventDate",
         override var sortDirection: String = "desc"
 ) : SearchForm(), Serializable {
-    override val endpoint: String
-        get() = "/admin/audit/ajaxGetPageOfResults"
+    override var endpoint: String = "/admin/audit/ajaxGetPageOfResults"
 
     @Transient
     var searchResult: SearchResult<IssueEvent> =
