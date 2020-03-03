@@ -2,14 +2,13 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib uri="http://sargue.net/jsptags/time" prefix="javatime" %>
 <jsp:useBean id="issueForm" type="net.ehicks.bts.beans.IssueForm" scope="request"/>
-<%--<jsp:useBean id="searchResult" type="net.ehicks.bts.model.SearchResult" scope="request"/>--%>
 
 <table id="issueTable" class="table is-striped is-narrow is-hoverable is-fullwidth">
     <thead>
         <tr class="listheading">
             <t:sortableCell code="id" label="ID" style="text-align:right;" cssClass="has-text-right" searchForm="${issueForm}" />
-            <t:sortableCell code="title" label="Title" searchForm="${issueForm}"/>
-            <t:sortableCell code="severity" label="Severity" searchForm="${issueForm}"/>
+            <t:sortableCell code="title" label="Title" searchForm="${issueForm}" style="" cssClass=""/>
+            <t:sortableCell code="severity" label="Severity" searchForm="${issueForm}" style="" cssClass=""/>
             <t:sortableCell code="createdOn" label="Age" style="text-align:right;" cssClass="has-text-right hideOnSmall" searchForm="${issueForm}" />
             <t:sortableCell code="lastUpdatedOn" label="Updated" style="text-align:right;" cssClass="has-text-right hideOnSmall" searchForm="${issueForm}" />
         </tr>
