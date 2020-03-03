@@ -49,12 +49,6 @@
                         <div class="field-body">
                             <div class="control is-expanded">
                                 <div class="select is-multiple is-fullwidth">
-                                    <%--<select id="groups" name="groups" size="4" multiple>--%>
-                                        <%--<c:forEach var="item" items="${groups}">--%>
-                                            <%--<c:set var="selected" value="${user.allGroupIdsAsStrings.contains(item.value) ? 'selected' : ''}"/>--%>
-                                            <%--<option value="${item.value}" ${selected} class="is-active">${item.text}</option>--%>
-                                        <%--</c:forEach>--%>
-                                    <%--</select>--%>
                                     <t:multiSelect id="groupIds" items="${groups}" selectedValues="${user.groupIds}" placeHolder="None"/>
                                     <t:multiSelect id="projectIds" items="${projects}" selectedValues="${user.projectIds}" placeHolder="None"/>
                                 </div>

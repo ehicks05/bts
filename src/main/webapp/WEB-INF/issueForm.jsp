@@ -158,7 +158,7 @@
                                     <tr>
                                         <td>Project:</td>
                                         <td>
-                                            <t:textToSelect id="fldProject" tag="span" myClass="" value="${issue.project.id}" text="${issue.project.name}" items="${projects}"
+                                            <t:textToSelect id="fldProject" value="${issue.project.id}" text="${issue.project.name}" items="${projects}"
                                                             submitAction="/issue/update?issueId=${issue.id}"/>
                                         </td>
                                     </tr>
@@ -351,8 +351,7 @@
                                               action="${pageContext.request.contextPath}/issue/addComment?issueId=${issue.id}">
                                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                             <t:textarea id="fldContent" label="Comment" placeholder="Write a comment here..." horizontal="false" labelClass="has-text-left"/>
-                                            <t:basicSelect id="fldVisibility" label="Visibility" items="${groups}" blankLabel="Default" horizontal="false"
-                                                           labelClass="has-text-left" />
+                                            <t:basicSelect id="fldVisibility" label="Visibility" items="${groups}" horizontal="false" required="true" value="${issue.group.id}" />
 
                                             <input type="button" value="Add" id="submitAddComment" class="button is-primary is-small"/>
                                             <input type="button" value="Cancel" id="cancelAddComment" class="button is-small" onclick="toggleAddComment()"/>

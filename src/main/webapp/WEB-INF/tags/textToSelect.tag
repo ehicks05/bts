@@ -6,12 +6,6 @@
 <%@attribute name="text" fragment="false" %>
 <%@attribute name="items" fragment="false" type="java.util.List<net.ehicks.bts.ISelectTagSupport>" %>
 <%@attribute name="submitAction" fragment="false" %>
-<%@attribute name="myClass" fragment="false" %>
-<%@attribute name="tag" fragment="false" %>
-
-<c:if test="${empty tag}">
-    <c:set var="tag" value="span"/>
-</c:if>
 
 <c:set var="textToSelectCounter" value="${requestScope.textToSelectCounter + 1}" scope="request"/>
 <c:if test="${textToSelectCounter == 1}">
@@ -58,4 +52,4 @@
         <option value="${item.value}">${item.text}</option>
     </c:forEach>
 </select>
-<${tag} class="editable ${myClass}" id="${id}Text" onclick="select2Enable(this.id, $('#${id}').attr('id'))">${text}</${tag}>
+<span class="editable" id="${id}Text" onclick="select2Enable(this.id, $('#${id}').attr('id'))">${text}</span>

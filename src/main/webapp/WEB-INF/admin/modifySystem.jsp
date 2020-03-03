@@ -38,7 +38,7 @@
                     <t:text id="siteName" label="Site Name" value="${btsSystem.siteName}" />
                     <t:textarea id="logonMessage" label="Logon Message" value="${btsSystem.logonMessage}" rich="true"/>
                     <t:text id="defaultAvatar" label="Default Avatar" value="${btsSystem.defaultAvatar.id}"/>
-                    <t:basicSelect id="theme" label="Theme" items="${themes}" value="${btsSystem.theme}"/>
+                    <t:basicSelect id="theme" label="Theme" items="${themes}" value="${btsSystem.theme}" horizontal="true" required="true"/>
                     <t:text id="emailFromAddress" label="Email 'From' Address" value="${btsSystem.emailFromAddress}"/>
                     <t:text id="emailFromName" label="Email 'From' Name" value="${btsSystem.emailFromName}"/>
 
