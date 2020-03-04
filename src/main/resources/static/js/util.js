@@ -8,20 +8,16 @@ function initDialog (prefix)
     $(function () {
         var dialog = $('#' + prefix + 'Dialog');
         var openDialogButton = $('#' + prefix + 'Button');
+        var modalBackground = dialog.find('.modal-background');
 
-        openDialogButton.on('click', function ()
-        {
+        openDialogButton.on('click', toggleDialog);
+        dialog.find('.close').on('click', toggleDialog);
+        dialog.find('button[class="delete"]').on('click', toggleDialog);
+        modalBackground.on('click', toggleDialog);
+                    
+        function toggleDialog() {
             dialog.toggleClass('is-active');
-        });
-
-        dialog.find('.close').on('click', function ()
-        {
-            dialog.toggleClass('is-active');
-        });
-        dialog.find('button[class="delete"]').on('click', function ()
-        {
-            dialog.toggleClass('is-active');
-        });
+        }
 
         $(document).keyup(function (e)
         {

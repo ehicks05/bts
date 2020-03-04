@@ -4,6 +4,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <jsp:useBean id="dashBoardIssueForms" type="java.util.List<net.ehicks.bts.beans.IssueForm>" scope="request"/>
+<%@page import="org.slf4j.LoggerFactory"%>
+<%@ page import="org.slf4j.Logger" %>
+<%! static Logger log = LoggerFactory.getLogger("dashboard"); %>
 
 <!DOCTYPE html>
 <html>
@@ -47,6 +50,8 @@
         <c:if test="${fn:length(dashBoardIssueForms) > 2}"><c:set var="cols" value="is-half" /></c:if>
 
         <c:forEach var="issueForm" items="${dashBoardIssueForms}">
+            <% log.debug("    Start issueform iteration"); %>
+            <% long startDash = System.nanoTime(); %>
             <c:set var="searchResult" value="${issueForm.searchResult}"/>
 
             <div class="column is-half-desktop is-half-widescreen is-half-fullhd has-text-centered">
@@ -77,7 +82,11 @@
                 </div>
 
             </div>
+            <% long dur = (System.nanoTime() - startDash) / 1_000_000; %>
+            <% log.debug("    End issueform iteration " + dur + " ms"); %>
+
         </c:forEach>
+
         <c:if test="${empty dashBoardIssueForms}">
             <div class="column is-one-third has-text-centered">
                 <h1 class="title">No saved filters found</h1>
@@ -87,6 +96,10 @@
     </div>
 </section>
 
+<% long startFooter = System.nanoTime(); %>
 <jsp:include page="footer.jsp"/>
+<% long footduration = (System.nanoTime() - startFooter) / 1_000_000; %>
+<% log.debug("    footer jsp " + footduration + " ms"); %>
+
 </body>
 </html>

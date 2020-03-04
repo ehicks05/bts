@@ -55,3 +55,24 @@ function ajaxItems(callingElementId, context, endpoint, issueFormId, newPage, ne
                 alert("Error: " + xhr.status + ": " + xhr.statusText);
         });
 }
+
+function ajaxContent(containerId, context, endpoint, params, callback)
+{
+    const myUrl = context + endpoint;
+    const target = $('#' + containerId);
+    target.css('opacity', '.50');
+    const spinner = new Spinner(opts).spin(target[0]);
+
+    $.get(myUrl, params,
+        function(data, textStatus, xhr)
+        {
+            spinner.stop();
+            target.css('opacity', '1');
+            if(textStatus == "success")
+                target.html(data);
+            if (textStatus == "error")
+                alert("Error: " + xhr.status + ": " + xhr.statusText);
+
+            callback();
+        });
+}

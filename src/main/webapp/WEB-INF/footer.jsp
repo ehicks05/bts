@@ -1,11 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <spring:eval expression="@gitVersionProperties.version" var="version" />
 <spring:eval expression="@gitVersionProperties.revision" var="revision" />
 <spring:eval expression="@environment.getProperty('puffin.siteName')" var="siteName" />
-<jsp:useBean id="now" class="java.util.Date" />
 
 <footer class="footer">
     <div class="container">
@@ -25,9 +22,4 @@
         </div>
     </div>
 </footer>
-
-<%--<c:if test="${!empty sessionScope.userSession}">--%>
-    <jsp:include page="inc_createIssueDialog.jsp"/>
-<%--</c:if>--%>
-
-<c:remove var="lastRequestDuration" scope="session" />
+<jsp:include page="inc_createIssueDialog.jsp"/>

@@ -108,6 +108,13 @@ public class ModifyIssueHandler
                 .addObject("searchForm", issueEventForm);
     }
 
+    @GetMapping("/issue/ajaxCreateIssueForm")
+    @ResponseBody
+    public ModelAndView ajaxCreateIssueForm(@AuthenticationPrincipal User user)
+    {
+        return new ModelAndView("createIssueForm");
+    }
+
     private Set<Comment> retainVisibleComments(Set<Comment> comments, User user)
     {
         if (user.isAdmin() || user.isSupport())
