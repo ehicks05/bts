@@ -1,13 +1,10 @@
 package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.common.Common;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,50 +21,51 @@ public class DatabaseInfoHandler
     @GetMapping("admin/dbInfo/form")
     public ModelAndView showDatabaseInfo()
     {
-        String queryString = "SELECT *, total_bytes-index_bytes-COALESCE(toast_bytes,0) AS table_bytes FROM (\n" +
-                "      SELECT c.oid,nspname AS table_schema, relname AS TABLE_NAME\n" +
-                "              , c.reltuples AS row_estimate\n" +
-                "              , pg_total_relation_size(c.oid) AS total_bytes\n" +
-                "              , pg_indexes_size(c.oid) AS index_bytes\n" +
-                "              , pg_total_relation_size(reltoastrelid) AS toast_bytes\n" +
-                "          FROM pg_class c\n" +
-                "          LEFT JOIN pg_namespace n ON n.oid = c.relnamespace\n" +
-                "          WHERE relkind = 'r' and nspname='public'\n" +
-                "  ) a order by total_bytes desc;";
-        Query query = entityManager.createNativeQuery(queryString);
-
-        List<Object> columnLabels = Arrays.asList("oid", " table_schema", "table_name", "row_estimate", "total_bytes",
-                "index_bytes", "toast_bytes", "table_bytes");
-        List<Object> resultRows = query.getResultList();
-
-        for (Object columnLabel : columnLabels)
-        {
-            int columnIndex = columnLabels.indexOf(columnLabel);
-            String label = (String) columnLabel;
-
-            if (label.contains("_bytes"))
-            {
-                resultRows.forEach(resultRow -> {
-                    Object[] row = (Object[]) resultRow;
-                    BigInteger value = (BigInteger) row[columnIndex];
-                    if (value == null)
-                        row[columnIndex] = "";
-                    else
-                        row[columnIndex] = Common.toMetric(value.longValue());
-                });
-            }
-            if (label.equals("row_estimate"))
-            {
-                resultRows.forEach(resultRow -> {
-                    Object[] row = (Object[]) resultRow;
-                    float value = (Float) row[columnIndex];
-                    row[columnIndex] = Common.toMetric((long) value, "");
-                });
-            }
-        }
-
         return new ModelAndView("admin/databaseInfo")
-                .addObject("columnLabels", columnLabels)
-                .addObject("resultRows", resultRows);
+                .addObject("databaseSizeColumnLabels", getDatabaseSizeColumnLabels())
+                .addObject("databaseSizeRows", getDatabaseSizeRows())
+                .addObject("tableSizeColumnLabels", getTableSizeColumnLabels())
+                .addObject("tableSizeRows", getTableSizeRows());
+    }
+
+    private List<String> getDatabaseSizeColumnLabels()
+    {
+        return Arrays.asList("Database", "Size");
+    }
+
+    private List<Object> getDatabaseSizeRows()
+    {
+        return entityManager.createNativeQuery("select datname, pg_size_pretty(pg_database_size(datname)) from pg_database " +
+                "where datname='puffin' order by pg_database_size(datname);").getResultList();
+    }
+
+    private List<String> getTableSizeColumnLabels()
+    {
+        return Arrays.asList("table_name", "row_estimate", "full_size", "table_size", "index_size");
+    }
+
+    private List<Object> getTableSizeRows()
+    {
+//        String queryString = """
+//                select relname, n_live_tup as live_tuples,
+//                    pg_size_pretty(pg_total_relation_size(relname::regclass)) as full_size,
+//                    pg_size_pretty(pg_table_size(relname::regclass)) as table_size,
+//                    pg_size_pretty(pg_total_relation_size(relname::regclass) - pg_table_size(relname::regclass)) as index_size
+//                    from pg_stat_user_tables
+//                    order by pg_total_relation_size(relname::regclass) desc;
+//                    """;
+
+        String relNameRegClass = "relname\\:\\:regclass";
+        String queryString =
+                "select relname, " +
+                    "to_char(n_live_tup, '999G999') as live_tuples," +
+                    "pg_size_pretty(pg_total_relation_size(" + relNameRegClass + ")) as full_size," +
+                    "pg_size_pretty(pg_table_size(" + relNameRegClass + ")) as table_size," +
+                    "pg_size_pretty(pg_total_relation_size(" + relNameRegClass + ") - pg_table_size(" + relNameRegClass + ")) as index_size" +
+                    " from pg_stat_user_tables" +
+                    " order by pg_total_relation_size(" + relNameRegClass + ") desc;"
+                ;
+
+        return entityManager.createNativeQuery(queryString).getResultList();
     }
 }
