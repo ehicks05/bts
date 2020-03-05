@@ -22,10 +22,8 @@ public class RequestStatsRepository
 
     public void save(RequestStats requestStats)
     {
-        hashOperations.put("REQUEST_STATS", requestStats.getRequestId(), requestStats);
-
         Long size = hashOperations.size("REQUEST_STATS");
-        int remove = size.intValue() - 100;
+        int remove = size.intValue() - 99;
         if (remove > 0)
         {
             List<RequestStats> requestStatses = findAll().stream()
@@ -34,6 +32,8 @@ public class RequestStatsRepository
                     .subList(0, remove);
             requestStatses.forEach(requestStats1 -> hashOperations.delete("REQUEST_STATS", requestStats1.getRequestId()));
         }
+
+        hashOperations.put("REQUEST_STATS", requestStats.getRequestId(), requestStats);
     }
 
     public List<RequestStats> findAll()
