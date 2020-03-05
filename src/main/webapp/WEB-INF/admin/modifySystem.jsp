@@ -47,6 +47,7 @@
                         <div class="field-body">
                             <div class="control">
                                 <input id="saveSystemButton" type="submit" value="Save" class="button is-primary" />
+                                <input id="sendTestEmailButton" type="button" value="Send Test Email" class="button" />
                             </div>
                         </div>
                     </div>
@@ -55,6 +56,50 @@
         </div>
     </div>
 </section>
+
+<dialog id="sendTestEmailDialog" class="mdl-dialog">
+    <h4 class="mdl-dialog__title">Send Test Email</h4>
+    <div class="mdl-dialog__content">
+        <form id="frmSendTestEmail" name="frmCreateEmail" method="post" action="${pageContext.request.contextPath}/admin/email/sendTest">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <table>
+                <tr>
+                    <td>To:</td>
+                    <td>
+                        <input type="text" id="fldTo" name="fldTo" size="20" maxlength="256" value="" required/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="mdl-dialog__actions">
+        <button type="button" class="button is-primary send">Send</button>
+        <button type="button" class="button close">Cancel</button>
+    </div>
+</dialog>
+<script>
+    var sendTestEmailDialog = document.querySelector('#sendTestEmailDialog');
+    var sendTestEmailButton = document.querySelector('#sendTestEmailButton');
+    if (!sendTestEmailDialog.showModal)
+    {
+        dialogPolyfill.registerDialog(sendTestEmailDialog);
+    }
+    sendTestEmailButton.addEventListener('click', function ()
+    {
+        sendTestEmailDialog.showModal();
+    });
+    document.querySelector('#sendTestEmailDialog .send').addEventListener('click', function ()
+    {
+        if (!document.querySelector('#fldTo').value)
+            alert('Please enter an email recipient.');
+        else
+            $('#frmSendTestEmail').submit();
+    });
+    sendTestEmailDialog.querySelector('#sendTestEmailDialog .close').addEventListener('click', function ()
+    {
+        sendTestEmailDialog.close();
+    });
+</script>
 
 <jsp:include page="../footer.jsp"/>
 </body>
