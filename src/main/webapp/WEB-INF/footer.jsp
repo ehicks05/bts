@@ -12,7 +12,7 @@
                     &centerdot; <strong>${siteName}</strong>
                 </p>
             </div>
-            <div class="column has-text-right">
+            <div class="column has-text-right" id="projectInfo">
                 <p>
                     <a href="https://github.com/ehicks05/puffin">Puffin</a>
                     <a href="https://github.com/ehicks05/puffin/commit/${revision}" title="${revision}">v${version}</a>
@@ -23,3 +23,27 @@
     </div>
 </footer>
 <jsp:include page="inc_createIssueDialog.jsp"/>
+<script>
+    $(function () {
+        fetch("${pageContext.request.contextPath}/api/ajaxGetRequestStats/${requestId}")
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(myJson) {
+                if (!myJson || myJson.error)
+                {
+                    $('#requestStats').remove();
+                    return;
+                }
+
+                const message =
+                    'R: ' + myJson.requestTime + ' ms' +
+                    ' | H: ' + myJson.handleTime + '' +
+                    ' | PH: ' + myJson.postHandleTime + '' +
+                    ' | T: ' + myJson.templateTime + '';
+                const jsonString = JSON.stringify(myJson);
+                $('<p></p>').prop('id', 'requestStats').text(message).addClass('is-size-7').prop('title', jsonString).appendTo($('#projectInfo'));
+                $('#requestStats').prop('title', jsonString);
+            });
+    });
+</script>

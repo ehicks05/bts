@@ -1,5 +1,7 @@
 package net.ehicks.bts.handlers.admin;
 
+import net.ehicks.bts.RequestStats;
+import net.ehicks.bts.RequestStatsRepository;
 import net.ehicks.bts.beans.*;
 import net.ehicks.bts.mail.MailClient;
 import org.slf4j.Logger;
@@ -13,9 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class AdminHandler
@@ -25,16 +29,17 @@ public class AdminHandler
     private IssueEventRepository issueEventRepository;
     private BtsSystemRepository btsSystemRepository;
     private MailClient mailClient;
-    private EntityManager entityManager;
+    private RequestStatsRepository requestStatsRepository;
     private SessionRegistry sessionRegistry;
 
     public AdminHandler(IssueEventRepository issueEventRepository, BtsSystemRepository btsSystemRepository,
-                        MailClient mailClient, EntityManager entityManager, SessionRegistry sessionRegistry)
+                        MailClient mailClient, RequestStatsRepository requestStatsRepository,
+                        SessionRegistry sessionRegistry)
     {
         this.issueEventRepository = issueEventRepository;
         this.btsSystemRepository = btsSystemRepository;
         this.mailClient = mailClient;
-        this.entityManager = entityManager;
+        this.requestStatsRepository = requestStatsRepository;
         this.sessionRegistry = sessionRegistry;
     }
 
@@ -66,29 +71,26 @@ public class AdminHandler
     @GetMapping("/admin/system/info/form")
     public ModelAndView showSystemInfo()
     {
-        Map<String, String> dbInfoMap = new LinkedHashMap<>();
-
-        Query query = entityManager.createNativeQuery("select * from pg_stat_database where datname='puffin'");
-        List<Object> dbInfo = query.getResultList();
-
-        Object[] results = (Object[]) dbInfo.get(0);
-        List<String> headers = Arrays.asList("datid","datname","numbackends","xact_commit",
-                "xact_rollback","blks_read","blks_hit","tup_returned","tup_fetched",
-                "tup_inserted","tup_updated","tup_deleted","conflicts","temp_files",
-                "temp_bytes","deadlocks","blk_read_time","blk_write_time","stats_reset");
-        for (int i = 0; i < headers.size(); i++)
-        {
-            dbInfoMap.put(headers.get(i), results[i] != null ? results[i].toString() : "");
-        }
-
         List<SessionInformation> sessions = new ArrayList<>();
         sessionRegistry.getAllPrincipals()
                 .forEach(principal -> sessions.addAll(sessionRegistry.getAllSessions(principal, true)));
 
+        List<RequestStats> requestStats = new ArrayList<>();
+
+        try
+        {
+            requestStats = requestStatsRepository.findAll().stream()
+                    .sorted(Comparator.comparing(RequestStats::getRequestStart).reversed())
+                    .collect(Collectors.toList());
+        }
+        catch (Exception e)
+        {
+
+        }
+
         return new ModelAndView("admin/systemInfo")
-                .addObject("dbInfo", dbInfo)
-                .addObject("dbInfoMap", dbInfoMap)
-                .addObject("sessions", sessions);
+                .addObject("sessions", sessions)
+                .addObject("requests", requestStats);
     }
 
     @GetMapping("/admin/email/form")
@@ -110,7 +112,7 @@ public class AdminHandler
     {
         mailClient.prepareAndSendTest(fldTo);
 
-        return new ModelAndView("redirect:/admin/email/form");
+        return new ModelAndView("redirect:/admin/modifySystem");
     }
 
     @GetMapping("/admin/email/delete")

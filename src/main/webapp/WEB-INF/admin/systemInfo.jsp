@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
+<%@ taglib uri="http://sargue.net/jsptags/time" prefix="javatime" %>
 
 <!DOCTYPE html>
 <html>
@@ -37,7 +38,7 @@
 <section class="section">
     <div class="container">
         <div class="columns is-multiline is-centered">
-            <div class="column is-one-third">
+            <div class="column is-narrow">
                 <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">Sessions (${fn:length(sessions)})</h5>
 
@@ -57,33 +58,37 @@
                     </table>
                 </div>
             </div>
-            <div class="column is-one-quarter">
+            <div class="column is-narrow">
                 <div class="box overflowTableContainer">
-                    <h5 class="subtitle is-5">DB Info</h5>
+                    <h5 class="subtitle is-5">Recent Requests</h5>
 
                     <table class="table is-narrow is-fullwidth">
                         <thead>
                         <tr>
-                            <th>Property</th>
-                            <th class="has-text-right">Value</th>
+                            <th></th>
+                            <th>Request Id</th>
+                            <th class="has-text-right">Request Start Time</th>
+                            <th>username</th>
+                            <th class="has-text-right">requestTime</th>
+                            <th class="has-text-right">handleTime</th>
+                            <th class="has-text-right">postHandleTime</th>
+                            <th class="has-text-right">templateTime</th>
+                            <th>handlerName</th>
                         </tr>
                         </thead>
-                        <c:forEach var="info" items="${dbInfo}">
-                            <c:if test="${fn:startsWith(info[0], 'info')}">
+                        <c:forEach var="request" items="${requests}" varStatus="loop">
                                 <tr>
-                                    <td>${info[0]}</td>
-                                    <td class="has-text-right">${info[1]}</td>
+                                    <td>${loop.count}</td>
+                                    <td>${request.requestId}</td>
+                                    <td class="has-text-right"><fmt:formatDate value="${request.requestStart}" pattern="h:mm:ss a" /> </td>
+                                    <td>${request.username}</td>
+                                    <td class="has-text-right">${request.requestTime} ms</td>
+                                    <td class="has-text-right">${request.handleTime} ms</td>
+                                    <td class="has-text-right">${request.postHandleTime} ms</td>
+                                    <td class="has-text-right">${request.templateTime} ms</td>
+                                    <td>${request.handlerName}</td>
                                 </tr>
-                            </c:if>
                         </c:forEach>
-                        <c:if test="${!empty dbInfoMap}">
-                            <c:forEach var="dbInfoItem" items="${dbInfoMap}">
-                                <tr>
-                                    <td>${dbInfoItem.key}</td>
-                                    <td class="has-text-right">${dbInfoItem.value}</td>
-                                </tr>
-                            </c:forEach>
-                        </c:if>
                     </table>
                 </div>
             </div>

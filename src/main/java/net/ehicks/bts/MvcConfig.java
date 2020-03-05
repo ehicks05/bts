@@ -1,5 +1,6 @@
 package net.ehicks.bts;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.resource.PathResourceResolver;
@@ -8,10 +9,15 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 public class MvcConfig implements WebMvcConfigurer
 {
     GlobalDataLoader globalDataLoader;
+    private RequestStatsRepository requestStatsRepository;
 
-    public MvcConfig(GlobalDataLoader globalDataLoader)
+    @Value("${puffin.logRequestsSlowerThanMs}")
+    public Long logRequestsSlowerThanMs;
+
+    public MvcConfig(GlobalDataLoader globalDataLoader, RequestStatsRepository requestStatsRepository)
     {
         this.globalDataLoader = globalDataLoader;
+        this.requestStatsRepository = requestStatsRepository;
     }
 
     public void addViewControllers(ViewControllerRegistry registry)
@@ -22,7 +28,7 @@ public class MvcConfig implements WebMvcConfigurer
     @Override
     public void addInterceptors(InterceptorRegistry registry)
     {
-        registry.addInterceptor(new GlobalInterceptor(globalDataLoader))
+        registry.addInterceptor(new GlobalInterceptor(globalDataLoader, requestStatsRepository, logRequestsSlowerThanMs))
                 .addPathPatterns("/dashboard/**", "/issue/**", "/admin/**", "/profile/**",
                         "/search/**", "/settings/**", "/error/**");
     }
