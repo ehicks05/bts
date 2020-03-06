@@ -3,52 +3,30 @@
 
 <%@tag description="Textarea with Label" pageEncoding="UTF-8" %>
 <%@attribute name="id" fragment="false" %>
-<%@attribute name="value" fragment="false" required="false" %>
 <%@attribute name="label" fragment="false" %>
+<%@attribute name="horizontal" fragment="false" %>
 <%@attribute name="labelClass" fragment="false" %>
-<%@attribute name="placeholder" fragment="false" required="false" %>
-<%@attribute name="horizontal" fragment="false" required="false"  %>
-<%@attribute name="required" fragment="false" required="false"  %>
-<%@attribute name="readOnly" fragment="false" required="false"  %>
-<%@attribute name="rich" fragment="false" required="false"  %>
+<%@attribute name="value" fragment="false" %>
 
-<c:set var="textareaCounter" value="${requestScope.textareaCounter + 1}" scope="request"/>
-<c:if test="${textareaCounter == 1}">
-    <c:if test="${rich}">
-        <script src="https://cdn.ckeditor.com/4.8.0/basic/ckeditor.js"></script>
-        <script>
-            // CKEDITOR.disableAutoInline = true;
-            // CKEDITOR.config.extraAllowedContent = 'div(*)';
-        </script>
-    </c:if>
-</c:if>
-
-<c:if test="${empty placeholder}">
-    <c:set var="placeholder" value="${label}" />
-</c:if>
-<c:if test="${empty horizontal || horizontal}">
-    <c:set var="isHorizontal" value="is-horizontal" />
-    <c:set var="fieldLabelNormal" value="is-normal" />
-</c:if>
-<c:set var="readOnly" value="${readOnly ? 'readOnly' : ''}"/>
-<c:set var="required" value="${required ? 'required' : ''}"/>
-
-
-<div class="field ${isHorizontal}">
-    <div class="field-label ${fieldLabelNormal} ${labelClass}">
-        <label class="label">${label}</label>
-    </div>
-    <div class="field-body">
-        <div class="field">
-            <div class="control">
-                <textarea class="textarea" id="${id}" name="${id}" placeholder="${placeholder}" ${readOnly} ${required}>${value}</textarea>
+<c:if test="${horizontal}">
+    <div class="field is-horizontal">
+        <div class="field-label is-normal">
+            <label class="label">${label}</label>
+        </div>
+        <div class="field-body">
+            <div class="field">
+                <div class="control">
+                    <textarea class="textarea" id="${id}" name="${id}" placeholder="${label}">${value}</textarea>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<c:if test="${rich}">
-    <script>
-        CKEDITOR.replace('${id}');
-    </script>
+</c:if>
+<c:if test="${!horizontal}">
+    <div class="field">
+        <label class="label">${label}</label>
+        <div class="control">
+            <textarea class="textarea" id="${id}" name="${id}" placeholder="${label}">${value}</textarea>
+        </div>
+    </div>
 </c:if>

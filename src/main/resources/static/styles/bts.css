@@ -12,8 +12,7 @@
     .hideOnSmall {display:none;}
 }
 
-.editable:hover {background-color: #F5F5F5;}
-.editableHero:hover {background-color: #00b99a;}
+.editable:hover {filter: brightness(150%)}
 .issueSubheading {font-weight:bold; margin-bottom: 8px;}
 
 /* SCROLLBAR */

@@ -1,11 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%@tag description="Text To Select Tag" pageEncoding="UTF-8" %>
-<%@attribute name="id" fragment="false" %>
-<%@attribute name="value" fragment="false" %>
-<%@attribute name="text" fragment="false" %>
-<%@attribute name="items" fragment="false" type="java.util.List<net.ehicks.bts.ISelectTagSupport>" %>
-<%@attribute name="submitAction" fragment="false" %>
+<%@attribute name="id" fragment="false" required="true" %>
+<%@attribute name="value" fragment="false" required="true" %>
+<%@attribute name="text" fragment="false" required="true" %>
+<%@attribute name="items" fragment="false" type="java.util.List<net.ehicks.bts.ISelectTagSupport>" required="true" %>
+<%@attribute name="submitAction" fragment="false" required="true" %>
 
 <c:set var="textToSelectCounter" value="${requestScope.textToSelectCounter + 1}" scope="request"/>
 <c:if test="${textToSelectCounter == 1}">

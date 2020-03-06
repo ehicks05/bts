@@ -132,12 +132,11 @@
 
 <jsp:include page="header.jsp"/>
 
-<section class="hero is-primary is-small">
+<section class="hero is-light is-small">
     <div class="hero-body">
         <div class="container">
             <h1 class="title">
-                <t:textToInputText tag="p" style="display:inline;" editableClass="editableHero" clazz="title"
-                                   id="fldTitle" text="${issue.title}" submitAction="/issue/update?issueId=${issue.id}"/>
+                <t:textToInputText id="fldTitle" text="${issue.title}" submitAction="/issue/update?issueId=${issue.id}"/>
             </h1>
             <h3 class="subtitle">${issue.project.prefix}-${issue.id}</h3>
         </div>
@@ -206,17 +205,15 @@
                             <c:if test="${!empty attachment.dbFile.thumbnail}">
                                 <div class="column is-narrow">
                                     <div class="">
-                                            <figure class="image is-128x128">
-                                        <div class="delete" style="position: absolute; top: 8px; right: 8px;"
-                                             onclick="deleteAttachment('${attachment.id}');"></div>
-                                        <a target="_blank" href="${pageContext.request.contextPath}/attachment/${attachment.id}" title="${attachment.name}">
-                                                <img class="is-pulled-right" style="max-height: 100%; width: auto;"
-                                                     src="${pageContext.request.contextPath}/attachment/${attachment.id}?thumbnail=true"
-                                                     title="${attachment.name}" alt="${attachment.name}">
-<%--                                                <div class="delete" style="position: absolute; top: 8px; right: 8px"--%>
-<%--                                                   onclick="deleteAttachment('${attachment.id}');"></div>--%>
-                                        </a>
-                                            </figure>
+                                        <figure class="image is-128x128">
+                                            <div class="delete" style="position: absolute; top: 8px; right: 8px;"
+                                                 onclick="deleteAttachment('${attachment.id}');"></div>
+                                            <a target="_blank" href="${pageContext.request.contextPath}/attachment/${attachment.id}" title="${attachment.name}">
+                                                    <img class="is-pulled-right" style="max-height: 100%; width: auto;"
+                                                         src="${pageContext.request.contextPath}/attachment/${attachment.id}?thumbnail=true"
+                                                         title="${attachment.name}" alt="${attachment.name}">
+                                            </a>
+                                        </figure>
                                     </div>
                                 </div>
                             </c:if>
@@ -304,11 +301,11 @@
                                                     </span>
                                                 </c:if>
                                                 <br>
-                                                <c:if test="${comment.author.id == pageContext.request.userPrincipal.principal.id}">
+                                                <c:if test="${comment.author.id == user.id}">
                                                     <t:textToInputText id="fldContent${comment.id}" text="${comment.content}"
                                                                        submitAction="/issue/updateComment?commentId=${comment.id}"/>
                                                 </c:if>
-                                                <c:if test="${comment.author.id != pageContext.request.userPrincipal.principal.id}">
+                                                <c:if test="${comment.author.id != user.id}">
                                                     <c:out value="${comment.content}"/>
                                                 </c:if>
                                             </div>
@@ -321,7 +318,7 @@
                                                 <i class="fas fa-user-secret"></i>
                                             </span>
                                         </c:if>
-                                        <c:if test="${comment.author.id == pageContext.request.userPrincipal.principal.id}">
+                                        <c:if test="${comment.author.id == user.id}">
                                             <form id="comment${comment.id}" method="post" action="${pageContext.request.contextPath}/issue/removeComment?issueId=${issue.id}&commentId=${comment.id}">
                                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                                 <span class="delete" onclick="removeComment(${comment.id})"> </span>
@@ -338,11 +335,10 @@
                                 </article>
                             </c:forEach>
 
-                            <c:set var="principal" value="${pageContext.request.userPrincipal.principal}" />
                             <article id="newCommentArticle" class="media is-hidden">
                                 <figure class="media-left">
                                     <p class="image is-32x32">
-                                        <img src="${pageContext.request.contextPath}/avatar/${principal.avatar.id}">
+                                        <img src="${pageContext.request.contextPath}/avatar/${user.avatar.id}">
                                     </p>
                                 </figure>
                                 <div class="media-content">
@@ -350,7 +346,7 @@
                                         <form id="frmNewComment" name="frmNewComment" method="post"
                                               action="${pageContext.request.contextPath}/issue/addComment?issueId=${issue.id}">
                                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                                            <t:textarea id="fldContent" label="Comment" placeholder="Write a comment here..." horizontal="false" labelClass="has-text-left"/>
+                                            <t:textarea id="fldContent" label="Comment" horizontal="false" value="" labelClass="has-text-left"/>
                                             <t:basicSelect id="fldVisibility" label="Visibility" items="${groups}" horizontal="false" required="true" value="${issue.group.id}" />
 
                                             <input type="button" value="Add" id="submitAddComment" class="button is-primary is-small"/>

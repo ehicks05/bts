@@ -8,10 +8,10 @@
     <thead>
     <tr class="listheading">
         <t:sortableCell code="eventDate" label="Date" style="text-align:right;" cssClass="has-text-right hideOnSmall" searchForm="${searchForm}" />
-        <t:sortableCell code="user" label="Changed By" searchForm="${searchForm}"/>
-        <t:sortableCell code="issue" label="Issue" searchForm="${searchForm}" />
-        <t:sortableCell code="eventType" label="Action" searchForm="${searchForm}"/>
-        <t:sortableCell code="propertyName" label="Property" searchForm="${searchForm}"/>
+        <t:sortableCell code="user" label="Changed By" searchForm="${searchForm}" style="" cssClass=""/>
+        <t:sortableCell code="issue" label="Issue" searchForm="${searchForm}" style="" cssClass=""/>
+        <t:sortableCell code="eventType" label="Action" searchForm="${searchForm}" style="" cssClass=""/>
+        <t:sortableCell code="propertyName" label="Property" searchForm="${searchForm}" style="" cssClass=""/>
         <th>Description</th>
     </tr>
     </thead>
@@ -37,7 +37,7 @@
     </c:forEach>
     </tbody>
 
-    <c:if test="${empty searchForm.searchResult.searchResults}">
+    <c:if test="${searchForm.searchResult.searchResults.size() == 0}">
         <tr><td colspan="100">No Results</td></tr>
     </c:if>
 </table>

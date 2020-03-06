@@ -1,21 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="t" uri="http://eric-hicks.com/bts/commontags" %>
-
 <%@tag description="Text To Input Tag" pageEncoding="UTF-8" %>
-<%@attribute name="id" fragment="false" %>
-<%@attribute name="text" fragment="false" %>
-<%@attribute name="submitAction" fragment="false" %>
-<%@attribute name="tag" fragment="false" %>
-<%@attribute name="clazz" fragment="false" %>
-<%@attribute name="style" fragment="false" %>
-<%@attribute name="editableClass" fragment="false" %>
 
-<c:if test="${empty tag}">
-    <c:set var="tag" value="div"/>
-</c:if>
-<c:if test="${empty editableClass}">
-    <c:set var="editableClass" value="editable"/>
-</c:if>
+<%@attribute name="id" fragment="false" required="false" %>
+<%@attribute name="text" fragment="false" required="false" %>
+<%@attribute name="submitAction" fragment="false" required="false" %>
 
 <c:set var="textToInputTextCounter" value="${requestScope.textToInputTextCounter + 1}" scope="request"/>
 <c:if test="${textToInputTextCounter == 1}">
@@ -26,7 +15,7 @@
     </script>
 </c:if>
 
-<${tag} style="${style}" contenteditable="true" id="${id}" class="${editableClass} ${clazz}">${text}</${tag}>
+<div contenteditable="true" id="${id}" class="editable">${text}</div>
 <script>
     CKEDITOR.inline( '${id}', {
         on: {

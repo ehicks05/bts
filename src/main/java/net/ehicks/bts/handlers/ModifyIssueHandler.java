@@ -71,6 +71,7 @@ public class ModifyIssueHandler
             searchForm.setEndpoint("/issue/ajaxGetChangeLog?issueId=" + issueId);
 
             mav.addObject("issue", issue)
+                    .addObject("user", user)
                     .addObject("comments", comments)
                     .addObject("potentialWatchers", users.stream().filter(aUser -> !issue.getWatchers().contains(aUser)).collect(Collectors.toList()))
                     .addObject("potentialAssignees", users)
