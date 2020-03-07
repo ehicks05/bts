@@ -1,6 +1,7 @@
 package net.ehicks.bts;
 
 import org.apache.catalina.Context;
+import org.apache.catalina.core.Constants;
 import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -26,6 +28,9 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.Filter;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRegistration;
+import java.util.stream.Stream;
 
 @SpringBootApplication
 @EnableScheduling
@@ -117,5 +122,29 @@ public class Application
         template.setHashValueSerializer(new Jackson2JsonRedisSerializer(RequestStats.class));
 
         return template;
+    }
+
+    @Bean
+    public ServletContextInitializer preCompileJspsAtStartup() {
+        return servletContext -> {
+            getDeepResourcePaths(servletContext, "/WEB-INF/").forEach(jspPath -> {
+                if (!jspPath.contains(".jsp"))
+                {
+                    log.debug("Skipping non-JSP: {}", jspPath);
+                    return;
+                }
+
+                log.debug("Registering JSP: {}", jspPath);
+                ServletRegistration.Dynamic reg = servletContext.addServlet(jspPath, Constants.JSP_SERVLET_CLASS);
+                reg.setInitParameter("jspFile", jspPath);
+                reg.setLoadOnStartup(99);
+                reg.addMapping(jspPath);
+            });
+        };
+    }
+
+    private static Stream<String> getDeepResourcePaths(ServletContext servletContext, String path) {
+        return (path.endsWith("/")) ? servletContext.getResourcePaths(path).stream().flatMap(p -> getDeepResourcePaths(servletContext, p))
+                : Stream.of(path);
     }
 }                                   
