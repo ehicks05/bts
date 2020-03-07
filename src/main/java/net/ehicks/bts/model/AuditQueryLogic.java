@@ -45,9 +45,9 @@ public class AuditQueryLogic
         if (searchForm.getEventUser() != null)
             predicates.add(cb.equal(root.get("eventUser"), searchForm.getEventUser()));
         if (searchForm.getFromEventDate() != null)
-            predicates.add(cb.greaterThanOrEqualTo(root.get("fromEventDate"), searchForm.getFromEventDate()));
+            predicates.add(cb.greaterThanOrEqualTo(root.get("eventDate"), searchForm.getFromEventDate()));
         if (searchForm.getToEventDate() != null)
-            predicates.add(cb.lessThanOrEqualTo(root.get("toEventDate"), searchForm.getToEventDate()));
+            predicates.add(cb.lessThanOrEqualTo(root.get("eventDate"), searchForm.getToEventDate()));
 
         List<Order> orderList = new ArrayList<>();
 
