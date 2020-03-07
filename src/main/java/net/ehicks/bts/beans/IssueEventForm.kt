@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.io.Serializable
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 import javax.persistence.*
 
@@ -20,8 +21,8 @@ data class IssueEventForm @JvmOverloads constructor(
         var onDash: Boolean = false,
         var propertyName: String = "",
         @ManyToOne(fetch = FetchType.LAZY) var eventUser: User? = null,
-        var fromEventDate: LocalDateTime? = null,
-        var toEventDate: LocalDateTime? = null,
+        var fromEventDate: LocalDateTime? = LocalDateTime.now().minusWeeks(1).truncatedTo(ChronoUnit.MINUTES),
+        var toEventDate: LocalDateTime? = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
 
         override var sortColumn: String = "eventDate",
         override var sortDirection: String = "desc"
