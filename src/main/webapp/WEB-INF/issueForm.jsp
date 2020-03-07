@@ -384,7 +384,7 @@
                                              style="display:inline; height:24px;margin-right: 4px;border-radius: 3px;">
                                     </a>
 
-                                    <t:textToSelect id="fldAssigneeId" value="${issue.assignee.id}" text="${issue.assignee.name}" items="${potentialAssignees}"
+                                    <t:textToSelect id="fldAssigneeId" value="${issue.assignee.id}" text="${issue.assignee.text}" items="${potentialAssignees}"
                                                     submitAction="/issue/update?issueId=${issue.id}"/>
                                 </c:if>
                             </td>
@@ -395,7 +395,7 @@
                                 <a href="${pageContext.request.contextPath}/profile/form?profileUserId=${issue.reporter.id}">
                                     <img src="${pageContext.request.contextPath}/avatar/${issue.reporter.avatar.id}" style="height:24px;margin-right: 4px;border-radius: 3px;"></a>
 
-                                <t:textToSelect id="fldReporterId" value="${issue.reporter.id}" text="${issue.reporter.name}" items="${potentialReporters}"
+                                <t:textToSelect id="fldReporterId" value="${issue.reporter.id}" text="${issue.reporter.text}" items="${potentialReporters}"
                                                 submitAction="/issue/update?issueId=${issue.id}"/>
                             </td>
                         </tr>
