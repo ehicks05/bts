@@ -53,16 +53,17 @@ public class GlobalInterceptor extends HandlerInterceptorAdapter
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception
     {
-        request.setAttribute("templateTime", (System.nanoTime() - (long) request.getAttribute("templateStart")) / 1_000_000);
+        long templateStart = request.getAttribute("handleTime") != null ? (long) request.getAttribute("templateStart") : 0;
+        request.setAttribute("templateTime", (System.nanoTime() - templateStart) / 1_000_000);
         super.afterCompletion(request, response, handler, ex);
 
         String requestId = (String) request.getAttribute("requestId");
         long requestStart = (long) request.getAttribute("requestStart");
         Date requestStartDate = (Date) request.getAttribute("requestStartDate");
         long requestTime = (System.nanoTime() - requestStart) / 1_000_000;
-        long handleTime = (long) request.getAttribute("handleTime");
-        long postHandleTime = (long) request.getAttribute("postHandleTime");
-        long templateTime = (long) request.getAttribute("templateTime");
+        long handleTime = request.getAttribute("handleTime") != null ? (long) request.getAttribute("handleTime") : 0;
+        long postHandleTime = request.getAttribute("postHandleTime") != null ? (long) request.getAttribute("postHandleTime") : 0;
+        long templateTime = request.getAttribute("templateTime") != null ? (long) request.getAttribute("templateTime") : 0;
         HandlerMethod handlerMethod = ((HandlerMethod) handler);
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
