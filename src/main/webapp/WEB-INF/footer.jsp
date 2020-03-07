@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <spring:eval expression="@gitVersionProperties.version" var="version" />
 <spring:eval expression="@gitVersionProperties.revision" var="revision" />
@@ -23,27 +24,29 @@
     </div>
 </footer>
 <jsp:include page="inc_createIssueDialog.jsp"/>
-<script>
-    $(function () {
-        fetch("${pageContext.request.contextPath}/api/ajaxGetRequestStats/${requestId}")
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(myJson) {
-                if (!myJson || myJson.error)
-                {
-                    $('#requestStats').remove();
-                    return;
-                }
+<c:if test="${pageContext.request.userPrincipal.principal.admin}">
+    <script>
+        $(function () {
+            fetch("${pageContext.request.contextPath}/api/ajaxGetRequestStats/${requestId}")
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(myJson) {
+                    if (!myJson || myJson.error)
+                    {
+                        $('#requestStats').remove();
+                        return;
+                    }
 
-                const message =
-                    'R: ' + myJson.requestTime + ' ms' +
-                    ' | H: ' + myJson.handleTime + '' +
-                    ' | PH: ' + myJson.postHandleTime + '' +
-                    ' | T: ' + myJson.templateTime + '';
-                const jsonString = JSON.stringify(myJson);
-                $('<p></p>').prop('id', 'requestStats').text(message).addClass('is-size-7').prop('title', jsonString).appendTo($('#projectInfo'));
-                $('#requestStats').prop('title', jsonString);
-            });
-    });
-</script>
+                    const message =
+                        'R: ' + myJson.requestTime + ' ms' +
+                        ' | H: ' + myJson.handleTime + '' +
+                        ' | PH: ' + myJson.postHandleTime + '' +
+                        ' | T: ' + myJson.templateTime + '';
+                    const jsonString = JSON.stringify(myJson);
+                    $('<p></p>').prop('id', 'requestStats').text(message).addClass('is-size-7').prop('title', jsonString).appendTo($('#projectInfo'));
+                    $('#requestStats').prop('title', jsonString);
+                });
+        });
+    </script>
+</c:if>
