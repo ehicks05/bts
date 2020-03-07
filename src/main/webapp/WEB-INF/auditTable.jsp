@@ -10,7 +10,7 @@
         <t:sortableCell code="eventDate" label="Date" style="text-align:right;" cssClass="has-text-right hideOnSmall" searchForm="${searchForm}" />
         <t:sortableCell code="user" label="Changed By" searchForm="${searchForm}" style="" cssClass=""/>
         <t:sortableCell code="issue" label="Issue" searchForm="${searchForm}" style="" cssClass=""/>
-        <t:sortableCell code="eventType" label="Action" searchForm="${searchForm}" style="" cssClass=""/>
+        <t:sortableCell code="eventType" label="" searchForm="${searchForm}" style="" cssClass=""/>
         <t:sortableCell code="propertyName" label="Property" searchForm="${searchForm}" style="" cssClass=""/>
         <th>Description</th>
     </tr>
@@ -24,12 +24,16 @@
             </td>
             <td>${issueEvent.user.username}</td>
             <td style="white-space: nowrap;">${issueEvent.issue.key}</td>
-            <td>${issueEvent.eventType}</td>
+            <td>
+                <c:if test="${issueEvent.eventType.toString() == 'ADD'}"><i title="ADD" class="fas fa-plus has-text-success"></i></c:if>
+                <c:if test="${issueEvent.eventType.toString() == 'UPDATE'}"><i title="UPDATE" class="fas fa-edit has-text-info"></i></c:if>
+                <c:if test="${issueEvent.eventType.toString() == 'REMOVE'}"><i title="REMOVE" class="fas fa-minus has-text-danger"></i></c:if>
+            </td>
             <td>${issueEvent.propertyName}</td>
             <td>
                 <c:forEach var="diff" items="${issueEvent.renderMap.diffs}">
-                    <c:if test="${diff.operation == 'INSERT'}"><ins style="background:#e6ffe6;">${diff.text}</ins></c:if>
-                    <c:if test="${diff.operation == 'DELETE'}"><del style="background:#ffe6e6;">${diff.text}</del></c:if>
+                    <c:if test="${diff.operation == 'INSERT'}"><span style="background:#e6ffe6;">${diff.text}</span></c:if>
+                    <c:if test="${diff.operation == 'DELETE'}"><span style="background:#ffe6e6;">${diff.text}</span></c:if>
                     <c:if test="${diff.operation == 'EQUAL'}"><span>${diff.text}</span></c:if>
                 </c:forEach>
             </td>
