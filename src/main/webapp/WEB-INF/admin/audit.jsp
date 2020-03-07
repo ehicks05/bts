@@ -28,7 +28,7 @@
 <section class="section">
     <div class="container">
         <div class="columns is-multiline is-centered">
-            <div class="column is-one-fifth">
+            <div class="column is-one-quarter">
                 <form:form name="frmFilter" id="frmFilter" method="post" modelAttribute="searchForm"
                            action="${pageContext.request.contextPath}/admin/audit/search">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -50,12 +50,10 @@
                             <t:text isSpring="true" id="propertyName" label="Property Name" value="${searchForm.propertyName}" horizontal="false" />
                         </div>
                         <div class="panel-block">
-                            <javatime:format value="${searchForm.fromEventDate}" style="MS" var="fromEvent"/>
-                            <t:text isSpring="true" id="fromEventDate" label="From Event Time" value="${fromEvent}" horizontal="false" />
+                            <t:datetime id="fromEventDate" label="From Event Time" value="${searchForm.fromEventDate}" horizontal="false" />
                         </div>
                         <div class="panel-block">
-                            <javatime:format value="${searchForm.toEventDate}" style="MS" var="toEvent"/>
-                            <t:text isSpring="true" id="toEventDate" label="To Event Time" value="${toEvent}" horizontal="false" />
+                            <t:datetime id="toEventDate" label="To Event Time" value="${searchForm.toEventDate}" horizontal="false" />
                         </div>
 
                         <div class="panel-block">
