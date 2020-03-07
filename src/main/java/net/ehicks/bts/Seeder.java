@@ -39,7 +39,7 @@ public class Seeder
 {
     private final Logger log = LoggerFactory.getLogger(Seeder.class);
 
-    private int issueCount = (int) Math.pow(1_024, 1.5);
+    private int issueCount = (int) Math.pow(1_024, 1.7);
     private Random r = new Random();
 
     private List<String> latin = Arrays.asList("annus", "ante meridiem", "aqua", "bene", "canis", "caput", "circus", "cogito",
