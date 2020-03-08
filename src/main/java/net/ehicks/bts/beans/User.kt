@@ -61,6 +61,7 @@ data class User @JvmOverloads constructor(
     fun setPassword(password: String) { this.password = password}
     override fun getId(): Long { return id}
     override fun getName(): String { return username}
+    fun getFullName(): String { return firstName + " " + lastName}
 
     override fun getAuthorities(): Collection<GrantedAuthority?> {
         return roles

@@ -10,6 +10,13 @@
 <head>
     <jsp:include page="../inc_title.jsp"/>
     <jsp:include page="../inc_header.jsp"/>
+
+    <script>
+        function deleteIssueForm(id) {
+            if (confirm('Are you sure you want to delete this issue search form?'))
+                location.href = '${pageContext.request.contextPath}/settings/savedSearches/delete?issueFormId=' + id;
+        }
+    </script>
 </head>
 <body>
 
@@ -29,15 +36,10 @@
     <div class="container">
         <div class="columns is-multiline is-centered">
             <div class="column is-narrow">
-                <table id="issueForms" class="table">
+                <table id="issueForms" class="table is-narrow is-striped">
                     <thead>
                         <tr>
-                            <th class="has-text-right">
-                                ID
-                            </th>
-                            <th>
-                                Name
-                            </th>
+                            <th>Name</th>
                             <th class="has-text-centered">On Dashboard</th>
                             <th></th>
                         </tr>
@@ -45,20 +47,17 @@
 
                     <c:forEach var="issueForm" items="${issueForms}">
                         <tr>
-                            <td class="has-text-right">
-                                <a href="${pageContext.request.contextPath}/search/form?issueFormId=${issueForm.id}">
-                                    ${issueForm.id}
-                                </a>
-                            </td>
                             <td>
-                                ${issueForm.formName}
+                                <a href="${pageContext.request.contextPath}/search/form?issueFormId=${issueForm.id}">
+                                    ${issueForm.formName}
+                                </a>
                             </td>
                             <td class="has-text-centered">
                                 <c:if test="${issueForm.onDash}"><i class="fas fa-check has-text-success"></i></c:if>
                                 <c:if test="${!issueForm.onDash}"><i class="fas fa-times has-text-danger"></i></c:if>
                             </td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/settings/savedSearches/delete?issueFormId=${issueForm.id}"><i class="fas fa-trash"></i></a>
+                                <button class="button is-small is-light" onclick="deleteIssueForm(${issueForm.id})"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>
                     </c:forEach>

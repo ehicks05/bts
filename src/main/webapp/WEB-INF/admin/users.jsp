@@ -47,12 +47,6 @@
                 <table class="table is-striped is-narrow is-hoverable is-fullwidth">
                     <thead>
                     <tr>
-                        <th>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="table-header">
-                                <input type="checkbox" id="table-header" class="mdl-checkbox__input" />
-                            </label>
-                        </th>
-                        <th class="has-text-right">Object Id</th>
                         <th>Logon Id</th>
                         <th>Name</th>
                         <th class="has-text-centered">Enabled</th>
@@ -61,14 +55,8 @@
                     </thead>
                     <c:forEach var="user" items="${users}" varStatus="loop">
                         <tr>
-                            <td>
-                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="row[${loop.count}]">
-                                    <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
-                                </label>
-                            </td>
-                            <td class="has-text-right"><a href="${pageContext.request.contextPath}/profile/form?profileUserId=${user.id}">${user.id}</a></td>
                             <td><a href="${pageContext.request.contextPath}/admin/users/modify/form?userId=${user.id}">${user.username}</a></td>
-                            <td>${user.name}</td>
+                            <td>${user.fullName}</td>
                             <td class="has-text-centered">
                                 <c:if test="${user.enabled}"><i class="fas fa-check has-text-success" ></i></c:if>
                                 <c:if test="${!user.enabled}"><i class="fas fa-ban has-text-danger" ></i></c:if>

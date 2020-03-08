@@ -57,37 +57,36 @@
     </div>
 </section>
 
-<dialog id="sendTestEmailDialog" class="mdl-dialog">
-    <h4 class="mdl-dialog__title">Send Test Email</h4>
-    <div class="mdl-dialog__content">
-        <form id="frmSendTestEmail" name="frmCreateEmail" method="post" action="${pageContext.request.contextPath}/admin/email/sendTest">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            <table>
-                <tr>
-                    <td>To:</td>
-                    <td>
-                        <input type="text" id="fldTo" name="fldTo" size="20" maxlength="256" value="" required/>
-                    </td>
-                </tr>
-            </table>
-        </form>
+<div id="sendTestEmailDialog" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Send Test Email</p>
+            <button class="delete close" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <div>
+                <form id="frmSendTestEmail" name="frmCreateEmail" method="post" action="${pageContext.request.contextPath}/admin/email/sendTest">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <table>
+                        <tr>
+                            <t:text id="fldTo" label="Recipient" horizontal="true" value="" required="true" isSpring="false" isStatic="false" />
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-success send">Send</button>
+            <button class="button close">Cancel</button>
+        </footer>
     </div>
-    <div class="mdl-dialog__actions">
-        <button type="button" class="button is-primary send">Send</button>
-        <button type="button" class="button close">Cancel</button>
-    </div>
-</dialog>
+</div>
 <script>
-    var sendTestEmailDialog = document.querySelector('#sendTestEmailDialog');
-    var sendTestEmailButton = document.querySelector('#sendTestEmailButton');
-    if (!sendTestEmailDialog.showModal)
-    {
-        dialogPolyfill.registerDialog(sendTestEmailDialog);
-    }
-    sendTestEmailButton.addEventListener('click', function ()
-    {
-        sendTestEmailDialog.showModal();
-    });
+    const dialog = document.querySelector('#sendTestEmailDialog');
+    const sendTestEmailButton = document.querySelector('#sendTestEmailButton');
+
+    sendTestEmailButton.addEventListener('click', toggleDialog);
     document.querySelector('#sendTestEmailDialog .send').addEventListener('click', function ()
     {
         if (!document.querySelector('#fldTo').value)
@@ -95,10 +94,11 @@
         else
             $('#frmSendTestEmail').submit();
     });
-    sendTestEmailDialog.querySelector('#sendTestEmailDialog .close').addEventListener('click', function ()
-    {
-        sendTestEmailDialog.close();
-    });
+    dialog.querySelector('#sendTestEmailDialog .close').addEventListener('click', toggleDialog);
+
+    function toggleDialog() {
+        document.querySelector('#sendTestEmailDialog').classList.toggle('is-active');
+    }
 </script>
 
 <jsp:include page="../footer.jsp"/>

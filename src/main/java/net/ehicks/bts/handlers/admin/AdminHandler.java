@@ -112,7 +112,7 @@ public class AdminHandler
     {
         mailClient.prepareAndSendTest(fldTo);
 
-        return new ModelAndView("redirect:/admin/modifySystem");
+        return new ModelAndView("redirect:/admin/system/modify/form");
     }
 
     @GetMapping("/admin/email/delete")

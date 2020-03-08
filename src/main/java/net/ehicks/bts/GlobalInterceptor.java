@@ -64,13 +64,13 @@ public class GlobalInterceptor extends HandlerInterceptorAdapter
         long handleTime = request.getAttribute("handleTime") != null ? (long) request.getAttribute("handleTime") : 0;
         long postHandleTime = request.getAttribute("postHandleTime") != null ? (long) request.getAttribute("postHandleTime") : 0;
         long templateTime = request.getAttribute("templateTime") != null ? (long) request.getAttribute("templateTime") : 0;
-        HandlerMethod handlerMethod = ((HandlerMethod) handler);
+        String handlerDescription = handler.toString();
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         try
         {
             requestStatsRepository.save(new RequestStats(requestId, requestStartDate, user.getUsername(),
-                    handlerMethod.getShortLogMessage(), requestTime, handleTime, postHandleTime, templateTime));
+                    handlerDescription, requestTime, handleTime, postHandleTime, templateTime));
         }
         catch (Exception e)
         {
@@ -79,8 +79,8 @@ public class GlobalInterceptor extends HandlerInterceptorAdapter
 
         if (requestTime > logRequestsSlowerThanMs)
         {
-            log.info("  SlowRequest: " + requestTime + " ms. handler: " + handleTime + " ms. posthandle: " +
-                    postHandleTime + " ms. template: "+ templateTime + " ms." + handlerMethod.getMethod().getName());
+            log.info("SlowRequest: " + requestTime + " ms. handler: " + handleTime + " ms. posthandle: " +
+                    postHandleTime + " ms. template: "+ templateTime + " ms. " + handlerDescription);
         }
     }
 }
