@@ -85,7 +85,7 @@
                                 <tr>
                                     <td>${loop.count}</td>
                                     <td>${request.requestId.substring(0, 5)}</td>
-                                    <td class="has-text-right"><fmt:formatDate value="${request.requestStart}" pattern="h:mm:ss a" /> </td>
+                                    <td class="has-text-right"><fmt:formatDate value="${request.requestStart}" pattern="M/d/yy h:mm:ss a" /> </td>
                                     <td>${request.username}</td>
                                     <td class="has-text-right">${request.requestTime} ms</td>
                                     <td class="has-text-right">${request.handleTime} ms</td>

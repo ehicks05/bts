@@ -126,7 +126,9 @@
     <div class="container">
         <div class="navbar-brand">
             <div class="navbar-item">
-                <img src="${pageContext.request.contextPath}/images/puffin-text.png" alt="Puffin" class="invertable"/>
+                <div class="has-background-light">
+                    <img src="${pageContext.request.contextPath}/images/puffin-text.png" alt="Puffin" style="margin: .5rem .5rem 0;" />
+                </div>
             </div>
 
             <button class="button navbar-burger" data-target="navMenu">
