@@ -6,9 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.ByteArrayOutputStream;
@@ -43,41 +41,23 @@ public class SubscriptionHandler
     }
 
     @GetMapping("/settings/subscriptions/form")
-    public ModelAndView showSubscriptions(@AuthenticationPrincipal User user)
+    public ModelAndView showSubscriptions(@AuthenticationPrincipal User user, @RequestParam(required = false) Long subscriptionId)
     {
+        Subscription subscription = new Subscription(0, user);
+        if (subscriptionId != null)
+            subscription = subscriptionRepository.findById(subscriptionId).orElse(new Subscription(0, user));
+
         return new ModelAndView("settings/subscriptions")
-                .addObject("subscriptions", subscriptionRepository.findByUser_Id(user.getId()))
-                .addObject("projects", projectRepository.findAll())
-                .addObject("groups", groupRepository.findAll())
-                .addObject("severities", severityRepository.findAll())
-                .addObject("statuses", statusRepository.findAll())
-                .addObject("users", userRepository.findAll()); // todo: recreate 'User.findAllVisible' security
+                .addObject("subscription", subscription)
+                .addObject("subscriptions", subscriptionRepository.findByUser_Id(user.getId()));
     }
 
-    @GetMapping("/settings/subscriptions/add")
-    public ModelAndView addSubscription(
-            @AuthenticationPrincipal User user,
-            @RequestParam List<Long> statusIds,
-            @RequestParam List<Long> severityIds,
-            @RequestParam List<Long> projectIds,
-            @RequestParam List<Long> groupIds,
-            @RequestParam List<Long> issueTypeIds,
-            @RequestParam List<Long> assigneeIds,
-            @RequestParam List<Long> reporterIds
-    )
+    @PostMapping("/settings/subscriptions/save")
+    public ModelAndView saveSubscription(@AuthenticationPrincipal User user, @ModelAttribute Subscription subscription)
     {
-        Subscription subscription = new Subscription(0, user,
-                groupRepository.findByIdIn(groupIds),
-                issueTypeRepository.findByIdIn(issueTypeIds),
-                projectRepository.findByIdIn(projectIds),
-                userRepository.findByIdIn(assigneeIds),
-                userRepository.findByIdIn(reporterIds),
-                severityRepository.findByIdIn(severityIds),
-                statusRepository.findByIdIn(statusIds)
-        );
         subscriptionRepository.save(subscription);
 
-        return new ModelAndView("redirect:/settings/subscriptions/form");
+        return new ModelAndView("redirect:/settings/subscriptions/form?subscriptionId=" + subscription.getId());
     }
 
     @GetMapping("/settings/subscriptions/delete")

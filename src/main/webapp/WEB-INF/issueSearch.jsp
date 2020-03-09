@@ -65,7 +65,7 @@
         <div class="columns is-multiline is-centered">
             <div class="column is-one-fifth">
                 <form:form name="frmFilter" id="frmFilter" method="post"
-                           action="${pageContext.request.contextPath}/search/search" modelAttribute="issueForm" >
+                           action="${pageContext.request.contextPath}/search/search" modelAttribute="issueForm">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <form:hidden path="user" />
                     <input type="hidden" name="sortColumn" id="sortColumn" value="${issueForm.sortColumn}"/>
