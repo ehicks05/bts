@@ -26,10 +26,10 @@
 
 <%-- Bulma --%>
 <c:if test="${empty btsSystem.theme || btsSystem.theme eq 'default'}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.8.0/css/bulma.min.css" />
 </c:if>
 <c:if test="${!empty btsSystem.theme && !(btsSystem.theme eq 'default')}">
-    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch@0.6.2/${btsSystem.theme}/bulmaswatch.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch@0.7.5/${btsSystem.theme}/bulmaswatch.min.css">
 </c:if>
 <link rel="stylesheet" type="text/css" href="https://unpkg.com/bulma-prefers-dark" />
 <%-- Bulma --%>
