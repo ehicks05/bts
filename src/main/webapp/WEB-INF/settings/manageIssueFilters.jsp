@@ -39,6 +39,7 @@
                 <table id="issueForms" class="table is-narrow is-striped">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>Name</th>
                             <th class="has-text-centered">On Dashboard</th>
                             <th></th>
@@ -47,6 +48,7 @@
 
                     <c:forEach var="issueForm" items="${issueForms}">
                         <tr>
+                            <td class="has-text-right">${issueForm.index + 1}</td>
                             <td>
                                 <a href="${pageContext.request.contextPath}/search/form?issueFormId=${issueForm.id}">
                                     ${issueForm.formName}

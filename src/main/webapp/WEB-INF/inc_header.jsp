@@ -62,6 +62,8 @@
             border-color: rgb(54, 54, 54);
         }
 
+        .logoContainer {background-color: hsl(0, 0%, 90%) !important;}
+
         .select2-search { background-color: #000; }
         .select2-search input { color: #dbdbdb; background-color: #000; }
         .select2-results { background-color: #000; }

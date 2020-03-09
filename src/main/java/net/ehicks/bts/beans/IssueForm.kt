@@ -18,6 +18,7 @@ data class IssueForm @JvmOverloads constructor(
         @ManyToOne var user: User,
         var formName: String = "New Form",
         var onDash: Boolean = false,
+        var index: Int = 0,
         var containsText: String = "",
 
         var fromCreatedDate: LocalDateTime? = null,
@@ -80,6 +81,8 @@ data class IssueForm @JvmOverloads constructor(
 
 @Repository
 interface IssueFormRepository : JpaRepository<IssueForm, Long> {
-    fun findByUserId(userId: Long): List<IssueForm>
-    fun findByUserIdAndOnDashTrueOrderById(userId: Long): List<IssueForm>
+    fun findByUserIdOrderByIndex(userId: Long): List<IssueForm>
+    fun findByUserIdAndIndex(userId: Long, index: Int): Optional<IssueForm>
+    fun findTopByUserIdOrderByIndexDesc(userId: Long): Optional<IssueForm>
+    fun findByUserIdAndOnDashTrueOrderByIndex(userId: Long): List<IssueForm>
 }

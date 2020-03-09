@@ -252,28 +252,28 @@ public class Seeder
     private void createIssueForms()
     {
         userRepository.findAll().forEach(user -> {
-            IssueForm issueForm = new IssueForm(0, user, "All Issues", true);
+            IssueForm issueForm = new IssueForm(0, user, "All Issues", true, 0);
             issueFormRepository.save(issueForm);
 
-            issueForm = new IssueForm(0, user, "Assigned To Me", true);
+            issueForm = new IssueForm(0, user, "Assigned To Me", true, 1);
             issueForm.getAssignees().add(user);
             issueFormRepository.save(issueForm);
 
             if (user.getUsername().equals("eric@test.com"))
             {
-                issueForm = new IssueForm(0, user, "Readington's Issues", true);
+                issueForm = new IssueForm(0, user, "Readington's Issues", true, 2);
                 issueForm.getGroups().add(groupRepository.findByName("Readington"));
                 issueFormRepository.save(issueForm);
 
-                issueForm = new IssueForm(0, user, "Issues with the word 'vici'", true);
+                issueForm = new IssueForm(0, user, "Issues with the word 'vici'", true, 3);
                 issueForm.setContainsText("vici");
                 issueFormRepository.save(issueForm);
 
-                issueForm = new IssueForm(0, user, "Reopened Issues", true);
+                issueForm = new IssueForm(0, user, "Reopened Issues", true, 4);
                 issueForm.getStatuses().add(statusRepository.findByName("Re-opened"));
                 issueFormRepository.save(issueForm);
 
-                issueForm = new IssueForm(0, user, "All Cinemang Issues", true);
+                issueForm = new IssueForm(0, user, "All Cinemang Issues", true, 5);
                 issueForm.getProjects().add(projectRepository.findByName("Cinemang"));
                 issueFormRepository.save(issueForm);
             }

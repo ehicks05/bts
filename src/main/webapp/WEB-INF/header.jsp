@@ -126,7 +126,7 @@
     <div class="container">
         <div class="navbar-brand">
             <div class="navbar-item">
-                <div class="has-background-light">
+                <div class="logoContainer has-background-light">
                     <img src="${pageContext.request.contextPath}/images/puffin-text.png" alt="Puffin" style="margin: .5rem .5rem 0;" />
                 </div>
             </div>

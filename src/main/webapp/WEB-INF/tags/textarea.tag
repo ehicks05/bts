@@ -4,6 +4,7 @@
 <%@tag description="Textarea with Label" pageEncoding="UTF-8" %>
 <%@attribute name="id" fragment="false" %>
 <%@attribute name="label" fragment="false" %>
+<%@attribute name="placeholder" fragment="false" %>
 <%@attribute name="horizontal" fragment="false" %>
 <%@attribute name="labelClass" fragment="false" %>
 <%@attribute name="value" fragment="false" %>
@@ -16,7 +17,7 @@
         <div class="field-body">
             <div class="field">
                 <div class="control">
-                    <textarea class="textarea" id="${id}" name="${id}" placeholder="${label}">${value}</textarea>
+                    <textarea class="textarea" id="${id}" name="${id}" placeholder="${placeholder}">${value}</textarea>
                 </div>
             </div>
         </div>
@@ -26,7 +27,7 @@
     <div class="field">
         <label class="label">${label}</label>
         <div class="control">
-            <textarea class="textarea" id="${id}" name="${id}" placeholder="${label}">${value}</textarea>
+            <textarea class="textarea" id="${id}" name="${id}" placeholder="${placeholder}">${value}</textarea>
         </div>
     </div>
 </c:if>

@@ -22,6 +22,10 @@
                 location.href = '${pageContext.request.contextPath}/dashboard/remove?issueFormId=' + id;
             }
         }
+        function move(id, direction)
+        {
+            location.href = '${pageContext.request.contextPath}/dashboard/move?issueFormId=' + id + '&direction=' + direction;
+        }
         function modifySavedSearch(id)
         {
             location.href = '${pageContext.request.contextPath}/search/form?issueFormId=' + id;
@@ -55,7 +59,7 @@
             <c:set var="searchResult" value="${issueForm.searchResult}"/>
 
             <div class="column is-half-desktop is-half-widescreen is-half-fullhd has-text-centered">
-                <div class="card">
+                <div class="card" id="issueForm${issueForm.id}">
                     <header class="card-header">
                         <p class="card-header-title">
                             ${issueForm.formName}: ${searchResult.size} Issues
@@ -65,6 +69,36 @@
                                 <i class="fas fa-edit"></i>
                             </span>
                         </a>
+
+                        <c:if test="${issueForm.index == minIndex}">
+                            <span class="card-header-icon" style="cursor: default" aria-label="move up" title="move up">
+                                <span class="icon">
+                                    <i class="fas fa-arrow-up"></i>
+                                </span>
+                            </span>
+                        </c:if>
+                        <c:if test="${issueForm.index != minIndex}">
+                            <a href="#" class="card-header-icon" aria-label="move up" title="move up" onclick="move(${issueForm.id}, 'up')">
+                                <span class="icon">
+                                    <i class="fas fa-arrow-up"></i>
+                                </span>
+                            </a>
+                        </c:if>
+                        <c:if test="${issueForm.index == maxIndex}">
+                            <span class="card-header-icon" style="cursor: default" aria-label="move down" title="move down">
+                                <span class="icon">
+                                    <i class="fas fa-arrow-down"></i>
+                                </span>
+                            </span>
+                        </c:if>
+                        <c:if test="${issueForm.index != maxIndex}">
+                            <a href="#" class="card-header-icon" aria-label="move down" title="move down" onclick="move(${issueForm.id}, 'down')">
+                                <span class="icon">
+                                    <i class="fas fa-arrow-down"></i>
+                                </span>
+                            </a>
+                        </c:if>
+
                         <a href="#" class="card-header-icon" aria-label="remove from dashboard" title="remove from dashboard" onclick="confirmDelete(${issueForm.id})">
                             <span class="icon">
                                 <i class="fas fa-thumbtack"></i>

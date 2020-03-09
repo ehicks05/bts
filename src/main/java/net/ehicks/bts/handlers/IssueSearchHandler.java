@@ -97,7 +97,16 @@ public class IssueSearchHandler
                                       @ModelAttribute IssueForm issueForm)
     {
         if (issueForm.getUser().getId() == user.getId())
+        {
+            if (issueForm.getId() == 0)
+            {
+                // todo is there a proper way to do this?
+                int maxOrder = issueFormRepository.findTopByUserIdOrderByIndexDesc(user.getId())
+                        .map(IssueForm::getIndex).orElse(0);
+                issueForm.setIndex(maxOrder + 1);
+            }
             issueFormRepository.save(issueForm);
+        }
 
         return new ModelAndView("redirect:/search/form?issueFormId=" + issueForm.getId())
                 .addObject("issueForm", issueForm);

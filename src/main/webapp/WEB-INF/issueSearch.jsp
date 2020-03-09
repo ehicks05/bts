@@ -63,7 +63,7 @@
 <section class="section">
     <div class="container">
         <div class="columns is-multiline is-centered">
-            <div class="column is-one-fifth">
+            <div class="column is-narrow">
                 <form:form name="frmFilter" id="frmFilter" method="post"
                            action="${pageContext.request.contextPath}/search/search" modelAttribute="issueForm">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -75,9 +75,11 @@
 
                     <nav class="panel">
                         <p class="panel-heading">
-<%--                            Issue Filter: <t:textToInputText isSpring="true" id="formName" label="" value="${issueForm.formName}" horizontal="false" />--%>
-                            Issue Filter: <form:input path="formName" class="input" placeholder="" value="${issueForm.formName}" />
+                            Issue Filter: ${issueForm.formName}
                         </p>
+                        <div class="panel-block">
+                            <t:text isSpring="true" id="formName" label="Form Name" value="${issueForm.formName}" horizontal="false" />
+                        </div>
                         <div class="panel-block">
                             <t:text isSpring="true" id="containsText" label="Contains Text" value="${issueForm.containsText}" horizontal="false" />
                         </div>
