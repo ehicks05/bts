@@ -372,7 +372,7 @@ public class Seeder
     {
         File imgDir = null;
         try {
-            imgDir = new ClassPathResource("/static/images/mimetypes").getFile();
+            imgDir = new ClassPathResource("/static/images/avatars/png").getFile();
         } catch (IOException e) {
 
         }
@@ -383,7 +383,7 @@ public class Seeder
             Collections.sort(images);
             for (File img : images)
             {
-                if (img.exists() && img.isFile() && img.getName().contains("Adobe.png"))
+                if (img.exists() && img.isFile() && img.getName().contains("avatar-01.png"))
                 {
                     byte[] content = new byte[0];
                     try

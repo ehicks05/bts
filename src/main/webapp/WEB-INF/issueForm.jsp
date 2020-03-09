@@ -201,6 +201,7 @@
                         </div>
                     </form>
 
+                    <br/>
                     <h2 class="issueSubheading">Attachments</h2>
 
                     <div class="columns is-multiline">
