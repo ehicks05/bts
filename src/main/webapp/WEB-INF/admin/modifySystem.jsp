@@ -84,9 +84,9 @@
 </div>
 <script>
     const dialog = document.querySelector('#sendTestEmailDialog');
-    const sendTestEmailButton = document.querySelector('#sendTestEmailButton');
+    const button = document.querySelector('#sendTestEmailButton');
 
-    sendTestEmailButton.addEventListener('click', toggleDialog);
+    button.addEventListener('click', toggleDialog);
     document.querySelector('#sendTestEmailDialog .send').addEventListener('click', function ()
     {
         if (!document.querySelector('#fldTo').value)
@@ -94,7 +94,7 @@
         else
             $('#frmSendTestEmail').submit();
     });
-    dialog.querySelector('#sendTestEmailDialog .close').addEventListener('click', toggleDialog);
+    dialog.querySelectorAll('#sendTestEmailDialog .close').forEach(el => el.addEventListener('click', toggleDialog));
 
     function toggleDialog() {
         document.querySelector('#sendTestEmailDialog').classList.toggle('is-active');

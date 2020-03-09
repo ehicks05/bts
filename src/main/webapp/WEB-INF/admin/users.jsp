@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <!DOCTYPE html>
 <html>
@@ -83,49 +84,37 @@
     </div>
 </section>
 
-<dialog id="addUserDialog" class="mdl-dialog">
-    <h4 class="mdl-dialog__title">Add User</h4>
-    <div class="mdl-dialog__content">
-        <form id="frmCreateUser" name="frmCreateUser" method="post" action="${pageContext.request.contextPath}/admin/users/create">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            <table>
-                <tr>
-                    <td>Username:</td>
-                    <td>
-                        <input type="text" id="username" name="username" size="20" maxlength="256" value="" required/>
-                    </td>
-                    <td>Password:</td>
-                    <td>
-                        <input type="password" id="password" name="password" size="20" maxlength="256" value="" required/>
-                    </td>
-                    <td>First Name:</td>
-                    <td>
-                        <input type="text" id="firstName" name="firstName" size="20" maxlength="256" value="" required/>
-                    </td>
-                    <td>Last Name:</td>
-                    <td>
-                        <input type="text" id="lastName" name="lastName" size="20" maxlength="256" value="" required/>
-                    </td>
-                </tr>
-            </table>
-        </form>
+<div id="addUserDialog" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Add User</p>
+            <button class="delete close" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <div>
+                <form id="frmCreateUser" name="frmCreateUser" method="post" action="${pageContext.request.contextPath}/admin/users/create">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <table>
+                        <t:text id="username" label="Username" horizontal="true" value="" required="true" isSpring="false" isStatic="false" />
+                        <t:text id="password" label="Password" horizontal="true" value="" required="true" isSpring="false" isStatic="false" />
+                        <t:text id="firstName" label="First Name" horizontal="true" value="" required="true" isSpring="false" isStatic="false" />
+                        <t:text id="lastName" label="Last Name" horizontal="true" value="" required="true" isSpring="false" isStatic="false" />
+                    </table>
+                </form>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-success create">Create</button>
+            <button class="button close">Cancel</button>
+        </footer>
     </div>
-    <div class="mdl-dialog__actions">
-        <button type="button" class="button is-primary create">Create</button>
-        <button type="button" class="button close">Cancel</button>
-    </div>
-</dialog>
+</div>
 <script>
-    var addUserDialog = document.querySelector('#addUserDialog');
-    var addUserButton = document.querySelector('#addUserButton');
-    if (!addUserDialog.showModal)
-    {
-        dialogPolyfill.registerDialog(addUserDialog);
-    }
-    addUserButton.addEventListener('click', function ()
-    {
-        addUserDialog.showModal();
-    });
+    const dialog = document.querySelector('#addUserDialog');
+    const button = document.querySelector('#addUserButton');
+
+    button.addEventListener('click', toggleDialog);
     document.querySelector('#addUserDialog .create').addEventListener('click', function ()
     {
         if (!document.querySelector('#username').value)
@@ -133,10 +122,11 @@
         else
             $('#frmCreateUser').submit();
     });
-    addUserDialog.querySelector('#addUserDialog .close').addEventListener('click', function ()
-    {
-        addUserDialog.close();
-    });
+    dialog.querySelectorAll('#addUserDialog .close').forEach(el => el.addEventListener('click', toggleDialog));
+
+    function toggleDialog() {
+        document.querySelector('#addUserDialog').classList.toggle('is-active');
+    }
 </script>
 
 <jsp:include page="../footer.jsp"/>

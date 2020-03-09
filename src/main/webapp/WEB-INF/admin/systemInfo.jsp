@@ -38,7 +38,7 @@
 <section class="section">
     <div class="container">
         <div class="columns is-multiline is-centered">
-            <div class="column is-narrow">
+            <div class="column is-narrow is-one-quarter">
                 <div class="box overflowTableContainer">
                     <h5 class="subtitle is-5">Sessions (${fn:length(sessions)})</h5>
 
@@ -65,28 +65,33 @@
                     <table class="table is-narrow is-fullwidth">
                         <thead>
                         <tr>
+                            <th colspan="4"></th>
+                            <th colspan="4" class="has-text-centered is-warning">Timings</th>
                             <th></th>
-                            <th>Request Id</th>
-                            <th class="has-text-right">Request Start Time</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>Id</th>
+                            <th class="has-text-right">Request Start</th>
                             <th>username</th>
-                            <th class="has-text-right">requestTime</th>
-                            <th class="has-text-right">handleTime</th>
-                            <th class="has-text-right">postHandleTime</th>
-                            <th class="has-text-right">templateTime</th>
-                            <th>handlerName</th>
+                            <th class="has-text-right">Request</th>
+                            <th class="has-text-right">Handle</th>
+                            <th class="has-text-right">PostHandle</th>
+                            <th class="has-text-right">Template</th>
+                            <th>Handler</th>
                         </tr>
                         </thead>
                         <c:forEach var="request" items="${requests}" varStatus="loop">
                                 <tr>
                                     <td>${loop.count}</td>
-                                    <td>${request.requestId}</td>
+                                    <td>${request.requestId.substring(0, 5)}</td>
                                     <td class="has-text-right"><fmt:formatDate value="${request.requestStart}" pattern="h:mm:ss a" /> </td>
                                     <td>${request.username}</td>
                                     <td class="has-text-right">${request.requestTime} ms</td>
                                     <td class="has-text-right">${request.handleTime} ms</td>
                                     <td class="has-text-right">${request.postHandleTime} ms</td>
                                     <td class="has-text-right">${request.templateTime} ms</td>
-                                    <td>${request.handlerName}</td>
+                                    <td>${request.handlerName.substring(request.handlerName.lastIndexOf('#') + 1)}</td>
                                 </tr>
                         </c:forEach>
                     </table>
