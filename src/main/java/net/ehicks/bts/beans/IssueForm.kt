@@ -5,6 +5,7 @@ import net.ehicks.bts.model.SearchResult
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.io.Serializable
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 import kotlin.collections.HashSet
@@ -18,6 +19,12 @@ data class IssueForm @JvmOverloads constructor(
         var formName: String = "New Form",
         var onDash: Boolean = false,
         var containsText: String = "",
+
+        var fromCreatedDate: LocalDateTime? = null,
+        var toCreatedDate: LocalDateTime? = null,
+
+        var fromUpdatedDate: LocalDateTime? = null,
+        var toUpdatedDate: LocalDateTime? = null,
 
         @ManyToMany
         @JoinTable(name = "issue_form_group",

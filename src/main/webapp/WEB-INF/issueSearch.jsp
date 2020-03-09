@@ -75,11 +75,9 @@
 
                     <nav class="panel">
                         <p class="panel-heading">
-                            Issue Filter: ${issueForm.formName}
+<%--                            Issue Filter: <t:textToInputText isSpring="true" id="formName" label="" value="${issueForm.formName}" horizontal="false" />--%>
+                            Issue Filter: <form:input path="formName" class="input" placeholder="" value="${issueForm.formName}" />
                         </p>
-                        <div class="panel-block">
-                            <t:text isSpring="true" id="formName" label="Form Name" value="${issueForm.formName}" horizontal="false" />
-                        </div>
                         <div class="panel-block">
                             <t:text isSpring="true" id="containsText" label="Contains Text" value="${issueForm.containsText}" horizontal="false" />
                         </div>
@@ -103,6 +101,20 @@
                         </div>
                         <div class="panel-block">
                             <t:multiSelect isSpring="true" id="statuses" selectedValues="${issueForm.statuses}" items="${statuses}" placeHolder="Statuses:"/>
+                        </div>
+
+                        <div class="panel-block">
+                            <t:datetime id="fromCreatedDate" label="From Created On" value="${issueForm.fromCreatedDate}" horizontal="false" />
+                        </div>
+                        <div class="panel-block">
+                            <t:datetime id="toCreatedDate" label="To Created On" value="${issueForm.toCreatedDate}" horizontal="false" />
+                        </div>
+
+                        <div class="panel-block">
+                            <t:datetime id="fromUpdatedDate" label="From Updated On" value="${issueForm.fromUpdatedDate}" horizontal="false" />
+                        </div>
+                        <div class="panel-block">
+                            <t:datetime id="toUpdatedDate" label="To Updated On" value="${issueForm.toUpdatedDate}" horizontal="false" />
                         </div>
 
                         <div class="panel-block">

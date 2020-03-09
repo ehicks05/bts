@@ -78,6 +78,15 @@ public class IssueQueryLogic
             predicates.add(inClause);
         }
 
+        if (issueForm.getFromCreatedDate() != null)
+            predicates.add(cb.greaterThanOrEqualTo(root.get("createdOn"), issueForm.getFromCreatedDate()));
+        if (issueForm.getToCreatedDate() != null)
+            predicates.add(cb.lessThanOrEqualTo(root.get("createdOn"), issueForm.getToCreatedDate()));
+        if (issueForm.getFromUpdatedDate() != null)
+            predicates.add(cb.greaterThanOrEqualTo(root.get("lastUpdatedOn"), issueForm.getFromUpdatedDate()));
+        if (issueForm.getToUpdatedDate() != null)
+            predicates.add(cb.lessThanOrEqualTo(root.get("lastUpdatedOn"), issueForm.getToUpdatedDate()));
+
         List<Order> orderList = new ArrayList<>();
 
         if (issueForm.getSortDirection().equals("asc"))
