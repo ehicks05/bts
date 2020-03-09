@@ -78,7 +78,10 @@
             });
 
             $('#submitAddComment').on('click', function () {
-                $('#frmNewComment').submit();
+                if ($('#frmNewComment #fldContent').val())
+                    $('#frmNewComment').submit();
+                else
+                    alert('Please type in a comment before submitting.')
             });
         });
 
@@ -296,8 +299,13 @@
                                                 on <javatime:format value="${comment.createdOn}" style="MS" />
                                                 <c:if test="${!empty comment.lastUpdatedOn && comment.createdOn != comment.lastUpdatedOn}">
                                                     <javatime:format value="${comment.lastUpdatedOn}" style="SS" var="commentLastUpdated"/>
-                                                    <span class="icon is-small" title="Edited ${commentLastUpdated}">
-                                                        *
+                                                    <span class="icon is-small" title="Edited ${commentLastUpdated}" style="margin-left:.5rem;">
+                                                        <i class="fas fa-clock"></i>
+                                                    </span>
+                                                </c:if>
+                                                <c:if test="${comment.visibleToGroup.id != comment.issue.group.id}">
+                                                    <span class="icon is-small has-text-danger" title="Visible to ${comment.visibleToGroup.name}" style="margin-left:.3rem;">
+                                                        <i class="fas fa-user-secret"></i>
                                                     </span>
                                                 </c:if>
                                                 <br>
@@ -313,11 +321,6 @@
                                     </div>
 
                                     <div class="media-right">
-                                        <c:if test="${comment.visibleToGroup.id != comment.issue.group.id}">
-                                            <span class="icon is-small has-text-danger" title="Visible to ${comment.visibleToGroup.name}">
-                                                <i class="fas fa-user-secret"></i>
-                                            </span>
-                                        </c:if>
                                         <c:if test="${comment.author.id == user.id}">
                                             <form id="comment${comment.id}" method="post" action="${pageContext.request.contextPath}/issue/removeComment?issueId=${issue.id}&commentId=${comment.id}">
                                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -346,11 +349,19 @@
                                         <form id="frmNewComment" name="frmNewComment" method="post"
                                               action="${pageContext.request.contextPath}/issue/addComment?issueId=${issue.id}">
                                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                                            <t:textarea id="fldContent" label="Comment" horizontal="false" value="" labelClass="has-text-left"/>
-                                            <t:basicSelect id="fldVisibility" label="Visibility" items="${groups}" horizontal="false" required="true" value="${issue.group.id}" />
+                                            <t:textarea id="fldContent" label="" placeholder="Add a comment..." horizontal="false" value="" labelClass="has-text-left"/>
+                                            <div class="field is-hidden" id="visibility">
+                                                <t:basicSelect id="fldVisibility" label="Visibility" items="${groups}" horizontal="false" required="true" value="${issue.group.id}" />
+                                            </div>
 
                                             <input type="button" value="Add" id="submitAddComment" class="button is-primary is-small"/>
                                             <input type="button" value="Cancel" id="cancelAddComment" class="button is-small" onclick="toggleAddComment()"/>
+                                            <span class="button is-small" onclick="$('#visibility').toggleClass('is-hidden')">
+                                                <span class="icon">
+                                                    <i class="fas fa-eye"></i>
+                                                </span>
+                                            </span>
+
                                         </form>
                                     </div>
                                 </div>
