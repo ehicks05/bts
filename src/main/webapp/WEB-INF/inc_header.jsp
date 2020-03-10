@@ -43,6 +43,9 @@
 <script src="${pageContext.request.contextPath}/js/ajaxUtil.js"></script>
 
 <style>
+    .diff-add {background:#e6ffe6;}
+    .diff-remove {background:#ffe6e6;}
+
     @media(prefers-color-scheme: dark)
     {
         .editable:hover {background-color: rgb(54, 54, 54);}
@@ -62,6 +65,8 @@
             border-color: rgb(54, 54, 54);
         }
 
+        .diff-add {background: #123a11;}
+        .diff-remove {background: #63302d;}
         .logoContainer {background-color: hsl(0, 0%, 90%) !important;}
 
         .select2-search { background-color: #000; }

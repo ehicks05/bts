@@ -32,8 +32,8 @@
             <td>${issueEvent.propertyName}</td>
             <td>
                 <c:forEach var="diff" items="${issueEvent.renderMap.diffs}">
-                    <c:if test="${diff.operation == 'INSERT'}"><span style="background:#e6ffe6;">${diff.text}</span></c:if>
-                    <c:if test="${diff.operation == 'DELETE'}"><span style="background:#ffe6e6;">${diff.text}</span></c:if>
+                    <c:if test="${diff.operation == 'INSERT'}"><span class="diff-add">${diff.text}</span></c:if>
+                    <c:if test="${diff.operation == 'DELETE'}"><span class="diff-remove">${diff.text}</span></c:if>
                     <c:if test="${diff.operation == 'EQUAL'}"><span>${diff.text}</span></c:if>
                 </c:forEach>
             </td>
