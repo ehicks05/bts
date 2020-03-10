@@ -42,14 +42,9 @@
                     <t:text id="emailFromAddress" label="Email 'From' Address" value="${btsSystem.emailFromAddress}" isSpring="false" isStatic="false" required="false" horizontal="false"/>
                     <t:text id="emailFromName" label="Email 'From' Name" value="${btsSystem.emailFromName}" isSpring="false" isStatic="false" required="false" horizontal="false"/>
 
-                    <div class="field is-horizontal">
-                        <div class="field-label"></div>
-                        <div class="field-body">
-                            <div class="control">
-                                <input id="saveSystemButton" type="submit" value="Save" class="button is-primary" />
-                                <input id="sendTestEmailButton" type="button" value="Send Test Email" class="button" />
-                            </div>
-                        </div>
+                    <div class="buttons">
+                        <input id="saveSystemButton" type="submit" value="Save" class="button is-primary" />
+                        <input id="sendTestEmailButton" type="button" value="Send Test Email" class="button" />
                     </div>
                 </form>
             </div>

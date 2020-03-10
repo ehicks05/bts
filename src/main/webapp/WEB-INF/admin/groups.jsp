@@ -41,24 +41,12 @@
                 <table class="table is-striped is-narrow is-hoverable is-fullwidth">
                     <thead>
                     <tr>
-                        <th>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="table-header">
-                                <input type="checkbox" id="table-header" class="mdl-checkbox__input" />
-                            </label>
-                        </th>
-                        <th class="has-text-right">Object Id</th>
                         <th>Name</th>
                         <th></th>
                     </tr>
                     </thead>
                     <c:forEach var="group" items="${groups}" varStatus="loop">
                         <tr>
-                            <td>
-                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="row[${loop.count}]">
-                                    <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
-                                </label>
-                            </td>
-                            <td class="has-text-right">${group.id}</td>
                             <td><a href="${pageContext.request.contextPath}/admin/groups/modify/form?groupId=${group.id}">${group.name}</a></td>
                             <td><a onclick="deleteGroup('${group.id}');"><i class="fas fa-trash"></i></a></td>
                         </tr>

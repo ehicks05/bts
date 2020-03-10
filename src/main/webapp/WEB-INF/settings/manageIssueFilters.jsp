@@ -59,7 +59,7 @@
                                 <c:if test="${!issueForm.onDash}"><i class="fas fa-times has-text-danger"></i></c:if>
                             </td>
                             <td>
-                                <button class="button is-small is-light" onclick="deleteIssueForm(${issueForm.id})"><i class="fas fa-trash"></i></button>
+                                <button class="button is-small" onclick="deleteIssueForm(${issueForm.id})"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>
                     </c:forEach>

@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="http://eric-hicks.com/bts/commontags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <jsp:useBean id="backups" type="java.util.List<java.io.File>" scope="request"/>
 
 <!DOCTYPE html>
@@ -82,16 +83,11 @@
         <div class="columns is-multiline is-centered">
             <div class="column is-narrow">
                 <div class="box">
-                    <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+                    <table class="table is-striped is-narrow is-hoverable">
                         <thead>
                         <tr>
-                            <th>
-                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="table-header">
-                                    <input type="checkbox" id="table-header" class="mdl-checkbox__input" />
-                                </label>
-                            </th>
                             <th class="has-text-right"></th>
-                            <th class="mdl-data-table__cell--non-numeric">Name</th>
+                            <th>Name</th>
                             <th class="has-text-right">Size</th>
                             <th>Last Modified</th>
                             <th></th>
@@ -99,16 +95,8 @@
                         </thead>
                         <c:forEach var="backup" items="${backups}" varStatus="loop">
                             <tr>
-                                <td>
-                                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="row[${loop.count}]">
-                                        <input type="checkbox" id="row[${loop.count}]" class="mdl-checkbox__input" />
-                                    </label>
-                                </td>
                                 <td class="has-text-right">${loop.count}</td>
-                                <td>
-                                    <a href="${pageContext.request.contextPath}/admin/backups/viewBackup?backupName=${backup.name}">
-                                            ${backup.name}</a>
-                                </td>
+                                <td><a href="${pageContext.request.contextPath}/admin/backups/viewBackup?backupName=${backup.name}">${backup.name}</a></td>
                                 <td class="has-text-right">${ct:fileSize(backup.length())}</td>
                                 <td><fmt:formatDate value="${ct:longToDate(backup.lastModified())}" pattern="MM-dd-yyyy hh:mm:ss a"/> </td>
                                 <td><a onclick="deleteBackup('${backup.name}');"><i class="fas fa-trash"></i></a></td>
