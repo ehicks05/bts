@@ -67,16 +67,7 @@
 <body>
 
 <jsp:include page="../header.jsp"/>
-
-<section class="hero is-primary is-small">
-    <div class="hero-body">
-        <div class="container">
-            <h1 class="title">
-                Backups - ${backupPath.toAbsolutePath()}
-            </h1>
-        </div>
-    </div>
-</section>
+<t:hero>Backups - ${backupPath.toAbsolutePath()}</t:hero>
 
 <section class="section">
     <div class="container">
