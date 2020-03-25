@@ -26,24 +26,7 @@
     <jsp:include page="inc_title.jsp"/>
     <jsp:include page="inc_header.jsp"/>
 
-<%--    <script>--%>
-<%--        $(function () {--%>
-<%--            $('#j_username').focus();--%>
-
-
-<%--            $('#j_password').on('keypress', function (e) {--%>
-<%--                if (e.keyCode === 13)--%>
-<%--                {--%>
-<%--                    $('#frmLogin').submit();--%>
-<%--                }--%>
-<%--            });--%>
-<%--        });--%>
-<%--    </script>--%>
     <style>
-        html,body {
-            font-size: 14px;
-            font-weight: 300;
-        }
         .hero.is-success {
             background: #F2F6FA;
         }
@@ -53,43 +36,39 @@
                 background: #222;
             }
         }
-        /*.avatar {*/
-            /*margin-top: -70px;*/
-            /*padding-bottom: 20px;*/
-        /*}*/
-        .avatar img {
-            /*padding: 5px;*/
-            /*background: #fff;*/
-            /*border-radius: 0%;*/
-            /*-webkit-box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);*/
-            /*box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);*/
-        }
-        /*p.subtitle {*/
-            /*padding-top: 1rem;*/
-        /*}*/
     </style>
 </head>
 <body>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <div class="navbar-item">
+                <div class="logoContainer has-background-light">
+                    <img src="${pageContext.request.contextPath}/images/puffin-text.png" alt="Puffin" style="margin: .5rem .5rem 0;" />
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
 <section class="hero is-success is-fullheight">
     <div class="hero-body">
         <div class="container has-text-centered">
             <div class="column is-4 is-offset-4">
-                <h3 class="title has-text-grey">${btsSystem.siteName}</h3>
-                <p class="subtitle has-text-grey">Please login to proceed.</p>
+
                 <div class="box">
-                    <figure class="avatar">
-                        <img src="${pageContext.request.contextPath}/images/puffin-text.png" style="width: 128px" class="invertable">
-                    </figure>
+                    <h3 class="title has-text-grey">${btsSystem.siteName}</h3>
+                    <p class="subtitle has-text-grey">Please log in</p>
                     <form id="frmLogin" method="POST" action="${pageContext.request.contextPath}/login">
                         <div class="field">
                             <div class="control">
-                                <input class="input is-medium" type="email" placeholder="Your Email" autofocus="true" id="username" name="username">
+                                <input class="input" type="email" placeholder="Your Email" autofocus="true" id="username" name="username">
                             </div>
                         </div>
 
                         <div class="field">
                             <div class="control">
-                                <input class="input is-medium" type="password" placeholder="Your Password" id="password" name="password">
+                                <input class="input" type="password" placeholder="Your Password" id="password" name="password">
                             </div>
                         </div>
                         <div class="field">
@@ -99,7 +78,7 @@
                             </label>
                         </div>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        <input type="submit" value="Login" class="button is-block is-primary is-medium" onclick="frmLogin.submit();" />
+                        <input type="submit" value="Login" class="button is-block is-primary" onclick="frmLogin.submit();" />
                     </form>
                 </div>
 
