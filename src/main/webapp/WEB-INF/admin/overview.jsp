@@ -26,20 +26,25 @@
 
 <section class="section">
     <div class="container">
-        <div class="columns is-multiline is-mobile is-centered is-vcentered">
+
+        <style>.tags:hover{filter: brightness(110%);}</style>
+        <div class="field is-grouped is-grouped-multiline">
             <c:forEach var="adminSubscreen" items="${adminSubscreens}">
-                <div class="column has-text-centered is-narrow">
+                <div class="control">
                     <a href="${adminSubscreen[0]}">
-                        <div class="box has-text-link">
-                            <span class="icon is-large">
-                                <i class="fas fa-3x fa-${adminSubscreen[1]}"></i>
+                        <div class="tags are-large has-addons">
+                            <span class="tag is-primary">
+                                <span class="icon">
+                                    <i class="fas fa-${adminSubscreen[1]}"></i>
+                                </span>
                             </span>
-                            <br>${adminSubscreen[2]}
+                            <span class="tag">
+                                <span>${adminSubscreen[2]}</span>
+                            </span>
                         </div>
                     </a>
                 </div>
             </c:forEach>
-            <style>.box:hover{background-color: lightgrey}</style>
         </div>
     </div>
 </section>
