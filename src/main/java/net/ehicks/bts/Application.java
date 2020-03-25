@@ -123,28 +123,4 @@ public class Application
 
         return template;
     }
-
-    @Bean
-    public ServletContextInitializer preCompileJspsAtStartup() {
-        return servletContext -> {
-            getDeepResourcePaths(servletContext, "/WEB-INF/").forEach(jspPath -> {
-                if (!jspPath.contains(".jsp"))
-                {
-                    log.debug("Skipping non-JSP: {}", jspPath);
-                    return;
-                }
-
-                log.debug("Registering JSP: {}", jspPath);
-                ServletRegistration.Dynamic reg = servletContext.addServlet(jspPath, Constants.JSP_SERVLET_CLASS);
-                reg.setInitParameter("jspFile", jspPath);
-                reg.setLoadOnStartup(99);
-                reg.addMapping(jspPath);
-            });
-        };
-    }
-
-    private static Stream<String> getDeepResourcePaths(ServletContext servletContext, String path) {
-        return (path.endsWith("/")) ? servletContext.getResourcePaths(path).stream().flatMap(p -> getDeepResourcePaths(servletContext, p))
-                : Stream.of(path);
-    }
 }                                   

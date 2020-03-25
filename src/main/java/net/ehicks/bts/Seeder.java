@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,6 +26,7 @@ import javax.persistence.Query;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
@@ -288,34 +292,45 @@ public class Seeder
 
     private void createDBFilesAndAvatars()
     {
-        File avatarDir = null;
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] avatars = null;
         try {
-            avatarDir = new ClassPathResource("/static/images/avatars/png/").getFile();
-        } catch (IOException e) {}
+            avatars = resolver.getResources("classpath:/static/images/avatars/png/**");
+        } catch (IOException e) {
+            log.error(e.getLocalizedMessage());
+        }
 
-        if (avatarDir != null && avatarDir.exists() && avatarDir.isDirectory())
+        if (avatars == null)
         {
-            List<File> avatars = Arrays.asList(avatarDir.listFiles());
-            Collections.sort(avatars);
-            for (File avatarFile : avatars)
-            {
-                if (avatarFile.exists() && avatarFile.isFile())
-                {
-                    byte[] content = new byte[0];
-                    try
-                    {
-                        content = Files.readAllBytes(avatarFile.toPath());
-                    }
-                    catch (IOException e)
-                    {
-                        log.error(e.getMessage(), e);
-                    }
+            log.error("No Avatars found");
+            return;
+        }
 
-                    DBFile dbFile = dbFileRepository.save(new DBFile(0, content, Arrays.hashCode(content), tikaService.detect(content, avatarFile.getName()), null));
-                    avatarRepository.save(new Avatar(0, avatarFile.getName(), dbFile, true));
+        for (Resource avatarFile : avatars)
+        {
+            if (avatarFile.exists())
+            {
+                String name = avatarFile.getFilename();
+                if (name == null || name.isEmpty())
+                    continue;
+
+                byte[] content = new byte[0];
+                try (InputStream inputStream = avatarFile.getInputStream())
+                {
+                    content = inputStream.readAllBytes();
                 }
+                catch (IOException e)
+                {
+                    log.error(e.getMessage(), e);
+                }
+
+                DBFile dbFile = dbFileRepository.save(new DBFile(0, content, Arrays.hashCode(content), tikaService.detect(content, name), null));
+                avatarRepository.save(new Avatar(0, name, dbFile, true));
             }
         }
+
+        if (dbFileRepository.count() == 0) log.error("No DBFiles were created.");
+        if (avatarRepository.count() == 0) log.error("No Avatars were created.");
     }
 
     private void createComments()
