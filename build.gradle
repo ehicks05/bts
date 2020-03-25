@@ -16,7 +16,7 @@ buildscript {
 
 plugins {
     id 'com.github.ben-manes.versions' version '0.28.0'
-    id "org.ajoberstar.grgit" version "4.0.1"
+    id "com.gorylenko.gradle-git-properties" version "2.2.2"
     id "org.jetbrains.kotlin.plugin.spring" version "$kotlin_version"
     id "org.jetbrains.kotlin.plugin.jpa" version "$kotlin_version"
 }
@@ -39,7 +39,7 @@ configurations {
 }
 
 group 'net.ehicks'
-version '1.0.0-' + grgit.head().abbreviatedId
+version = '0.0.1-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
@@ -55,18 +55,19 @@ repositories {
     maven { url 'https://repo.spring.io/milestone' }
 }
 
+ext {
+    set('springBootAdminVersion', '2.2.2')
+    set('springCloudVersion', "Hoxton.SR3")
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-tomcat'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
-    implementation 'de.codecentric:spring-boot-admin-starter-client:2.2.2'
-    
-//    implementation 'org.springframework.session:spring-session-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
-//    implementation 'org.ehcache:ehcache:3.8.1'
-//    implementation 'org.hibernate:hibernate-jcache'
+    implementation 'de.codecentric:spring-boot-admin-starter-client'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
@@ -94,6 +95,11 @@ dependencies {
 
     implementation 'javax.servlet:jstl:1.2'
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
 
     implementation 'org.postgresql:postgresql:42.2.10'
@@ -101,36 +107,16 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 }
 
-configurations.all {
-    resolutionStrategy {
-        cacheChangingModulesFor 0, 'seconds'
+dependencyManagement {
+    imports {
+        mavenBom "de.codecentric:spring-boot-admin-dependencies:${springBootAdminVersion}"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
 
 configurations {
     compile.exclude module: "lettuce"
 }
-
-// Task to create a version file based on git repo data
-import org.ajoberstar.grgit.*
-import java.time.ZonedDateTime
-
-task gitProperties()  {
-    doLast {
-        def separator = System.getProperty('line.separator')
-        Commit head = grgit.head()
-
-        def file = new File("$projectDir/src/main/resources/git.properties")
-        file.setText("")
-        file << "version= ${grgit.log().size()}$separator"
-        file << "revision= ${head.id}$separator"
-        file << "revisionDate= ${head.dateTime}$separator"
-        file << "author= ${head.author.name} (${head.author.email})$separator"
-        file << "buildDate= ${ZonedDateTime.now()}$separator"
-    }
-}
-
-tasks.war.dependsOn gitProperties
 
 compileKotlin {
     kotlinOptions {

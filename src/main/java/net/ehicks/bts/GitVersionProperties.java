@@ -10,20 +10,17 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @PropertySource("classpath:/git.properties")
 public class GitVersionProperties
 {
-    @Value("${version:0}")
+    @Value("${git.total.commit.count:0}")
     public String version;
 
-    @Value("${revision:0}")
+    @Value("${git.commit.id:0}")
     public String revision;
 
-    @Value("${revisionDate:0}")
+    @Value("${git.commit.time:0}")
     public String revisionDate;
 
-    @Value("${author:0}")
+    @Value("${git.commit.user.name:0}")
     public String author;
-
-    @Value("${buildDate:0}")
-    public String buildDate;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {

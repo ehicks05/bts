@@ -9,6 +9,7 @@ import org.hibernate.exception.SQLGrammarException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -39,8 +39,14 @@ public class Seeder
 {
     private final Logger log = LoggerFactory.getLogger(Seeder.class);
 
-    private int issueCount = (int) Math.pow(1_024, 1.7);
+    private int issueCount = (int) Math.pow(1_024, 1);
     private Random r = new Random();
+
+    @Value("${spring.security.user.name}")
+    String defaultAdminUsername;
+
+    @Value("${spring.security.user.password}")
+    String defaultAdminPassword;
 
     private List<String> latin = Arrays.asList("annus", "ante meridiem", "aqua", "bene", "canis", "caput", "circus", "cogito",
             "corpus", "de facto", "deus", "ego", "equus", "ergo", "est", "hortus", "id", "in", "index", "iris", "latex",
@@ -145,9 +151,9 @@ public class Seeder
         }
     }
 
-    void seed(boolean dropCreateLoad)
+    void seed(boolean seedDbIfEmpty)
     {
-        if (!dropCreateLoad)
+        if (!seedDbIfEmpty)
             return;
         
         if (issueRepository.count() != 0)
@@ -596,35 +602,35 @@ public class Seeder
 
     private void createUsers()
     {
-        List<List<String>> users = Arrays.asList(
-                Arrays.asList("eric@test.com", "eric", "Eric", "Tester"),
-                Arrays.asList("steve@test.com", "steve", "Steve", "Tester"),
-                Arrays.asList("tupac@test.com", "test", "2", "Pac"),
-                Arrays.asList("bill@test.com", "test", "Bill", "Smith"),
-                Arrays.asList("john@test.com", "test", "John", "Doe"),
-                Arrays.asList("jane@test.com", "test", "Jane", "Doe")
-        );
+        List<UserData> users = new ArrayList<>(Arrays.asList(
+                new UserData("steve@test.com", "steve", "Steve", "Tester", true, false),
+                new UserData("jill@test.com", "test", "Jill", "Jones", true, false),
+                new UserData("bill@test.com", "test", "Bill", "Smith", false, false),
+                new UserData("john@test.com", "test", "John", "Doe", true, false),
+                new UserData("jane@test.com", "test", "Jane", "Doe", true, false)
+        ));
+
+        if (defaultAdminUsername != null && !defaultAdminUsername.isEmpty() &&
+                defaultAdminPassword != null && !defaultAdminPassword.isEmpty())
+            users.add(new UserData(defaultAdminUsername, defaultAdminPassword, "Admin", "Admin", true, true));
+        else
+            users.add(new UserData("eric@test.com", "eric", "Eric", "Tester", true, true));
 
         Role userRole = roleRepository.findByRole("ROLE_USER");
         Role adminRole = roleRepository.findByRole("ROLE_ADMIN");
 
         List<Avatar> avatars = avatarRepository.findAll();
 
-        for (List<String> userData : users)
+        for (UserData userData : users)
         {
-            String username = userData.get(0);
-            String rawPassword = userData.get(1);
-            String password = passwordEncoder.encoder().encode(rawPassword);
-            String first = userData.get(2);
-            String second = userData.get(3);
-            boolean enabled = !username.equals("bill@test.com");
+            String password = passwordEncoder.encoder().encode(userData.password);
             Avatar avatar = avatars.get(r.nextInt(avatars.size()));
 
-            User user = new User(0, username, password,
-                    first, second, enabled, LocalDateTime.now(), avatar);
+            User user = new User(0, userData.username, password,
+                    userData.first, userData.last, userData.enabled, LocalDateTime.now(), avatar);
 
             user.getRoles().add(userRole);
-            if (username.equals("eric@test.com"))
+            if (userData.admin)
             {
                 user.getRoles().add(adminRole);
                 adminRole.getUsers().add(user);
@@ -634,6 +640,26 @@ public class Seeder
 
             userRole.getUsers().add(user);
             roleRepository.save(userRole);
+        }
+    }
+
+    static class UserData
+    {
+        String username;
+        String password;
+        String first;
+        String last;
+        boolean enabled;
+        boolean admin;
+
+        public UserData(String username, String password, String first, String last, boolean enabled, boolean admin)
+        {
+            this.username = username;
+            this.password = password;
+            this.first = first;
+            this.last = last;
+            this.enabled = enabled;
+            this.admin = admin;
         }
     }
 
@@ -753,29 +779,5 @@ public class Seeder
                 .nextLong(future ? now : firstCommit, future ? yearFromNow : now);
 
         return LocalDateTime.ofEpochSecond(random, 0, ZoneOffset.UTC);
-    }
-
-    private Date getRandomDateTime()
-    {
-        LocalDateTime ldt = LocalDateTime.now();
-        Random r = new Random();
-        LocalDateTime createdOnLdt = ldt.minusYears(r.nextInt(5)).minusWeeks(r.nextInt(52))
-                .minusDays(r.nextInt(7))
-                .minusHours(r.nextInt(24))
-                .minusMinutes(r.nextInt(60))
-                .minusSeconds(r.nextInt(60));
-        return Date.from(createdOnLdt.atZone(ZoneId.systemDefault()).toInstant());
-    }
-
-    private Date getRandomDateTimeForward(Date ldt)
-    {
-        Random r = new Random();
-        LocalDateTime createdOnLdt = LocalDateTime.ofInstant(ldt.toInstant(), ZoneId.systemDefault())
-                .plusWeeks(r.nextInt(2))
-                .plusDays(r.nextInt(7))
-                .plusHours(r.nextInt(24))
-                .plusMinutes(r.nextInt(60))
-                .plusSeconds(r.nextInt(60));
-        return Date.from(createdOnLdt.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

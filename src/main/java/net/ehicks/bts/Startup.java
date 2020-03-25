@@ -10,8 +10,8 @@ public class Startup
 {
     private static final Logger log = LoggerFactory.getLogger(Startup.class);
 
-    @Value("${puffin.dropCreateLoad:0}")
-    public String dropCreateLoad;
+    @Value("${puffin.seedDbIfEmpty:false}")
+    public String seedDbIfEmpty;
 
     private Seeder seeder;
 
@@ -24,7 +24,7 @@ public class Startup
     {
         log.info("Puffin starting...");
 
-        seeder.seed(dropCreateLoad.toLowerCase().equals("true"));
+        seeder.seed(seedDbIfEmpty.toLowerCase().equals("true"));
 //        DatabaseBackupTask.scheduleTask();
 //        ChatSessionHandler.init(); // todo: move this?
     }
