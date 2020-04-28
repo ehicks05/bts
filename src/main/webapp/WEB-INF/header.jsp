@@ -60,11 +60,11 @@
             const aClass = "navbar-item " + statusClass;
             const href = subscreen[0];
             container.append(
-            "<a class='" + aClass + "' href='" + href + "'>" +
-                "<span class='icon is-medium has-text-info'>" +
-                    "<i class='fas fa-lg fa-" + subscreen[1] + "'></i>" +
-                "</span>" + subscreen[2] +
-            "</a>"
+                "<a class='" + aClass + "' href='" + href + "'>" +
+                    "<span class='icon is-medium has-text-info'>" +
+                        "<i class='fas fa-lg fa-" + subscreen[1] + "'></i>" +
+                    "</span>&nbsp; " + subscreen[2] +
+                "</a>"
             );
         });
 
@@ -86,9 +86,9 @@
             const href = subscreen[0];
             container.append(
                 "<a class='" + aClass + "' href='" + href + "'>" +
-                "<span class='icon is-medium has-text-info'>" +
-                "<i class='fas fa-lg fa-" + subscreen[1] + "'></i>" +
-                "</span>" + subscreen[2] +
+                    "<span class='icon is-medium has-text-info'>" +
+                        "<i class='fas fa-lg fa-" + subscreen[1] + "'></i>" +
+                    "</span>&nbsp; " + subscreen[2] +
                 "</a>"
             );
         });
