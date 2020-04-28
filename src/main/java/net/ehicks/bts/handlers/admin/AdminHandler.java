@@ -81,6 +81,18 @@ public class AdminHandler
         {
             requestStats = requestStatsRepository.findAll().stream()
                     .sorted(Comparator.comparing(RequestStats::getRequestStart).reversed())
+                    .map(request -> {
+                        String handler = request.getHandlerName();
+                        if (handler.contains("#"))
+                            handler = handler.substring(handler.lastIndexOf('#') + 1);
+                        if (handler.length() > 24)
+                            handler = handler.substring(0, 24) + "...";
+
+                        if (!handler.equals(request.getHandlerName()))
+                            request.setHandlerName(handler);
+
+                        return request;
+                    })
                     .collect(Collectors.toList());
         }
         catch (Exception e)
