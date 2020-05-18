@@ -1,9 +1,7 @@
 package net.ehicks.bts.beans
 
-import org.hibernate.envers.Audited
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.repository.history.RevisionRepository
 import org.springframework.stereotype.Repository
 import java.io.Serializable
 import java.time.LocalDateTime
@@ -22,7 +20,6 @@ import javax.persistence.*
     Index(name = "IDX_ISSUE_SEVERITY_ID", columnList = "severity_id"),
     Index(name = "IDX_ISSUE_STATUS_ID", columnList = "status_id")
 ])
-@Audited(withModifiedFlag = true)
 data class Issue @JvmOverloads constructor(
         @Id @GeneratedValue(strategy = GenerationType.AUTO)
         var id: Long = 0,
@@ -87,6 +84,6 @@ data class Issue @JvmOverloads constructor(
 }
 
 @Repository
-interface IssueRepository : JpaRepository<Issue, Long>, RevisionRepository<Issue, Long, Int> {
+interface IssueRepository : JpaRepository<Issue, Long> {
     fun findFirstByOrderById(): Issue
 }

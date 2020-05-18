@@ -1,6 +1,5 @@
 package net.ehicks.bts.beans
 
-import org.hibernate.envers.Audited
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
@@ -8,7 +7,6 @@ import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-@Audited
 data class Attachment(
         @Id @GeneratedValue(strategy = GenerationType.AUTO)
         val id: Long = 0,

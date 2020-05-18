@@ -2,7 +2,6 @@ package net.ehicks.bts.beans
 
 import net.ehicks.bts.ISelectTagSupport
 import net.ehicks.bts.Named
-import org.hibernate.envers.Audited
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.security.core.GrantedAuthority
@@ -16,7 +15,6 @@ import kotlin.collections.HashSet
 
 @Entity
 @Table(name = "puffin_users")
-@Audited
 data class User @JvmOverloads constructor(
         @Id @GeneratedValue(strategy = GenerationType.AUTO)
         private val id: Long = 0,

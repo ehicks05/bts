@@ -1,6 +1,5 @@
 package net.ehicks.bts.beans
 
-import org.hibernate.envers.Audited
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.io.Serializable
@@ -12,7 +11,6 @@ import javax.persistence.*
 //    Index(name = "IDX_COMMENT_CREATED_ON", columnList = "created_on desc", unique = false),
     Index(name = "IDX_COMMENT_ISSUE_ID", columnList = "issue_id", unique = false)
 ])
-@Audited
 data class Comment(
         @Id @GeneratedValue(strategy = GenerationType.AUTO)
         var id: Long = 0,

@@ -69,9 +69,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.session:spring-session-jdbc'
     implementation 'redis.clients:jedis'
-    implementation 'org.springframework.data:spring-data-envers'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    implementation 'org.hibernate:hibernate-envers:5.4.11.Final'
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.11.0"
     implementation 'net.sargue:java-time-jsptags:1.1.4'
     implementation 'org.apache.tika:tika-core:1.24.1'

@@ -1,14 +1,12 @@
 package net.ehicks.bts.beans
 
 import net.ehicks.bts.ISelectTagSupport
-import org.hibernate.envers.Audited
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.io.Serializable
 import javax.persistence.*
 
 @Entity
-@Audited
 data class Avatar @JvmOverloads constructor(
         @Id @GeneratedValue(strategy = GenerationType.AUTO)
         var id: Long = 0,
