@@ -8,8 +8,8 @@ import javax.persistence.*
 data class BtsSystem @JvmOverloads constructor(
         @Id @GeneratedValue(strategy = GenerationType.AUTO)
         var id: Long = 0,
-        var siteName: String = "",
-        var logonMessage: String = "",
+        var siteName: String = "BugCo Industries",
+        var logonMessage: String = "Welcome!",
         @OneToOne(fetch = FetchType.LAZY) var defaultAvatar: Avatar = Avatar(),
         var theme: String = "",
         var emailFromAddress: String = "",

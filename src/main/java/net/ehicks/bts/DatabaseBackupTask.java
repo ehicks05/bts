@@ -32,8 +32,8 @@ public class DatabaseBackupTask
     private String username;
     @Value("${spring.datasource.password}")
     private String password;
-    @Value("${puffin.pgDumpPath}")
-    private String pgDumpPath;
+//    @Value("${puffin.pgDumpPath}")
+//    private String pgDumpPath;
 
     private BtsSystemRepository btsSystemRepository;
 
@@ -116,7 +116,7 @@ public class DatabaseBackupTask
     {
         String hostThroughDbName = url.substring(url.indexOf("://") + 3, url.indexOf("?"));
         String urlString = "postgres://" + username + ":" + password + "@" + hostThroughDbName;
-
+        String pgDumpPath = "todo";
         ProcessBuilder builder = new ProcessBuilder(
                 pgDumpPath,
                 "--dbname=" + urlString,

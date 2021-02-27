@@ -3,14 +3,13 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <spring:eval expression="@gitVersionProperties.version" var="version" />
 <spring:eval expression="@gitVersionProperties.revision" var="revision" />
-<spring:eval expression="@environment.getProperty('puffin.siteName')" var="siteName" />
 
 <footer class="footer">
     <div class="container">
         <div class="columns">
             <div class="column">
                 <p><img src="${pageContext.request.contextPath}/images/bug_16.png"/>
-                    &centerdot; <strong>${siteName}</strong>
+                    &centerdot; <strong>${btsSystem.siteName}</strong>
                 </p>
             </div>
             <div class="column has-text-right" id="projectInfo">
