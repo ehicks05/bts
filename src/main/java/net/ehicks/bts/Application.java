@@ -97,10 +97,11 @@ public class Application
 
             String hostName = uri.getHost();
             String userInfo = uri.getUserInfo();
+            String password = userInfo.startsWith(":") ? userInfo.substring(1) : userInfo;
             int port = uri.getPort();
 
             RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(hostName, port);
-            redisStandaloneConfiguration.setPassword(RedisPassword.of(userInfo));
+            redisStandaloneConfiguration.setPassword(RedisPassword.of(password));
             return new JedisConnectionFactory(redisStandaloneConfiguration);
 
         } catch (Exception e) {
