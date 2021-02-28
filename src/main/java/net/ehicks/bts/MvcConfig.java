@@ -1,5 +1,6 @@
 package net.ehicks.bts;
 
+import net.ehicks.bts.redis.RequestStatsRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;

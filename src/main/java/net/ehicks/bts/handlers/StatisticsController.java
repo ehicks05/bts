@@ -1,7 +1,7 @@
 package net.ehicks.bts.handlers;
 
-import net.ehicks.bts.RequestStatsRepository;
-import net.ehicks.bts.RequestStats;
+import net.ehicks.bts.redis.RequestStatsRepository;
+import net.ehicks.bts.redis.RequestStats;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;

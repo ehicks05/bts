@@ -1,5 +1,6 @@
 package net.ehicks.bts;
 
+import net.ehicks.bts.redis.RequestStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,10 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.Filter;
 import java.net.URI;
-import java.net.URL;
 
 @SpringBootApplication
 @EnableScheduling
 @EnableAsync
-//@EnableJpaRepositories
 public class Application
 {
     private static final Logger log = LoggerFactory.getLogger(Application.class);

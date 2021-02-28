@@ -1,5 +1,6 @@
-package net.ehicks.bts
+package net.ehicks.bts.redis
 
+import net.ehicks.bts.NoArg
 import java.io.Serializable
 import java.util.*
 

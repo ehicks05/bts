@@ -1,3 +1,4 @@
+<jsp:useBean id="runtime" scope="request" type="java.lang.Runtime"/>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -10,16 +11,6 @@
 <head>
     <jsp:include page="../inc_title.jsp"/>
     <jsp:include page="../inc_header.jsp"/>
-
-    <script>
-        $('document').ready(function ()
-        {
-            $('#clearCache').click(function ()
-            {
-                location.href = '${pageContext.request.contextPath}/admin/cache/clearCache';
-            });
-        });
-    </script>
 </head>
 <body>
 
@@ -55,6 +46,24 @@
                                 <td><fmt:formatDate value="${session.lastRequest}" pattern="h:mm:ss a"/></td>
                             </tr>
                         </c:forEach>
+                    </table>
+
+                    <br />
+                    <h5 class="subtitle is-5">java.lang.Runtime</h5>
+
+                    <table class="table is-narrow is-fullwidth">
+                        <tr>
+                            <th>Name</th>
+                            <th class="has-text-right">Val</th>
+                        </tr>
+                        <tr><td>maxMemory</td>
+                            <td class="has-text-right"><fmt:formatNumber maxFractionDigits="0" value="${runtime.maxMemory() / 1024 / 1024}" />m</td></tr>
+                        <tr><td>freeMemory</td>
+                            <td class="has-text-right"><fmt:formatNumber maxFractionDigits="0" value="${runtime.freeMemory() / 1024 / 1024}" />m</td></tr>
+                        <tr><td>totalMemory</td>
+                            <td class="has-text-right"><fmt:formatNumber maxFractionDigits="0" value="${runtime.totalMemory() / 1024 / 1024}" />m</td></tr>
+                        <tr><td>availableProcessors</td>
+                            <td class="has-text-right">${runtime.availableProcessors()}</td></tr>
                     </table>
                 </div>
             </div>

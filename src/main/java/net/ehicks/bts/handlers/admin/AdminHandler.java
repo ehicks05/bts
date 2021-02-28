@@ -1,7 +1,7 @@
 package net.ehicks.bts.handlers.admin;
 
-import net.ehicks.bts.RequestStats;
-import net.ehicks.bts.RequestStatsRepository;
+import net.ehicks.bts.redis.RequestStats;
+import net.ehicks.bts.redis.RequestStatsRepository;
 import net.ehicks.bts.beans.*;
 import net.ehicks.bts.mail.MailClient;
 import org.slf4j.Logger;
@@ -99,9 +99,9 @@ public class AdminHandler
         {
 
         }
-
         return new ModelAndView("admin/systemInfo")
                 .addObject("sessions", sessions)
+                .addObject("runtime", Runtime.getRuntime())
                 .addObject("requests", requestStats);
     }
 

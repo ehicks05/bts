@@ -1,4 +1,4 @@
-package net.ehicks.bts;
+package net.ehicks.bts.redis;
 
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
