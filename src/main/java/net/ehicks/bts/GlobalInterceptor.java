@@ -4,16 +4,15 @@ import net.ehicks.bts.beans.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.UUID;
 
-public class GlobalInterceptor extends HandlerInterceptorAdapter
+public class GlobalInterceptor implements HandlerInterceptor
 {
     private static final Logger log = LoggerFactory.getLogger(GlobalInterceptor.class);
 
@@ -34,7 +33,7 @@ public class GlobalInterceptor extends HandlerInterceptorAdapter
         request.setAttribute("requestStart", System.nanoTime());
         request.setAttribute("requestStartDate", new Date());
         request.setAttribute("requestId", UUID.randomUUID().toString());
-        return super.preHandle(request, response, handler);
+        return true;
     }
 
     @Override
@@ -45,9 +44,7 @@ public class GlobalInterceptor extends HandlerInterceptorAdapter
         if (modelAndView != null)
             modelAndView.addAllObjects(globalDataLoader.loadData());
         request.setAttribute("postHandleTime", (System.nanoTime() - start) / 1_000_000);
-
         request.setAttribute("templateStart", System.nanoTime());
-        super.postHandle(request, response, handler, modelAndView);
     }
 
     @Override
@@ -55,7 +52,6 @@ public class GlobalInterceptor extends HandlerInterceptorAdapter
     {
         long templateStart = request.getAttribute("handleTime") != null ? (long) request.getAttribute("templateStart") : 0;
         request.setAttribute("templateTime", (System.nanoTime() - templateStart) / 1_000_000);
-        super.afterCompletion(request, response, handler, ex);
 
         String requestId = (String) request.getAttribute("requestId");
         long requestStart = (long) request.getAttribute("requestStart");
@@ -72,7 +68,7 @@ public class GlobalInterceptor extends HandlerInterceptorAdapter
             requestStatsRepository.save(new RequestStats(requestId, requestStartDate, user.getUsername(),
                     handlerDescription, requestTime, handleTime, postHandleTime, templateTime));
         }
-        catch (Exception e)
+        catch (Exception ignored)
         {
 
         }
