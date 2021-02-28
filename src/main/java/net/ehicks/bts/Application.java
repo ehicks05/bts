@@ -3,12 +3,15 @@ package net.ehicks.bts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.RedisPassword;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
@@ -22,6 +25,8 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.Filter;
+import java.net.URI;
+import java.net.URL;
 
 @SpringBootApplication
 @EnableScheduling
@@ -82,13 +87,26 @@ public class Application
         return new InMemoryHttpTraceRepository();
     }
 
+    @Value("${spring.redis.url}")
+    String redisUrl;
+
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
-        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
-        log.info(jedisConnectionFactory.getHostName());
-        log.info(jedisConnectionFactory.getPassword());
-        log.info("" + jedisConnectionFactory.getPort());
-        return jedisConnectionFactory;
+        try {
+            URI uri = new URI(redisUrl);
+
+            String hostName = uri.getHost();
+            String userInfo = uri.getUserInfo();
+            int port = uri.getPort();
+
+            RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(hostName, port);
+            redisStandaloneConfiguration.setPassword(RedisPassword.of(userInfo));
+            return new JedisConnectionFactory(redisStandaloneConfiguration);
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return null;
     }
 
     @Bean
