@@ -1,8 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<spring:eval expression="@gitVersionProperties.version" var="version" />
-<spring:eval expression="@gitVersionProperties.revision" var="revision" />
 
 <footer class="footer">
     <div class="container">
@@ -15,7 +13,6 @@
             <div class="column has-text-right" id="projectInfo">
                 <p>
                     <a href="https://github.com/ehicks05/puffin">Puffin</a>
-                    <a href="https://github.com/ehicks05/puffin/commit/${revision}" title="${revision}">v${version}</a>
                     by <a href="https://ehicks.net">Eric Hicks</a>
                 </p>
             </div>
