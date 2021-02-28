@@ -1,5 +1,7 @@
 package net.ehicks.bts;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -27,6 +29,8 @@ import javax.servlet.Filter;
 //@EnableJpaRepositories
 public class Application
 {
+    private static final Logger log = LoggerFactory.getLogger(Application.class);
+
     private final Startup startup;
 
     @Autowired
@@ -80,7 +84,11 @@ public class Application
 
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
-        return new JedisConnectionFactory();
+        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
+        log.info(jedisConnectionFactory.getHostName());
+        log.info(jedisConnectionFactory.getPassword());
+        log.info("" + jedisConnectionFactory.getPort());
+        return jedisConnectionFactory;
     }
 
     @Bean
