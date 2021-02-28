@@ -108,3 +108,7 @@ compileTestKotlin {
         jvmTarget = "1.8"
     }
 }
+
+gitProperties {
+    failOnNoGitDirectory = false
+}
