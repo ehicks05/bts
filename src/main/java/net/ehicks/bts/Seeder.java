@@ -46,10 +46,10 @@ public class Seeder
     private int issueCount = (int) Math.pow(1_024, 1);
     private Random r = new Random();
 
-    @Value("${spring.security.user.name}")
+    @Value("${admin_username}")
     String defaultAdminUsername;
 
-    @Value("${spring.security.user.password}")
+    @Value("${admin_password}")
     String defaultAdminPassword;
 
     private List<String> latin = Arrays.asList("annus", "ante meridiem", "aqua", "bene", "canis", "caput", "circus", "cogito",
