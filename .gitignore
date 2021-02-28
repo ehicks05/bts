@@ -3,3 +3,4 @@
 .idea
 build
 logs
+src/main/resources/application-dev.properties
